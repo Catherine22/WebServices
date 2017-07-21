@@ -3,8 +3,15 @@ package com.catherine.webservices;
 import android.app.Activity;
 import android.os.Bundle;
 
+import com.catherine.webservices.tasks.SampleAsyncTask;
 import com.catherine.webservices.toolkits.CLog;
 import com.catherine.webservices.toolkits.Utils;
+
+import java.io.IOException;
+
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public class MainActivity extends Activity {
     private final static String TAG = "MainActivity";
@@ -17,5 +24,8 @@ public class MainActivity extends Activity {
         CLog.d(TAG, "isNetworkHealth:" + Utils.isNetworkHealth(MainActivity.this));
         CLog.d(TAG, "isWifi:" + Utils.isWifi(MainActivity.this));
         Utils.listenToNetworkState(MainActivity.this);
+        new SampleAsyncTask().execute("param1");
     }
+
+
 }
