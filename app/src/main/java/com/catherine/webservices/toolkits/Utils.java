@@ -36,4 +36,14 @@ public class Utils {
         Intent nhs = new Intent(ctx, NetworkHealthService.class);
         ctx.stopService(nhs);
     }
+
+    public final String JUNIT_TEST = "MB890CPC";
+
+    public static String junitTestSample1() {
+        return "CSOp40c";
+    }
+
+    public String junitTestSample2() {
+        return "B0SK80a";
+    }
 }
