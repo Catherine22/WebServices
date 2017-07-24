@@ -25,3 +25,8 @@
 #-renamesourcefileattribute SourceFile
 
 -keep class com.catherine.webservices.toolkits.CLog { *; }
+
+#okhttp3
+-dontwarn okio.**
+-dontwarn javax.annotation.Nullable
+-dontwarn javax.annotation.ParametersAreNonnullByDefault

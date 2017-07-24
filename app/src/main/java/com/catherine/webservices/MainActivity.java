@@ -7,12 +7,6 @@ import com.catherine.webservices.tasks.SampleAsyncTask;
 import com.catherine.webservices.toolkits.CLog;
 import com.catherine.webservices.toolkits.Utils;
 
-import java.io.IOException;
-
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-
 public class MainActivity extends Activity {
     private final static String TAG = "MainActivity";
 
