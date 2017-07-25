@@ -1,5 +1,7 @@
 package com.catherine.webservices.xml;
 
+import java.util.List;
+
 /**
  * Created by Catherine on 2017/7/25.
  * Soft-World Inc.
@@ -8,5 +10,8 @@ package com.catherine.webservices.xml;
 
 public interface XMLParserListener {
     void onSuccess(String message);
+
+    void onSuccess(List<String> message);
+
     void onFail();
 }

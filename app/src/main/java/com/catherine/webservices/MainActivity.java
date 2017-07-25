@@ -11,6 +11,7 @@ import com.catherine.webservices.toolkits.CLog;
 import com.catherine.webservices.toolkits.Utils;
 
 import java.io.IOException;
+import java.util.List;
 
 public class MainActivity extends Activity {
     private final static String TAG = "MainActivity";
@@ -26,9 +27,14 @@ public class MainActivity extends Activity {
 //        new SampleAsyncTask().execute("param1");
         try {
             XMLDelegate xmlDelegate = new XMLDelegate();
-            xmlDelegate.read("name", new SAXParser(getAssets().open("sample.xml"), new XMLParserListener() {
+            xmlDelegate.read("name", getAssets().open("sample.xml"), new SAXParser(), new XMLParserListener() {
                 @Override
                 public void onSuccess(String message) {
+                    CLog.d(TAG, "onSuccess:" + message);
+                }
+
+                @Override
+                public void onSuccess(List<String> message) {
                     CLog.d(TAG, "onSuccess:" + message);
                 }
 
@@ -36,11 +42,16 @@ public class MainActivity extends Activity {
                 public void onFail() {
                     CLog.d(TAG, "onFail");
                 }
-            }));
+            });
 
-            xmlDelegate.read("time", new DOMParser(getAssets().open("sample.xml"), new XMLParserListener() {
+            xmlDelegate.read("time", getAssets().open("sample.xml"), new DOMParser(), new XMLParserListener() {
                 @Override
                 public void onSuccess(String message) {
+                    CLog.d(TAG, "onSuccess:" + message);
+                }
+
+                @Override
+                public void onSuccess(List<String> message) {
                     CLog.d(TAG, "onSuccess:" + message);
                 }
 
@@ -48,7 +59,7 @@ public class MainActivity extends Activity {
                 public void onFail() {
                     CLog.d(TAG, "onFail");
                 }
-            }));
+            });
         } catch (IOException e) {
             e.printStackTrace();
         }

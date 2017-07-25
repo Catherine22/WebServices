@@ -9,6 +9,8 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.parsers.SAXParserFactory;
 
@@ -25,7 +27,8 @@ public class SAXParser implements ParserService {
     private InputStream content;
     private String tag;
 
-    public SAXParser(InputStream content, XMLParserListener listener) {
+    @Override
+    public void init(InputStream content, XMLParserListener listener) {
         this.listener = listener;
         this.content = content;
         try {
@@ -62,6 +65,21 @@ public class SAXParser implements ParserService {
     private class MyDefaultHandler extends DefaultHandler {
         private String currTag = "";
         private String message = "";
+        private List<String> messageList;
+
+
+        @Override
+        public void startDocument() throws SAXException {
+            super.startDocument();
+            messageList = new ArrayList<>();
+        }
+
+        @Override
+        public void endDocument() throws SAXException {
+            super.endDocument();
+            if (!messageList.isEmpty())
+                listener.onSuccess(messageList);
+        }
 
         @Override
         public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
@@ -72,7 +90,7 @@ public class SAXParser implements ParserService {
         @Override
         public void endElement(String uri, String localName, String qName) throws SAXException {
             if (currTag.equals(tag)) {
-                listener.onSuccess(message);
+                messageList.add(message);
             }
             message = "";
             super.endElement(uri, localName, qName);

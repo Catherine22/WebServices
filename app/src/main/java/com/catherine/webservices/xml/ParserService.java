@@ -1,5 +1,7 @@
 package com.catherine.webservices.xml;
 
+import java.io.InputStream;
+
 /**
  * Created by Catherine on 2017/7/25.
  * Soft-World Inc.
@@ -7,6 +9,9 @@ package com.catherine.webservices.xml;
  */
 
 public interface ParserService {
+
+    void init(InputStream content, XMLParserListener listener);
+
     void parser();
 
     void getValue(String tag);

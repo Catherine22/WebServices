@@ -7,6 +7,8 @@ package com.catherine.webservices.xml;
  */
 
 
+import java.io.InputStream;
+
 /**
  * 保证一次只会有一个线程运行增删改查方法。
  */
@@ -24,7 +26,8 @@ public class XMLDelegate {
         staticMutiplyAndSyncRead(service);
     }
 
-    public void read(String tag, ParserService service) {
+    public void read(String tag, InputStream is, ParserService service, XMLParserListener listener) {
+        service.init(is,listener);
         staticMutiplyAndSyncRead(tag, service);
     }
 
@@ -32,8 +35,11 @@ public class XMLDelegate {
         staticMutiplyAndSyncAdd(tag, value);
     }
 
-    public void modify(String tag, String value) {
-        staticMutiplyAndSyncModify(tag, value);
+    public void modify(String parentAttrName, String parentAttrValue, String tag, String value, ParserService service) {
+        if (service instanceof SAXParser) {
+            service = new DOMParser();
+        }
+        staticMutiplyAndSyncModify(parentAttrName, parentAttrValue, tag, value, service);
     }
 
     public boolean romove(String tag) {
@@ -61,7 +67,7 @@ public class XMLDelegate {
         }
     }
 
-    private static void staticMutiplyAndSyncModify(String tag, String value) {
+    private static void staticMutiplyAndSyncModify(String parentAttrName, String parentAttrValue, String tag, String value, ParserService service) {
         synchronized (XMLDelegate.getInstance()) {
 
         }
