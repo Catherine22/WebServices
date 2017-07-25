@@ -5,6 +5,9 @@
 <?xml-stylesheet type="text/css" href="sample.css"?><!--处理指令-->
 <!DOCTYPE article SYSTEM "sample.dtd"><!--浏览器默认关闭校验-->
 <channels><!--根标签，一个xml只要有一个根标签-->
+
+<!--<![CDATA[被解析器忽略的内容]]>-->
+
     <channel id="1"><!--channel标签，channels的子标签，其中id为属性-->
         <name>社区靠两条腿走路</name>
         <time>2011-08-03</time>
@@ -67,8 +70,4 @@
         <count>333</count>
         <icon>http://192.168.1.101:8080/WebProject/a.jpg</icon>
     </channel>
-
-    <!--<![CDATA[被解析器忽略的内容]]>-->
-    <![CDATA[Hi there!]]>
-
 </channels>

@@ -1,14 +1,22 @@
 <html>
 <head>
-    <script>
-        var xmldoc = new ActiveXObject("Microsoft.XMLDOM");
-        xmldoc.validateOnParse = true;
-        xmldoc.load("sample.xml");
-        var line = xmldoc.parseError.line;
-        var reason = xmldoc.parseError.reason;
-        alert (line);
-        alert (reason);
-    </script>
 </head>
-<body></body>
+<body>
+	<p>Running the script...</p>
+	<script>
+		if (window.ActiveXObject) {
+			var xmldoc = new ActiveXObject("Microsoft.XMLDOM");
+			xmldoc.validateOnParse = true;
+			xmldoc.load("sample.xml");
+			var line = xmldoc.parseError.line;
+			var reason = xmldoc.parseError.reason;
+			alert(line);
+			alert(reason);
+		}
+
+		else {
+			alert('ActiveX not work');
+		}
+	</script>
+</body>
 </html>
