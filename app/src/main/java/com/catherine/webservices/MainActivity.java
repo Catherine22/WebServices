@@ -3,13 +3,14 @@ package com.catherine.webservices;
 import android.app.Activity;
 import android.os.Bundle;
 
-import com.catherine.SAXParser;
-import com.catherine.XMLDelegate;
-import com.catherine.XMLParserListener;
-import com.catherine.webservices.tasks.SampleAsyncTask;
+import com.catherine.webservices.xml.DOMParser;
+import com.catherine.webservices.xml.SAXParser;
+import com.catherine.webservices.xml.XMLDelegate;
+import com.catherine.webservices.xml.XMLParserListener;
 import com.catherine.webservices.toolkits.CLog;
-import com.catherine.webservices.toolkits.StreamUtils;
 import com.catherine.webservices.toolkits.Utils;
+
+import java.io.IOException;
 
 public class MainActivity extends Activity {
     private final static String TAG = "MainActivity";
@@ -23,19 +24,34 @@ public class MainActivity extends Activity {
         CLog.d(TAG, "isWifi:" + Utils.isWifi(MainActivity.this));
 //        Utils.listenToNetworkState(MainActivity.this);
 //        new SampleAsyncTask().execute("param1");
-        String content = StreamUtils.loadAssets(MainActivity.this, "sample.xml");
-        XMLDelegate xmlDelegate = new XMLDelegate();
-        xmlDelegate.read("name", new SAXParser(content, new XMLParserListener() {
-            @Override
-            public void onSuccess(String message) {
-                CLog.d(TAG, "onSuccess:" + message);
-            }
+        try {
+            XMLDelegate xmlDelegate = new XMLDelegate();
+            xmlDelegate.read("name", new SAXParser(getAssets().open("sample.xml"), new XMLParserListener() {
+                @Override
+                public void onSuccess(String message) {
+                    CLog.d(TAG, "onSuccess:" + message);
+                }
 
-            @Override
-            public void onFail() {
-                CLog.d(TAG, "onFail");
-            }
-        }));
+                @Override
+                public void onFail() {
+                    CLog.d(TAG, "onFail");
+                }
+            }));
+
+            xmlDelegate.read("time", new DOMParser(getAssets().open("sample.xml"), new XMLParserListener() {
+                @Override
+                public void onSuccess(String message) {
+                    CLog.d(TAG, "onSuccess:" + message);
+                }
+
+                @Override
+                public void onFail() {
+                    CLog.d(TAG, "onFail");
+                }
+            }));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 

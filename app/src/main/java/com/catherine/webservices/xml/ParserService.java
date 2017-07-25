@@ -1,4 +1,4 @@
-package com.catherine;
+package com.catherine.webservices.xml;
 
 /**
  * Created by Catherine on 2017/7/25.

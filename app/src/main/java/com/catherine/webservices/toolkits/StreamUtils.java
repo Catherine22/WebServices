@@ -1,13 +1,8 @@
 package com.catherine.webservices.toolkits;
 
-import android.content.Context;
-
-import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-
 /**
  * Created by Catherine on 2017/7/25.
  * Soft-World Inc.
@@ -15,10 +10,9 @@ import java.io.InputStreamReader;
  */
 
 public class StreamUtils {
-    public static String loadAssets(Context ctx, String fileName) {
+    public static String inputStreamToString(InputStream is) {
         String content = null;
         try {
-            InputStream is = ctx.getAssets().open(fileName);
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
             byte[] buffer = new byte[1024];
             int len;

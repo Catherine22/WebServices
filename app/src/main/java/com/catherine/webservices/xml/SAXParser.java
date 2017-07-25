@@ -1,4 +1,5 @@
-package com.catherine;
+package com.catherine.webservices.xml;
+
 
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
@@ -6,7 +7,8 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import java.io.StringReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 import javax.xml.parsers.SAXParserFactory;
 
@@ -17,12 +19,13 @@ import javax.xml.parsers.SAXParserFactory;
  */
 
 public class SAXParser implements ParserService {
+    private final static String TAG = "SAXParser";
     private javax.xml.parsers.SAXParser sp;
     private XMLParserListener listener;
-    private String content;
+    private InputStream content;
     private String tag;
 
-    public SAXParser(String content, XMLParserListener listener) {
+    public SAXParser(InputStream content, XMLParserListener listener) {
         this.listener = listener;
         this.content = content;
         try {
@@ -37,7 +40,7 @@ public class SAXParser implements ParserService {
     @Override
     public void parser() {
         try {
-            sp.parse(new InputSource(new StringReader(content)), new DefaultHandler());
+            sp.parse(new InputSource(new InputStreamReader(content)), new DefaultHandler());
         } catch (Exception e) {
             e.printStackTrace();
             listener.onFail();
@@ -49,7 +52,7 @@ public class SAXParser implements ParserService {
         try {
             this.tag = tag;
             DefaultHandler handler = new MyDefaultHandler();
-            sp.parse(new InputSource(new StringReader(content)), handler);
+            sp.parse(new InputSource(new InputStreamReader(content)), handler);
         } catch (Exception e) {
             e.printStackTrace();
             listener.onFail();
@@ -62,14 +65,12 @@ public class SAXParser implements ParserService {
 
         @Override
         public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
-//            listener.onSuccess(String.format("start---qName:%s, attr---qName:%s, value:%s", qName, attributes.getQName(0), attributes.getValue(0)));
             currTag = qName;
             super.startElement(uri, localName, qName, attributes);
         }
 
         @Override
         public void endElement(String uri, String localName, String qName) throws SAXException {
-//            listener.onSuccess(String.format("end---uri:%s, localName:%s, qName:%s", uri, localName, qName));
             if (currTag.equals(tag)) {
                 listener.onSuccess(message);
             }
