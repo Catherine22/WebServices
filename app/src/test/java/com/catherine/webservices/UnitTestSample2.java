@@ -41,7 +41,7 @@ public class UnitTestSample2 {
         Utils utils = new Utils();
 
         // ...when the string is returned from the object under test...
-        String result = utils.JUNIT_TEST;
+        String result = utils.getJUNIT_TEST();
 
         // ...then the result should be the expected one.
         assertThat(result, is(FAKE_STRING));
