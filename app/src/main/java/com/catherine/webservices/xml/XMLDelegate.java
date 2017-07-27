@@ -13,7 +13,6 @@ import java.io.InputStream;
  * 保证一次只会有一个线程运行增删改查方法。
  */
 public class XMLDelegate {
-
     private static class SynchronizedHolder {
         private static XMLDelegate syncInstance = new XMLDelegate();
     }
@@ -27,7 +26,7 @@ public class XMLDelegate {
     }
 
     public void read(String tag, InputStream is, ParserService service, XMLParserListener listener) {
-        service.init(is,listener);
+        service.init(is, listener);
         staticMutiplyAndSyncRead(tag, service);
     }
 
@@ -35,15 +34,12 @@ public class XMLDelegate {
         staticMutiplyAndSyncAdd(tag, value);
     }
 
-    public void modify(String parentAttrName, String parentAttrValue, String tag, String value, ParserService service) {
-        if (service instanceof SAXParser) {
-            service = new DOMParser();
-        }
-        staticMutiplyAndSyncModify(parentAttrName, parentAttrValue, tag, value, service);
+    public void modify(InputStream is, XMLParserListener listener) {
+        staticMutiplyAndSyncModify(is, listener);
     }
 
-    public boolean romove(String tag) {
-        staticMutiplyAndSyncRemove(tag);
+    public boolean romove(InputStream is, XMLParserListener listener) {
+        staticMutiplyAndSyncRemove(is, listener);
         return true;
     }
 
@@ -67,15 +63,19 @@ public class XMLDelegate {
         }
     }
 
-    private static void staticMutiplyAndSyncModify(String parentAttrName, String parentAttrValue, String tag, String value, ParserService service) {
+    private static void staticMutiplyAndSyncModify(InputStream is, XMLParserListener listener) {
         synchronized (XMLDelegate.getInstance()) {
-
+            DOMParser service = new DOMParser();
+            service.init(is, listener);
+            service.modify();
         }
     }
 
-    private static void staticMutiplyAndSyncRemove(String tag) {
+    private static void staticMutiplyAndSyncRemove(InputStream is, XMLParserListener listener) {
         synchronized (XMLDelegate.getInstance()) {
-
+            DOMParser service = new DOMParser();
+            service.init(is, listener);
+            service.delete();
         }
     }
 }

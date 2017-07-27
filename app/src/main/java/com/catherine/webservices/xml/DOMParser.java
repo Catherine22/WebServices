@@ -6,7 +6,6 @@ import org.dom4j.Attribute;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
-
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,12 +43,12 @@ public class DOMParser implements ParserService {
         //第一层
         List<Element> elementList = root.elements();
         for (int i = 0; i < elementList.size(); i++) {
-            Element channels = elementList.get(i);
-            Attribute attr = channels.attribute(0);
-            CLog.v(TAG, String.format("%s (%s=%s):", channels.getName(), attr.getName(), attr.getValue()));
+            Element channel = elementList.get(i);
+            Attribute attr = channel.attribute(0);
+            CLog.v(TAG, String.format("%s (%s=%s):", channel.getName(), attr.getName(), attr.getValue()));
 
             //第二层
-            List<Element> channelList = channels.elements();
+            List<Element> channelList = channel.elements();
             for (int j = 0; j < channelList.size(); j++) {
                 Element e = channelList.get(j);
                 CLog.v(TAG, String.format("%s:%s", e.getName(), e.getStringValue()));
@@ -66,12 +65,12 @@ public class DOMParser implements ParserService {
         //第一层
         List<Element> elementList = root.elements();
         for (int i = 0; i < elementList.size(); i++) {
-            Element channels = elementList.get(i);
-            Attribute attr = channels.attribute(0);
+            Element channel = elementList.get(i);
+            Attribute attr = channel.attribute(0);
 //            CLog.v(TAG, String.format("%s (%s=%s):", channels.getName(), attr.getName(), attr.getValue()));
 
             //第二层
-            List<Element> channelList = channels.elements();
+            List<Element> channelList = channel.elements();
             for (int j = 0; j < channelList.size(); j++) {
                 Element e = channelList.get(j);
 //                CLog.v(TAG, String.format("%s:%s", e.getName(), e.getStringValue()));
@@ -85,29 +84,43 @@ public class DOMParser implements ParserService {
         }
     }
 
-    public void modify(String parentAttrName, String parentAttrValue, String tag, String value) {
+    public void modify() {
         //根节点
         Element root = doc.getRootElement();
-//        CLog.v(TAG, root.getName());
+        CLog.v(TAG, root.getName());
 
         //第一层
         List<Element> elementList = root.elements();
         for (int i = 0; i < elementList.size(); i++) {
-            Element channels = elementList.get(i);
-            Attribute attr = channels.attribute(parentAttrName);
-//            CLog.v(TAG, String.format("%s (%s=%s):", channels.getName(), attr.getName(), attr.getValue()));
+            Element channel = elementList.get(i);
+            Attribute attr = channel.attribute("id");
 
-            if (parentAttrValue.equals(attr.getValue())) {
-                //第二层
-                List<Element> channelList = channels.elements();
-                for (int j = 0; j < channelList.size(); j++) {
-                    Element e = channelList.get(j);
-//                CLog.v(TAG, String.format("%s:%s", e.getName(), e.getStringValue()));
-                    if (e.getName().equals(tag))
-                        e.setText(value);
-                }
+            //第二层
+            if (attr.getValue().equals("3")) {
+                channel.element("name").setText("Passengers Stranded In Vegas, Stay In Vegas");
+                channel.element("time").setText("Tue, 25 Jul 2017 13:42:48 -0400");
+                channel.element("count").setText("35879");
+                channel.element("icon").setText("https://s.yimg.com/ny/api/res/1.2/pqo8Ie7JhbI2nUW2Hvd36g--/YXBwaWQ9aGlnaGxhbmRlcjtzbT0xO3c9MTI4MDtoPTk2MA--/http://media.zenfs.com/en-US/homerun/ibtimes_176/278138a60651bd54861f8ca28034ba39");
             }
         }
-        parser();
+        listener.onSuccess(doc);
+    }
+
+    public void delete(){
+        //根节点
+        Element root = doc.getRootElement();
+        CLog.v(TAG, root.getName());
+
+        //第一层
+        List<Element> elementList = root.elements();
+        for (int i = 0; i < elementList.size(); i++) {
+            Element channel = elementList.get(i);
+            Attribute attr = channel.attribute("id");
+            //第二层
+            if (attr.getValue().equals("8")) {
+                channel.getParent().remove(channel);
+            }
+        }
+        listener.onSuccess(doc);
     }
 }

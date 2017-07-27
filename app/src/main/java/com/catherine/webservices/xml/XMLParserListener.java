@@ -1,5 +1,7 @@
 package com.catherine.webservices.xml;
 
+import org.dom4j.Document;
+
 import java.util.List;
 
 /**
@@ -9,6 +11,8 @@ import java.util.List;
  */
 
 public interface XMLParserListener {
+    void onSuccess(Document xml);
+
     void onSuccess(String message);
 
     void onSuccess(List<String> message);

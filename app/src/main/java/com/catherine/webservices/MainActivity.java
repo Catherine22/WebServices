@@ -10,6 +10,8 @@ import com.catherine.webservices.xml.XMLParserListener;
 import com.catherine.webservices.toolkits.CLog;
 import com.catherine.webservices.toolkits.Utils;
 
+import org.dom4j.Document;
+
 import java.io.IOException;
 import java.util.List;
 
@@ -29,6 +31,11 @@ public class MainActivity extends Activity {
             XMLDelegate xmlDelegate = new XMLDelegate();
             xmlDelegate.read("name", getAssets().open("sample.xml"), new SAXParser(), new XMLParserListener() {
                 @Override
+                public void onSuccess(Document doc) {
+                    CLog.d(TAG, "onSuccess:" + doc.asXML());
+                }
+
+                @Override
                 public void onSuccess(String message) {
                     CLog.d(TAG, "onSuccess:" + message);
                 }
@@ -44,7 +51,53 @@ public class MainActivity extends Activity {
                 }
             });
 
-            xmlDelegate.read("time", getAssets().open("sample.xml"), new DOMParser(), new XMLParserListener() {
+//            xmlDelegate.read("time", getAssets().open("sample.xml"), new DOMParser(), new XMLParserListener() {
+//            @Override
+//            public void onSuccess(Document doc) {
+//                CLog.d(TAG, "onSuccess:" + doc.asXML());
+//            }
+//                @Override
+//                public void onSuccess(String message) {
+//                    CLog.d(TAG, "onSuccess:" + message);
+//                }
+//
+//                @Override
+//                public void onSuccess(List<String> message) {
+//                    CLog.d(TAG, "onSuccess:" + message);
+//                }
+//
+//                @Override
+//                public void onFail() {
+//                    CLog.d(TAG, "onFail");
+//                }
+//            });
+//            xmlDelegate.modify(getAssets().open("sample.xml"), new XMLParserListener() {
+//                @Override
+//                public void onSuccess(Document doc) {
+//                    CLog.d(TAG, "onSuccess:" + doc.asXML());
+//                }
+//
+//                @Override
+//                public void onSuccess(String message) {
+//                    CLog.d(TAG, "onSuccess:" + message);
+//                }
+//
+//                @Override
+//                public void onSuccess(List<String> message) {
+//                    CLog.d(TAG, "onSuccess:" + message);
+//                }
+//
+//                @Override
+//                public void onFail() {
+//                    CLog.d(TAG, "onFail");
+//                }
+//            });
+            xmlDelegate.romove(getAssets().open("sample.xml"), new XMLParserListener() {
+                @Override
+                public void onSuccess(Document doc) {
+                    CLog.d(TAG, "onSuccess:" + doc.asXML());
+                }
+
                 @Override
                 public void onSuccess(String message) {
                     CLog.d(TAG, "onSuccess:" + message);
