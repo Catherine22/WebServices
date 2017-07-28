@@ -7,9 +7,9 @@ import com.catherine.webservices.xml.SAXParser
 import com.catherine.webservices.xml.XMLDelegate
 import com.catherine.webservices.xml.XMLParserListener
 import com.catherine.webservices.toolkits.CLog
-import com.catherine.webservices.toolkits.KotlinTemplate
+import com.catherine.webservices.sample.KotlinTemplate
 import com.catherine.webservices.toolkits.Utils
-import kotlinx.android.synthetic.main.activity_main.*
+import com.catherine.webservices.xml.DOMParser
 import org.dom4j.Document
 
 import java.io.IOException
@@ -24,16 +24,25 @@ class MainActivity : Activity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val tmp = KotlinTemplate()
-        tmp.printSth()
-        tmp.printSth("20f8-ads3bqwe-9d8vasd", "3f-s1v0m3")
-
 
         CLog.d(TAG, "isNetworkHealth:${Utils.isNetworkHealth(this@MainActivity)}")
         CLog.d(TAG, "isWifi:${Utils.isWifi(this@MainActivity)}")
 
         //        Utils.listenToNetworkState(MainActivity.this);
         //        new SampleAsyncTask().execute("param1");
+
+        testKotlin()
+//        testXML()
+    }
+
+    fun testKotlin() {
+        val tmp = KotlinTemplate()
+        tmp.printSth()
+        tmp.printSth("20f8-ads3bqwe-9d8vasd", "3f-s1v0m3")
+        tmp.doRecursive()
+    }
+
+    fun testXML() {
         try {
             val xmlDelegate = XMLDelegate()
             xmlDelegate.read("name", assets.open("sample.xml"), SAXParser(), object : XMLParserListener {
@@ -54,73 +63,60 @@ class MainActivity : Activity() {
                 }
             })
 
-            //            xmlDelegate.read("time", getAssets().open("sample.xml"), new DOMParser(), new XMLParserListener() {
-            //            @Override
-            //            public void onSuccess(Document doc) {
-            //                CLog.d(TAG, "onSuccess:" + doc.asXML());
-            //            }
-            //                @Override
-            //                public void onSuccess(String message) {
-            //                    CLog.d(TAG, "onSuccess:" + message);
-            //                }
-            //
-            //                @Override
-            //                public void onSuccess(List<String> message) {
-            //                    CLog.d(TAG, "onSuccess:" + message);
-            //                }
-            //
-            //                @Override
-            //                public void onFail() {
-            //                    CLog.d(TAG, "onFail");
-            //                }
-            //            });
-            //            xmlDelegate.modify(getAssets().open("sample.xml"), new XMLParserListener() {
-            //                @Override
-            //                public void onSuccess(Document doc) {
-            //                    CLog.d(TAG, "onSuccess:" + doc.asXML());
-            //                }
-            //
-            //                @Override
-            //                public void onSuccess(String message) {
-            //                    CLog.d(TAG, "onSuccess:" + message);
-            //                }
-            //
-            //                @Override
-            //                public void onSuccess(List<String> message) {
-            //                    CLog.d(TAG, "onSuccess:" + message);
-            //                }
-            //
-            //                @Override
-            //                public void onFail() {
-            //                    CLog.d(TAG, "onFail");
-            //                }
-            //            });
-            //            xmlDelegate.romove(getAssets().open("sample.xml"), new XMLParserListener() {
-            //                @Override
-            //                public void onSuccess(Document doc) {
-            //                    CLog.d(TAG, "onSuccess:" + doc.asXML());
-            //                }
-            //
-            //                @Override
-            //                public void onSuccess(String message) {
-            //                    CLog.d(TAG, "onSuccess:" + message);
-            //                }
-            //
-            //                @Override
-            //                public void onSuccess(List<String> message) {
-            //                    CLog.d(TAG, "onSuccess:" + message);
-            //                }
-            //
-            //                @Override
-            //                public void onFail() {
-            //                    CLog.d(TAG, "onFail");
-            //                }
-            //            });
+            xmlDelegate.read("time", assets.open("sample.xml"), DOMParser(), object : XMLParserListener {
+                override fun onSuccess(doc: Document) {
+                    CLog.d(TAG, "onSuccess:${doc.asXML()}")
+                }
+
+                override fun onSuccess(message: String) {
+                    CLog.d(TAG, "onSuccess:$message")
+                }
+
+                override fun onSuccess(message: List<String>) {
+                    CLog.d(TAG, "onSuccess:$message")
+                }
+
+                override fun onFail() {
+                    CLog.d(TAG, "onFail")
+                }
+            })
+            xmlDelegate.modify(assets.open("sample.xml"), object : XMLParserListener {
+                override fun onSuccess(doc: Document) {
+                    CLog.d(TAG, "onSuccess:${doc.asXML()}")
+                }
+
+                override fun onSuccess(message: String) {
+                    CLog.d(TAG, "onSuccess:$message")
+                }
+
+                override fun onSuccess(message: List<String>) {
+                    CLog.d(TAG, "onSuccess:$message")
+                }
+
+                override fun onFail() {
+                    CLog.d(TAG, "onFail")
+                }
+            })
+            xmlDelegate.romove(assets.open("sample.xml"), object : XMLParserListener {
+                override fun onSuccess(doc: Document) {
+                    CLog.d(TAG, "onSuccess:${doc.asXML()}")
+                }
+
+                override fun onSuccess(message: String) {
+                    CLog.d(TAG, "onSuccess:$message")
+                }
+
+                override fun onSuccess(message: List<String>) {
+                    CLog.d(TAG, "onSuccess:$message")
+                }
+
+                override fun onFail() {
+                    CLog.d(TAG, "onFail")
+                }
+            })
         } catch (e: IOException) {
             e.printStackTrace()
         }
-
     }
-
 
 }

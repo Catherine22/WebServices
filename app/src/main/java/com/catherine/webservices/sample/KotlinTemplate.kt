@@ -1,13 +1,16 @@
-package com.catherine.webservices.toolkits
+package com.catherine.webservices.sample
 
 import android.util.Log
+import com.catherine.webservices.MainActivity
+import com.catherine.webservices.toolkits.CLog
+import java.math.BigInteger
 
 /**
  * Created by Catherine on 2017/7/27.
  */
 class KotlinTemplate {
     companion object {
-        var TAG = "KotlinTemplate"
+        val TAG = "KotlinTemplate"
     }
 
     /**
@@ -41,6 +44,16 @@ class KotlinTemplate {
         }
     }
 
+    fun doRecursive(){
+        val rec = TailrecSample()
+        CLog.v(TAG, "5! = ${rec.factorial1(5)}")
+
+        val result = TailrecResult()
+        rec.factorial2(10000, result)
+        CLog.v(TAG, "10000! = ${result.value}")
+    }
+
+
 }
 
 data class Person(var id: Int, var name: String, var age: Int)
@@ -72,10 +85,10 @@ enum class Language(var hello: String, var hey: String) {
 }
 
 /**
- * 假设enum不能更改
+ * 扩展方法，假设enum不能更改，只需在方法名前面加上类名。
  */
 fun Language.sayBye() {
-    var bye = when (this) {
+    val bye = when (this) {
         Language.ENGLISH -> "See you!"
         Language.SIMPLIFIED_CHINESE -> "再见!"
     }
