@@ -12,6 +12,7 @@ import com.catherine.webservices.sample.player.Player
 import com.catherine.webservices.toolkits.Utils
 import com.catherine.webservices.xml.DOMParser
 import org.dom4j.Document
+import java.io.File
 
 import java.io.IOException
 
@@ -40,7 +41,8 @@ class MainActivity : Activity() {
         val tmp = KotlinTemplate()
         tmp.printSth()
         tmp.printSth("20f8-ads3bqwe-9d8vasd", "3f-s1v0m3")
-        tmp.doRecursive()
+
+//        tmp.doRecursive()
 
         val player = Player()
         player.play("http://ws.stream.qqmusic.qq.com/C2000012Ppbd3hjGOK.m4a")
@@ -48,6 +50,9 @@ class MainActivity : Activity() {
         player.resume()
         player.seekTo(30000)
         player.stop()
+
+        val json = assets.open("SimpleMission.json").bufferedReader(Charsets.UTF_8).use { it.readText() }
+        tmp.textGson(json)
     }
 
     fun testXML() {

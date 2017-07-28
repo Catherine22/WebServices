@@ -1,9 +1,11 @@
 package com.catherine.webservices.sample
 
-import android.util.Log
-import com.catherine.webservices.MainActivity
+import com.catherine.webservices.sample.data.BasicResult
+import com.catherine.webservices.sample.data.ItemsList
+import com.catherine.webservices.sample.data.Mission
+import com.catherine.webservices.sample.data.Person
 import com.catherine.webservices.toolkits.CLog
-import java.math.BigInteger
+import com.google.gson.Gson
 
 /**
  * Created by Catherine on 2017/7/27.
@@ -22,7 +24,7 @@ class KotlinTemplate {
         lang.sayHello()
 
         var kris = Person(0, "Kris", 10)
-        Log.v(TAG, kris.toString())
+        CLog.v(TAG, kris.toString())
 
         var caroline = Person(1, "Caroline", 12)
 //        var kids = Array<Person>(10, 0 -> kris)
@@ -40,11 +42,11 @@ class KotlinTemplate {
             it.split("-")
         }.map {
             //map 差不多就是个for循环
-            Log.v(TAG, "$it, length=${it.length}") //it代表元素本身
+            CLog.v(TAG, "$it, length=${it.length}") //it代表元素本身
         }
     }
 
-    fun doRecursive(){
+    fun doRecursive() {
         val rec = TailrecSample()
         CLog.v(TAG, "5! = ${rec.factorial1(5)}")
 
@@ -53,11 +55,12 @@ class KotlinTemplate {
         CLog.v(TAG, "10000! = ${result.value}")
     }
 
-
+    fun textGson(json: String) {
+        val content: BasicResult<ItemsList> = ApiFactory.simpleMission.getSimpleMissionFromJson(json)
+        CLog.v(TAG, "${content.ReturnNo}:${content.ReturnMsg.en_US}")
+        CLog.v(TAG, "${content.data.ItemID}")
+    }
 }
-
-data class Person(var id: Int, var name: String, var age: Int)
-
 
 //加上var代表参数
 enum class Language(var hello: String, var hey: String) {
@@ -65,16 +68,16 @@ enum class Language(var hello: String, var hey: String) {
     SIMPLIFIED_CHINESE("你好啊!", "嘿！");
 
     fun sayHello() {
-        Log.v(KotlinTemplate.TAG, hello)
+        CLog.v(KotlinTemplate.TAG, hello)
     }
 
     fun sayHey() {
-        Log.v(KotlinTemplate.TAG, hey)
+        CLog.v(KotlinTemplate.TAG, hey)
     }
 
     //构造方法
     init {
-        Log.d(KotlinTemplate.TAG, "呼叫enum构造方法")
+        CLog.d(KotlinTemplate.TAG, "呼叫enum构造方法")
     }
 
     companion object {
@@ -92,5 +95,5 @@ fun Language.sayBye() {
         Language.ENGLISH -> "See you!"
         Language.SIMPLIFIED_CHINESE -> "再见!"
     }
-    Log.v(KotlinTemplate.TAG, bye)
+    CLog.v(KotlinTemplate.TAG, bye)
 }

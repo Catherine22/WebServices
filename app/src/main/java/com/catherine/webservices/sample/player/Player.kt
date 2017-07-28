@@ -1,6 +1,6 @@
 package com.catherine.webservices.sample.player
 
-import android.util.Log
+import com.catherine.webservices.toolkits.CLog
 import kotlin.properties.Delegates
 
 /**
@@ -22,7 +22,7 @@ class Player {
      * 通过Delegates.observable可以捕捉状态的变化，并会叫回调接口
      */
     private var state: State by Delegates.observable(State.IDLE, { prop, old, new ->
-        Log.w(TAG, "$old -> $new")
+        CLog.w(TAG, "$old -> $new")
         //?.表示只有在onPlayStateChangedListener不为空时才调用方法，Java中就是if(onPlayStateChangedListener!=null)...
         onPlayStateChangedListener?.OnPlayStateChanged(old, new)
     })
@@ -30,23 +30,23 @@ class Player {
     private fun executeCmd(cmd: PlayerCmd) {
         when (cmd) {
             is PlayerCmd.Play -> {
-                Log.v(TAG, "Play ${cmd.url} from ${cmd.position}ms")
+                CLog.v(TAG, "Play ${cmd.url} from ${cmd.position}ms")
                 state = State.PLAYING
             }
             is PlayerCmd.Pause -> {
-                Log.v(TAG, "Pause")
+                CLog.v(TAG, "Pause")
                 state = State.PAUSED
             }
             is PlayerCmd.Resume -> {
-                Log.v(TAG, "Resume")
+                CLog.v(TAG, "Resume")
                 state = State.PLAYING
             }
             is PlayerCmd.Stop -> {
-                Log.v(TAG, "Stop")
+                CLog.v(TAG, "Stop")
                 state = State.IDLE
             }
             is PlayerCmd.Seek -> {
-                Log.v(TAG, "Seek to ${cmd.position}ms, state: $state")
+                CLog.v(TAG, "Seek to ${cmd.position}ms, state: $state")
             }
         }
     }
