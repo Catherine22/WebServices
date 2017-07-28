@@ -8,6 +8,7 @@ import com.catherine.webservices.xml.XMLDelegate
 import com.catherine.webservices.xml.XMLParserListener
 import com.catherine.webservices.toolkits.CLog
 import com.catherine.webservices.sample.KotlinTemplate
+import com.catherine.webservices.sample.player.Player
 import com.catherine.webservices.toolkits.Utils
 import com.catherine.webservices.xml.DOMParser
 import org.dom4j.Document
@@ -40,6 +41,13 @@ class MainActivity : Activity() {
         tmp.printSth()
         tmp.printSth("20f8-ads3bqwe-9d8vasd", "3f-s1v0m3")
         tmp.doRecursive()
+
+        val player = Player()
+        player.play("http://ws.stream.qqmusic.qq.com/C2000012Ppbd3hjGOK.m4a")
+        player.pause()
+        player.resume()
+        player.seekTo(30000)
+        player.stop()
     }
 
     fun testXML() {
