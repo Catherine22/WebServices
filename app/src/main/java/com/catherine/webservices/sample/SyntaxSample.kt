@@ -55,11 +55,12 @@ class KotlinTemplate {
         CLog.v(TAG, "10000! = ${result.value}")
     }
 
-    fun textGson(json: String) {
-        val content: BasicResult<ItemsList> = ApiFactory.simpleMission.getSimpleMissionFromJson(json)
-        CLog.v(TAG, "${content.ReturnNo}:${content.ReturnMsg.en_US}")
-        CLog.v(TAG, "${content.data.ItemID}")
-    }
+//Fail to load Generic
+//    fun textGson(json: String) {
+//        val content: BasicResult<ItemsList> = ApiFactory.simpleMission.getSimpleMissionFromJson(json)
+//        CLog.v(TAG, "${content.ReturnNo}:${content.ReturnMsg.en_US}")
+//        CLog.v(TAG, "${content.data.ItemID}")
+//    }
 }
 
 //加上var代表参数

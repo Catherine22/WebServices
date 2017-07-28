@@ -51,8 +51,8 @@ class MainActivity : Activity() {
         player.seekTo(30000)
         player.stop()
 
-        val json = assets.open("SimpleMission.json").bufferedReader(Charsets.UTF_8).use { it.readText() }
-        tmp.textGson(json)
+//        val json = assets.open("SimpleMission.json").bufferedReader(Charsets.UTF_8).use { it.readText() }
+//        tmp.textGson(json)
     }
 
     fun testXML() {
