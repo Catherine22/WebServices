@@ -1,0 +1,17 @@
+{
+  "ReturnNo": 1,
+  "ReturnMsg": {
+    "zh_TW": "成功",
+    "id_ID": "OK",
+    "en_US": "OK"
+  },
+  "Data":{
+  "ItemsList": [
+    {
+      "ItemID": "1",
+      "ItemColumn": "EMAIL",
+      "ItemValue": ""
+    }
+  ]
+  }
+}

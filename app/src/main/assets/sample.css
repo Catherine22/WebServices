@@ -1,0 +1,27 @@
+channels
+{
+background-color: #ffffff;
+width: 100%;
+}
+channel
+{
+display: block;
+margin-bottom: 30pt;
+margin-left: 0;
+}
+name
+{
+color: #FF0000;
+font-size: 20pt;
+}
+time
+{
+color: #0000FF;
+font-size: 20pt;
+}
+count,icon
+{
+display: block;
+color: #000000;
+margin-left: 20pt;
+}

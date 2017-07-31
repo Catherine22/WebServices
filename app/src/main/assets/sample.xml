@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--文档声明，必须置顶，括号内夹？-->
+<!--standalone代表此xml为独立使用-->
+<!--标签区分大小写，不要以特定符号、数字、xml开头，中间不含冒号、空格-->
+<?xml-stylesheet type="text/css" href="sample.css"?><!--处理指令-->
+<!DOCTYPE article SYSTEM "sample.dtd"><!--浏览器默认关闭校验-->
+<channels><!--根标签，一个xml只要有一个根标签-->
+
+<!--<![CDATA[被解析器忽略的内容]]>-->
+
+    <channel id="1"><!--channel标签，channels的子标签，其中id为属性-->
+        <name>社区靠两条腿走路</name>
+        <time>2011-08-03</time>
+        <count>2314</count>
+        <icon>http://192.168.1.101:8080/WebProject/a.jpg</icon>
+    </channel>
+
+    <channel id="2">
+        <name>在中国做工艺事业</name>
+        <time>2011-08-04</time>
+        <count>4314</count>
+        <icon>http://192.168.1.101:8080/WebProject/b.jpg</icon>
+    </channel>
+
+    <channel id="3">
+        <name>比尔盖茨故事</name>
+        <time>2012-01-03</time>
+        <count>314</count>
+        <icon>http://192.168.1.101:8080/WebProject/c.jpg</icon>
+    </channel>
+
+    <channel id="4">
+        <name>社区&lt;靠两条腿走路2</name>
+        <time>2011-08-03</time>
+        <count>125</count>
+        <icon>http://192.168.1.101:8080/WebProject/d.jpg</icon>
+    </channel>
+
+    <channel id="5">
+        <name>在中国&gt;做工艺事业2</name>
+        <time>2011-08-04</time>
+        <count>4326</count>
+        <icon>http://192.168.1.101:8080/WebProject/e.jpg</icon>
+    </channel>
+
+    <channel id="6">
+        <name>比尔盖茨&amp;故事2</name>
+        <time>2012-01-03</time>
+        <count>637</count>
+        <icon>http://192.168.1.101:8080/WebProject/a.jpg</icon>
+    </channel>
+
+    <channel id="7">
+        <name>社区靠两条腿走路3</name>
+        <time>2011-03-03</time>
+        <count>2455</count>
+        <icon>http://192.168.1.101:8080/WebProject/d.jpg</icon>
+    </channel>
+
+    <channel id="8">
+        <name>在&apos;中国&apos;做工艺事业3</name>
+        <time>2012-08-04</time>
+        <count>4322</count>
+        <icon>http://192.168.1.101:8080/WebProject/noImage.jpg</icon>
+    </channel>
+
+    <channel id="9">
+        <name>&quot;比尔盖茨&quot;故事3</name>
+        <time>2012-01-11</time>
+        <count>333</count>
+        <icon>http://192.168.1.101:8080/WebProject/a.jpg</icon>
+    </channel>
+</channels>
