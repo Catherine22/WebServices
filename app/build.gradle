@@ -10,6 +10,7 @@ keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
 buildscript {
     ext.kotlin_version = '1.0.4'
+    ext.anko_version = '0.10.1'
 
     repositories {
         jcenter()
@@ -62,11 +63,14 @@ android {
 }
 
 dependencies {
+    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
     compile fileTree(include: ['*.jar'], dir: 'libs')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support:appcompat-v7:25.3.1'
+    compile 'com.android.support:appcompat-v7:25.+'
+    compile 'com.android.support:recyclerview-v7:25.+'
+
     //web
     compile 'com.squareup.okhttp3:okhttp:3.8.1'
     // Optional -- Mockito framework for test
@@ -74,4 +78,5 @@ dependencies {
     testCompile 'junit:junit:4.12'
     //kotlin
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    compile "org.jetbrains.anko:anko-common:$anko_version"
 }

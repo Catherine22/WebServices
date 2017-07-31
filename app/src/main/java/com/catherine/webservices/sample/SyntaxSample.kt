@@ -1,6 +1,7 @@
 package com.catherine.webservices.sample
 
 import com.catherine.webservices.sample.data.Person
+import com.catherine.webservices.sample.data.Person2
 import com.catherine.webservices.sample.data.Person3
 import com.catherine.webservices.toolkits.CLog
 import java.util.*
@@ -14,16 +15,35 @@ class KotlinTemplate {
         val TAG = "KotlinTemplate"
     }
 
-    /**
-     *无返回值可直接省略": Unit"，但其实返回的是Unit类型
-     */
-    fun printSth(): Unit {
+    fun basicSyntax() {
+        //用arrayOf、arrayListOf、setOf等创建集合，利用map迭代
         val colors = arrayOf("Red", "Blue", "Orange")
         colors.map {
             //it就是迭代
             CLog.v(TAG, it)
         }
 
+        //因为不可指定null，编译失败
+        //val s1: String = null
+
+        //编译可以过，实际运行s2时还是会报错，空指针
+        val s2: String? = null
+
+        //因为有可能是null，编译失败
+        //CLog.i(TAG, s2)
+
+        //当s2不是null时才调用，若为空值抛出异常
+        //CLog.i(TAG, s2!!)
+
+        val caroline = Person2(1, null, 12)
+        //当caroline.name为null时，返回"Caroline"
+        CLog.v(TAG, caroline.name ?: "Caroline")
+    }
+
+    /**
+     *无返回值可直接省略": Unit"，但其实返回的是Unit类型
+     */
+    fun printSth(): Unit {
         //在enum里定义方法并呼叫
         val lang = Language.parse("English")
         lang.sayHello()
@@ -71,9 +91,6 @@ class KotlinTemplate {
         val alma = Person3()
         alma.age = 12
         alma.id = 3
-
-        //val name: String = alma.name //因为不可指定null，编译失败
-        val nameCanBeNull: String? = alma.name  //编译可以过，实际运行nameCanBeNull时还是会报错
 
         alma.name = "Alma"
         CLog.v(TAG, alma.toString())
