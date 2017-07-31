@@ -18,11 +18,17 @@ class KotlinTemplate {
      *无返回值可直接省略": Unit"，但其实返回的是Unit类型
      */
     fun printSth(): Unit {
+        val colors = arrayOf("Red", "Blue", "Orange")
+        colors.map {
+            //it就是迭代
+            CLog.v(TAG, it)
+        }
+
         //在enum里定义方法并呼叫
-        var lang = Language.parse("English")
+        val lang = Language.parse("English")
         lang.sayHello()
 
-        var kris = Person(0, "Kris", 10)
+        val kris = Person(0, "Kris", 10)
         CLog.v(TAG, kris.toString())
 
         var caroline = Person(1, "Caroline", 12)
