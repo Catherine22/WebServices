@@ -12,7 +12,6 @@ import com.catherine.webservices.sample.player.Player
 import com.catherine.webservices.toolkits.Utils
 import com.catherine.webservices.xml.DOMParser
 import org.dom4j.Document
-import java.io.File
 
 import java.io.IOException
 
@@ -50,6 +49,10 @@ class MainActivity : Activity() {
         player.resume()
         player.seekTo(30000)
         player.stop()
+
+        tmp.callJava()
+        tmp.runOnNewThread()
+
     }
 
     fun testXML() {

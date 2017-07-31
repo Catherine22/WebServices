@@ -10,6 +10,9 @@ import com.catherine.webservices.BuildConfig
  * catherine919@soft-world.com.tw
  */
 
+/**
+ * 宣告了internal后，该class就不能被其它module访问
+ */
 internal class CLog {
 
     companion object {
@@ -49,31 +52,6 @@ internal class CLog {
         fun e(tag: String = "Default TAG", message: String = "Default message") {
             if (DEBUG)
                 Log.e(tag, message)
-        }
-
-        fun v(message: String = "Default message") {
-            if (DEBUG)
-                Log.v(getTag(), message)
-        }
-
-        fun d(message: String = "Default message") {
-            if (DEBUG)
-                Log.d(getTag(), message)
-        }
-
-        fun i(message: String = "Default message") {
-            if (DEBUG)
-                Log.i(getTag(), message)
-        }
-
-        fun w(message: String = "Default message") {
-            if (DEBUG)
-                Log.w(getTag(), message)
-        }
-
-        fun e(message: String = "Default message") {
-            if (DEBUG)
-                Log.e(getTag(), message)
         }
     }
 

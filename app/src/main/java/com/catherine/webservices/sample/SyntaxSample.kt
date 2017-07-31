@@ -1,11 +1,10 @@
 package com.catherine.webservices.sample
 
-import com.catherine.webservices.sample.data.BasicResult
-import com.catherine.webservices.sample.data.ItemsList
-import com.catherine.webservices.sample.data.Mission
 import com.catherine.webservices.sample.data.Person
+import com.catherine.webservices.sample.data.Person3
 import com.catherine.webservices.toolkits.CLog
-import com.google.gson.Gson
+import java.util.*
+import java.util.concurrent.Executors
 
 /**
  * Created by Catherine on 2017/7/27.
@@ -53,6 +52,60 @@ class KotlinTemplate {
         val result = TailrecResult()
         rec.factorial2(10000, result)
         CLog.v(TAG, "10000! = ${result.value}")
+    }
+
+    fun callJava() {
+        val entrance = JavaEntrance()
+        entrance.printDiana()
+        entrance.printLavender()
+
+        //Java调用Kotlin
+        entrance.callKotlin()
+
+        val alma = Person3()
+        alma.age = 12
+        alma.id = 3
+
+        //val name: String = alma.name //因为不可指定null，编译失败
+        val nameCanBeNull: String? = alma.name  //编译可以过，实际运行nameCanBeNull时还是会报错
+
+        alma.name = "Alma"
+        CLog.v(TAG, alma.toString())
+
+        //继承Java父类
+        val abs = SubAbsEntrance()
+        val today = Date()
+        CLog.v(TAG, abs.formatDate(today))
+        CLog.v(TAG, abs.formatTime(today))
+
+        //Java、Kotlin泛型
+        entrance.printGenerics()
+    }
+
+    fun runOnNewThread() {
+        CLog.v(TAG, "current thread:${Thread.currentThread().name}")
+
+        val work = Executors.newCachedThreadPool()
+        work.execute {
+            CLog.v(TAG, "executing work, current thread:${Thread.currentThread().name}")
+        }
+
+        val runnable = {
+            CLog.v(TAG, "executing runnable")
+        }
+
+        //坑！！！传入Java时，每次添加或移除的都是同一个对象，可是打印后发现实际上都是不同对象，因为传到Java那边会做一个转换
+        val entrance = JavaEntrance()
+        entrance.addRunnable(runnable)
+        entrance.addRunnable(runnable)
+        entrance.addRunnable(runnable)
+        entrance.addRunnable(runnable)
+        entrance.addRunnable(runnable)
+        entrance.removeRunnable(runnable)
+        entrance.removeRunnable(runnable)
+        entrance.removeRunnable(runnable)
+        entrance.removeRunnable(runnable)
+        entrance.removeRunnable(runnable)
     }
 }
 

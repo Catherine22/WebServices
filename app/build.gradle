@@ -16,6 +16,7 @@ buildscript {
     }
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "org.jetbrains.kotlin:kotlin-android-extensions:$kotlin_version"
     }
 }
 
@@ -66,14 +67,11 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     compile 'com.android.support:appcompat-v7:25.3.1'
-
     //web
     compile 'com.squareup.okhttp3:okhttp:3.8.1'
-
     // Optional -- Mockito framework for test
     testCompile 'org.mockito:mockito-core:1.10.19'
     testCompile 'junit:junit:4.12'
-
     //kotlin
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 }
