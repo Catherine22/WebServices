@@ -1,5 +1,11 @@
 # WebServices
 
+
+### Web开发
+- 用户通过网络访问服务器内的站点，每个站点内的资源分成静态（html, css, JavaScript, flash）和动态资源（ASP, .NET, PHP, JSP/Servlet）。为了让不同用户在不同时间、不同环境能访问不同的资源，因此发展出动态资源，其实就是访问服务器的应用。
+- 市面上常见的数据库：SqlServer, Oracle, MySql, DB2, SQLite。
+- 用户通过http访问应用，应用通过JDBC访问数据库。
+
 ### XML
 - 保存数据和彼此关系的一种格式，把XML格式的数据存储到.xml的文件里，就称为xml文件。
 - 用途：
