@@ -38,7 +38,7 @@ class MainActivity : Activity() {
         //        Utils.listenToNetworkState(MainActivity.this);
         //        new SampleAsyncTask().execute("param1");
 
-        testKotlin()
+//        testKotlin()
 //        testXML()
     }
 
