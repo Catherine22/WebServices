@@ -12,6 +12,7 @@ import com.catherine.webservices.xml.XMLParserListener
 import com.catherine.webservices.toolkits.CLog
 import com.catherine.webservices.sample.KotlinTemplate
 import com.catherine.webservices.sample.player.Player
+import com.catherine.webservices.tasks.SampleAsyncTask
 import com.catherine.webservices.toolkits.Utils
 import com.catherine.webservices.views.DividerItemDecoration
 import com.catherine.webservices.xml.DOMParser
@@ -19,11 +20,14 @@ import org.dom4j.Document
 import kotlinx.android.synthetic.main.activity_main.*
 
 import java.io.IOException
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
 
 class MainActivity : Activity() {
 
     companion object {
         private val TAG = "MainActivity"
+        private val students = arrayListOf("Kris", "Caroline", "Alma")
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,20 +39,30 @@ class MainActivity : Activity() {
         CLog.d(TAG, "isNetworkHealth:${Utils.isNetworkHealth(this@MainActivity)}")
         CLog.d(TAG, "isWifi:${Utils.isWifi(this@MainActivity)}")
 
-        //        Utils.listenToNetworkState(MainActivity.this);
-        //        new SampleAsyncTask().execute("param1");
 
 //        testKotlin()
 //        testXML()
     }
 
     private fun setView() {
-        val students = arrayListOf("Kris", "Caroline", "Alma")
+        srl_container.setColorSchemeResources(R.color.colorPrimary, R.color.colorAccent, R.color.colorPrimaryDark, R.color.colorAccentDark)
+        srl_container.setOnRefreshListener {
+            CLog.d(TAG, "refresh")
+            srl_container.isRefreshing = false
+        }
+
         rv_main_list.addItemDecoration(DividerItemDecoration(this@MainActivity, DividerItemDecoration.VERTICAL_LIST))
         rv_main_list.layoutManager = StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL)
         rv_main_list.adapter = MainRvAdapter(this@MainActivity, students, object : MainRvAdapter.OnItemClickListener {
             override fun onItemClick(view: View, position: Int) {
                 CLog.d(TAG, "Click $position")
+                when (position) {
+                    0 -> {
+                        Utils.listenToNetworkState(this@MainActivity)
+                        val task = SampleAsyncTask.ex
+                        new SampleAsyncTask ().execute("param1");
+                    }
+                }
             }
 
             override fun onItemLongClick(view: View, position: Int) {
