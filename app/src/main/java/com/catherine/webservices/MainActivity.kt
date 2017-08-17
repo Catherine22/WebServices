@@ -2,9 +2,11 @@ package com.catherine.webservices
 
 import android.app.Activity
 import android.os.Bundle
+import android.os.Handler
 import android.support.v7.widget.StaggeredGridLayoutManager
 import android.view.View
 import com.catherine.webservices.adapters.MainRvAdapter
+import com.catherine.webservices.parcelables.NetworkInfoParcelable
 
 import com.catherine.webservices.xml.SAXParser
 import com.catherine.webservices.xml.XMLDelegate
@@ -12,19 +14,19 @@ import com.catherine.webservices.xml.XMLParserListener
 import com.catherine.webservices.toolkits.CLog
 import com.catherine.webservices.sample.KotlinTemplate
 import com.catherine.webservices.sample.player.Player
-import com.catherine.webservices.tasks.SampleAsyncTask
-import com.catherine.webservices.toolkits.Utils
+import com.catherine.webservices.toolkits.NetworkHelper
+import com.catherine.webservices.toolkits.c_local_broadcast.CCallback
+import com.catherine.webservices.toolkits.c_local_broadcast.CResponse
+import com.catherine.webservices.toolkits.c_local_broadcast.CResult
+import com.catherine.webservices.toolkits.c_local_broadcast.LocalBroadcastIDs
 import com.catherine.webservices.views.DividerItemDecoration
 import com.catherine.webservices.xml.DOMParser
 import org.dom4j.Document
 import kotlinx.android.synthetic.main.activity_main.*
 
 import java.io.IOException
-import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
 
 class MainActivity : Activity() {
-
     companion object {
         private val TAG = "MainActivity"
         private val students = arrayListOf("Kris", "Caroline", "Alma")
@@ -36,8 +38,25 @@ class MainActivity : Activity() {
         setView()
 
 
-        CLog.d(TAG, "isNetworkHealth:${Utils.isNetworkHealth(this@MainActivity)}")
-        CLog.d(TAG, "isWifi:${Utils.isWifi(this@MainActivity)}")
+        CLog.d(TAG, "isNetworkHealth:${NetworkHelper.isNetworkHealth(this@MainActivity)}")
+        CLog.d(TAG, "isWifi:${NetworkHelper.isWifi(this@MainActivity)}")
+//                    CLog.d(TAG, "getIP:${NetworkHelper.getIp("http://www.baidu.com/")}")
+//                    CLog.d(TAG, "getLocalIP:${NetworkHelper.getLocalIp()}")
+        NetworkHelper.listenToNetworkState(this@MainActivity)
+
+        val checkStateWork: Handler = Handler(MyApplication.INSTANCE.mainHandlerThread.looper)
+        checkStateWork.post {
+        }
+
+
+        val networkHelthCallback: CResponse = CResponse(this, object : CCallback {
+            override fun result(result: CResult) {
+                CLog.i(TAG, "Got callback")
+                val parcelable: NetworkInfoParcelable = result.parcelable as NetworkInfoParcelable
+                CLog.i(TAG, parcelable.toString())
+            }
+        })
+        networkHelthCallback.getNetworkInfoParcelable(LocalBroadcastIDs.NetworkHealthCallback)
 
 
 //        testKotlin()
@@ -58,9 +77,9 @@ class MainActivity : Activity() {
                 CLog.d(TAG, "Click $position")
                 when (position) {
                     0 -> {
-                        Utils.listenToNetworkState(this@MainActivity)
-                        val task = SampleAsyncTask.ex
-                        new SampleAsyncTask ().execute("param1");
+                    }
+                    1 -> {
+
                     }
                 }
             }
