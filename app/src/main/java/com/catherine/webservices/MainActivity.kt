@@ -2,6 +2,7 @@ package com.catherine.webservices
 
 import android.app.Activity
 import android.os.Bundle
+import android.os.Handler
 import android.support.v7.widget.StaggeredGridLayoutManager
 import android.view.View
 import com.catherine.webservices.adapters.MainRvAdapter
@@ -12,19 +13,15 @@ import com.catherine.webservices.xml.XMLParserListener
 import com.catherine.webservices.toolkits.CLog
 import com.catherine.webservices.sample.KotlinTemplate
 import com.catherine.webservices.sample.player.Player
-import com.catherine.webservices.tasks.SampleAsyncTask
-import com.catherine.webservices.toolkits.Utils
+import com.catherine.webservices.toolkits.NetworkHelper
 import com.catherine.webservices.views.DividerItemDecoration
 import com.catherine.webservices.xml.DOMParser
 import org.dom4j.Document
 import kotlinx.android.synthetic.main.activity_main.*
 
 import java.io.IOException
-import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
 
 class MainActivity : Activity() {
-
     companion object {
         private val TAG = "MainActivity"
         private val students = arrayListOf("Kris", "Caroline", "Alma")
@@ -36,8 +33,14 @@ class MainActivity : Activity() {
         setView()
 
 
-        CLog.d(TAG, "isNetworkHealth:${Utils.isNetworkHealth(this@MainActivity)}")
-        CLog.d(TAG, "isWifi:${Utils.isWifi(this@MainActivity)}")
+        val checkStateWork = Handler(MyApplication.INSTANCE?.calHandlerThread?.looper)
+        checkStateWork.post {
+            val networkHelper = NetworkHelper(this)
+            CLog.d(TAG, "isNetworkHealth:${networkHelper.isNetworkHealth()}")
+            CLog.d(TAG, "isWifi:${networkHelper.isWifi()}")
+            CLog.d(TAG, "getLocalIP:${networkHelper.getLocalIp()}")
+            networkHelper.listenToNetworkState()
+        }
 
 
 //        testKotlin()
@@ -58,9 +61,9 @@ class MainActivity : Activity() {
                 CLog.d(TAG, "Click $position")
                 when (position) {
                     0 -> {
-                        Utils.listenToNetworkState(this@MainActivity)
-                        val task = SampleAsyncTask.ex
-                        new SampleAsyncTask ().execute("param1");
+                    }
+                    1 -> {
+
                     }
                 }
             }
