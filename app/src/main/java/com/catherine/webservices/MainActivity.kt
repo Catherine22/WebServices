@@ -6,7 +6,6 @@ import android.os.Handler
 import android.support.v7.widget.StaggeredGridLayoutManager
 import android.view.View
 import com.catherine.webservices.adapters.MainRvAdapter
-import com.catherine.webservices.parcelables.NetworkInfoParcelable
 
 import com.catherine.webservices.xml.SAXParser
 import com.catherine.webservices.xml.XMLDelegate
@@ -15,10 +14,6 @@ import com.catherine.webservices.toolkits.CLog
 import com.catherine.webservices.sample.KotlinTemplate
 import com.catherine.webservices.sample.player.Player
 import com.catherine.webservices.toolkits.NetworkHelper
-import com.catherine.webservices.toolkits.c_local_broadcast.CCallback
-import com.catherine.webservices.toolkits.c_local_broadcast.CResponse
-import com.catherine.webservices.toolkits.c_local_broadcast.CResult
-import com.catherine.webservices.toolkits.c_local_broadcast.LocalBroadcastIDs
 import com.catherine.webservices.views.DividerItemDecoration
 import com.catherine.webservices.xml.DOMParser
 import org.dom4j.Document
@@ -38,25 +33,14 @@ class MainActivity : Activity() {
         setView()
 
 
-        CLog.d(TAG, "isNetworkHealth:${NetworkHelper.isNetworkHealth(this@MainActivity)}")
-        CLog.d(TAG, "isWifi:${NetworkHelper.isWifi(this@MainActivity)}")
-//                    CLog.d(TAG, "getIP:${NetworkHelper.getIp("http://www.baidu.com/")}")
-//                    CLog.d(TAG, "getLocalIP:${NetworkHelper.getLocalIp()}")
-        NetworkHelper.listenToNetworkState(this@MainActivity)
-
-        val checkStateWork: Handler = Handler(MyApplication.INSTANCE.mainHandlerThread.looper)
+        val checkStateWork = Handler(MyApplication.INSTANCE?.calHandlerThread?.looper)
         checkStateWork.post {
+            val networkHelper = NetworkHelper(this)
+            CLog.d(TAG, "isNetworkHealth:${networkHelper.isNetworkHealth()}")
+            CLog.d(TAG, "isWifi:${networkHelper.isWifi()}")
+            CLog.d(TAG, "getLocalIP:${networkHelper.getLocalIp()}")
+            networkHelper.listenToNetworkState()
         }
-
-
-        val networkHelthCallback: CResponse = CResponse(this, object : CCallback {
-            override fun result(result: CResult) {
-                CLog.i(TAG, "Got callback")
-                val parcelable: NetworkInfoParcelable = result.parcelable as NetworkInfoParcelable
-                CLog.i(TAG, parcelable.toString())
-            }
-        })
-        networkHelthCallback.getNetworkInfoParcelable(LocalBroadcastIDs.NetworkHealthCallback)
 
 
 //        testKotlin()

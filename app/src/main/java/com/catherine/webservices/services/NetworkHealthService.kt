@@ -7,15 +7,9 @@ import android.net.ConnectivityManager
 import android.net.NetworkInfo
 import android.os.Build
 import android.os.IBinder
-import android.support.annotation.RequiresApi
 import android.widget.Toast
-import com.catherine.webservices.parcelables.NetworkInfoParcelable
 
 import com.catherine.webservices.toolkits.CLog
-import com.catherine.webservices.toolkits.c_local_broadcast.CRequest
-import com.catherine.webservices.toolkits.c_local_broadcast.CRequestLog
-import com.catherine.webservices.toolkits.c_local_broadcast.ErrorMessages
-import com.catherine.webservices.toolkits.c_local_broadcast.LocalBroadcastIDs
 
 /**
  * Created by Catherine on 2017/7/17.
@@ -25,11 +19,6 @@ import com.catherine.webservices.toolkits.c_local_broadcast.LocalBroadcastIDs
 
 class NetworkHealthService : Service() {
     private var internetReceiver: InternetConnectivityReceiver? = null
-    private var request = CRequest(this, object : CRequestLog {
-        override fun onFail(id: LocalBroadcastIDs, message: ErrorMessages) {
-            CLog.d(TAG, "Broadcast($id):$message")
-        }
-    })
 
     companion object {
         private val TAG = "NetworkHealthService"
@@ -45,6 +34,7 @@ class NetworkHealthService : Service() {
         val internetIntentFilter = IntentFilter("android.net.conn.CONNECTIVITY_CHANGE")
         internetReceiver = InternetConnectivityReceiver()
         registerReceiver(internetReceiver, internetIntentFilter)
+
     }
 
 
@@ -54,23 +44,11 @@ class NetworkHealthService : Service() {
                 if (intent.extras != null) {
                     val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
                     val ni = connectivityManager.activeNetworkInfo
-                    val info: NetworkInfoParcelable = NetworkInfoParcelable()
                     if (ni != null) {
-                        info.mDetailedState = ni.detailedState.toInt()
-                        info.mExtraInfo = ni.extraInfo
-                        info.mNetworkType = ni.type
-                        info.mReason = ni.reason
-                        info.mState = ni.state.toInt()
-                        info.mIsState = booleanArrayOf(ni.isConnected, ni.isConnectedOrConnecting, ni.isFailover, ni.isAvailable, ni.isRoaming)
-                        info.mSubtype = ni.subtype
-                        info.mSubtypeName = ni.subtypeName
-                        info.mTypeName = ni.typeName
                         if (ni.isConnectedOrConnecting) {
-                            request.sendNetworkInfo(LocalBroadcastIDs.NetworkHealthCallback, info)
                             Toast.makeText(this@NetworkHealthService, ni.typeName + " network connected", Toast.LENGTH_LONG).show()
                         } else {
                             CLog.e(TAG, "Network disabled")
-                            request.sendNetworkInfo(LocalBroadcastIDs.NetworkHealthCallback, info)
                             Toast.makeText(this@NetworkHealthService, "Network disabled", Toast.LENGTH_LONG).show()
                         }
                     }

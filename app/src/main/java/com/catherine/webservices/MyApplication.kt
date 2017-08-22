@@ -7,17 +7,16 @@ import android.os.HandlerThread
  * Created by Catherine on 2017/8/17.
  */
 class MyApplication : Application() {
+    var calHandlerThread: HandlerThread? = null
 
     companion object {
-        lateinit var INSTANCE: MyApplication
+        var INSTANCE: MyApplication? = null
     }
-
-    lateinit var mainHandlerThread: HandlerThread
 
     override fun onCreate() {
         INSTANCE = this
-        mainHandlerThread = HandlerThread("Main_handler_thread")
-        mainHandlerThread.start()
+        calHandlerThread = HandlerThread("Main_handler_thread")
+        calHandlerThread?.start()
         super.onCreate()
     }
 }
