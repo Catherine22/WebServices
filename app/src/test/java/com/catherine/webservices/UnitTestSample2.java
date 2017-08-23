@@ -22,9 +22,6 @@ public class UnitTestSample2 {
 
     private static final String FAKE_STRING = "MB890CPC";
 
-    @Mock
-    Context mMockContext;
-
     @Test
     public void readStringFromMethod_LocalizedString() {
         Utils utils = new Utils();

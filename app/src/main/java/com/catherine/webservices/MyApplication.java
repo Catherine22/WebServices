@@ -4,6 +4,8 @@ import android.app.Application;
 import android.content.res.Configuration;
 import android.os.HandlerThread;
 
+import com.catherine.webservices.toolkits.CLog;
+
 import org.apache.http.HttpVersion;
 import org.apache.http.client.HttpClient;
 import org.apache.http.conn.ClientConnectionManager;
@@ -55,7 +57,7 @@ public class MyApplication extends Application {
     public void onTrimMemory(int level) {
         super.onTrimMemory(level);
 
-        //退出应用时，关闭HttpClient客户端
+        //退出应用时关闭HttpClient客户端
         if (httpClient != null && httpClient.getConnectionManager() != null) {
             httpClient.getConnectionManager().shutdown();
         }

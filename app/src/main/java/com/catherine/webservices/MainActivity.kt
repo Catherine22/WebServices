@@ -19,8 +19,11 @@ import com.catherine.webservices.views.DividerItemDecoration
 import com.catherine.webservices.xml.DOMParser
 import org.dom4j.Document
 import kotlinx.android.synthetic.main.activity_main.*
+import org.apache.http.NameValuePair
+import org.apache.http.message.BasicNameValuePair
 
 import java.io.IOException
+import java.util.*
 
 class MainActivity : Activity() {
     companion object {
@@ -61,23 +64,39 @@ class MainActivity : Activity() {
                 CLog.d(TAG, "Click $position")
                 when (position) {
                     0 -> {
-                        val networkTask = Handler(MyApplication.INSTANCE?.calHandlerThread?.looper)
+                        val networkTask = Handler(MyApplication.INSTANCE.calHandlerThread.looper)
                         networkTask.post {
-                            val mApache = MyApache()
-                            val headers = mApache.defaultHeaders
+                            val headers = MyApache.getDefaultHeaders()
                             headers["h1"] = "Hi there!"
                             headers["h2"] = "I am a mobile phone."
-                            mApache.doGet(Constants.HOST + "LoginServlet?name=zhangsan&password=123456", headers)
-                            mApache.doGet("http://dictionary.cambridge.org/zhs/%E6%90%9C%E7%B4%A2/%E8%8B%B1%E8%AF%AD-%E6%B1%89%E8%AF%AD-%E7%AE%80%E4%BD%93/direct/?q=philosopher")
+                            MyApache.doGet(Constants.HOST + "LoginServlet?name=zhangsan&password=123456", headers)
+                            MyApache.doGet("http://dictionary.cambridge.org/zhs/%E6%90%9C%E7%B4%A2/%E8%8B%B1%E8%AF%AD-%E6%B1%89%E8%AF%AD-%E7%AE%80%E4%BD%93/direct/?q=philosopher")
                         }
 
                     }
                     1 -> {
-                        val networkTask = Handler(MyApplication.INSTANCE?.calHandlerThread?.looper)
+                        val networkTask = Handler(MyApplication.INSTANCE.calHandlerThread.looper)
                         networkTask.post {
-                            val mApache = MyApache()
-                            val headers = mApache.defaultHeaders
-                            mApache.doPost(Constants.HOST + "LoginServlet?name=zhangsan&password=123456", headers)
+                            val headers = MyApache.getDefaultHeaders()
+                            headers["Authorization"] = "12345"
+                            val nameValuePairs = ArrayList<NameValuePair>()
+                            nameValuePairs.add(BasicNameValuePair("name", "zhangsan"))
+                            nameValuePairs.add(BasicNameValuePair("password", "123456"))
+                            MyApache.doPost(Constants.HOST + "LoginServlet", headers, nameValuePairs)
+                        }
+
+                        networkTask.post {
+                            val nameValuePairs = ArrayList<NameValuePair>()
+                            nameValuePairs.add(BasicNameValuePair("name", ""))
+                            nameValuePairs.add(BasicNameValuePair("password", ""))
+                            MyApache.doPost(Constants.HOST + "LoginServlet", nameValuePairs)
+                        }
+
+                        networkTask.post {
+                            val nameValuePairs = ArrayList<NameValuePair>()
+                            nameValuePairs.add(BasicNameValuePair("name", "zhangsan"))
+                            nameValuePairs.add(BasicNameValuePair("password", "123456"))
+                            MyApache.doPost(Constants.HOST + "LoginServlet", nameValuePairs)
                         }
                     }
                 }
