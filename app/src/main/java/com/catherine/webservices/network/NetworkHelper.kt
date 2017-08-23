@@ -1,9 +1,10 @@
-package com.catherine.webservices.toolkits
+package com.catherine.webservices.network
 
 import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
 import com.catherine.webservices.services.NetworkHealthService
+import com.catherine.webservices.toolkits.CLog
 import java.net.InetAddress
 
 /**

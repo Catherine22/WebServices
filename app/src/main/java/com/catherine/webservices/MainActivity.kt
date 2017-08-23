@@ -6,6 +6,7 @@ import android.os.Handler
 import android.support.v7.widget.StaggeredGridLayoutManager
 import android.view.View
 import com.catherine.webservices.adapters.MainRvAdapter
+import com.catherine.webservices.network.MyApache
 
 import com.catherine.webservices.xml.SAXParser
 import com.catherine.webservices.xml.XMLDelegate
@@ -13,7 +14,7 @@ import com.catherine.webservices.xml.XMLParserListener
 import com.catherine.webservices.toolkits.CLog
 import com.catherine.webservices.sample.KotlinTemplate
 import com.catherine.webservices.sample.player.Player
-import com.catherine.webservices.toolkits.NetworkHelper
+import com.catherine.webservices.network.NetworkHelper
 import com.catherine.webservices.views.DividerItemDecoration
 import com.catherine.webservices.xml.DOMParser
 import org.dom4j.Document
@@ -24,7 +25,7 @@ import java.io.IOException
 class MainActivity : Activity() {
     companion object {
         private val TAG = "MainActivity"
-        private val students = arrayListOf("Kris", "Caroline", "Alma")
+        private val students = arrayListOf("Apache HttpGet", "Apache HttpPost", "Alma")
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,12 +34,11 @@ class MainActivity : Activity() {
         setView()
 
 
-        val checkStateWork = Handler(MyApplication.INSTANCE?.calHandlerThread?.looper)
+        val checkStateWork = Handler(MyApplication.INSTANCE.calHandlerThread.looper)
         checkStateWork.post {
             val networkHelper = NetworkHelper(this)
             CLog.d(TAG, "isNetworkHealth:${networkHelper.isNetworkHealth()}")
             CLog.d(TAG, "isWifi:${networkHelper.isWifi()}")
-            CLog.d(TAG, "getLocalIP:${networkHelper.getLocalIp()}")
             networkHelper.listenToNetworkState()
         }
 
@@ -61,9 +61,24 @@ class MainActivity : Activity() {
                 CLog.d(TAG, "Click $position")
                 when (position) {
                     0 -> {
+                        val networkTask = Handler(MyApplication.INSTANCE?.calHandlerThread?.looper)
+                        networkTask.post {
+                            val mApache = MyApache()
+                            val headers = mApache.defaultHeaders
+                            headers["h1"] = "Hi there!"
+                            headers["h2"] = "I am a mobile phone."
+                            mApache.doGet(Constants.HOST + "LoginServlet?name=zhangsan&password=123456", headers)
+                            mApache.doGet("http://dictionary.cambridge.org/zhs/%E6%90%9C%E7%B4%A2/%E8%8B%B1%E8%AF%AD-%E6%B1%89%E8%AF%AD-%E7%AE%80%E4%BD%93/direct/?q=philosopher")
+                        }
+
                     }
                     1 -> {
-
+                        val networkTask = Handler(MyApplication.INSTANCE?.calHandlerThread?.looper)
+                        networkTask.post {
+                            val mApache = MyApache()
+                            val headers = mApache.defaultHeaders
+                            mApache.doPost(Constants.HOST + "LoginServlet?name=zhangsan&password=123456", headers)
+                        }
                     }
                 }
             }
@@ -169,5 +184,6 @@ class MainActivity : Activity() {
             e.printStackTrace()
         }
     }
+
 
 }
