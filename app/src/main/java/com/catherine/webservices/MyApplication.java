@@ -4,7 +4,6 @@ import android.app.Application;
 import android.content.res.Configuration;
 import android.os.HandlerThread;
 
-import com.catherine.webservices.toolkits.CLog;
 
 import org.apache.http.HttpVersion;
 import org.apache.http.client.HttpClient;
@@ -48,21 +47,29 @@ public class MyApplication extends Application {
         super.onConfigurationChanged(newConfig);
     }
 
+    /**
+     * 内存不足
+     */
     @Override
     public void onLowMemory() {
+        shutdownHttpClient(httpClient);
         super.onLowMemory();
     }
 
+    /**
+     * 应用结束
+     */
     @Override
-    public void onTrimMemory(int level) {
-        super.onTrimMemory(level);
-
-        //退出应用时关闭HttpClient客户端
-        if (httpClient != null && httpClient.getConnectionManager() != null) {
-            httpClient.getConnectionManager().shutdown();
-        }
+    public void onTerminate() {
+        shutdownHttpClient(httpClient);
+        super.onTerminate();
     }
 
+    /**
+     * 只要创建一个HttpClient供整个应用使用，通过ThreadSafeClientConnManager管理
+     *
+     * @return
+     */
     private HttpClient getHttpClient() {
         HttpParams params = new BasicHttpParams();
         //设置协议版本
@@ -91,5 +98,15 @@ public class MyApplication extends Application {
         //使用线程安全的连接管理HttpClient
         ClientConnectionManager cm = new ThreadSafeClientConnManager(params, registry);
         return new DefaultHttpClient(cm, params);
+    }
+
+    /**
+     * 关闭HttpClient释放资源
+     *
+     * @param httpClient
+     */
+    private void shutdownHttpClient(HttpClient httpClient) {
+        if (httpClient != null && httpClient.getConnectionManager() != null)
+            httpClient.getConnectionManager().shutdown();
     }
 }

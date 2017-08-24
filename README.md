@@ -1,4 +1,3 @@
-
 ## Thread
 Don't hold references to any type of UI specific objects in any threading scenarios.    
 Don't declare your task as an inner class of an activity.
@@ -25,5 +24,20 @@ Handler class helps put work at the head, the tail or even set a time-based dela
 - It's ideal for background tasks.
 - Helps get intents off UI thread.
 
+## Web
 
-## Leak views
+### HttpClient (org.apache.http)
+- Android 6.0 release removes support for the Apache HTTP client. You still want to import this library while your target API is higher than 23, you have to declare the following codes in build.gradle:
+```
+android {
+    useLibrary 'org.apache.http.legacy'
+}
+```
+
+- Create an HttpClient for the whole project, and make ThreadSafeClientConnManager to manager the thread. I initialize HttpClient in [MyApplication] and package doGet() and doPost in [MyApache].
+
+
+
+[MainActivity]:<https://github.com/Catherine22/WebServices/blob/master/app/src/main/java/com/catherine/webservices/MainActivity.kt>
+[MyApplication]:<https://github.com/Catherine22/WebServices/blob/master/app/src/main/java/com/catherine/webservices/MyApplication.kt>
+[MyApache]:<https://github.com/Catherine22/WebServices/blob/master/app/src/main/java/com/catherine/webservices/network/MyApache.java>

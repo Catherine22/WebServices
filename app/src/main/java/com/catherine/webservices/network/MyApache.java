@@ -10,12 +10,12 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.protocol.HTTP;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -70,6 +70,8 @@ public class MyApache {
             while ((line = bf.readLine()) != null) {
                 CLog.Companion.i(TAG, "response:" + line);
             }
+        } catch (ConnectTimeoutException e) {
+            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -109,6 +111,8 @@ public class MyApache {
             while ((line = bf.readLine()) != null) {
                 CLog.Companion.i(TAG, "response:" + line);
             }
+        } catch (ConnectTimeoutException e) {
+            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }

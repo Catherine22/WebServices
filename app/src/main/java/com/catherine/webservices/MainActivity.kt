@@ -25,6 +25,11 @@ import org.apache.http.message.BasicNameValuePair
 import java.io.IOException
 import java.util.*
 
+/**
+ * Created by Catherine on 2017/8/14.
+ * Soft-World Inc.
+ * catherine919@soft-world.com.tw
+ */
 class MainActivity : Activity() {
     companion object {
         private val TAG = "MainActivity"

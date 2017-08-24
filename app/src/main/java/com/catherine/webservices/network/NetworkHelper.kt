@@ -6,11 +6,15 @@ import android.net.ConnectivityManager
 import com.catherine.webservices.services.NetworkHealthService
 import com.catherine.webservices.toolkits.CLog
 import java.net.InetAddress
+import java.net.UnknownHostException
+import java.util.*
 
 /**
  * Created by Catherine on 2017/8/14.
+ * Soft-World Inc.
+ * catherine919@soft-world.com.tw
  */
-class NetworkHelper(val ctx: Context) {
+class NetworkHelper(private val ctx: Context) {
     fun isNetworkHealth(): Boolean {
         val cm = ctx.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val activeNetwork = cm.activeNetworkInfo
@@ -34,11 +38,86 @@ class NetworkHelper(val ctx: Context) {
         ctx.stopService(nhs)
     }
 
-    fun getIp(url: String): String? {
-        return InetAddress.getByName(url).toString()
+
+    /**
+     * ip
+     */
+    fun getHostAddress(url: String): String {
+        var result = ""
+        try {
+            val address: InetAddress = InetAddress.getByName(url)
+            result = address.hostAddress
+        } catch (e: UnknownHostException) {
+            e.printStackTrace()
+        }
+        return result
     }
 
-    fun getLocalIp(): String? {
-        return InetAddress.getLocalHost().toString()
+
+    fun getAllHostAddress(url: String): ArrayList<String>? {
+        try {
+            val address: Array<InetAddress> = InetAddress.getAllByName(url)
+            if (address == null || address.isEmpty())
+                return null
+            return address.indices.mapTo(ArrayList()) { address[it].hostAddress }
+        } catch (e: UnknownHostException) {
+            e.printStackTrace()
+        }
+        return null
+    }
+
+    /**
+     * absolute domain name
+     */
+    fun getHostName(url: String): String {
+        var result = ""
+        try {
+            //IP地址不存在或DNS服务器不允许进行IP地址和域名映射，就返回这个IP地址。
+            val address: InetAddress = InetAddress.getByName(url)
+            result = address.hostName
+        } catch (e: UnknownHostException) {
+            e.printStackTrace()
+        }
+        return result
+    }
+
+    fun getAllHostName(url: String): ArrayList<String>? {
+        try {
+            val address: Array<InetAddress> = InetAddress.getAllByName(url)
+            if (address == null || address.isEmpty())
+                return null
+            return address.indices.mapTo(ArrayList()) { address[it].hostName }
+        } catch (e: UnknownHostException) {
+            e.printStackTrace()
+        }
+        return null
+    }
+
+
+    /**
+     * do a reverse DNS lookup and return a domain name
+     */
+    fun getDNSHostName(url: String): String {
+        var result = ""
+        try {
+            //IP地址不存在或DNS服务器不允许进行IP地址和域名映射，就返回这个IP地址。
+            val address: InetAddress = InetAddress.getByName(url)
+            result = address.canonicalHostName
+        } catch (e: UnknownHostException) {
+            e.printStackTrace()
+        }
+        return result
+    }
+
+    fun getAllDNSHostName(url: String): ArrayList<String>? {
+        try {
+            val address: Array<InetAddress> = InetAddress.getAllByName(url)
+            if (address == null || address.isEmpty())
+                return null
+            return address.indices.mapTo(ArrayList()) { address[it].canonicalHostName }
+        } catch (e: UnknownHostException) {
+            e.printStackTrace()
+        }
+        return null
     }
 }
