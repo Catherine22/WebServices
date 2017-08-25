@@ -116,6 +116,7 @@ public class MyApplication extends Application {
      *
      * @return
      */
+
     private HttpClient getHttpClient() {
         HttpParams params = new BasicHttpParams();
         //设置协议版本
