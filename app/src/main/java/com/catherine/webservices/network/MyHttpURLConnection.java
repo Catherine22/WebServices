@@ -4,7 +4,6 @@ package com.catherine.webservices.network;
 import com.catherine.webservices.Constants;
 import com.catherine.webservices.toolkits.CLog;
 
-import org.apache.http.NameValuePair;
 import org.apache.http.protocol.HTTP;
 
 import java.io.BufferedReader;
@@ -16,7 +15,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
