@@ -1,4 +1,4 @@
-package com.catherine.webservices;
+package com.catherine.webservices.adapters;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -13,8 +13,8 @@ import com.catherine.webservices.fragments.P02_HttpURLConnection;
  * catherine919@soft-world.com.tw
  */
 
-public class MyAdapter extends FragmentPagerAdapter {
-    public MyAdapter(FragmentManager fm) {
+public class MainViewPagerAdapter extends FragmentPagerAdapter {
+    public MainViewPagerAdapter(FragmentManager fm) {
         super(fm);
     }
 

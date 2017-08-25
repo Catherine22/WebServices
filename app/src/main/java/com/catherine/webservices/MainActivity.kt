@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.support.design.widget.TabLayout
 import android.support.v4.app.FragmentActivity
+import com.catherine.webservices.adapters.MainViewPagerAdapter
 
 import com.catherine.webservices.xml.SAXParser
 import com.catherine.webservices.xml.XMLDelegate
@@ -49,7 +50,7 @@ class MainActivity : FragmentActivity() {
     }
 
     private fun setView() {
-        vp_content.adapter = MyAdapter(supportFragmentManager)
+        vp_content.adapter = MainViewPagerAdapter(supportFragmentManager)
         tabLayout.setupWithViewPager(vp_content)
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {

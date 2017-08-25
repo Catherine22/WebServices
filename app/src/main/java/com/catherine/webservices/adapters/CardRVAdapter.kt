@@ -6,12 +6,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.catherine.webservices.R
-import kotlinx.android.synthetic.main.rv_main_item.view.*
+import kotlinx.android.synthetic.main.rv_card.view.*
 
 /**
- * Created by Catherine on 2017/7/31.
+ * Created by Catherine on 2017/8/25.
+ * Soft-World Inc.
+ * catherine919@soft-world.com.tw
  */
-class MainRvAdapter(var ctx: Context, var data: List<String>, var onClickListener: OnItemClickListener) : RecyclerView.Adapter<MainRvAdapter.MainRvHolder>() {
+class CardRVAdapter(private var ctx: Context, private var titles: List<String>, private var subtitles: List<String>, private var onClickListener: OnItemClickListener) : RecyclerView.Adapter<CardRVAdapter.MainRvHolder>() {
     interface OnItemClickListener {
         fun onItemClick(view: View, position: Int)
         fun onItemLongClick(view: View, position: Int)
@@ -21,20 +23,20 @@ class MainRvAdapter(var ctx: Context, var data: List<String>, var onClickListene
     override fun onBindViewHolder(holder: MainRvHolder, position: Int) {
         val onClickListener = View.OnClickListener { view ->
             when (view.id) {
-                R.id.tv_title -> onClickListener?.onItemClick(view, position)
+                R.id.cv -> onClickListener.onItemClick(view, position)
             }
         }
-        holder.itemView.tv_title.text = data[position]
-        holder.itemView.tv_title.setOnClickListener(onClickListener)
+        holder.itemView.tv_title.text = titles[position]
+        holder.itemView.tv_subtitle.text = subtitles[position]
+        holder.itemView.cv.setOnClickListener(onClickListener)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): MainRvHolder {
-        val holder = MainRvHolder(LayoutInflater.from(ctx).inflate(R.layout.rv_main_item, parent, false))
-        return holder
+        return MainRvHolder(LayoutInflater.from(ctx).inflate(R.layout.rv_card, parent, false))
     }
 
     override fun getItemCount(): Int {
-        return data.size
+        return titles.size
     }
 
 

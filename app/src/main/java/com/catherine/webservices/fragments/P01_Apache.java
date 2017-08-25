@@ -11,7 +11,7 @@ import android.view.View;
 import com.catherine.webservices.Constants;
 import com.catherine.webservices.MyApplication;
 import com.catherine.webservices.R;
-import com.catherine.webservices.adapters.MainRvAdapter;
+import com.catherine.webservices.adapters.RVAdapter;
 import com.catherine.webservices.network.MyApache;
 import com.catherine.webservices.toolkits.CLog;
 import com.catherine.webservices.views.DividerItemDecoration;
@@ -34,7 +34,6 @@ public class P01_Apache extends LazyFragment {
     public final static String TAG = "P01_Apache";
     private List<String> features;
     private SwipeRefreshLayout srl_container;
-    private RecyclerView rv_main_list;
 
     public static P01_Apache newInstance(boolean isLazyLoad) {
         Bundle args = new Bundle();
@@ -58,14 +57,12 @@ public class P01_Apache extends LazyFragment {
         super.onViewCreated(view, savedInstanceState);
     }
 
-    int count = 0;
-
     private void fillInData() {
         features = new ArrayList<>();
-        for (int i = 0; i < 50; i++)
-            features.add("" + count++);
         features.add("HttpGet");
         features.add("HttpPost");
+        for (int i = 2; i < 50; i++)
+            features.add("" + i);
     }
 
     private void initComponent() {
@@ -78,10 +75,10 @@ public class P01_Apache extends LazyFragment {
                 srl_container.setRefreshing(false);
             }
         });
-        rv_main_list = (RecyclerView) findViewById(R.id.rv_main_list);
+        RecyclerView rv_main_list = (RecyclerView) findViewById(R.id.rv_main_list);
         rv_main_list.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.Companion.getVERTICAL_LIST()));
         rv_main_list.setLayoutManager(new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL));
-        rv_main_list.setAdapter(new MainRvAdapter(getActivity(), features, new MainRvAdapter.OnItemClickListener() {
+        rv_main_list.setAdapter(new RVAdapter(getActivity(), features, new RVAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(@NotNull View view, int position) {
                 switch (position) {
