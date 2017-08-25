@@ -34,6 +34,7 @@ public class P01_Apache extends LazyFragment {
     public final static String TAG = "P01_Apache";
     private List<String> features;
     private SwipeRefreshLayout srl_container;
+    private MyApache myApache;
 
     public static P01_Apache newInstance(boolean isLazyLoad) {
         Bundle args = new Bundle();
@@ -66,6 +67,7 @@ public class P01_Apache extends LazyFragment {
     }
 
     private void initComponent() {
+        myApache = new MyApache();
         srl_container = (SwipeRefreshLayout) findViewById(R.id.srl_container);
         srl_container.setColorSchemeResources(R.color.colorPrimary, R.color.colorAccent, R.color.colorPrimaryDark, R.color.colorAccentDark);
         srl_container.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -90,8 +92,8 @@ public class P01_Apache extends LazyFragment {
                                 Map<String, String> headers = MyApache.getDefaultHeaders();
                                 headers.put("h1", "Hi there!");
                                 headers.put("h2", "I am a mobile phone.");
-                                MyApache.doGet(Constants.HOST + "LoginServlet?name=zhangsan&password=123456", headers);
-                                MyApache.doGet("http://dictionary.cambridge.org/zhs/%E6%90%9C%E7%B4%A2/%E8%8B%B1%E8%AF%AD-%E6%B1%89%E8%AF%AD-%E7%AE%80%E4%BD%93/direct/?q=philosopher");
+                                myApache.doGet(Constants.HOST + "LoginServlet?name=zhangsan&password=123456", headers);
+                                myApache.doGet("http://dictionary.cambridge.org/zhs/%E6%90%9C%E7%B4%A2/%E8%8B%B1%E8%AF%AD-%E6%B1%89%E8%AF%AD-%E7%AE%80%E4%BD%93/direct/?q=philosopher");
                             }
                         });
                         break;
@@ -105,7 +107,7 @@ public class P01_Apache extends LazyFragment {
                                 List<NameValuePair> nameValuePairs = new ArrayList<>();
                                 nameValuePairs.add(new BasicNameValuePair("name", "zhangsan"));
                                 nameValuePairs.add(new BasicNameValuePair("password", "123456"));
-                                MyApache.doPost(Constants.HOST + "LoginServlet", headers, nameValuePairs);
+                                myApache.doPost(Constants.HOST + "LoginServlet", headers, nameValuePairs);
                             }
                         });
 
@@ -115,7 +117,7 @@ public class P01_Apache extends LazyFragment {
                                 List<NameValuePair> nameValuePairs = new ArrayList<>();
                                 nameValuePairs.add(new BasicNameValuePair("name", ""));
                                 nameValuePairs.add(new BasicNameValuePair("password", ""));
-                                MyApache.doPost(Constants.HOST + "LoginServlet", nameValuePairs);
+                                myApache.doPost(Constants.HOST + "LoginServlet", nameValuePairs);
                             }
                         });
 
@@ -126,7 +128,7 @@ public class P01_Apache extends LazyFragment {
                                 List<NameValuePair> nameValuePairs = new ArrayList<>();
                                 nameValuePairs.add(new BasicNameValuePair("name", "zhangsan"));
                                 nameValuePairs.add(new BasicNameValuePair("password", "123456"));
-                                MyApache.doPost(Constants.HOST + "LoginServlet", nameValuePairs);
+                                myApache.doPost(Constants.HOST + "LoginServlet", nameValuePairs);
                             }
                         });
                         break;
@@ -138,7 +140,6 @@ public class P01_Apache extends LazyFragment {
 
             }
         }));
-
     }
 
 }

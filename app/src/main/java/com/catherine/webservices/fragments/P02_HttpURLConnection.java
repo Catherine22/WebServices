@@ -6,22 +6,19 @@ import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
 
 import com.catherine.webservices.Constants;
 import com.catherine.webservices.MyApplication;
 import com.catherine.webservices.R;
 import com.catherine.webservices.adapters.CardRVAdapter;
-import com.catherine.webservices.network.MyApache;
+import com.catherine.webservices.network.MyHttpURLConnection;
 import com.catherine.webservices.toolkits.CLog;
-import com.catherine.webservices.views.DividerItemDecoration;
 
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -37,6 +34,7 @@ public class P02_HttpURLConnection extends LazyFragment {
     private List<String> features;
     private List<String> descriptions;
     private SwipeRefreshLayout srl_container;
+    private MyHttpURLConnection myHttpURLConnection;
 
     public static P02_HttpURLConnection newInstance(boolean isLazyLoad) {
         Bundle args = new Bundle();
@@ -72,6 +70,7 @@ public class P02_HttpURLConnection extends LazyFragment {
     }
 
     private void initComponent() {
+        myHttpURLConnection = new MyHttpURLConnection();
         srl_container = (SwipeRefreshLayout) findViewById(R.id.srl_container);
         srl_container.setColorSchemeResources(R.color.colorPrimary, R.color.colorAccent, R.color.colorPrimaryDark, R.color.colorAccentDark);
         srl_container.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -93,11 +92,11 @@ public class P02_HttpURLConnection extends LazyFragment {
                         networkTask.post(new Runnable() {
                             @Override
                             public void run() {
-                                Map<String, String> headers = MyApache.getDefaultHeaders();
+                                Map<String, String> headers = MyHttpURLConnection.getDefaultHeaders();
                                 headers.put("h1", "Hi there!");
                                 headers.put("h2", "I am a mobile phone.");
-                                MyApache.doGet(Constants.HOST + "LoginServlet?name=zhangsan&password=123456", headers);
-                                MyApache.doGet("http://dictionary.cambridge.org/zhs/%E6%90%9C%E7%B4%A2/%E8%8B%B1%E8%AF%AD-%E6%B1%89%E8%AF%AD-%E7%AE%80%E4%BD%93/direct/?q=philosopher");
+                                myHttpURLConnection.doGet(Constants.HOST + "LoginServlet?name=zhangsan&password=123456", headers);
+                                myHttpURLConnection.doGet("http://dictionary.cambridge.org/zhs/%E6%90%9C%E7%B4%A2/%E8%8B%B1%E8%AF%AD-%E6%B1%89%E8%AF%AD-%E7%AE%80%E4%BD%93/direct/?q=philosopher");
                             }
                         });
                         break;
@@ -106,22 +105,22 @@ public class P02_HttpURLConnection extends LazyFragment {
                         networkTask1.post(new Runnable() {
                             @Override
                             public void run() {
-                                Map<String, String> headers = MyApache.getDefaultHeaders();
+                                Map<String, String> headers = MyHttpURLConnection.getDefaultHeaders();
                                 headers.put("Authorization", "12345");
-                                List<NameValuePair> nameValuePairs = new ArrayList<>();
-                                nameValuePairs.add(new BasicNameValuePair("name", "zhangsan"));
-                                nameValuePairs.add(new BasicNameValuePair("password", "123456"));
-                                MyApache.doPost(Constants.HOST + "LoginServlet", headers, nameValuePairs);
+                                Map<String, String> body = new HashMap<>();
+                                body.put("name", "zhangsan");
+                                body.put("password", "123456");
+                                myHttpURLConnection.doPost(Constants.HOST + "LoginServlet", headers, MyHttpURLConnection.getSimpleStringBody(body));
                             }
                         });
 
                         networkTask1.post(new Runnable() {
                             @Override
                             public void run() {
-                                List<NameValuePair> nameValuePairs = new ArrayList<>();
-                                nameValuePairs.add(new BasicNameValuePair("name", ""));
-                                nameValuePairs.add(new BasicNameValuePair("password", ""));
-                                MyApache.doPost(Constants.HOST + "LoginServlet", nameValuePairs);
+                                Map<String, String> body = new HashMap<>();
+                                body.put("name", "");
+                                body.put("password", "");
+                                myHttpURLConnection.doPost(Constants.HOST + "LoginServlet", MyHttpURLConnection.getSimpleStringBody(body));
                             }
                         });
 
@@ -129,10 +128,10 @@ public class P02_HttpURLConnection extends LazyFragment {
                         networkTask1.post(new Runnable() {
                             @Override
                             public void run() {
-                                List<NameValuePair> nameValuePairs = new ArrayList<>();
-                                nameValuePairs.add(new BasicNameValuePair("name", "zhangsan"));
-                                nameValuePairs.add(new BasicNameValuePair("password", "123456"));
-                                MyApache.doPost(Constants.HOST + "LoginServlet", nameValuePairs);
+                                Map<String, String> body = new HashMap<>();
+                                body.put("name", "zhangsan");
+                                body.put("password", "123456");
+                                myHttpURLConnection.doPost(Constants.HOST + "LoginServlet", MyHttpURLConnection.getSimpleStringBody(body));
                             }
                         });
                         break;

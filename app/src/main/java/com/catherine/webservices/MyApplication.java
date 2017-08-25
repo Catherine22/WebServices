@@ -84,6 +84,7 @@ public class MyApplication extends Application {
 
             @Override
             public void onActivityDestroyed(Activity activity) {
+                //startActivity()后才能执行finish()，否则会计算错误
                 runningActivities--;
                 //当应用已无运行画面时释放HandlerThread
                 if (runningActivities == 0)
