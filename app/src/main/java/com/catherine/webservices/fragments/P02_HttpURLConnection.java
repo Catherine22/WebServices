@@ -27,8 +27,6 @@ public class P02_HttpURLConnection extends LazyFragment {
     public void onCreateViewLazy(Bundle savedInstanceState) {
         super.onCreateViewLazy(savedInstanceState);
         setContentView(R.layout.f_02_http_url_connection);
-        LinearLayout ll = (LinearLayout) findViewById(R.id.ll);
-        ll.setBackgroundColor(getResources().getColor(R.color.checker_board_dark));
     }
 
 }
