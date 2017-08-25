@@ -70,6 +70,8 @@ public class MyApache {
             while ((line = bf.readLine()) != null) {
                 CLog.Companion.i(TAG, "response:" + line);
             }
+
+
         } catch (ConnectTimeoutException e) {
             e.printStackTrace();
         } catch (IOException e) {
