@@ -1,7 +1,10 @@
 package com.catherine.webservices;
 
+import android.app.Activity;
 import android.app.Application;
 import android.content.res.Configuration;
+import android.os.Build;
+import android.os.Bundle;
 import android.os.HandlerThread;
 
 
@@ -32,19 +35,72 @@ public class MyApplication extends Application {
     public static MyApplication INSTANCE;
     public HandlerThread calHandlerThread;
     public HttpClient httpClient;
+    private int runningActivities;
 
     @Override
     public void onCreate() {
         INSTANCE = this;
-        calHandlerThread = new HandlerThread("cal_handler_thread");
-        calHandlerThread.start();
         httpClient = getHttpClient();
+
+        registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
+            @Override
+            public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
+                /*
+                 * 应用中止时关闭HandlerThread，
+                 * 假如service存活，MyApplication不会呼叫onCreate()，
+                 * 所以让HandlerThread在确定在foreground执行或是有Activity时创建HandlerThread
+                 */
+                if (runningActivities == 0) {
+                    calHandlerThread = new HandlerThread("cal_handler_thread");
+                    calHandlerThread.start();
+                }
+                runningActivities++;
+            }
+
+            @Override
+            public void onActivityStarted(Activity activity) {
+
+            }
+
+            @Override
+            public void onActivityResumed(Activity activity) {
+
+            }
+
+            @Override
+            public void onActivityPaused(Activity activity) {
+
+            }
+
+            @Override
+            public void onActivityStopped(Activity activity) {
+
+            }
+
+            @Override
+            public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
+
+            }
+
+            @Override
+            public void onActivityDestroyed(Activity activity) {
+                //startActivity()后才能执行finish()，否则会计算错误
+                runningActivities--;
+                //当应用已无运行画面时释放HandlerThread
+                if (runningActivities == 0)
+                    stopLooper(calHandlerThread);
+            }
+        });
         super.onCreate();
     }
 
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
+    public void stopLooper(HandlerThread handlerThread) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            if (handlerThread != null && handlerThread.isAlive())
+                handlerThread.quitSafely();
+            else
+                handlerThread.quit();
+        }
     }
 
     /**
@@ -57,19 +113,11 @@ public class MyApplication extends Application {
     }
 
     /**
-     * 应用结束
-     */
-    @Override
-    public void onTerminate() {
-        shutdownHttpClient(httpClient);
-        super.onTerminate();
-    }
-
-    /**
      * 只要创建一个HttpClient供整个应用使用，通过ThreadSafeClientConnManager管理
      *
      * @return
      */
+
     private HttpClient getHttpClient() {
         HttpParams params = new BasicHttpParams();
         //设置协议版本

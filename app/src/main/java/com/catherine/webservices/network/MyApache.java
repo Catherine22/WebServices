@@ -41,11 +41,11 @@ public class MyApache {
         return headers;
     }
 
-    public static void doGet(String url) {
+    public void doGet(String url) {
         doGet(url, getDefaultHeaders());
     }
 
-    public static void doGet(String url, Map<String, String> headers) {
+    public void doGet(String url, Map<String, String> headers) {
         try {
             CLog.Companion.i(TAG, "doGet");
             HttpGet request = new HttpGet(url);
@@ -70,6 +70,8 @@ public class MyApache {
             while ((line = bf.readLine()) != null) {
                 CLog.Companion.i(TAG, "response:" + line);
             }
+
+
         } catch (ConnectTimeoutException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -77,11 +79,11 @@ public class MyApache {
         }
     }
 
-    public static void doPost(String url, List<NameValuePair> nameValuePairs) {
+    public void doPost(String url, List<NameValuePair> nameValuePairs) {
         doPost(url, getDefaultHeaders(), nameValuePairs);
     }
 
-    public static void doPost(String url, Map<String, String> headers, List<NameValuePair> nameValuePairs) {
+    public void doPost(String url, Map<String, String> headers, List<NameValuePair> nameValuePairs) {
         try {
             CLog.Companion.i(TAG, "doPost");
             HttpPost request = new HttpPost(url);
