@@ -14,7 +14,6 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -75,9 +74,17 @@ public class MyHttpURLConnection {
                 }
             }
 
+//            CLog.Companion.i(TAG, "url: " + url);
+//            CLog.Companion.i(TAG, "Content Encoding: " + conn.getContentEncoding());
+//            CLog.Companion.i(TAG, "Content Length: " + conn.getContentLength());
+//            CLog.Companion.i(TAG, "Content Type: " + conn.getContentType());
+//            CLog.Companion.i(TAG, "Date: " + conn.getDate());
+//            CLog.Companion.i(TAG, "Expiration: " + conn.getExpiration());
+//            CLog.Companion.i(TAG, "Last Modified: " + conn.getLastModified());
+
             conn.connect();
 
-            CLog.Companion.i(TAG, "response code:" + conn.getResponseCode()+" message:" + conn.getResponseMessage());
+            CLog.Companion.i(TAG, "response code:" + conn.getResponseCode() + " message:" + conn.getResponseMessage());
             if (conn.getInputStream() != null) {
                 BufferedReader bf = new BufferedReader(new InputStreamReader(conn.getInputStream(), HTTP.UTF_8));
                 String line;
@@ -120,9 +127,7 @@ public class MyHttpURLConnection {
             //设置标头
             if (headers != null) {
                 Set<String> set = headers.keySet();
-                Iterator<String> iterator = set.iterator();
-                while (iterator.hasNext()) {
-                    String name = iterator.next();
+                for (String name : set) {
                     conn.setRequestProperty(name, headers.get(name));
                 }
             }
@@ -132,10 +137,17 @@ public class MyHttpURLConnection {
             os.write(body.getBytes(HTTP.UTF_8));
             os.close();
 
+//            CLog.Companion.i(TAG, "url: " + url);
+//            CLog.Companion.i(TAG, "Content Encoding: " + conn.getContentEncoding());
+//            CLog.Companion.i(TAG, "Content Length: " + conn.getContentLength());
+//            CLog.Companion.i(TAG, "Content Type: " + conn.getContentType());
+//            CLog.Companion.i(TAG, "Date: " + conn.getDate());
+//            CLog.Companion.i(TAG, "Expiration: " + conn.getExpiration());
+//            CLog.Companion.i(TAG, "Last Modified: " + conn.getLastModified());
+
             conn.connect();
 
-
-            CLog.Companion.i(TAG, "response code:" + conn.getResponseCode()+" message:" + conn.getResponseMessage());
+            CLog.Companion.i(TAG, "response code:" + conn.getResponseCode() + " message:" + conn.getResponseMessage());
             if (conn.getInputStream() != null) {
                 BufferedReader bf = new BufferedReader(new InputStreamReader(conn.getInputStream(), HTTP.UTF_8));
                 String line;
