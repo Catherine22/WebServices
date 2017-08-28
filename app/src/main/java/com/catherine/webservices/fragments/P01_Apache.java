@@ -12,6 +12,7 @@ import com.catherine.webservices.Constants;
 import com.catherine.webservices.MyApplication;
 import com.catherine.webservices.R;
 import com.catherine.webservices.adapters.RVAdapter;
+import com.catherine.webservices.network.HttpResponseListener;
 import com.catherine.webservices.network.MyApache;
 import com.catherine.webservices.toolkits.CLog;
 import com.catherine.webservices.views.DividerItemDecoration;
@@ -67,7 +68,19 @@ public class P01_Apache extends LazyFragment {
     }
 
     private void initComponent() {
-        myApache = new MyApache();
+        myApache = new MyApache(new HttpResponseListener() {
+            @Override
+            public void connectSuccess(int code, @NotNull String message, @NotNull String body) {
+                CLog.Companion.i(TAG, String.format("connectSuccess code:%s, message:%s, body:%s", code, message, body));
+            }
+
+            @Override
+            public void connectFailure(int code, @NotNull String message, @NotNull String errorStream, @org.jetbrains.annotations.Nullable Exception e) {
+                CLog.Companion.e(TAG, String.format("connectFailure code:%s, message:%s, body:%s", code, message, errorStream));
+                if (e != null)
+                    CLog.Companion.e(TAG, e.getMessage());
+            }
+        });
         srl_container = (SwipeRefreshLayout) findViewById(R.id.srl_container);
         srl_container.setColorSchemeResources(R.color.colorPrimary, R.color.colorAccent, R.color.colorPrimaryDark, R.color.colorAccentDark);
         srl_container.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
