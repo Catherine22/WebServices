@@ -15,10 +15,13 @@ import java.util.*
  * catherine919@soft-world.com.tw
  */
 class NetworkHelper(private val ctx: Context) {
+    companion object {
+        val TAG = "NetworkHelper"
+    }
     fun isNetworkHealth(): Boolean {
         val cm = ctx.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val activeNetwork = cm.activeNetworkInfo
-        CLog.e("Utils", activeNetwork!!.extraInfo)
+        CLog.e(TAG, activeNetwork!!.extraInfo)
         return activeNetwork != null && activeNetwork.isConnectedOrConnecting
     }
 

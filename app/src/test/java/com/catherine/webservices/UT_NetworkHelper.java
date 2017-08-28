@@ -6,6 +6,8 @@ import com.catherine.webservices.network.NetworkHelper;
 
 import org.junit.Test;
 
+import java.net.InetAddress;
+
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
@@ -86,5 +88,12 @@ public class UT_NetworkHelper {
         NetworkHelper helper = new NetworkHelper(new MockContext());
         String s = helper.getHostAddress("www.neu6.edu.cn");
         assertThat(s, is("2001:da8:9000:0:0:0:0:7"));
+    }
+
+    @Test
+    public void testGetURLInfo() {
+        NetworkHelper helper = new NetworkHelper(new MockContext());
+        String s = helper.getHostAddress("www.neu6.edu.cn");
+        assertThat(s, is("54.251.164.119"));
     }
 }
