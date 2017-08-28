@@ -46,6 +46,7 @@ public class P02_HttpURLConnection extends LazyFragment {
     private List<String> descriptions;
     private SwipeRefreshLayout srl_container;
     private MainInterface mainInterface;
+    private int total = 0;
 
     public static P02_HttpURLConnection newInstance(boolean isLazyLoad) {
         Bundle args = new Bundle();
@@ -238,7 +239,9 @@ public class P02_HttpURLConnection extends LazyFragment {
                         new DownloaderAsyncTask(Constants.DOWNLOAD_HOST + "fmc.apk", new DownloaderListener() {
                             @Override
                             public void update(int downloadedLength, int LENGTH) {
-                                CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess downloadedLength:%d, LENGTH:%d", downloadedLength, LENGTH));
+                                total += downloadedLength;
+                                if (total >= LENGTH)
+                                    CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess downloadedLength:%d, LENGTH:%d", total, LENGTH));
 
                             }
 
