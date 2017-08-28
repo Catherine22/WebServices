@@ -23,6 +23,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -71,12 +72,12 @@ public class P01_Apache extends LazyFragment {
         myApache = new MyApache(new HttpResponseListener() {
             @Override
             public void connectSuccess(int code, @NotNull String message, @NotNull String body) {
-                CLog.Companion.i(TAG, String.format("connectSuccess code:%s, message:%s, body:%s", code, message, body));
+                CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", code, message, body));
             }
 
             @Override
             public void connectFailure(int code, @NotNull String message, @NotNull String errorStream, @org.jetbrains.annotations.Nullable Exception e) {
-                CLog.Companion.e(TAG, String.format("connectFailure code:%s, message:%s, body:%s", code, message, errorStream));
+                CLog.Companion.e(TAG, String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, body:%s", code, message, errorStream));
                 if (e != null)
                     CLog.Companion.e(TAG, e.getMessage());
             }

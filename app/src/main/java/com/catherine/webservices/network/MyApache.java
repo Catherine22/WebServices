@@ -81,7 +81,7 @@ public class MyApache {
             StreamUtils su = new StreamUtils();
             InputStream is = r.getEntity().getContent();
             if (is != null) {
-                response = su.convertInputStreamToString(is);
+                response = su.getString(is);
                 is.close();
             }
         } catch (Exception ex) {
@@ -128,7 +128,7 @@ public class MyApache {
             StreamUtils su = new StreamUtils();
             InputStream is = r.getEntity().getContent();
             if (is != null) {
-                response = su.convertInputStreamToString(is);
+                response = su.getString(is);
                 is.close();
             }
         } catch (Exception ex) {

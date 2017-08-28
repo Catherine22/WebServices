@@ -23,6 +23,7 @@ import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
 import org.apache.http.protocol.HTTP;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,6 +44,7 @@ public class MyApplication extends Application {
         INSTANCE = this;
         httpClient = getHttpClient();
         runningActivities = new ArrayList<>();
+        init();
 
         registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
             @Override
@@ -103,6 +105,15 @@ public class MyApplication extends Application {
             else
                 handlerThread.quit();
         }
+    }
+
+    /**
+     * 获取权限后重新初始化
+     */
+    public void init() {
+        File rootDir = new File(Constants.ROOT_PATH);
+        if (!rootDir.exists())
+            rootDir.mkdirs();
     }
 
     public boolean isActivityAvaliable(Activity activity) {

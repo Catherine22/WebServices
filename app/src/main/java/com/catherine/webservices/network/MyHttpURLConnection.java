@@ -8,6 +8,7 @@ import com.catherine.webservices.toolkits.StreamUtils;
 
 import org.apache.http.protocol.HTTP;
 
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -24,11 +25,6 @@ import java.util.Set;
 
 public class MyHttpURLConnection {
     public final static String TAG = "MyHttpURLConnection";
-    private HttpResponseListener listener;
-
-    public MyHttpURLConnection(HttpResponseListener listener) {
-        this.listener = listener;
-    }
 
     public static Map<String, String> getDefaultHeaders() {
         Map<String, String> headers = new HashMap<>();
@@ -54,11 +50,11 @@ public class MyHttpURLConnection {
         return sb.toString();
     }
 
-    public void doGet(String url) {
-        doGet(url, getDefaultHeaders());
+    public void doGet(String url, HttpResponseListener listener) {
+        doGet(url, getDefaultHeaders(), listener);
     }
 
-    public void doGet(String url, Map<String, String> headers) {
+    public void doGet(String url, Map<String, String> headers, HttpResponseListener listener) {
         int code = -1;
         String msg = "";
         String response = "";
@@ -95,14 +91,16 @@ public class MyHttpURLConnection {
             code = conn.getResponseCode();
             msg = conn.getResponseMessage();
             StreamUtils su = new StreamUtils();
-            if (conn.getInputStream() != null) {
-                response = su.convertInputStreamToString(conn.getInputStream());
-                conn.getInputStream().close();
+            InputStream is = conn.getInputStream();
+            if (is != null) {
+                response = su.getString(is);
+                is.close();
             }
 
-            if (conn.getErrorStream() != null) {
-                error = su.convertInputStreamToString(conn.getErrorStream());
-                conn.getErrorStream().close();
+            is = conn.getErrorStream();
+            if (is != null) {
+                error = su.getString(is);
+                is.close();
             }
 
         } catch (Exception ex) {
@@ -115,11 +113,11 @@ public class MyHttpURLConnection {
             listener.connectFailure(code, msg, error, e);
     }
 
-    public void doPost(String url, String body) {
-        doPost(url, getDefaultHeaders(), body);
+    public void doPost(String url, String body, HttpResponseListener listener) {
+        doPost(url, getDefaultHeaders(), body, listener);
     }
 
-    public void doPost(String url, Map<String, String> headers, String body) {
+    public void doPost(String url, Map<String, String> headers, String body, HttpResponseListener listener) {
         int code = -1;
         String msg = "";
         String response = "";
@@ -160,14 +158,17 @@ public class MyHttpURLConnection {
             code = conn.getResponseCode();
             msg = conn.getResponseMessage();
             StreamUtils su = new StreamUtils();
-            if (conn.getInputStream() != null) {
-                response = su.convertInputStreamToString(conn.getInputStream());
-                conn.getInputStream().close();
+
+            InputStream is = conn.getInputStream();
+            if (is != null) {
+                response = su.getString(is);
+                is.close();
             }
 
-            if (conn.getErrorStream() != null) {
-                error = su.convertInputStreamToString(conn.getErrorStream());
-                conn.getErrorStream().close();
+            is = conn.getErrorStream();
+            if (is != null) {
+                error = su.getString(is);
+                is.close();
             }
 
         } catch (Exception ex) {

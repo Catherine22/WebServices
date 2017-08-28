@@ -11,7 +11,7 @@ import java.io.InputStream;
  */
 
 public class StreamUtils {
-    public String convertInputStreamToString(InputStream inputStream) throws IOException {
+    public String getString(InputStream inputStream) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         byte[] buffer = new byte[1024];
         int length;
@@ -20,8 +20,20 @@ public class StreamUtils {
             baos.write(buffer, 0, length);
         }
         result = baos.toString("UTF-8");
-        baos.flush();
         baos.close();
+        baos.flush();
         return result;
+    }
+
+    public byte[] getBytes(InputStream is) throws Exception {
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        byte[] buffer = new byte[1024];
+        int len = 0;
+        while ((len = is.read(buffer)) != -1) {
+            bos.write(buffer, 0, len);
+        }
+        is.close();
+        bos.flush();
+        return bos.toByteArray();
     }
 }

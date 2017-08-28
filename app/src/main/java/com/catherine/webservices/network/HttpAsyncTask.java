@@ -12,7 +12,6 @@ import java.util.Map;
  */
 
 public class HttpAsyncTask extends AsyncTask<String, Void, Void> {
-    private final static String TAG = "HttpAsyncTask";
     private String url;
     private Map<String, String> headers;
     private String body;
@@ -36,15 +35,15 @@ public class HttpAsyncTask extends AsyncTask<String, Void, Void> {
         this.headers = headers;
         this.body = body;
         this.listener = listener;
-        conn = new MyHttpURLConnection(listener);
+        conn = new MyHttpURLConnection();
     }
 
     @Override
     protected Void doInBackground(String... params) {
         if (TextUtils.isEmpty(body))
-            conn.doGet(url, headers);
+            conn.doGet(url, headers, listener);
         else
-            conn.doPost(url, headers, body);
+            conn.doPost(url, headers, body, listener);
         return null;
     }
 
