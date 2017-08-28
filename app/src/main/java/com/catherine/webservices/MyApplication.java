@@ -2,11 +2,9 @@ package com.catherine.webservices;
 
 import android.app.Activity;
 import android.app.Application;
-import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.HandlerThread;
-
 
 import org.apache.http.HttpVersion;
 import org.apache.http.client.HttpClient;
@@ -25,6 +23,9 @@ import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
 import org.apache.http.protocol.HTTP;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Catherine on 2017/8/23.
  * Soft-World Inc.
@@ -35,12 +36,13 @@ public class MyApplication extends Application {
     public static MyApplication INSTANCE;
     public HandlerThread calHandlerThread;
     public HttpClient httpClient;
-    private int runningActivities;
+    private List<String> runningActivities;
 
     @Override
     public void onCreate() {
         INSTANCE = this;
         httpClient = getHttpClient();
+        runningActivities = new ArrayList<>();
 
         registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
             @Override
@@ -50,11 +52,11 @@ public class MyApplication extends Application {
                  * 假如service存活，MyApplication不会呼叫onCreate()，
                  * 所以让HandlerThread在确定在foreground执行或是有Activity时创建HandlerThread
                  */
-                if (runningActivities == 0) {
+                if (runningActivities.size() == 0) {
                     calHandlerThread = new HandlerThread("cal_handler_thread");
                     calHandlerThread.start();
                 }
-                runningActivities++;
+                runningActivities.add(activity.getLocalClassName());
             }
 
             @Override
@@ -85,9 +87,9 @@ public class MyApplication extends Application {
             @Override
             public void onActivityDestroyed(Activity activity) {
                 //startActivity()后才能执行finish()，否则会计算错误
-                runningActivities--;
+                runningActivities.remove(activity.getLocalClassName());
                 //当应用已无运行画面时释放HandlerThread
-                if (runningActivities == 0)
+                if (runningActivities.size() == 0)
                     stopLooper(calHandlerThread);
             }
         });
@@ -101,6 +103,10 @@ public class MyApplication extends Application {
             else
                 handlerThread.quit();
         }
+    }
+
+    public boolean isActivityAvaliable(Activity activity) {
+        return runningActivities.contains(activity.getLocalClassName());
     }
 
     /**

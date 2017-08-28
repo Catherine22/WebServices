@@ -5,19 +5,17 @@ import android.os.Handler
 import android.support.design.widget.TabLayout
 import android.support.v4.app.FragmentActivity
 import com.catherine.webservices.adapters.MainViewPagerAdapter
-
+import com.catherine.webservices.network.NetworkHelper
+import com.catherine.webservices.sample.KotlinTemplate
+import com.catherine.webservices.sample.player.Player
+import com.catherine.webservices.toolkits.CLog
+import com.catherine.webservices.xml.DOMParser
 import com.catherine.webservices.xml.SAXParser
 import com.catherine.webservices.xml.XMLDelegate
 import com.catherine.webservices.xml.XMLParserListener
-import com.catherine.webservices.toolkits.CLog
-import com.catherine.webservices.sample.KotlinTemplate
-import com.catherine.webservices.sample.player.Player
-import com.catherine.webservices.network.NetworkHelper
-import com.catherine.webservices.xml.DOMParser
-import org.dom4j.Document
-
-import java.io.IOException
 import kotlinx.android.synthetic.main.activity_main.*
+import org.dom4j.Document
+import java.io.IOException
 
 
 /**
