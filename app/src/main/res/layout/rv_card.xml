@@ -24,12 +24,20 @@
             android:layout_alignParentTop="true"
             android:background="@color/colorAccentDark"
         />
+        <ProgressBar
+            android:id="@+id/pb"
+            android:visibility="invisible"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="5dp"
+            android:layout_below="@+id/iv_main"
+            android:progressDrawable="@drawable/m_progress_bar"/>
 
         <TextView
             android:id="@+id/tv_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/iv_main"
+            android:layout_below="@+id/pb"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:textSize="30sp"

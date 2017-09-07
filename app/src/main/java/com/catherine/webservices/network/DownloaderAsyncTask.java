@@ -125,16 +125,16 @@ public class DownloaderAsyncTask extends AsyncTask<String, Void, Void> {
 
                 /*
                  * 2. 多线程下载，分配每个线程下载如下
-                 * 线程1: 0~blockSize <br>
-                 * 线程2: 1*blockSize~2*blockSize <br>
-                 * 线程3: 2*blockSize~3*blockSize <br>
+                 * 线程1: 0~blockSize-1 <br>
+                 * 线程2: 1*blockSize~2*blockSize-1 <br>
+                 * 线程3: 2*blockSize~3*blockSize-1 <br>
                  * ...
                  * 线程n: (n-1)*blockSize~len <br>
                  */
                 int blockSize = LENGTH / THREAD_NUM;
                 for (int i = 0; i < THREAD_NUM; i++) {
                     int startPos = i * blockSize;
-                    int endPos = (i + 1) * blockSize;
+                    int endPos = (i + 1) * blockSize -1;
 
                     //注意最后一个线程的结束位置为文件长度
                     if (i == (THREAD_NUM - 1))

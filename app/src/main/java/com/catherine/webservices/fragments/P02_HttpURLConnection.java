@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.HandlerThread;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,6 +16,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.catherine.webservices.Constants;
+import com.catherine.webservices.MyApplication;
 import com.catherine.webservices.R;
 import com.catherine.webservices.adapters.CardRVAdapter;
 import com.catherine.webservices.interfaces.MainInterface;
@@ -46,6 +49,7 @@ public class P02_HttpURLConnection extends LazyFragment {
     private List<String> descriptions;
     private SwipeRefreshLayout srl_container;
     private MainInterface mainInterface;
+    private CardRVAdapter adapter;
     private int total = 0;
 
     public static P02_HttpURLConnection newInstance(boolean isLazyLoad) {
@@ -142,10 +146,11 @@ public class P02_HttpURLConnection extends LazyFragment {
                 srl_container.setRefreshing(false);
             }
         });
+
         RecyclerView rv_main_list = (RecyclerView) findViewById(R.id.rv_main_list);
 //        rv_main_list.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.Companion.getVERTICAL_LIST()));
         rv_main_list.setLayoutManager(new LinearLayoutManager(getActivity()));
-        rv_main_list.setAdapter(new CardRVAdapter(getActivity(), features, descriptions, new CardRVAdapter.OnItemClickListener() {
+        adapter = new CardRVAdapter(getActivity(), features, descriptions, new CardRVAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(@NotNull View view, int position) {
                 switch (position) {
@@ -236,11 +241,14 @@ public class P02_HttpURLConnection extends LazyFragment {
                         }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                         break;
                     case 2:
+                        final Handler h = new Handler();
                         new DownloaderAsyncTask(Constants.DOWNLOAD_HOST + "fmc.apk", new DownloaderListener() {
                             @Override
                             public void update(int downloadedLength, int LENGTH) {
                                 total += downloadedLength;
-                                if (total >= LENGTH) {
+                                adapter.updateProgress(2, LENGTH, total);
+                                h.post(updateListRunnable);
+                                if (total == LENGTH) {
                                     CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess downloadedLength:%d, LENGTH:%d", total, LENGTH));
                                     total = 0;
                                 }
@@ -262,7 +270,14 @@ public class P02_HttpURLConnection extends LazyFragment {
             public void onItemLongClick(@NotNull View view, int position) {
 
             }
-        }));
-
+        });
+        rv_main_list.setAdapter(adapter);
     }
+
+    private Runnable updateListRunnable = new Runnable() {
+        @Override
+        public void run() {
+            adapter.notifyDataSetChanged();
+        }
+    };
 }
