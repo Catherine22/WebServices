@@ -240,9 +240,10 @@ public class P02_HttpURLConnection extends LazyFragment {
                             @Override
                             public void update(int downloadedLength, int LENGTH) {
                                 total += downloadedLength;
-                                if (total >= LENGTH)
+                                if (total >= LENGTH) {
                                     CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess downloadedLength:%d, LENGTH:%d", total, LENGTH));
-
+                                    total = 0;
+                                }
                             }
 
                             @Override

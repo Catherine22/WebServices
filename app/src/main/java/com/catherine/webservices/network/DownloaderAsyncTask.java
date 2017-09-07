@@ -13,7 +13,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.RandomAccessFile;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -35,6 +34,7 @@ public class DownloaderAsyncTask extends AsyncTask<String, Void, Void> {
     private String body;
     private DownloaderListener listener;
     private StreamUtils su = new StreamUtils();
+    private boolean[] downloadCompleted = new boolean[THREAD_NUM];
     private HandlerThread[] threadPool = new HandlerThread[THREAD_NUM];
 
     public DownloaderAsyncTask(String url, DownloaderListener listener) {
@@ -60,7 +60,7 @@ public class DownloaderAsyncTask extends AsyncTask<String, Void, Void> {
         if (!cacheDir.exists())
             isDirectoryCreated = cacheDir.mkdirs();
 
-        if(!isDirectoryCreated) {
+        if (!isDirectoryCreated) {
             // do something
         }
     }
@@ -116,26 +116,25 @@ public class DownloaderAsyncTask extends AsyncTask<String, Void, Void> {
                  * "rws"  打开以便读取和写入。相对于 "rw"，"rws" 还要求对“文件的内容”或“meta-data”的每个更新都同步写入到基础存储设备。
                  * "rwd"  打开以便读取和写入，相对于 "rw"，"rwd" 还要求对“文件的内容”的每个更新都同步写入到基础存储设备。
                  */
-                RandomAccessFile file = new RandomAccessFile(Constants.CACHE_PATH + fileName, "rws");
+                RandomAccessFile file = new RandomAccessFile(Constants.CACHE_PATH + fileName, "rwd");
 
                 // 1.在本地创建一个文件 文件大小要跟服务器文件的大小一致
                 file.setLength(LENGTH);
+                file.close();
+                CLog.Companion.i(TAG, "LENGTH:" + LENGTH);
 
                 /*
                  * 2. 多线程下载，分配每个线程下载如下
                  * 线程1: 0~blockSize <br>
-                 * 线程2: 1*blockSize+1~2*blockSize <br>
-                 * 线程3: 2*blockSize+1~3*blockSize <br>
+                 * 线程2: 1*blockSize~2*blockSize <br>
+                 * 线程3: 2*blockSize~3*blockSize <br>
                  * ...
-                 * 线程n: (n-1)*blockSize+1~len <br>
+                 * 线程n: (n-1)*blockSize~len <br>
                  */
                 int blockSize = LENGTH / THREAD_NUM;
                 for (int i = 0; i < THREAD_NUM; i++) {
-                    int startPos = i * blockSize + 1;
+                    int startPos = i * blockSize;
                     int endPos = (i + 1) * blockSize;
-
-                    if (i == 0)
-                        startPos = 0;
 
                     //注意最后一个线程的结束位置为文件长度
                     if (i == (THREAD_NUM - 1))
@@ -144,10 +143,9 @@ public class DownloaderAsyncTask extends AsyncTask<String, Void, Void> {
                     threadPool[i] = new HandlerThread("DownloadLooper" + i);
                     threadPool[i].start();
 
-                    MyRunnable runnable = new MyRunnable(file, i, startPos, endPos, LENGTH);
+                    MyRunnable runnable = new MyRunnable(i, startPos, endPos, LENGTH);
                     Handler handler = new Handler(threadPool[i].getLooper());
                     handler.post(runnable);
-
                 }
 
             } catch (Exception ex) {
@@ -168,15 +166,13 @@ public class DownloaderAsyncTask extends AsyncTask<String, Void, Void> {
         private int endPos;
         private int LENGTH;
         private String fileName;
-        private RandomAccessFile file;
 
 
-        MyRunnable(RandomAccessFile file, int threadId, int startPos, int endPos, int LENGTH) {
+        MyRunnable(int threadId, int startPos, int endPos, int LENGTH) {
             this.threadId = threadId;
             this.startPos = startPos;
             this.endPos = endPos;
             this.LENGTH = LENGTH;
-            this.file = file;
             int start = url.lastIndexOf("/") + 1;
             fileName = url.substring(start, url.length());
         }
@@ -189,8 +185,16 @@ public class DownloaderAsyncTask extends AsyncTask<String, Void, Void> {
                 conn.setRequestMethod("GET");
                 //默认可读服务器读结果流，所以可略
                 conn.setDoInput(true);
-                //禁用网络缓存
-                conn.setUseCaches(false);
+                //设置逾时
+                conn.setConnectTimeout(5000);
+
+                //设置标头
+                if (headers != null) {
+                    Set<String> set = headers.keySet();
+                    for (String name : set) {
+                        conn.setRequestProperty(name, headers.get(name));
+                    }
+                }
 
                 //用一份文件记录下载进度
                 File positionFile = new File(Constants.CACHE_PATH + fileName + threadId + ".dat");
@@ -210,39 +214,38 @@ public class DownloaderAsyncTask extends AsyncTask<String, Void, Void> {
                 }
                 CLog.Companion.v(TAG, String.format(Locale.ENGLISH, "线程%d正在下载，开始位置%d～结束位置%d", threadId, startPos, endPos));
 
-                //设置标头
-                if (headers != null) {
-                    Set<String> set = headers.keySet();
-                    for (String name : set) {
-                        conn.setRequestProperty(name, headers.get(name));
-                    }
-                }
                 //设置请求内容字节范围
                 conn.setRequestProperty("Range", String.format(Locale.ENGLISH, "bytes=%d-%d", startPos, endPos));
-                InputStream is = conn.getInputStream();
-
-                CLog.Companion.d(TAG, su.getBytes(is).length + "??");
 
                 //设置数据从那个位置开始写
+                RandomAccessFile file = new RandomAccessFile(Constants.CACHE_PATH + fileName, "rwd");
                 file.seek(startPos);
                 byte[] buffer = new byte[1024];
                 // 文件长度，当length = -1代表文件读完了
                 int len;
                 //当前进度
                 int currentPos = startPos;
-                while ((len = is.read(buffer)) != -1) {
+                while ((len = conn.getInputStream().read(buffer)) != -1) {
                     file.write(buffer, 0, len);
                     listener.update(len, LENGTH);
+                    currentPos += len;
                 }
-
+                CLog.Companion.w(TAG, "currentPos:" + currentPos);
 
                 // 需要把currentPosition信息持久化到存储设备
-                currentPos += len;
                 String position = currentPos + "";
+
                 FileOutputStream fos = new FileOutputStream(positionFile);
                 fos.write(position.getBytes());
                 fos.flush();
                 fos.close();
+
+                if (currentPos == LENGTH || currentPos == endPos + 1) {
+                    CLog.Companion.d(TAG, "threadId_" + threadId + " finished");
+                    downloadCompleted[threadId] = true;
+                    positionFile.delete();
+                    file.close();
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
