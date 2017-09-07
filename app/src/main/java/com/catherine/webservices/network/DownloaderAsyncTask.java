@@ -56,8 +56,13 @@ public class DownloaderAsyncTask extends AsyncTask<String, Void, Void> {
         this.listener = listener;
 
         File cacheDir = new File(Constants.CACHE_PATH);
+        boolean isDirectoryCreated = true;
         if (!cacheDir.exists())
-            cacheDir.mkdirs();
+            isDirectoryCreated = cacheDir.mkdirs();
+
+        if(!isDirectoryCreated) {
+            // do something
+        }
     }
 
     @Override
@@ -122,7 +127,7 @@ public class DownloaderAsyncTask extends AsyncTask<String, Void, Void> {
                  * 线程2: 1*blockSize+1~2*blockSize <br>
                  * 线程3: 2*blockSize+1~3*blockSize <br>
                  * ...
-                 * 线程n: (n-1)*blockSize~len <br>
+                 * 线程n: (n-1)*blockSize+1~len <br>
                  */
                 int blockSize = LENGTH / THREAD_NUM;
                 for (int i = 0; i < THREAD_NUM; i++) {
@@ -215,6 +220,8 @@ public class DownloaderAsyncTask extends AsyncTask<String, Void, Void> {
                 //设置请求内容字节范围
                 conn.setRequestProperty("Range", String.format(Locale.ENGLISH, "bytes=%d-%d", startPos, endPos));
                 InputStream is = conn.getInputStream();
+
+                CLog.Companion.d(TAG, su.getBytes(is).length + "??");
 
                 //设置数据从那个位置开始写
                 file.seek(startPos);

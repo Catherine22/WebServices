@@ -1,21 +1,15 @@
-package com.catherine.webservices.toolkits
+package catherine.messagecenter
 
 import android.util.Log
 
-import com.catherine.webservices.BuildConfig
-
 /**
- * Created by Catherine on 2017/7/17.
+ * Created by Catherine on 2017/9/7.
  * Soft-World Inc.
  * catherine919@soft-world.com.tw
  */
-
-/**
- * 宣告了internal后，该class就不能被其它module访问
- */
 internal class CLog {
     companion object {
-        private val DEBUG = BuildConfig.SHOW_LOG
+        private val DEBUG = Config.SHOW_LOG
         fun getTag(): String {
             var tag = ""
             val ste = Thread.currentThread().stackTrace
@@ -50,12 +44,4 @@ internal class CLog {
                 Log.e(tag, message)
         }
     }
-
-
-//    final StackTraceElement[] ste = Thread.currentThread().getStackTrace();
-//    for (int i = 0; i < ste.length; i++) {
-//        if (ste[i].getMethodName().equals("getTag")) {
-//            tag = "(" + ste[i + 1].getFileName() + ":" + ste[i + 1].getLineNumber() + ")";
-//        }
-//    }
 }
