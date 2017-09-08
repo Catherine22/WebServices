@@ -14,6 +14,8 @@ import kotlinx.android.synthetic.main.rv_card.view.*
  * catherine919@soft-world.com.tw
  */
 class CardRVAdapter(private var ctx: Context, private var titles: List<String>, private var subtitles: List<String>, private var onClickListener: OnItemClickListener) : RecyclerView.Adapter<CardRVAdapter.MainRvHolder>() {
+
+
     interface OnItemClickListener {
         fun onItemClick(view: View, position: Int)
         fun onItemLongClick(view: View, position: Int)

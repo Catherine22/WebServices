@@ -22,7 +22,7 @@
             android:layout_width="match_parent"
             android:layout_height="150dp"
             android:layout_alignParentTop="true"
-            android:background="@color/colorAccentDark"
+            android:src="@color/colorAccentDark"
         />
         <ProgressBar
             android:id="@+id/pb"
