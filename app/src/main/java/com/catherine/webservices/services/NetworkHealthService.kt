@@ -2,13 +2,15 @@ package com.catherine.webservices.services
 
 import android.annotation.TargetApi
 import android.app.Service
-import android.content.*
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
 import android.os.Build
 import android.os.IBinder
 import android.widget.Toast
-
 import com.catherine.webservices.toolkits.CLog
 
 /**

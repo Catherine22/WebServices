@@ -1,7 +1,5 @@
 package com.catherine.webservices.sample;
 
-import android.view.View;
-
 import com.catherine.webservices.sample.data.Person;
 import com.catherine.webservices.sample.data.Person2;
 import com.catherine.webservices.toolkits.CLog;

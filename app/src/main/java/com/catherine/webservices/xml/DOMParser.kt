@@ -1,13 +1,10 @@
 package com.catherine.webservices.xml
 
 import com.catherine.webservices.toolkits.CLog
-
-import org.dom4j.Attribute
 import org.dom4j.Document
-import org.dom4j.Element
 import org.dom4j.io.SAXReader
 import java.io.InputStream
-import java.util.ArrayList
+import java.util.*
 
 /**
  * Created by Catherine on 2017/7/25.

@@ -1,23 +1,31 @@
 package com.catherine.webservices
 
+import android.Manifest
 import android.os.Bundle
 import android.os.Handler
 import android.support.design.widget.TabLayout
 import android.support.v4.app.FragmentActivity
 import com.catherine.webservices.adapters.MainViewPagerAdapter
-
+import com.catherine.webservices.network.NetworkHelper
+import com.catherine.webservices.sample.KotlinTemplate
+import com.catherine.webservices.sample.player.Player
+import com.catherine.webservices.toolkits.CLog
+import com.catherine.webservices.xml.DOMParser
 import com.catherine.webservices.xml.SAXParser
 import com.catherine.webservices.xml.XMLDelegate
 import com.catherine.webservices.xml.XMLParserListener
-import com.catherine.webservices.toolkits.CLog
-import com.catherine.webservices.sample.KotlinTemplate
-import com.catherine.webservices.sample.player.Player
-import com.catherine.webservices.network.NetworkHelper
-import com.catherine.webservices.xml.DOMParser
-import org.dom4j.Document
-
-import java.io.IOException
 import kotlinx.android.synthetic.main.activity_main.*
+import org.dom4j.Document
+import java.io.IOException
+import android.support.v4.app.ActivityCompat
+import android.content.pm.PackageManager
+import android.os.Build
+import android.annotation.TargetApi
+import java.util.*
+import android.content.Intent
+import android.net.Uri
+import com.catherine.webservices.interfaces.MainInterface
+import com.catherine.webservices.interfaces.OnRequestPermissionsListener
 
 
 /**
@@ -25,16 +33,18 @@ import kotlinx.android.synthetic.main.activity_main.*
  * Soft-World Inc.
  * catherine919@soft-world.com.tw
  */
-class MainActivity : FragmentActivity() {
+class MainActivity : FragmentActivity(), MainInterface {
+
     companion object {
         private val TAG = "MainActivity"
     }
+
+    private var listener: OnRequestPermissionsListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setView()
-
 
         val checkStateWork = Handler(MyApplication.INSTANCE.calHandlerThread.looper)
         checkStateWork.post {
@@ -48,6 +58,206 @@ class MainActivity : FragmentActivity() {
 //        testKotlin()
 //        testXML()
     }
+
+    //constants
+    private val OPEN_SETTINGS = 1
+    private val ACCESS_PERMISSION = 2
+    private val PERMISSION_OVERLAY = 3
+    private val PERMISSION_WRITE_SETTINGS = 4
+
+    private val GRANTED_SAW = 0x0001     //同意特殊权限(SYSTEM_ALERT_WINDOW)
+    private val GRANTED_WS = 0x0010      //同意特殊权限(WRITE_SETTINGS)
+    private var requestSpec = 0x0000           //需要的特殊权限
+    private var grantedSpec = 0x0000           //已取得的特殊权限
+    private var confirmedSpec = 0x0000         //已询问的特殊权限
+    private var deniedPermissionsList: MutableList<String> = LinkedList<String>() //被拒绝的权限
+
+    /**
+     * 要求用户打开权限,仅限android 6.0 以上
+     *
+     *
+     * SYSTEM_ALERT_WINDOW 和 WRITE_SETTINGS, 这两个权限比较特殊，
+     * 不能通过代码申请方式获取，必须得用户打开软件设置页手动打开，才能授权。
+     *
+     * @param permissions 手机权限 e.g. Manifest.permission.ACCESS_FINE_LOCATION
+     * @param listener    此变量implements事件的接口,负责传递信息
+     */
+    @TargetApi(Build.VERSION_CODES.M)
+    override fun getPermissions(permissions: Array<String>, listener: OnRequestPermissionsListener) {
+        if (permissions.isEmpty() || Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            listener.onGranted()
+            return
+        }
+        this.listener = listener
+        for (p in permissions) {
+            if (p == android.Manifest.permission.SYSTEM_ALERT_WINDOW) {
+                requestSpec = requestSpec or GRANTED_SAW
+                if (android.provider.Settings.canDrawOverlays(this@MainActivity))
+                    grantedSpec = grantedSpec or GRANTED_SAW
+            } else if (p == android.Manifest.permission.WRITE_SETTINGS) {
+                requestSpec = requestSpec or GRANTED_WS
+                if (android.provider.Settings.System.canWrite(this@MainActivity))
+                    grantedSpec = grantedSpec or GRANTED_WS
+            } else if (ActivityCompat.checkSelfPermission(this, p) != PackageManager.PERMISSION_GRANTED) {
+                deniedPermissionsList.add(p)
+            }
+
+        }
+
+        if (requestSpec !== grantedSpec) {
+            getASpecPermission(requestSpec)
+        } else {// Granted all of the special permissions
+            if (deniedPermissionsList.size !== 0) {
+                //Ask for the permissions
+                val deniedPermissions = arrayOfNulls<String>(deniedPermissionsList.size)
+                for (i in 0 until deniedPermissionsList.size) {
+                    deniedPermissions[i] = deniedPermissionsList[i]
+                }
+                ActivityCompat.requestPermissions(this, deniedPermissions, ACCESS_PERMISSION)
+            } else {
+                MyApplication.INSTANCE.init()
+                listener.onGranted()
+
+                requestSpec = 0x0000
+                grantedSpec = 0x0000
+                confirmedSpec = 0x0000
+                deniedPermissionsList.clear()
+            }
+        }
+    }
+
+    @TargetApi(Build.VERSION_CODES.M)
+    private fun getASpecPermission(permissions: Int) {
+        if (permissions and GRANTED_SAW == GRANTED_SAW && permissions and grantedSpec != GRANTED_SAW) {
+            val intent = Intent(android.provider.Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + this@MainActivity.packageName))
+            startActivityForResult(intent, Constants.PERMISSION_OVERLAY)
+        }
+
+        if (permissions and GRANTED_WS == GRANTED_WS && permissions and grantedSpec != GRANTED_WS) {
+            val intent = Intent(android.provider.Settings.ACTION_MANAGE_WRITE_SETTINGS, Uri.parse("package:" + this@MainActivity.packageName))
+            startActivityForResult(intent, Constants.PERMISSION_WRITE_SETTINGS)
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        //Press home key then click icon to launch while checking permission
+        if (permissions.isEmpty()) {
+            requestSpec = 0x0000
+            grantedSpec = 0x0000
+            confirmedSpec = 0x0000
+            deniedPermissionsList.clear()
+            listener?.onRetry()
+            return
+        }
+
+        val deniedResults = grantResults.indices
+                .filter { grantResults[it] != PackageManager.PERMISSION_GRANTED }
+                .mapTo(ArrayList()) { permissions[it] }
+
+        if (requestSpec and GRANTED_WS == GRANTED_WS && grantedSpec and GRANTED_WS != GRANTED_WS)
+            deniedResults.add(Manifest.permission.WRITE_SETTINGS)
+
+        if (requestSpec and GRANTED_SAW == GRANTED_SAW && grantedSpec and GRANTED_SAW != GRANTED_SAW)
+            deniedResults.add(Manifest.permission.SYSTEM_ALERT_WINDOW)
+
+
+        if (deniedResults.size != 0)
+            listener?.onDenied(deniedResults)
+        else {
+            MyApplication.INSTANCE.init()
+            listener?.onGranted()
+        }
+
+        requestSpec = 0x0000
+        grantedSpec = 0x0000
+        confirmedSpec = 0x0000
+        deniedPermissionsList.clear()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+        CLog.d(TAG, "request:$requestCode/resultCode$resultCode")
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            PERMISSION_OVERLAY -> if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                confirmedSpec = confirmedSpec or GRANTED_SAW
+                confirmedSpec = confirmedSpec or grantedSpec
+                if (android.provider.Settings.canDrawOverlays(this))
+                    grantedSpec = grantedSpec or GRANTED_SAW
+                if (confirmedSpec == requestSpec) {
+                    if (deniedPermissionsList.size != 0) {
+                        //Ask for the permissions
+                        val deniedPermissions = arrayOfNulls<String>(deniedPermissionsList.size)
+                        for (i in 0 until deniedPermissionsList.size) {
+                            deniedPermissions[i] = deniedPermissionsList[i]
+                        }
+                        ActivityCompat.requestPermissions(this, deniedPermissions, ACCESS_PERMISSION)
+                    } else {
+                        val deniedResults = ArrayList<String>()
+                        if (requestSpec and GRANTED_WS == GRANTED_WS && grantedSpec and GRANTED_WS != GRANTED_WS)
+                            deniedResults.add(Manifest.permission.WRITE_SETTINGS)
+
+                        if (requestSpec and GRANTED_SAW == GRANTED_SAW && grantedSpec and GRANTED_SAW != GRANTED_SAW)
+                            deniedResults.add(Manifest.permission.SYSTEM_ALERT_WINDOW)
+
+                        if (deniedResults.size > 0)
+                            listener?.onDenied(deniedResults)
+                        else {
+                            MyApplication.INSTANCE.init()
+                            listener?.onGranted()
+                        }
+
+                        requestSpec = 0x0000
+                        grantedSpec = 0x0000
+                        confirmedSpec = 0x0000
+                        deniedPermissionsList.clear()
+                    }
+                }
+            }
+            PERMISSION_WRITE_SETTINGS -> if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                confirmedSpec = confirmedSpec or GRANTED_WS
+                confirmedSpec = confirmedSpec or grantedSpec
+                if (android.provider.Settings.System.canWrite(this))
+                    grantedSpec = grantedSpec or GRANTED_WS
+                if (confirmedSpec == requestSpec) {
+                    if (!deniedPermissionsList.isEmpty()) {
+                        //Ask for the permissions
+                        val deniedPermissions = arrayOfNulls<String>(deniedPermissionsList.size)
+                        for (i in 0 until deniedPermissionsList.size) {
+                            deniedPermissions[i] = deniedPermissionsList.get(i)
+                        }
+                        ActivityCompat.requestPermissions(this, deniedPermissions, ACCESS_PERMISSION)
+                    } else {
+                        val deniedResults = ArrayList<String>()
+                        if (requestSpec and GRANTED_WS == GRANTED_WS && grantedSpec and GRANTED_WS != GRANTED_WS)
+                            deniedResults.add(Manifest.permission.WRITE_SETTINGS)
+
+                        if (requestSpec and GRANTED_SAW == GRANTED_SAW && grantedSpec and GRANTED_SAW != GRANTED_SAW)
+                            deniedResults.add(Manifest.permission.SYSTEM_ALERT_WINDOW)
+
+                        if (deniedResults.size > 0)
+                            listener?.onDenied(deniedResults)
+                        else {
+                            MyApplication.INSTANCE.init()
+                            listener?.onGranted()
+                        }
+                        requestSpec = 0x0000
+                        grantedSpec = 0x0000
+                        confirmedSpec = 0x0000
+                        deniedPermissionsList.clear()
+                    }
+                }
+            }
+            OPEN_SETTINGS -> {
+                requestSpec = 0x0000
+                grantedSpec = 0x0000
+                confirmedSpec = 0x0000
+                deniedPermissionsList.clear()
+                listener?.onRetry()
+            }
+        }
+    }
+
 
     private fun setView() {
         vp_content.adapter = MainViewPagerAdapter(supportFragmentManager)

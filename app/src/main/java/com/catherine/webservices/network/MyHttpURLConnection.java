@@ -1,17 +1,16 @@
 package com.catherine.webservices.network;
 
 
+import android.text.TextUtils;
+
 import com.catherine.webservices.Constants;
-import com.catherine.webservices.toolkits.CLog;
+import com.catherine.webservices.toolkits.StreamUtils;
 
 import org.apache.http.protocol.HTTP;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Locale;
@@ -51,11 +50,16 @@ public class MyHttpURLConnection {
         return sb.toString();
     }
 
-    public void doGet(String url) {
-        doGet(url, getDefaultHeaders());
+    public void doGet(String url, HttpResponseListener listener) {
+        doGet(url, getDefaultHeaders(), listener);
     }
 
-    public void doGet(String url, Map<String, String> headers) {
+    public void doGet(String url, Map<String, String> headers, HttpResponseListener listener) {
+        int code = -1;
+        String msg = "";
+        String response = "";
+        String error = "";
+        Exception e = null;
         try {
             HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
             //默认GET请求，所以可略
@@ -84,37 +88,41 @@ public class MyHttpURLConnection {
 
             conn.connect();
 
-            CLog.Companion.i(TAG, "response code:" + conn.getResponseCode() + " message:" + conn.getResponseMessage());
-            if (conn.getInputStream() != null) {
-                BufferedReader bf = new BufferedReader(new InputStreamReader(conn.getInputStream(), HTTP.UTF_8));
-                String line;
-                while ((line = bf.readLine()) != null) {
-                    CLog.Companion.i(TAG, "response:" + line);
-                }
-                conn.getInputStream().close();
+            code = conn.getResponseCode();
+            msg = conn.getResponseMessage();
+            StreamUtils su = new StreamUtils();
+            InputStream is = conn.getInputStream();
+            if (is != null) {
+                response = su.getString(is);
+                is.close();
             }
 
-            if (conn.getErrorStream() != null) {
-                BufferedReader bf = new BufferedReader(new InputStreamReader(conn.getErrorStream(), HTTP.UTF_8));
-                String error;
-                while ((error = bf.readLine()) != null) {
-                    CLog.Companion.e(TAG, "error message:" + error);
-                }
-                conn.getErrorStream().close();
+            is = conn.getErrorStream();
+            if (is != null) {
+                error = su.getString(is);
+                is.close();
             }
 
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            e = ex;
         }
+        if (e == null && TextUtils.isEmpty(error))
+            listener.connectSuccess(code, msg, response);
+        else
+            listener.connectFailure(code, msg, error, e);
     }
 
-    public void doPost(String url, String body) {
-        doPost(url, getDefaultHeaders(), body);
+    public void doPost(String url, String body, HttpResponseListener listener) {
+        doPost(url, getDefaultHeaders(), body, listener);
     }
 
-    public void doPost(String url, Map<String, String> headers, String body) {
+    public void doPost(String url, Map<String, String> headers, String body, HttpResponseListener listener) {
+        int code = -1;
+        String msg = "";
+        String response = "";
+        String error = "";
+        Exception e = null;
         try {
             HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
             conn.setRequestMethod("POST");
@@ -147,29 +155,29 @@ public class MyHttpURLConnection {
 
             conn.connect();
 
-            CLog.Companion.i(TAG, "response code:" + conn.getResponseCode() + " message:" + conn.getResponseMessage());
-            if (conn.getInputStream() != null) {
-                BufferedReader bf = new BufferedReader(new InputStreamReader(conn.getInputStream(), HTTP.UTF_8));
-                String line;
-                while ((line = bf.readLine()) != null) {
-                    CLog.Companion.i(TAG, "response:" + line);
-                }
-                conn.getInputStream().close();
+            code = conn.getResponseCode();
+            msg = conn.getResponseMessage();
+            StreamUtils su = new StreamUtils();
+
+            InputStream is = conn.getInputStream();
+            if (is != null) {
+                response = su.getString(is);
+                is.close();
             }
 
-            if (conn.getErrorStream() != null) {
-                BufferedReader bf = new BufferedReader(new InputStreamReader(conn.getErrorStream(), HTTP.UTF_8));
-                String error;
-                while ((error = bf.readLine()) != null) {
-                    CLog.Companion.e(TAG, "error message:" + error);
-                }
-                conn.getErrorStream().close();
+            is = conn.getErrorStream();
+            if (is != null) {
+                error = su.getString(is);
+                is.close();
             }
 
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            e = ex;
         }
+        if (e == null && TextUtils.isEmpty(error))
+            listener.connectSuccess(code, msg, response);
+        else
+            listener.connectFailure(code, msg, error, e);
     }
 }

@@ -11,6 +11,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import javax.xml.parsers.SAXParserFactory;
 
@@ -102,7 +103,7 @@ public class SAXParser implements ParserService {
             String value = new String(ch, start, length);
             value = value.trim();
             if (value.length() != 0)
-                message = String.format("%s%s", message, value);
+                message = String.format(Locale.ENGLISH, "%s%s", message, value);
         }
 
         @Override
