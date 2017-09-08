@@ -44,6 +44,19 @@ android {
 - [P02_HttpURLConnection]
 - HttpURLConnection settings:[MyHttpURLConnection]
 
+
+### Multiple-threading download
+- Download a single file with a few threads [P02_HttpURLConnection]
+- Download images
+
+
+### Cache
+- Http cache
+- WebView cache
+
+
+
+
 [MainActivity]:<https://github.com/Catherine22/WebServices/blob/master/app/src/main/java/com/catherine/webservices/MainActivity.kt>
 [MyApplication]:<https://github.com/Catherine22/WebServices/blob/master/app/src/main/java/com/catherine/webservices/MyApplication.java>
 [MyApache]:<https://github.com/Catherine22/WebServices/blob/master/app/src/main/java/com/catherine/webservices/network/MyApache.java>
