@@ -20,6 +20,7 @@ import com.catherine.webservices.R;
 import com.catherine.webservices.adapters.CardRVAdapter;
 import com.catherine.webservices.interfaces.MainInterface;
 import com.catherine.webservices.interfaces.OnRequestPermissionsListener;
+import com.catherine.webservices.network.DownloadRequest;
 import com.catherine.webservices.network.DownloaderAsyncTask;
 import com.catherine.webservices.network.DownloaderListener;
 import com.catherine.webservices.network.HttpAsyncTask;
@@ -270,36 +271,39 @@ public class P02_HttpURLConnection extends LazyFragment {
                         new HttpAsyncTask(request4).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                         break;
                     case 2:
-                        new DownloaderAsyncTask(String.format(Locale.ENGLISH, "%sfmc.apk", Constants.DOWNLOAD_HOST), new DownloaderListener() {
-                            @Override
-                            public void update(final int downloadedLength, final int LENGTH) {
-                                getActivity().runOnUiThread(new Runnable() {
+                        DownloadRequest request5 = new DownloadRequest(new DownloadRequest.Builder()
+                                .url(String.format(Locale.ENGLISH, "%sfmc.apk", Constants.DOWNLOAD_HOST))
+                                .listener(new DownloaderListener() {
                                     @Override
-                                    public void run() {
-                                        total += downloadedLength;
-                                        adapter.updateProgress(2, LENGTH, total);
-                                        adapter.notifyDataSetChanged();
-                                        if (total == LENGTH) {
-                                            CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess downloadedLength:%d, LENGTH:%d", total, LENGTH));
-                                            total = 0;
-                                        }
+                                    public void update(final int downloadedLength, final int LENGTH) {
+                                        getActivity().runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                total += downloadedLength;
+                                                adapter.updateProgress(2, LENGTH, total);
+                                                adapter.notifyDataSetChanged();
+                                                if (total == LENGTH) {
+                                                    CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess downloadedLength:%d, LENGTH:%d", total, LENGTH));
+                                                    total = 0;
+                                                }
+                                            }
+                                        });
                                     }
-                                });
-                            }
 
-                            @Override
-                            public void connectFailure(final int code, @NotNull final String message, @Nullable final Exception e) {
-                                getActivity().runOnUiThread(new Runnable() {
                                     @Override
-                                    public void run() {
-                                        CLog.Companion.e(TAG, String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s", code, message));
-                                        if (e != null)
-                                            CLog.Companion.e(TAG, e.getMessage());
-                                    }
-                                });
+                                    public void connectFailure(final int code, @NotNull final String message, @Nullable final Exception e) {
+                                        getActivity().runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                CLog.Companion.e(TAG, String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s", code, message));
+                                                if (e != null)
+                                                    CLog.Companion.e(TAG, e.getMessage());
+                                            }
+                                        });
 
-                            }
-                        }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                                    }
+                                }));
+                        new DownloaderAsyncTask(request5).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                         break;
                     case 3:
                         new ADID_AsyncTask(new ADID_AsyncTask.ADID_Callback() {
