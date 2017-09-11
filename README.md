@@ -51,10 +51,65 @@ android {
 
 
 ### Cache
-- Http cache
+- HTTP cache
+
+For example, you got a HTTP response like this.
+```html
+HTTP/1.1 200 OK
+Cache-Control: no-cache
+Content-Type: image/png
+Last-Modified: Tue, 08 Nov 2016 06:59:00 GMT
+Accept-Ranges: bytes
+Date: Thu, 10 Nov 2016 02:48:50 GMT
+Content-Length: 3534
+```
+
+You might find something about cache in HTTP headers
+```html
+Cache-Control: no-cache
+```
+The upper description is equal to 
+```html
+Cache-Control: max-age=0 (seconds)
+```
+
+And you can also consider it to be
+```html
+Cache-Control: public or private
+Expires: right now
+```
+
+Something you must know about Cache-Control
+
+| value | meaning |
+| --- | --- |
+| no-store | No cache |
+| no-cache | It's no need to cache the HTTP response you got, but still allowing caching |
+| public | It can be cached, even if it has HTTP authentication associated with it. |
+| private | Only control where the response may be cached, and cannot ensure the privacy of the message content. |
+| max-age=300 | Response can be cached for up to 5 minutes. And where it is cached refer to 'private' or 'public'|
+
+
+
+
+So your cache strategy will be:
+
+[![Http caching](https://raw.githubusercontent.com/Catherine22/WebServices/master/app/src/main/res/drawable/http_cache_decision_tree.png)](https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/http-caching)
+
+First of all, make sure your browser, application or something are available to cache responses. Then check whether the response has expired.
+```html
+Expires：current time + maxAge
+```
+Even if your cache has expired, there're 
+
+
 - WebView cache
 
 
+### References
+- [Tencent bugly]
+- [HTTP 1.1 doc]
+- [Web Fundamentals]
 
 
 [MainActivity]:<https://github.com/Catherine22/WebServices/blob/master/app/src/main/java/com/catherine/webservices/MainActivity.kt>
@@ -64,3 +119,6 @@ android {
 [P01_Apache]:<https://github.com/Catherine22/WebServices/blob/master/app/src/main/java/com/catherine/webservices/fragments/P01_Apache.java>
 [P02_HttpURLConnection]:<https://github.com/Catherine22/WebServices/blob/master/app/src/main/java/com/catherine/webservices/fragments/P02_HttpURLConnection.java>
 [HttpAsyncTask]:<https://github.com/Catherine22/WebServices/blob/master/app/src/main/java/com/catherine/webservices/network/HttpAsyncTask.java>
+[Tencent bugly]:<https://mp.weixin.qq.com/s/qOMO0LIdA47j3RjhbCWUEQ>
+[HTTP 1.1 doc]:<https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html>
+[Web Fundamentals]:<https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/http-caching>

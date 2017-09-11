@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 
 import com.catherine.webservices.fragments.P01_Apache;
 import com.catherine.webservices.fragments.P02_HttpURLConnection;
+import com.catherine.webservices.fragments.P03_Downloader;
 
 /**
  * Created by Catherine on 2017/8/25.
@@ -18,7 +19,7 @@ public class MainViewPagerAdapter extends FragmentPagerAdapter {
         super(fm);
     }
 
-    private String[] mTitles = new String[]{"HttpClient", "HttpURLConnection"};
+    private String[] mTitles = new String[]{"HttpClient", "HttpURLConnection", "Downloader"};
 
     @Override
     public Fragment getItem(int position) {
@@ -26,6 +27,8 @@ public class MainViewPagerAdapter extends FragmentPagerAdapter {
             return P01_Apache.newInstance(true);
         } else if (position == 1) {
             return P02_HttpURLConnection.newInstance(true);
+        } else if (position == 2) {
+            return P03_Downloader.newInstance(true);
         }
         return P01_Apache.newInstance(true);
 

@@ -104,10 +104,10 @@ class MainActivity : FragmentActivity(), MainInterface {
 
         }
 
-        if (requestSpec !== grantedSpec) {
+        if (requestSpec != grantedSpec) {
             getASpecPermission(requestSpec)
         } else {// Granted all of the special permissions
-            if (deniedPermissionsList.size !== 0) {
+            if (deniedPermissionsList.size != 0) {
                 //Ask for the permissions
                 val deniedPermissions = arrayOfNulls<String>(deniedPermissionsList.size)
                 for (i in 0 until deniedPermissionsList.size) {
@@ -268,6 +268,8 @@ class MainActivity : FragmentActivity(), MainInterface {
                     vp_content.currentItem = 0
                 } else if (tab == tabLayout.getTabAt(1)) {
                     vp_content.currentItem = 1
+                } else if (tab == tabLayout.getTabAt(2)) {
+                    vp_content.currentItem = 2
                 }
             }
 
