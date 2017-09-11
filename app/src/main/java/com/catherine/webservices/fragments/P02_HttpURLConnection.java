@@ -15,6 +15,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.catherine.webservices.Constants;
+import com.catherine.webservices.MyApplication;
 import com.catherine.webservices.R;
 import com.catherine.webservices.adapters.CardRVAdapter;
 import com.catherine.webservices.interfaces.MainInterface;
@@ -24,6 +25,8 @@ import com.catherine.webservices.network.DownloaderListener;
 import com.catherine.webservices.network.HttpAsyncTask;
 import com.catherine.webservices.network.HttpResponseListener;
 import com.catherine.webservices.network.MyHttpURLConnection;
+import com.catherine.webservices.network.NetworkHelper;
+import com.catherine.webservices.security.ADID_AsyncTask;
 import com.catherine.webservices.toolkits.CLog;
 
 import org.jetbrains.annotations.NotNull;
@@ -92,7 +95,7 @@ public class P02_HttpURLConnection extends LazyFragment {
                 myAlertDialog.setIcon(android.R.drawable.ic_dialog_alert)
                         .setCancelable(false)
                         .setTitle("注意")
-                        .setMessage(String.format("您目前未授权%1$s存取权限，未授权将造成程式无法执行，是否开启权限？", context.toString()))
+                        .setMessage(String.format("您目前未授权%s存取权限，未授权将造成程式无法执行，是否开启权限？", context.toString()))
                         .setNegativeButton("继续关闭", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -126,12 +129,14 @@ public class P02_HttpURLConnection extends LazyFragment {
         features.add("HttpGet");
         features.add("HttpPost");
         features.add("Download files");
+        features.add("Cache");
 
 
         descriptions = new ArrayList<>();
-        descriptions.add("Set the method for the URL request");
-        descriptions.add("Set the method for the URL request");
-        descriptions.add("Set the method for the URL request");
+        descriptions.add("Set the method for the URL request.");
+        descriptions.add("Set the method for the URL request.");
+        descriptions.add("Download a file.");
+        descriptions.add("Cache the URL response.");
     }
 
     private void initComponent() {
@@ -156,7 +161,7 @@ public class P02_HttpURLConnection extends LazyFragment {
                         Map<String, String> h1 = MyHttpURLConnection.getDefaultHeaders();
                         h1.put("h1", "Hi there!");
                         h1.put("h2", "I am a mobile phone.");
-                        new HttpAsyncTask(Constants.HOST + "LoginServlet?name=zhangsan&password=123456", h1, new HttpResponseListener() {
+                        new HttpAsyncTask(String.format(Locale.ENGLISH, "%sLoginServlet?name=zhangsan&password=123456", Constants.HOST), h1, new HttpResponseListener() {
                             @Override
                             public void connectSuccess(int code, @NotNull String message, @NotNull String body) {
                                 CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", code, message, body));
@@ -191,7 +196,7 @@ public class P02_HttpURLConnection extends LazyFragment {
                         Map<String, String> body = new HashMap<>();
                         body.put("name", "zhangsan");
                         body.put("password", "123456");
-                        new HttpAsyncTask(Constants.HOST + "LoginServlet", h2, MyHttpURLConnection.getSimpleStringBody(body), new HttpResponseListener() {
+                        new HttpAsyncTask(String.format(Locale.ENGLISH, "%sLoginServlet", Constants.HOST), h2, MyHttpURLConnection.getSimpleStringBody(body), new HttpResponseListener() {
                             @Override
                             public void connectSuccess(int code, @NotNull String message, @NotNull String body) {
                                 CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", code, message, body));
@@ -208,7 +213,7 @@ public class P02_HttpURLConnection extends LazyFragment {
 
                         body.put("name", "");
                         body.put("password", "");
-                        new HttpAsyncTask(Constants.HOST + "LoginServlet", MyHttpURLConnection.getSimpleStringBody(body), new HttpResponseListener() {
+                        new HttpAsyncTask(String.format(Locale.ENGLISH, "%sLoginServlet", Constants.HOST), MyHttpURLConnection.getSimpleStringBody(body), new HttpResponseListener() {
                             @Override
                             public void connectSuccess(int code, @NotNull String message, @NotNull String body) {
                                 CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", code, message, body));
@@ -224,7 +229,7 @@ public class P02_HttpURLConnection extends LazyFragment {
 
                         body.put("name", "zhangsan");
                         body.put("password", "123456");
-                        new HttpAsyncTask(Constants.HOST + "LoginServlet", MyHttpURLConnection.getSimpleStringBody(body), new HttpResponseListener() {
+                        new HttpAsyncTask(String.format(Locale.ENGLISH, "%sLoginServlet", Constants.HOST), MyHttpURLConnection.getSimpleStringBody(body), new HttpResponseListener() {
                             @Override
                             public void connectSuccess(int code, @NotNull String message, @NotNull String body) {
                                 CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", code, message, body));
@@ -239,24 +244,73 @@ public class P02_HttpURLConnection extends LazyFragment {
                         }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                         break;
                     case 2:
-                        final Handler h = new Handler();
-                        new DownloaderAsyncTask(Constants.DOWNLOAD_HOST + "fmc.apk", new DownloaderListener() {
+                        new DownloaderAsyncTask(String.format(Locale.ENGLISH, "%sfmc.apk", Constants.DOWNLOAD_HOST), new DownloaderListener() {
                             @Override
-                            public void update(int downloadedLength, int LENGTH) {
-                                total += downloadedLength;
-                                adapter.updateProgress(2, LENGTH, total);
-                                h.post(updateListRunnable);
-                                if (total == LENGTH) {
-                                    CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess downloadedLength:%d, LENGTH:%d", total, LENGTH));
-                                    total = 0;
-                                }
+                            public void update(final int downloadedLength, final int LENGTH) {
+                                getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        total += downloadedLength;
+                                        adapter.updateProgress(2, LENGTH, total);
+                                        adapter.notifyDataSetChanged();
+                                        if (total == LENGTH) {
+                                            CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess downloadedLength:%d, LENGTH:%d", total, LENGTH));
+                                            total = 0;
+                                        }
+                                    }
+                                });
                             }
 
                             @Override
-                            public void connectFailure(int code, @NotNull String message, @org.jetbrains.annotations.Nullable Exception e) {
-                                CLog.Companion.e(TAG, String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, body:%s", code, message));
-                                if (e != null)
-                                    CLog.Companion.e(TAG, e.getMessage());
+                            public void connectFailure(final int code, @NotNull final String message, @Nullable final Exception e) {
+                                getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        CLog.Companion.e(TAG, String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, body:%s", code, message));
+                                        if (e != null)
+                                            CLog.Companion.e(TAG, e.getMessage());
+                                    }
+                                });
+
+                            }
+                        }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                        break;
+                    case 3:
+                        new ADID_AsyncTask(new ADID_AsyncTask.ADID_Callback() {
+                            @Override
+                            public void onResponse(@NotNull String ADID) {
+                                new HttpAsyncTask(NetworkHelper.Companion.encodeURL(String.format(Locale.ENGLISH, "%sResourceServlet?ADID={%s}&IDFA={}", Constants.HOST, ADID)), new HttpResponseListener() {
+                                    @Override
+                                    public void connectSuccess(int code, @NotNull String message, @NotNull String body) {
+                                        CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", code, message, body));
+                                    }
+
+                                    @Override
+                                    public void connectFailure(int code, @NotNull String message, @NotNull String errorStream, @org.jetbrains.annotations.Nullable Exception e) {
+                                        CLog.Companion.e(TAG, String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, body:%s", code, message, errorStream));
+                                        if (e != null)
+                                            CLog.Companion.e(TAG, e.getMessage());
+                                    }
+                                }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                            }
+
+                            @Override
+                            public void onError(@NotNull Exception e) {
+                                CLog.Companion.e(TAG, "Failed to get ADID: " + e.toString());
+                                String ADID = "FAKE-ADID";
+                                new HttpAsyncTask(NetworkHelper.Companion.encodeURL(String.format(Locale.ENGLISH, "%sResourceServlet?ADID={%s}&IDFA={}", Constants.HOST, ADID)), new HttpResponseListener() {
+                                    @Override
+                                    public void connectSuccess(int code, @NotNull String message, @NotNull String body) {
+                                        CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", code, message, body));
+                                    }
+
+                                    @Override
+                                    public void connectFailure(int code, @NotNull String message, @NotNull String errorStream, @org.jetbrains.annotations.Nullable Exception e) {
+                                        CLog.Companion.e(TAG, String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, body:%s", code, message, errorStream));
+                                        if (e != null)
+                                            CLog.Companion.e(TAG, e.getMessage());
+                                    }
+                                }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
                             }
                         }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
@@ -271,11 +325,4 @@ public class P02_HttpURLConnection extends LazyFragment {
         });
         rv_main_list.setAdapter(adapter);
     }
-
-    private Runnable updateListRunnable = new Runnable() {
-        @Override
-        public void run() {
-            adapter.notifyDataSetChanged();
-        }
-    };
 }

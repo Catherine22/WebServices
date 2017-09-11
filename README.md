@@ -100,7 +100,9 @@ First of all, make sure your browser, application or something are available to 
 ```html
 Expires：current time + maxAge
 ```
-Even if your cache has expired, there're 
+Even if your cache has expired, it does not mean your cache isn't work. Your response might contain an ETag which instructs the client to cache it for up to 120 seconds, and provides a validation token ("x234dff") that can be used after the response has expired to check if the resource has been modified.		
+		
+If the token hasn't changed, the server returns a "304 Not Modified" response.
 
 
 - WebView cache
@@ -109,7 +111,7 @@ Even if your cache has expired, there're
 ### References
 - [Tencent bugly]
 - [HTTP 1.1 doc]
-- [Web Fundamentals]
+- [Google Web Fundamentals]
 
 
 [MainActivity]:<https://github.com/Catherine22/WebServices/blob/master/app/src/main/java/com/catherine/webservices/MainActivity.kt>
@@ -121,4 +123,4 @@ Even if your cache has expired, there're
 [HttpAsyncTask]:<https://github.com/Catherine22/WebServices/blob/master/app/src/main/java/com/catherine/webservices/network/HttpAsyncTask.java>
 [Tencent bugly]:<https://mp.weixin.qq.com/s/qOMO0LIdA47j3RjhbCWUEQ>
 [HTTP 1.1 doc]:<https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html>
-[Web Fundamentals]:<https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/http-caching>
+[Google Web Fundamentals]:<https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/http-caching>

@@ -3,6 +3,7 @@ package com.catherine.webservices.network
 import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
+import android.net.Uri
 import com.catherine.webservices.services.NetworkHealthService
 import com.catherine.webservices.toolkits.CLog
 import java.net.InetAddress
@@ -17,7 +18,14 @@ import java.util.*
 class NetworkHelper(private val ctx: Context) {
     companion object {
         val TAG = "NetworkHelper"
+
+
+        fun encodeURL(url: String): String {
+            val ALLOWED_URI_CHARS = "@#&=*+-_.,:!?()/~'%"
+            return Uri.encode(url, ALLOWED_URI_CHARS)
+        }
     }
+
     fun isNetworkHealth(): Boolean {
         val cm = ctx.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val activeNetwork = cm.activeNetworkInfo

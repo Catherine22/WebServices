@@ -72,11 +72,13 @@ public class P01_Apache extends LazyFragment {
         myApache = new MyApache(new HttpResponseListener() {
             @Override
             public void connectSuccess(int code, @NotNull String message, @NotNull String body) {
+                //Running in a non-UI thread right now.
                 CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", code, message, body));
             }
 
             @Override
-            public void connectFailure(int code, @NotNull String message, @NotNull String errorStream, @org.jetbrains.annotations.Nullable Exception e) {
+            public void connectFailure(int code, @NotNull String message, @NotNull String errorStream, @Nullable Exception e) {
+                //Running in a non-UI thread right now.
                 CLog.Companion.e(TAG, String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, body:%s", code, message, errorStream));
                 if (e != null)
                     CLog.Companion.e(TAG, e.getMessage());

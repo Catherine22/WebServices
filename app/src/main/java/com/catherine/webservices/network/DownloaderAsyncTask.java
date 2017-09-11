@@ -26,6 +26,9 @@ import java.util.Set;
  * catherine919@soft-world.com.tw
  */
 
+/**
+ * Response on the non-UI thread
+ */
 public class DownloaderAsyncTask extends AsyncTask<String, Void, Void> {
     private final static String TAG = "DownloaderAsyncTask";
     private final static int THREAD_NUM = 3;
