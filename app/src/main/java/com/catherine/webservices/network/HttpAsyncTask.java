@@ -6,7 +6,6 @@ import android.text.TextUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Map;
 
 /**
  * Created by Catherine on 2017/8/28.
@@ -15,41 +14,25 @@ import java.util.Map;
  */
 
 public class HttpAsyncTask extends AsyncTask<String, Void, Void> {
-    private String url;
-    private Map<String, String> headers;
-    private String body;
-    private HttpResponseListener listenerOnUIThread;
     private MyHttpURLConnection conn;
+    private HttpRequest request;
+    private boolean responseOnUIThread;
 
-    private boolean responseOnUIThread = true;
+    //response
     private boolean connectSuccess;
     private int code;
+    private String body;
     private String message;
     private String errorStream;
     private Exception e;
 
-    public HttpAsyncTask(String url, HttpResponseListener listener) {
-        this(url, MyHttpURLConnection.getDefaultHeaders(), "", listener, true);
+    public HttpAsyncTask(HttpRequest request) {
+        this(request, true);
     }
 
-    public HttpAsyncTask(String url, Map<String, String> headers, HttpResponseListener listener) {
-        this(url, headers, "", listener, true);
-    }
-
-    public HttpAsyncTask(String url, String body, HttpResponseListener listener) {
-        this(url, MyHttpURLConnection.getDefaultHeaders(), body, listener, true);
-    }
-
-    public HttpAsyncTask(String url, Map<String, String> headers, String body, HttpResponseListener listener) {
-        this(url, headers, body, listener, true);
-    }
-
-    public HttpAsyncTask(String url, Map<String, String> headers, String body, HttpResponseListener listener, boolean responseOnUIThread) {
-        this.url = url;
-        this.headers = headers;
-        this.body = body;
+    public HttpAsyncTask(HttpRequest request, boolean responseOnUIThread) {
+        this.request = request;
         this.responseOnUIThread = responseOnUIThread;
-        this.listenerOnUIThread = listener;
         conn = new MyHttpURLConnection();
     }
 
@@ -76,12 +59,12 @@ public class HttpAsyncTask extends AsyncTask<String, Void, Void> {
                 }
             };
         } else
-            listener = listenerOnUIThread;
+            listener = request.getListener();
 
-        if (TextUtils.isEmpty(body))
-            conn.doGet(url, headers, listener);
+        if (TextUtils.isEmpty(request.getBody()))
+            conn.doGet(request.getUrl(), request.getHeaders(), listener);
         else
-            conn.doPost(url, headers, body, listener);
+            conn.doPost(request.getUrl(), request.getHeaders(), request.getBody(), listener);
 
         return null;
     }
@@ -91,9 +74,9 @@ public class HttpAsyncTask extends AsyncTask<String, Void, Void> {
         super.onPostExecute(aVoid);
         if (responseOnUIThread) {
             if (connectSuccess)
-                listenerOnUIThread.connectSuccess(code, message, body);
+                request.getListener().connectSuccess(code, message, body);
             else
-                listenerOnUIThread.connectFailure(code, message, errorStream, e);
+                request.getListener().connectFailure(code, message, errorStream, e);
         }
     }
 }
