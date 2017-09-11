@@ -4,6 +4,7 @@ package com.catherine.webservices.network;
 import android.text.TextUtils;
 
 import com.catherine.webservices.Constants;
+import com.catherine.webservices.toolkits.CLog;
 import com.catherine.webservices.toolkits.StreamUtils;
 
 import org.apache.http.protocol.HTTP;
@@ -83,8 +84,12 @@ public class MyHttpURLConnection {
 //            CLog.Companion.i(TAG, "Content Length: " + conn.getContentLength());
 //            CLog.Companion.i(TAG, "Content Type: " + conn.getContentType());
 //            CLog.Companion.i(TAG, "Date: " + conn.getDate());
-//            CLog.Companion.i(TAG, "Expiration: " + conn.getExpiration());
-//            CLog.Companion.i(TAG, "Last Modified: " + conn.getLastModified());
+
+            long currentTime = System.currentTimeMillis();
+            long expires = conn.getHeaderFieldDate("Expires", currentTime);
+            long lastModified = conn.getHeaderFieldDate("Last-Modified", currentTime);
+            CLog.Companion.i(TAG, "Expires: " + expires);
+            CLog.Companion.i(TAG, "Last Modified: " + lastModified);
 
             conn.connect();
 
@@ -150,8 +155,12 @@ public class MyHttpURLConnection {
 //            CLog.Companion.i(TAG, "Content Length: " + conn.getContentLength());
 //            CLog.Companion.i(TAG, "Content Type: " + conn.getContentType());
 //            CLog.Companion.i(TAG, "Date: " + conn.getDate());
-//            CLog.Companion.i(TAG, "Expiration: " + conn.getExpiration());
-//            CLog.Companion.i(TAG, "Last Modified: " + conn.getLastModified());
+
+            long currentTime = System.currentTimeMillis();
+            long expires = conn.getHeaderFieldDate("Expires", currentTime);
+            long lastModified = conn.getHeaderFieldDate("Last-Modified", currentTime);
+            CLog.Companion.i(TAG, "Expires: " + expires);
+            CLog.Companion.i(TAG, "Last Modified: " + lastModified);
 
             conn.connect();
 

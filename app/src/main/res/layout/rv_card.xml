@@ -5,12 +5,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?android:attr/selectableItemBackground"
     app:cardCornerRadius="2dp"
     app:cardElevation="5dp"
     app:cardMaxElevation="10dp"
     app:cardPreventCornerOverlap="true"
-    app:cardUseCompatPadding="true"
->
+    app:cardUseCompatPadding="true">
 
     <RelativeLayout
         android:layout_width="wrap_content"
@@ -26,12 +28,12 @@
         />
         <ProgressBar
             android:id="@+id/pb"
-            android:visibility="invisible"
             style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="match_parent"
             android:layout_height="5dp"
             android:layout_below="@+id/iv_main"
-            android:progressDrawable="@drawable/m_progress_bar"/>
+            android:progressDrawable="@drawable/m_progress_bar"
+            android:visibility="invisible"/>
 
         <TextView
             android:id="@+id/tv_title"
