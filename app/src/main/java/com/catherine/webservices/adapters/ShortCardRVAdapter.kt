@@ -10,20 +10,20 @@ import android.view.View
 import android.view.ViewGroup
 import com.catherine.webservices.MyApplication
 import com.catherine.webservices.R
-import kotlinx.android.synthetic.main.rv_card.view.*
+import com.catherine.webservices.toolkits.CLog
+import kotlinx.android.synthetic.main.rv_short_card.view.*
 import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.URL
-
 
 /**
  * Created by Catherine on 2017/8/25.
  * Soft-World Inc.
  * catherine919@soft-world.com.tw
  */
-class CardRVAdapter(private var ctx: Context, var images: List<String>?, var titles: List<String>, var subtitles: List<String>?, private var onClickListener: OnItemClickListener) : RecyclerView.Adapter<CardRVAdapter.MainRvHolder>() {
+class ShortCardRVAdapter(private var ctx: Context, var images: List<String>?, var titles: List<String>, var subtitles: List<String>?, private var onClickListener: OnItemClickListener) : RecyclerView.Adapter<ShortCardRVAdapter.MainRvHolder>() {
     companion object {
-        val TAG = "CardRVAdapter"
+        val TAG = "ShortCardRVAdapter"
     }
 
     private val handler = Handler(MyApplication.INSTANCE.calHandlerThread.looper)
@@ -33,8 +33,6 @@ class CardRVAdapter(private var ctx: Context, var images: List<String>?, var tit
         fun onItemClick(view: View, position: Int)
         fun onItemLongClick(view: View, position: Int)
     }
-
-    private var progressList = arrayOfNulls<ProgressBarInfo>(titles.size)
 
     override fun onBindViewHolder(holder: MainRvHolder, position: Int) {
         val onClickListener = View.OnClickListener { view ->
@@ -64,37 +62,15 @@ class CardRVAdapter(private var ctx: Context, var images: List<String>?, var tit
         if (subtitles != null)
             holder.itemView.tv_subtitle.text = subtitles!![position]
         holder.itemView.cv.setOnClickListener(onClickListener)
-
-        if (progressList[position] == null || progressList[position]?.MAX_PROGRESS == -1 || progressList[position]?.cur_progress == -1)
-            holder.itemView.pb.visibility = View.INVISIBLE
-        else {
-            holder.itemView.pb.visibility = View.VISIBLE
-            holder.itemView.pb.max = progressList[position]!!.MAX_PROGRESS
-            holder.itemView.pb.progress = progressList[position]!!.cur_progress
-
-            if (progressList[position]!!.cur_progress == progressList[position]!!.MAX_PROGRESS)
-                holder.itemView.pb.visibility = View.INVISIBLE
-        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): MainRvHolder {
-        return MainRvHolder(LayoutInflater.from(ctx).inflate(R.layout.rv_card, parent, false))
+        return MainRvHolder(LayoutInflater.from(ctx).inflate(R.layout.rv_short_card, parent, false))
     }
 
     override fun getItemCount(): Int {
         return titles.size
     }
 
-    fun updateProgress(pos: Int, MAX: Int, cur: Int) {
-        if (progressList[pos] == null)
-            progressList[pos] = ProgressBarInfo(MAX, cur)
-
-        progressList[pos]?.MAX_PROGRESS = MAX
-        progressList[pos]?.cur_progress = cur
-
-
-    }
-
-    data class ProgressBarInfo(var MAX_PROGRESS: Int = -1, var cur_progress: Int = -1)
     class MainRvHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 }

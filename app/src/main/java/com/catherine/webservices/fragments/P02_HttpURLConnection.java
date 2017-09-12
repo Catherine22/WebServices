@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,7 +14,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.catherine.webservices.Constants;
-import com.catherine.webservices.MyApplication;
 import com.catherine.webservices.R;
 import com.catherine.webservices.adapters.CardRVAdapter;
 import com.catherine.webservices.interfaces.MainInterface;
@@ -28,13 +26,9 @@ import com.catherine.webservices.network.HttpRequest;
 import com.catherine.webservices.network.HttpResponse;
 import com.catherine.webservices.network.HttpResponseListener;
 import com.catherine.webservices.network.MyHttpURLConnection;
-import com.catherine.webservices.network.NetworkHelper;
-import com.catherine.webservices.security.ADID_AsyncTask;
 import com.catherine.webservices.toolkits.CLog;
 
 import org.jetbrains.annotations.NotNull;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -158,7 +152,7 @@ public class P02_HttpURLConnection extends LazyFragment {
         RecyclerView rv_main_list = (RecyclerView) findViewById(R.id.rv_main_list);
 //        rv_main_list.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.Companion.getVERTICAL_LIST()));
         rv_main_list.setLayoutManager(new LinearLayoutManager(getActivity()));
-        adapter = new CardRVAdapter(getActivity(), features, descriptions, new CardRVAdapter.OnItemClickListener() {
+        adapter = new CardRVAdapter(getActivity(), null, features, descriptions, new CardRVAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(@NotNull View view, int position) {
                 switch (position) {
@@ -309,59 +303,7 @@ public class P02_HttpURLConnection extends LazyFragment {
                         new DownloaderAsyncTask(request5).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                         break;
                     case 3:
-                        new ADID_AsyncTask(new ADID_AsyncTask.ADID_Callback() {
-                            @Override
-                            public void onResponse(@NotNull String ADID) {
-                                HttpRequest request5 = new HttpRequest(new HttpRequest.Builder()
-                                        .url(NetworkHelper.Companion.encodeURL(String.format(Locale.ENGLISH, "%sResourceServlet?ADID={%s}&IDFA={}", Constants.HOST, ADID)))
-                                        .listener(new HttpResponseListener() {
-                                            @Override
-                                            public void connectSuccess(HttpResponse response) {
-                                                CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
-                                                try {
-                                                    JSONObject jo = new JSONObject(response.getBody());
-                                                    JSONArray pics = jo.getJSONArray("pics");
-
-                                                } catch (Exception e) {
-                                                    CLog.Companion.e(TAG, "Json error:" + e.getMessage());
-                                                }
-                                            }
-
-                                            @Override
-                                            public void connectFailure(HttpResponse response, Exception e) {
-                                                CLog.Companion.e(TAG, String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, error:%s", response.getCode(), response.getCodeString(), response.getErrorMessage()));
-                                                if (e != null)
-                                                    CLog.Companion.e(TAG, e.getMessage());
-                                            }
-                                        })
-                                );
-                                new HttpAsyncTask(request5).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-                            }
-
-                            @Override
-                            public void onError(@NotNull Exception e) {
-                                CLog.Companion.e(TAG, "Failed to get ADID: " + e.toString());
-                                String ADID = "FAKE-ADID";
-                                HttpRequest request5 = new HttpRequest(new HttpRequest.Builder()
-                                        .url(NetworkHelper.Companion.encodeURL(String.format(Locale.ENGLISH, "%sResourceServlet?ADID={%s}&IDFA={}", Constants.HOST, ADID)))
-                                        .listener(new HttpResponseListener() {
-                                            @Override
-                                            public void connectSuccess(HttpResponse response) {
-                                                CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
-                                            }
-
-                                            @Override
-                                            public void connectFailure(HttpResponse response, Exception e) {
-                                                CLog.Companion.e(TAG, String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, error:%s", response.getCode(), response.getCodeString(), response.getErrorMessage()));
-                                                if (e != null)
-                                                    CLog.Companion.e(TAG, e.getMessage());
-                                            }
-                                        })
-                                );
-                                new HttpAsyncTask(request5).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-
-                            }
-                        }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                        mainInterface.callFragment(Constants.P04_GALLERY);
                         break;
                 }
             }

@@ -24,6 +24,11 @@ class NetworkHelper(private val ctx: Context) {
             val ALLOWED_URI_CHARS = "@#&=*+-_.,:!?()/~'%"
             return Uri.encode(url, ALLOWED_URI_CHARS)
         }
+
+        fun getFileNameFromUrl(url:String):String{
+            val fileNames = url.split("/")
+            return fileNames[fileNames.size - 1]
+        }
     }
 
     fun isNetworkHealth(): Boolean {

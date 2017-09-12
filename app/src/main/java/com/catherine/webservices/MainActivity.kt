@@ -1,11 +1,21 @@
 package com.catherine.webservices
 
 import android.Manifest
+import android.annotation.TargetApi
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.support.design.widget.TabLayout
+import android.support.v4.app.ActivityCompat
+import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
 import com.catherine.webservices.adapters.MainViewPagerAdapter
+import com.catherine.webservices.fragments.P04_Gallery
+import com.catherine.webservices.interfaces.MainInterface
+import com.catherine.webservices.interfaces.OnRequestPermissionsListener
 import com.catherine.webservices.network.NetworkHelper
 import com.catherine.webservices.sample.KotlinTemplate
 import com.catherine.webservices.sample.player.Player
@@ -17,15 +27,7 @@ import com.catherine.webservices.xml.XMLParserListener
 import kotlinx.android.synthetic.main.activity_main.*
 import org.dom4j.Document
 import java.io.IOException
-import android.support.v4.app.ActivityCompat
-import android.content.pm.PackageManager
-import android.os.Build
-import android.annotation.TargetApi
 import java.util.*
-import android.content.Intent
-import android.net.Uri
-import com.catherine.webservices.interfaces.MainInterface
-import com.catherine.webservices.interfaces.OnRequestPermissionsListener
 
 
 /**
@@ -256,6 +258,54 @@ class MainActivity : FragmentActivity(), MainInterface {
                 listener?.onRetry()
             }
         }
+    }
+
+
+    private val fm = supportFragmentManager
+    private val titles = Stack<String>()
+    /**
+     * 跳页至某Fragment
+     *
+     * @param id Tag of the Fragment
+     */
+    override fun callFragment(id: Int) {
+        CLog.d(TAG, "call " + id)
+        var fragment: Fragment? = null
+        var tag: String? = null
+        var title = ""
+        when (id) {
+            Constants.P04_GALLERY -> {
+                title = "P04_GALLERY"
+                fragment = P04_Gallery()
+                tag = "P04"
+            }
+        }
+
+        titles.push(title)
+//        tv_title.setText(title)
+
+        val transaction = fm.beginTransaction()
+        transaction.add(R.id.fl_container, fragment, tag)
+        transaction.addToBackStack(title)
+        transaction.commitAllowingStateLoss()
+    }
+
+    /**
+     * Clear all fragments in stack
+     */
+    override fun clearAllFragments() {
+        for (i in 0 until fm.backStackEntryCount) {
+            fm.popBackStack()
+            titles.pop()
+        }
+        titles.push("功能列表")
+    }
+
+    /**
+     * Simulate BackKey event
+     */
+    override fun backToPreviousPage() {
+        onBackPressed()
     }
 
 

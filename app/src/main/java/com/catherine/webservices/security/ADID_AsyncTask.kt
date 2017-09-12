@@ -4,8 +4,8 @@ import android.os.AsyncTask
 import android.text.TextUtils
 import com.catherine.webservices.MyApplication
 import com.google.android.gms.ads.identifier.AdvertisingIdClient
-import com.google.android.gms.common.GooglePlayServicesRepairableException
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException
+import com.google.android.gms.common.GooglePlayServicesRepairableException
 
 
 /**
