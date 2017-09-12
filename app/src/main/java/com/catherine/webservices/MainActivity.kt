@@ -276,7 +276,7 @@ class MainActivity : FragmentActivity(), MainInterface {
         when (id) {
             Constants.P04_GALLERY -> {
                 title = "P04_GALLERY"
-                fragment = P04_Gallery()
+                fragment = P04_Gallery.newInstance(true)
                 tag = "P04"
             }
         }

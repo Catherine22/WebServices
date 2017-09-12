@@ -26,7 +26,7 @@ import java.util.Set;
 
 public class MyHttpURLConnection {
     public final static String TAG = "MyHttpURLConnection";
-    private final int MAX_CACHE_SIZE = 10 * 1024 * 1024;//10M
+    public final static int MAX_CACHE_SIZE = 10 * 1024 * 1024;//10M
 
     public static Map<String, String> getDefaultHeaders() {
         Map<String, String> headers = new HashMap<>();
