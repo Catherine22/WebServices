@@ -21,6 +21,13 @@ public final class DownloadRequest {
         this.listener = builder.listener;
     }
 
+    public DownloadRequest(String url, Map<String, String> headers, String body, DownloaderListener listener) {
+        this.url = url;
+        this.headers = headers;
+        this.body = body;
+        this.listener = listener;
+    }
+
     public static class Builder {
         private String url;
         private Map<String, String> headers;
@@ -50,6 +57,10 @@ public final class DownloadRequest {
         public Builder listener(DownloaderListener listener) {
             this.listener = listener;
             return this;
+        }
+
+        public DownloadRequest build() {
+            return new DownloadRequest(this);
         }
     }
 

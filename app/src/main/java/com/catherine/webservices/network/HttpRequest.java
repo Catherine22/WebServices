@@ -13,23 +13,27 @@ public final class HttpRequest {
     private Map<String, String> headers;
     private String body;
     private HttpResponseListener listener;
+    private CacheControl cacheControl;
 
     public HttpRequest(Builder builder) {
         this.url = builder.url;
         this.headers = builder.headers;
         this.body = builder.body;
         this.listener = builder.listener;
+        this.cacheControl = builder.cacheControl;
     }
 
     public static class Builder {
         private String url;
         private Map<String, String> headers;
         private String body;
+        private CacheControl cacheControl;
         private HttpResponseListener listener;
 
         public Builder() {
             this.body = "";
             this.headers = MyHttpURLConnection.getDefaultHeaders();
+            this.cacheControl = new CacheControl(new CacheControl.Builder());
         }
 
         public Builder url(String url) {
@@ -51,6 +55,19 @@ public final class HttpRequest {
             this.listener = listener;
             return this;
         }
+
+        public Builder cacheControl(CacheControl cacheControl) {
+            this.cacheControl = cacheControl;
+            return this;
+        }
+
+        public HttpRequest build() {
+            return new HttpRequest(this);
+        }
+    }
+
+    public CacheControl getCacheControl() {
+        return cacheControl;
     }
 
     public String getUrl() {

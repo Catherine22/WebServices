@@ -3,9 +3,6 @@ package com.catherine.webservices.network;
 import android.os.AsyncTask;
 import android.text.TextUtils;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 
 /**
  * Created by Catherine on 2017/8/28.
@@ -42,19 +39,19 @@ public class HttpAsyncTask extends AsyncTask<String, Void, Void> {
         if (responseOnUIThread) {
             listener = new HttpResponseListener() {
                 @Override
-                public void connectSuccess(int code, @NotNull String message, @NotNull String body) {
+                public void connectSuccess(HttpResponse response) {
                     connectSuccess = true;
-                    HttpAsyncTask.this.code = code;
-                    HttpAsyncTask.this.message = message;
-                    HttpAsyncTask.this.body = body;
+                    HttpAsyncTask.this.code = response.getCode();
+                    HttpAsyncTask.this.message = response.getCodeString();
+                    HttpAsyncTask.this.body = response.getBody();
                 }
 
                 @Override
-                public void connectFailure(int code, @NotNull String message, @NotNull String errorStream, @Nullable Exception e) {
+                public void connectFailure(HttpResponse response, Exception e) {
                     connectSuccess = false;
-                    HttpAsyncTask.this.code = code;
-                    HttpAsyncTask.this.message = message;
-                    HttpAsyncTask.this.errorStream = errorStream;
+                    HttpAsyncTask.this.code = response.getCode();
+                    HttpAsyncTask.this.message = response.getCodeString();
+                    HttpAsyncTask.this.errorStream = response.getErrorMessage();
                     HttpAsyncTask.this.e = e;
                 }
             };
@@ -62,9 +59,9 @@ public class HttpAsyncTask extends AsyncTask<String, Void, Void> {
             listener = request.getListener();
 
         if (TextUtils.isEmpty(request.getBody()))
-            conn.doGet(request.getUrl(), request.getHeaders(), listener);
+            conn.doGet(request, listener);
         else
-            conn.doPost(request.getUrl(), request.getHeaders(), request.getBody(), listener);
+            conn.doPost(request, listener);
 
         return null;
     }
@@ -74,9 +71,9 @@ public class HttpAsyncTask extends AsyncTask<String, Void, Void> {
         super.onPostExecute(aVoid);
         if (responseOnUIThread) {
             if (connectSuccess)
-                request.getListener().connectSuccess(code, message, body);
+                request.getListener().connectSuccess(new HttpResponse.Builder().code(code).codeString(message).body(body).build());
             else
-                request.getListener().connectFailure(code, message, errorStream, e);
+                request.getListener().connectFailure(new HttpResponse.Builder().code(code).codeString(message).errorMessage(errorStream).build(), e);
         }
     }
 }

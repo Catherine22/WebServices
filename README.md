@@ -51,7 +51,6 @@ android {
 
 
 ### Cache
-- HTTP cache
 
 For example, you got a HTTP response like this.
 ```html
@@ -157,6 +156,7 @@ Your server returns 304 when it's okay to use the cache you've stored or you mig
 - [Tencent bugly]
 - [HTTP 1.1 doc]
 - [Google Web Fundamentals]
+- [cache cn]
 
 
 [MainActivity]:<https://github.com/Catherine22/WebServices/blob/master/app/src/main/java/com/catherine/webservices/MainActivity.kt>
@@ -169,3 +169,4 @@ Your server returns 304 when it's okay to use the cache you've stored or you mig
 [Tencent bugly]:<https://mp.weixin.qq.com/s/qOMO0LIdA47j3RjhbCWUEQ>
 [HTTP 1.1 doc]:<https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html>
 [Google Web Fundamentals]:<https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/http-caching>
+[cache cn]:<https://segmentfault.com/a/1190000004486640>

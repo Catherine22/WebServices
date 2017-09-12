@@ -13,13 +13,8 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.conn.ConnectTimeoutException;
-import org.apache.http.protocol.HTTP;
 
-import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -66,9 +61,7 @@ public class MyApache {
             //设置标头
             if (headers != null) {
                 Set<String> set = headers.keySet();
-                Iterator<String> iterator = set.iterator();
-                while (iterator.hasNext()) {
-                    String name = iterator.next();
+                for (String name : set) {
                     request.setHeader(name, headers.get(name));
                 }
             }
@@ -89,9 +82,9 @@ public class MyApache {
             e = ex;
         }
         if (e == null && TextUtils.isEmpty(error))
-            listener.connectSuccess(code, msg, response);
+            listener.connectSuccess(new com.catherine.webservices.network.HttpResponse.Builder().code(code).codeString(msg).body(response).build());
         else
-            listener.connectFailure(code, msg, error, e);
+            listener.connectFailure(new com.catherine.webservices.network.HttpResponse.Builder().code(code).codeString(msg).errorMessage(error).build(), e);
     }
 
     public void doPost(String url, List<NameValuePair> nameValuePairs) {
@@ -136,9 +129,9 @@ public class MyApache {
             e = ex;
         }
         if (e == null && TextUtils.isEmpty(error))
-            listener.connectSuccess(code, msg, response);
+            listener.connectSuccess(new com.catherine.webservices.network.HttpResponse.Builder().code(code).codeString(msg).body(response).build());
         else
-            listener.connectFailure(code, msg, error, e);
+            listener.connectFailure(new com.catherine.webservices.network.HttpResponse.Builder().code(code).codeString(msg).errorMessage(error).build(), e);
     }
 
 

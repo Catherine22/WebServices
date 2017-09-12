@@ -26,6 +26,7 @@ import java.util.Set;
 
 public class MyHttpURLConnection {
     public final static String TAG = "MyHttpURLConnection";
+    private final int MAX_CACHE_SIZE = 10 * 1024 * 1024;//10M
 
     public static Map<String, String> getDefaultHeaders() {
         Map<String, String> headers = new HashMap<>();
@@ -51,18 +52,14 @@ public class MyHttpURLConnection {
         return sb.toString();
     }
 
-    public void doGet(String url, HttpResponseListener listener) {
-        doGet(url, getDefaultHeaders(), listener);
-    }
-
-    public void doGet(String url, Map<String, String> headers, HttpResponseListener listener) {
+    public void doGet(HttpRequest request, HttpResponseListener listener) {
         int code = -1;
         String msg = "";
         String response = "";
         String error = "";
         Exception e = null;
         try {
-            HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
+            HttpURLConnection conn = (HttpURLConnection) new URL(request.getUrl()).openConnection();
             //默认GET请求，所以可略
             conn.setRequestMethod("GET");
             //默认可读服务器读结果流，所以可略
@@ -70,12 +67,11 @@ public class MyHttpURLConnection {
             //禁用网络缓存
             conn.setUseCaches(false);
 
-
             //设置标头
-            if (headers != null) {
-                Set<String> set = headers.keySet();
+            if (request.getHeaders() != null) {
+                Set<String> set = request.getHeaders().keySet();
                 for (String name : set) {
-                    conn.setRequestProperty(name, headers.get(name));
+                    conn.setRequestProperty(name, request.getHeaders().get(name));
                 }
             }
 
@@ -112,24 +108,21 @@ public class MyHttpURLConnection {
             ex.printStackTrace();
             e = ex;
         }
+
         if (e == null && TextUtils.isEmpty(error))
-            listener.connectSuccess(code, msg, response);
+            listener.connectSuccess(new HttpResponse.Builder().code(code).codeString(msg).body(response).build());
         else
-            listener.connectFailure(code, msg, error, e);
+            listener.connectFailure(new HttpResponse.Builder().code(code).codeString(msg).errorMessage(response).build(), e);
     }
 
-    public void doPost(String url, String body, HttpResponseListener listener) {
-        doPost(url, getDefaultHeaders(), body, listener);
-    }
-
-    public void doPost(String url, Map<String, String> headers, String body, HttpResponseListener listener) {
+    public void doPost(HttpRequest request, HttpResponseListener listener) {
         int code = -1;
         String msg = "";
         String response = "";
         String error = "";
         Exception e = null;
         try {
-            HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
+            HttpURLConnection conn = (HttpURLConnection) new URL(request.getUrl()).openConnection();
             conn.setRequestMethod("POST");
             //默认可读服务器读结果流，所以可略
             conn.setDoInput(true);
@@ -138,16 +131,16 @@ public class MyHttpURLConnection {
 
 
             //设置标头
-            if (headers != null) {
-                Set<String> set = headers.keySet();
+            if (request.getHeaders() != null) {
+                Set<String> set = request.getHeaders().keySet();
                 for (String name : set) {
-                    conn.setRequestProperty(name, headers.get(name));
+                    conn.setRequestProperty(name, request.getHeaders().get(name));
                 }
             }
 
             //获取conn的输出流
             OutputStream os = conn.getOutputStream();
-            os.write(body.getBytes(HTTP.UTF_8));
+            os.write(request.getBody().getBytes(HTTP.UTF_8));
             os.close();
 
 //            CLog.Companion.i(TAG, "url: " + url);
@@ -185,8 +178,8 @@ public class MyHttpURLConnection {
             e = ex;
         }
         if (e == null && TextUtils.isEmpty(error))
-            listener.connectSuccess(code, msg, response);
+            listener.connectSuccess(new HttpResponse.Builder().code(code).codeString(msg).body(response).build());
         else
-            listener.connectFailure(code, msg, error, e);
+            listener.connectFailure(new HttpResponse.Builder().code(code).codeString(msg).errorMessage(response).build(), e);
     }
 }

@@ -25,6 +25,7 @@ import com.catherine.webservices.network.DownloaderAsyncTask;
 import com.catherine.webservices.network.DownloaderListener;
 import com.catherine.webservices.network.HttpAsyncTask;
 import com.catherine.webservices.network.HttpRequest;
+import com.catherine.webservices.network.HttpResponse;
 import com.catherine.webservices.network.HttpResponseListener;
 import com.catherine.webservices.network.MyHttpURLConnection;
 import com.catherine.webservices.network.NetworkHelper;
@@ -32,6 +33,8 @@ import com.catherine.webservices.security.ADID_AsyncTask;
 import com.catherine.webservices.toolkits.CLog;
 
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -168,13 +171,13 @@ public class P02_HttpURLConnection extends LazyFragment {
                                 .headers(h1)
                                 .listener(new HttpResponseListener() {
                                     @Override
-                                    public void connectSuccess(int code, @NotNull String message, @NotNull String body) {
-                                        CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", code, message, body));
+                                    public void connectSuccess(HttpResponse response) {
+                                        CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
                                     }
 
                                     @Override
-                                    public void connectFailure(int code, @NotNull String message, @NotNull String errorStream, @org.jetbrains.annotations.Nullable Exception e) {
-                                        CLog.Companion.e(TAG, String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, body:%s", code, message, errorStream));
+                                    public void connectFailure(HttpResponse response, Exception e) {
+                                        CLog.Companion.e(TAG, String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, error:%s", response.getCode(), response.getCodeString(), response.getErrorMessage()));
                                         if (e != null)
                                             CLog.Companion.e(TAG, e.getMessage());
                                     }
@@ -185,13 +188,13 @@ public class P02_HttpURLConnection extends LazyFragment {
                                 .url("http://dictionary.cambridge.org/zhs/%E6%90%9C%E7%B4%A2/%E8%8B%B1%E8%AF%AD-%E6%B1%89%E8%AF%AD-%E7%AE%80%E4%BD%93/direct/?q=philosopher")
                                 .listener(new HttpResponseListener() {
                                     @Override
-                                    public void connectSuccess(int code, @NotNull String message, @NotNull String body) {
-                                        CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", code, message, body));
+                                    public void connectSuccess(HttpResponse response) {
+                                        CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
                                     }
 
                                     @Override
-                                    public void connectFailure(int code, @NotNull String message, @NotNull String errorStream, @org.jetbrains.annotations.Nullable Exception e) {
-                                        CLog.Companion.e(TAG, String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, body:%s", code, message, errorStream));
+                                    public void connectFailure(HttpResponse response, Exception e) {
+                                        CLog.Companion.e(TAG, String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, error:%s", response.getCode(), response.getCodeString(), response.getErrorMessage()));
                                         if (e != null)
                                             CLog.Companion.e(TAG, e.getMessage());
                                     }
@@ -212,13 +215,13 @@ public class P02_HttpURLConnection extends LazyFragment {
                                 .body(MyHttpURLConnection.getSimpleStringBody(body))
                                 .listener(new HttpResponseListener() {
                                     @Override
-                                    public void connectSuccess(int code, @NotNull String message, @NotNull String body) {
-                                        CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", code, message, body));
+                                    public void connectSuccess(HttpResponse response) {
+                                        CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
                                     }
 
                                     @Override
-                                    public void connectFailure(int code, @NotNull String message, @NotNull String errorStream, @org.jetbrains.annotations.Nullable Exception e) {
-                                        CLog.Companion.e(TAG, String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, body:%s", code, message, errorStream));
+                                    public void connectFailure(HttpResponse response, Exception e) {
+                                        CLog.Companion.e(TAG, String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, error:%s", response.getCode(), response.getCodeString(), response.getErrorMessage()));
                                         if (e != null)
                                             CLog.Companion.e(TAG, e.getMessage());
                                     }
@@ -234,13 +237,13 @@ public class P02_HttpURLConnection extends LazyFragment {
                                 .body(MyHttpURLConnection.getSimpleStringBody(body))
                                 .listener(new HttpResponseListener() {
                                     @Override
-                                    public void connectSuccess(int code, @NotNull String message, @NotNull String body) {
-                                        CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", code, message, body));
+                                    public void connectSuccess(HttpResponse response) {
+                                        CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
                                     }
 
                                     @Override
-                                    public void connectFailure(int code, @NotNull String message, @NotNull String errorStream, @org.jetbrains.annotations.Nullable Exception e) {
-                                        CLog.Companion.e(TAG, String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, body:%s", code, message, errorStream));
+                                    public void connectFailure(HttpResponse response, Exception e) {
+                                        CLog.Companion.e(TAG, String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, error:%s", response.getCode(), response.getCodeString(), response.getErrorMessage()));
                                         if (e != null)
                                             CLog.Companion.e(TAG, e.getMessage());
                                     }
@@ -256,13 +259,13 @@ public class P02_HttpURLConnection extends LazyFragment {
                                 .body(MyHttpURLConnection.getSimpleStringBody(body))
                                 .listener(new HttpResponseListener() {
                                     @Override
-                                    public void connectSuccess(int code, @NotNull String message, @NotNull String body) {
-                                        CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", code, message, body));
+                                    public void connectSuccess(HttpResponse response) {
+                                        CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
                                     }
 
                                     @Override
-                                    public void connectFailure(int code, @NotNull String message, @NotNull String errorStream, @org.jetbrains.annotations.Nullable Exception e) {
-                                        CLog.Companion.e(TAG, String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, body:%s", code, message, errorStream));
+                                    public void connectFailure(HttpResponse response, Exception e) {
+                                        CLog.Companion.e(TAG, String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, error:%s", response.getCode(), response.getCodeString(), response.getErrorMessage()));
                                         if (e != null)
                                             CLog.Companion.e(TAG, e.getMessage());
                                     }
@@ -291,11 +294,11 @@ public class P02_HttpURLConnection extends LazyFragment {
                                     }
 
                                     @Override
-                                    public void connectFailure(final int code, @NotNull final String message, @Nullable final Exception e) {
+                                    public void connectFailure(final HttpResponse response, final Exception e) {
                                         getActivity().runOnUiThread(new Runnable() {
                                             @Override
                                             public void run() {
-                                                CLog.Companion.e(TAG, String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s", code, message));
+                                                CLog.Companion.e(TAG, String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s", response.getCode(), response.getCodeString()));
                                                 if (e != null)
                                                     CLog.Companion.e(TAG, e.getMessage());
                                             }
@@ -313,13 +316,20 @@ public class P02_HttpURLConnection extends LazyFragment {
                                         .url(NetworkHelper.Companion.encodeURL(String.format(Locale.ENGLISH, "%sResourceServlet?ADID={%s}&IDFA={}", Constants.HOST, ADID)))
                                         .listener(new HttpResponseListener() {
                                             @Override
-                                            public void connectSuccess(int code, @NotNull String message, @NotNull String body) {
-                                                CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", code, message, body));
+                                            public void connectSuccess(HttpResponse response) {
+                                                CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
+                                                try {
+                                                    JSONObject jo = new JSONObject(response.getBody());
+                                                    JSONArray pics = jo.getJSONArray("pics");
+
+                                                } catch (Exception e) {
+                                                    CLog.Companion.e(TAG, "Json error:" + e.getMessage());
+                                                }
                                             }
 
                                             @Override
-                                            public void connectFailure(int code, @NotNull String message, @NotNull String errorStream, @org.jetbrains.annotations.Nullable Exception e) {
-                                                CLog.Companion.e(TAG, String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, body:%s", code, message, errorStream));
+                                            public void connectFailure(HttpResponse response, Exception e) {
+                                                CLog.Companion.e(TAG, String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, error:%s", response.getCode(), response.getCodeString(), response.getErrorMessage()));
                                                 if (e != null)
                                                     CLog.Companion.e(TAG, e.getMessage());
                                             }
@@ -336,13 +346,13 @@ public class P02_HttpURLConnection extends LazyFragment {
                                         .url(NetworkHelper.Companion.encodeURL(String.format(Locale.ENGLISH, "%sResourceServlet?ADID={%s}&IDFA={}", Constants.HOST, ADID)))
                                         .listener(new HttpResponseListener() {
                                             @Override
-                                            public void connectSuccess(int code, @NotNull String message, @NotNull String body) {
-                                                CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", code, message, body));
+                                            public void connectSuccess(HttpResponse response) {
+                                                CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
                                             }
 
                                             @Override
-                                            public void connectFailure(int code, @NotNull String message, @NotNull String errorStream, @org.jetbrains.annotations.Nullable Exception e) {
-                                                CLog.Companion.e(TAG, String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, body:%s", code, message, errorStream));
+                                            public void connectFailure(HttpResponse response, Exception e) {
+                                                CLog.Companion.e(TAG, String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, error:%s", response.getCode(), response.getCodeString(), response.getErrorMessage()));
                                                 if (e != null)
                                                     CLog.Companion.e(TAG, e.getMessage());
                                             }

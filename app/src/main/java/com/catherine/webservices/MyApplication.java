@@ -4,7 +4,11 @@ import android.app.Activity;
 import android.app.Application;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.HandlerThread;
+import android.text.TextUtils;
+
+import com.catherine.webservices.toolkits.FileUtils;
 
 import org.apache.http.HttpVersion;
 import org.apache.http.client.HttpClient;
@@ -114,6 +118,29 @@ public class MyApplication extends Application {
         File rootDir = new File(Constants.ROOT_PATH);
         if (!rootDir.exists())
             rootDir.mkdirs();
+    }
+
+    public File getDiskCacheDir() throws NullPointerException {
+        return getDiskCacheDir(null);
+    }
+
+    public File getDiskCacheDir(String dirName) throws NullPointerException {
+        String cachePath = (FileUtils.Companion.isExternalStorageWritable()) ? Constants.CACHE_PATH : getCacheDir().getAbsolutePath();
+        File dir = new File(cachePath);
+        boolean b = true;
+        if (!dir.exists())
+            b = dir.mkdirs();
+
+        if (!TextUtils.isEmpty(dirName)) {
+            dir = new File(cachePath + dirName + "/");
+            if (!dir.exists())
+                b = dir.mkdirs();
+        }
+
+        if (!b)
+            throw new NullPointerException(String.format("Failed to access external storage, isExternalStorageWritable:%s", FileUtils.Companion.isExternalStorageWritable()));
+        else
+            return dir;
     }
 
     public boolean isActivityAvaliable(Activity activity) {

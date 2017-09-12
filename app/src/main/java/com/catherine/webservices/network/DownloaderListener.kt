@@ -7,5 +7,5 @@ package com.catherine.webservices.network
  */
 interface DownloaderListener {
     fun update(downloadedLength: Int, LENGTH: Int)
-    fun connectFailure(code: Int, message: String, e: Exception?)
+    fun connectFailure(response: HttpResponse, e: Exception?)
 }
