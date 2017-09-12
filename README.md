@@ -64,7 +64,7 @@ Date: Thu, 10 Nov 2016 02:48:50 GMT
 Content-Length: 3534
 ```
 
-You might find something about cache in HTTP headers
+You can find something about cache in HTTP headers
 ```html
 Cache-Control: no-cache
 ```
@@ -79,7 +79,7 @@ Cache-Control: public or private
 Expires: right now
 ```
 
-Something you must know about Cache-Control
+- **Cache-Control**
 
 | value | meaning |
 | --- | --- |
@@ -90,7 +90,45 @@ Something you must know about Cache-Control
 | max-age=300 | Response can be cached for up to 5 minutes. And where it is cached refer to 'private' or 'public'|
 
 
+- **ETag**
 
+ETag is typically a hash or some other fingerprint of the contents of the file.
+
+You get the response headers like that
+```html
+ETag:"751F63A30AB5F98F855D1D90D217B356"
+```
+
+Your request headers contain
+```html
+If-None-Match: "751F63A30AB5F98F855D1D90D217B356"
+```
+
+
+- **Last-Modified**
+
+You get the response headers like that
+```html
+Last-Modified:Tue, 03 Mar 2015 01:38:18 GMT
+```
+
+Your request headers contain
+```html
+If-Modified-Since:Tue, 03 Mar 2015 01:38:18 GMT
+```
+
+- **Expires**
+
+Expires header defines a precise time but some of the users can't synchronize the latest response because they are in other time zones.		
+When expires header is less than 0, it's equal to Cache-Control: no-cache
+```html
+Expires:Tue, 03 May 2016 09:33:34 GMT
+```
+
+
+
+Even if your cache has expired, it doesn't mean your cache isn't work. Your response might contain an ETag which instructs the client to cache it for up to 120 seconds, and provides a validation token ("x234dff") that can be used after the response has expired to check if the resource has been modified.		
+If the token hasn't been changed, the server returns a "304 Not Modified" response.
 
 So your cache strategy will be:
 
@@ -98,11 +136,18 @@ So your cache strategy will be:
 
 First of all, make sure your browser, application or something are available to cache responses. Then check whether the response has expired.
 ```html
-Expires：current time + maxAge
+Expires：current time + maxAge(=0)
 ```
-Even if your cache has expired, it does not mean your cache isn't work. Your response might contain an ETag which instructs the client to cache it for up to 120 seconds, and provides a validation token ("x234dff") that can be used after the response has expired to check if the resource has been modified.		
-		
-If the token hasn't changed, the server returns a "304 Not Modified" response.
+
+or
+
+```html
+Cache-Control: max-age=(0)
+```
+
+If your cache is not available, then you request ETag (with If-None-Match) or Last-Modified (with If-Modified-Since) to your server.
+Your server returns 304 when it's okay to use the cache you've stored or you might get 200 with new resources.
+
 
 
 - WebView cache
