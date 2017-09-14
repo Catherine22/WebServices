@@ -16,6 +16,7 @@ import com.catherine.webservices.network.HttpAsyncTask;
 import com.catherine.webservices.network.HttpRequest;
 import com.catherine.webservices.network.HttpResponse;
 import com.catherine.webservices.network.HttpResponseListener;
+import com.catherine.webservices.network.NetworkHealthListener;
 import com.catherine.webservices.network.NetworkHelper;
 import com.catherine.webservices.security.ADID_AsyncTask;
 import com.catherine.webservices.toolkits.CLog;
@@ -45,6 +46,7 @@ public class P04_Gallery extends LazyFragment {
     private RecyclerView rv_main_list;
     private NetworkHelper helper;
     private ADID_AsyncTask adid_asyncTask;
+    private boolean retry;
 
     public static P04_Gallery newInstance(boolean isLazyLoad) {
         Bundle args = new Bundle();
@@ -64,6 +66,32 @@ public class P04_Gallery extends LazyFragment {
         attrs = new ArrayList<>();
         images = new ArrayList<>();
         helper = new NetworkHelper(getActivity());
+        helper.listenToNetworkState(new NetworkHealthListener() {
+            @Override
+            public void networkConnected(@NotNull String type) {
+                if(retry){
+                    fillInData();
+                }
+            }
+
+            @Override
+            public void networkDisable() {
+
+            }
+        });
+        initComponent();
+        fillInData();
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+    }
+
+    private void fillInData() {
+        retry = false;
+        rv_main_list.setVisibility(View.VISIBLE);
+        tv_offline.setVisibility(View.GONE);
         adid_asyncTask = new ADID_AsyncTask(new ADID_AsyncTask.ADID_Callback() {
             @Override
             public void onResponse(@NotNull String ADID) {
@@ -103,6 +131,7 @@ public class P04_Gallery extends LazyFragment {
                                     tv_offline.setVisibility(View.VISIBLE);
                                     rv_main_list.setVisibility(View.GONE);
                                 } else {
+                                    retry = true;
                                     tv_offline.setVisibility(View.VISIBLE);
                                     rv_main_list.setVisibility(View.GONE);
                                 }
@@ -135,6 +164,7 @@ public class P04_Gallery extends LazyFragment {
                                     tv_offline.setVisibility(View.VISIBLE);
                                     rv_main_list.setVisibility(View.GONE);
                                 } else {
+                                    retry = true;
                                     tv_offline.setVisibility(View.VISIBLE);
                                     rv_main_list.setVisibility(View.GONE);
                                 }
@@ -145,19 +175,6 @@ public class P04_Gallery extends LazyFragment {
 
             }
         });
-
-        initComponent();
-        fillInData();
-    }
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-    }
-
-    private void fillInData() {
-        rv_main_list.setVisibility(View.VISIBLE);
-        tv_offline.setVisibility(View.GONE);
         adid_asyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
