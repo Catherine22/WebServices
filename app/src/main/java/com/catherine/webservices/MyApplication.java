@@ -29,6 +29,10 @@ import org.apache.http.protocol.HTTP;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Queue;
+import java.util.Stack;
+
+import catherine.messagecenter.Client;
 
 /**
  * Created by Catherine on 2017/8/23.
@@ -41,12 +45,14 @@ public class MyApplication extends Application {
     public HandlerThread calHandlerThread;
     public HttpClient httpClient;
     private List<String> runningActivities;
+    private Stack<Client> localBroadCastReceivers;
 
     @Override
     public void onCreate() {
         INSTANCE = this;
         httpClient = getHttpClient();
         runningActivities = new ArrayList<>();
+        localBroadCastReceivers = new Stack<>();
         init();
 
         registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
@@ -96,6 +102,12 @@ public class MyApplication extends Application {
                 //当应用已无运行画面时释放HandlerThread
                 if (runningActivities.size() == 0)
                     stopLooper(calHandlerThread);
+
+                //释放全部的localBroadCastReceiver
+                while (localBroadCastReceivers.size() > 0) {
+                    localBroadCastReceivers.peek().release();
+                    localBroadCastReceivers.pop();
+                }
             }
         });
         super.onCreate();
@@ -117,6 +129,15 @@ public class MyApplication extends Application {
         File rootDir = new File(Constants.ROOT_PATH);
         if (!rootDir.exists())
             rootDir.mkdirs();
+    }
+
+    /**
+     * 添加接收器，最后关闭应用时一并释放
+     *
+     * @param client
+     */
+    public void registerLocalBroadCastReceiver(Client client) {
+        localBroadCastReceivers.add(client);
     }
 
     public File getDiskCacheDir() throws NullPointerException {

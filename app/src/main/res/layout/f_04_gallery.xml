@@ -18,4 +18,12 @@
             android:nestedScrollingEnabled="true"/>
 
     </android.support.v4.widget.SwipeRefreshLayout>
+
+    <TextView
+        android:id="@+id/tv_offline"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="@string/offline"
+        android:visibility="gone"/>
 </FrameLayout>

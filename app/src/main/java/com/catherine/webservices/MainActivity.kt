@@ -16,6 +16,7 @@ import com.catherine.webservices.adapters.MainViewPagerAdapter
 import com.catherine.webservices.fragments.P04_Gallery
 import com.catherine.webservices.interfaces.MainInterface
 import com.catherine.webservices.interfaces.OnRequestPermissionsListener
+import com.catherine.webservices.network.NetworkHealthListener
 import com.catherine.webservices.network.NetworkHelper
 import com.catherine.webservices.sample.KotlinTemplate
 import com.catherine.webservices.sample.player.Player
@@ -53,7 +54,15 @@ class MainActivity : FragmentActivity(), MainInterface {
             val networkHelper = NetworkHelper(this)
             CLog.d(TAG, "isNetworkHealth:${networkHelper.isNetworkHealth()}")
             CLog.d(TAG, "isWifi:${networkHelper.isWifi()}")
-            networkHelper.listenToNetworkState()
+            networkHelper.listenToNetworkState(object : NetworkHealthListener {
+                override fun networkConnected(type: String) {
+                    CLog.i(TAG, "network connected, type:$type")
+                }
+
+                override fun networkDisable() {
+                    CLog.e(TAG, "network disable")
+                }
+            })
         }
 
 

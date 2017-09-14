@@ -11,16 +11,15 @@ import android.os.Bundle
  * Soft-World Inc.
  * catherine919@soft-world.com.tw
  */
-class Server {
+class Server(ctx: Context, ar: AsyncResponse) {
     private var ctx: Context? = null
     private var ar: AsyncResponse? = null
 
     /**
      * Before you use pushTypes(), you should initialize this constructor
      *
-     * @param ctx Your Context
      */
-    fun Server(ctx: Context, ar: AsyncResponse) {
+    init {
         this.ctx = ctx
         this.ar = ar
     }

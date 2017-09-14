@@ -11,6 +11,7 @@ import org.apache.http.protocol.HTTP;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
@@ -26,6 +27,7 @@ import java.util.Set;
 
 public class MyHttpURLConnection {
     public final static String TAG = "MyHttpURLConnection";
+    public final static int CONNECT_TIMEOUT = 10000;
     public final static int MAX_CACHE_SIZE = 10 * 1024 * 1024;//10M
 
     public static Map<String, String> getDefaultHeaders() {
@@ -66,6 +68,7 @@ public class MyHttpURLConnection {
             conn.setDoInput(true);
             //禁用网络缓存
             conn.setUseCaches(false);
+            conn.setConnectTimeout(CONNECT_TIMEOUT);
 
             //设置标头
             if (request.getHeaders() != null) {
@@ -128,6 +131,7 @@ public class MyHttpURLConnection {
             conn.setDoInput(true);
             //禁用网络缓存
             conn.setUseCaches(false);
+            conn.setConnectTimeout(CONNECT_TIMEOUT);
 
 
             //设置标头
@@ -172,7 +176,6 @@ public class MyHttpURLConnection {
                 error = su.getString(is);
                 is.close();
             }
-
         } catch (Exception ex) {
             ex.printStackTrace();
             e = ex;

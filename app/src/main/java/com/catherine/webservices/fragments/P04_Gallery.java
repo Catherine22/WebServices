@@ -7,6 +7,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.TextView;
 
 import com.catherine.webservices.Constants;
 import com.catherine.webservices.R;
@@ -40,6 +41,10 @@ public class P04_Gallery extends LazyFragment {
     private List<String> images;
     private SwipeRefreshLayout srl_container;
     private ShortCardRVAdapter adapter;
+    private TextView tv_offline;
+    private RecyclerView rv_main_list;
+    private NetworkHelper helper;
+    private ADID_AsyncTask adid_asyncTask;
 
     public static P04_Gallery newInstance(boolean isLazyLoad) {
         Bundle args = new Bundle();
@@ -53,20 +58,13 @@ public class P04_Gallery extends LazyFragment {
     public void onCreateViewLazy(Bundle savedInstanceState) {
         super.onCreateViewLazy(savedInstanceState);
         setContentView(R.layout.f_04_gallery);
+        rv_main_list = (RecyclerView) findViewById(R.id.rv_main_list);
+        tv_offline = (TextView) findViewById(R.id.tv_offline);
         titles = new ArrayList<>();
         attrs = new ArrayList<>();
         images = new ArrayList<>();
-        initComponent();
-        fillInData();
-    }
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-    }
-
-    private void fillInData() {
-        new ADID_AsyncTask(new ADID_AsyncTask.ADID_Callback() {
+        helper = new NetworkHelper(getActivity());
+        adid_asyncTask = new ADID_AsyncTask(new ADID_AsyncTask.ADID_Callback() {
             @Override
             public void onResponse(@NotNull String ADID) {
                 HttpRequest r = new HttpRequest(new HttpRequest.Builder()
@@ -99,6 +97,15 @@ public class P04_Gallery extends LazyFragment {
                                 CLog.Companion.e(TAG, String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, error:%s", response.getCode(), response.getCodeString(), response.getErrorMessage()));
                                 if (e != null)
                                     CLog.Companion.e(TAG, e.getMessage());
+
+                                if (helper.isNetworkHealth()) {
+                                    //retry?
+                                    tv_offline.setVisibility(View.VISIBLE);
+                                    rv_main_list.setVisibility(View.GONE);
+                                } else {
+                                    tv_offline.setVisibility(View.VISIBLE);
+                                    rv_main_list.setVisibility(View.GONE);
+                                }
                             }
                         })
                 );
@@ -109,7 +116,7 @@ public class P04_Gallery extends LazyFragment {
             public void onError(@NotNull Exception e) {
                 CLog.Companion.e(TAG, "Failed to get ADID: " + e.toString());
                 String ADID = "FAKE-ADID";
-                HttpRequest request5 = new HttpRequest(new HttpRequest.Builder()
+                HttpRequest request = new HttpRequest(new HttpRequest.Builder()
                         .url(NetworkHelper.Companion.encodeURL(String.format(Locale.ENGLISH, "%sResourceServlet?ADID={%s}&IDFA={}", Constants.HOST, ADID)))
                         .listener(new HttpResponseListener() {
                             @Override
@@ -122,13 +129,36 @@ public class P04_Gallery extends LazyFragment {
                                 CLog.Companion.e(TAG, String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, error:%s", response.getCode(), response.getCodeString(), response.getErrorMessage()));
                                 if (e != null)
                                     CLog.Companion.e(TAG, e.getMessage());
+
+                                if (helper.isNetworkHealth()) {
+                                    //retry?
+                                    tv_offline.setVisibility(View.VISIBLE);
+                                    rv_main_list.setVisibility(View.GONE);
+                                } else {
+                                    tv_offline.setVisibility(View.VISIBLE);
+                                    rv_main_list.setVisibility(View.GONE);
+                                }
                             }
                         })
                 );
-                new HttpAsyncTask(request5).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                new HttpAsyncTask(request).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
             }
-        }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        });
+
+        initComponent();
+        fillInData();
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+    }
+
+    private void fillInData() {
+        rv_main_list.setVisibility(View.VISIBLE);
+        tv_offline.setVisibility(View.GONE);
+        adid_asyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     private void initComponent() {
@@ -139,6 +169,7 @@ public class P04_Gallery extends LazyFragment {
             public void onRefresh() {
                 CLog.Companion.d(TAG, "refresh");
                 srl_container.setRefreshing(false);
+                fillInData();
             }
         });
 
