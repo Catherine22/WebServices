@@ -52,6 +52,10 @@ android {
 
 ### Cache
 
+>Under normal usage, the starting point for any developer should be to add as an aggressive caching strategy to the files in the application that will not change. 		
+>Normally this will include static files that are served by the application such as **images**, **CSS file** and **Javascript files**. 		
+>As these files are typically re-requested on each page, a large performance improvement can be had with little effort.		
+
 An application using HTTP cache headers is able to control this caching behavior and alleviate server-side load.		
 For example, you got a HTTP response like this.
 ```html
@@ -81,54 +85,66 @@ Expires: right now
 
 - **Cache-Control**
 
+The ```Cache-Control``` header is the most important header to set as it effectively ‘switches on’ caching in the browser.		
+
 | value | meaning |
 | --- | --- |
 | no-store | No cache |
 | no-cache | It's no need to cache the HTTP response you got, but still allowing caching |
-| public | It can be cached, even if it has HTTP authentication associated with it. |
-| private | Only control where the response may be cached, and cannot ensure the privacy of the message content. |
+| public | 1. It can be cached, even if it has HTTP authentication associated with it.		
+ 2. Public resources can be cached not only by the end-user’s browser but also by any intermediate proxies that may be serving many other users as well.|
+| private | 1. Only control where the response may be cached, and cannot ensure the privacy of the message content.		
+ 2. Private resources are bypassed by intermediate proxies and can only be cached by the end-client.|
 | max-age=300 | Response can be cached for up to 5 minutes. And where it is cached refer to 'private' or 'public'|
 
 
-- **ETag**
+- **Expires**
 
-ETag is typically a hash or some other fingerprint of the contents of the file.
+Superseded by ```Cache-Control``` header. And ```Cache-Control``` has priority over ```Expires```.		
+If both ```Expires``` and ```max-age``` are set ```max-age``` will take precedence.		
+```Expires``` header defines a precise time but some of the users can't synchronize the latest response because they are in other time zones.		
+When ```Expires``` header is less than 0, it's equal to ```Cache-Control: no-cache```
 
-You get the response headers like that
 ```html
-ETag:"751F63A30AB5F98F855D1D90D217B356"
+Expires:Tue, 03 May 2016 09:33:34 GMT
 ```
-
-Your request headers contain
-```html
-If-None-Match: "751F63A30AB5F98F855D1D90D217B356"
-```
-
 
 - **Last-Modified**
 
 You get the response headers like that
 ```html
-Last-Modified:Tue, 03 Mar 2015 01:38:18 GMT
+Cache-Control:public, max-age=31536000
+Last-Modified: Mon, 03 Jan 2011 17:45:57 GMT
 ```
 
-Your request headers contain
+And next time, your request headers contain
 ```html
-If-Modified-Since:Tue, 03 Mar 2015 01:38:18 GMT
+Last-Modified: Mon, 03 Jan 2011 17:45:57 GMT
 ```
 
-- **Expires**
+If the resource hasn't changed since ```Mon, 03 Jan 2011 17:45:57 GMT```, the server'll return **304** with an empty body.
 
-Superseded by Cache-Control header.		
-Expires header defines a precise time but some of the users can't synchronize the latest response because they are in other time zones.		
-When expires header is less than 0, it's equal to Cache-Control: no-cache
+
+- **ETag**
+
+ETag (or Entity Tag) is typically a hash or some other fingerprint of the contents of the file (for instance, an MD5 hash).
+
+You get the response headers like that
 ```html
-Expires:Tue, 03 May 2016 09:33:34 GMT
+Cache-Control:public, max-age=31536000
+ETag:"751F63A30AB5F98F855D1D90D217B356"
 ```
 
+And next time, your request headers contain
+```html
+If-None-Match: "751F63A30AB5F98F855D1D90D217B356"
+```
+
+If the resource hasn't changed, the server'll return **304** with an empty body.
 
 
-Even if your cache has expired, it doesn't mean your cache isn't work. Your response might contain an ETag which instructs the client to cache it for up to 120 seconds, and provides a validation token ("x234dff") that can be used after the response has expired to check if the resource has been modified.		
+
+Even if your cache is up, it doesn't mean your cache is not working. Your response might contain an ETag which instructs the client to cache it for up to 120 seconds, and provides a validation token ("x234dff") that can be used after the response has expired to check if the resource has been modified.		
 If the token hasn't been changed, the server returns a "304 Not Modified" response.
 
 So your cache strategy will be:
@@ -149,8 +165,17 @@ Cache-Control: max-age=(0)
 If your cache is not available, then you request ETag (with If-None-Match) or Last-Modified (with If-Modified-Since) to your server.
 Your server returns 304 when it's okay to use the cache you've stored or you might get 200 with new resources.
 
+- **No cache**
 
-- Download and cache images
+Both values are required as IE uses ```no-cache```, and Firefox uses ```no-store```.
+
+```html
+Cache-Control:no-cache, no-store
+```
+
+
+
+### Download and cache images
 
 1. Download a url list.		
 2. Check internal or external storage of the device and if the image has had cache, skip step 3 and show it.
@@ -167,7 +192,7 @@ Here is the example: [P04_Gallery], [ShortCardRVAdapter]
 - [Tencent bugly]
 - [HTTP 1.1 doc]
 - [Google Web Fundamentals]
-- [cache cn]
+- [increasing-application-performance-with-http-cache-headers]
 
 
 [MainActivity]:<https://github.com/Catherine22/WebServices/blob/master/app/src/main/java/com/catherine/webservices/MainActivity.kt>
@@ -180,6 +205,6 @@ Here is the example: [P04_Gallery], [ShortCardRVAdapter]
 [Tencent bugly]:<https://mp.weixin.qq.com/s/qOMO0LIdA47j3RjhbCWUEQ>
 [HTTP 1.1 doc]:<https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html>
 [Google Web Fundamentals]:<https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/http-caching>
-[cache cn]:<https://segmentfault.com/a/1190000004486640>
+[increasing-application-performance-with-http-cache-headers]:<https://devcenter.heroku.com/articles/increasing-application-performance-with-http-cache-headers>
 [ShortCardRVAdapter]:<https://github.com/Catherine22/WebServices/blob/master/app/src/main/java/com/catherine/webservices/adapters/ShortCardRVAdapter.java>
 [P04_Gallery]:<https://github.com/Catherine22/WebServices/blob/master/app/src/main/java/com/catherine/webservices/fragments/P04_Gallery.java>
