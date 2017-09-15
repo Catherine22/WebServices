@@ -36,7 +36,7 @@ public class CacheControl {
      */
     private boolean onlyIfCached;
     /**
-     * 过期后的 s 秒内缓存可以继续使用
+     * Cache-Control:max-stale = s :过期后的 s 秒内缓存可以继续使用(宁可返回过期的response而不是空的body)
      */
     private int maxStaleSeconds;
     /**
@@ -101,8 +101,13 @@ public class CacheControl {
         private boolean onlyIfCached;
         private boolean noTransform;
 
+        /**
+         * 预设开启cache
+         */
         public Builder() {
-            noCache = true;
+            noCache = false;
+            noStore = false;
+            isPrivate = true;
         }
 
         public Builder noCache(boolean noCache) {

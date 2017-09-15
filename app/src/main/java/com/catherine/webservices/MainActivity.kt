@@ -307,7 +307,7 @@ class MainActivity : FragmentActivity(), MainInterface {
             fm.popBackStack()
             titles.pop()
         }
-        titles.push("功能列表")
+        titles.push("Features")
     }
 
     /**
@@ -329,6 +329,8 @@ class MainActivity : FragmentActivity(), MainInterface {
                     vp_content.currentItem = 1
                 } else if (tab == tabLayout.getTabAt(2)) {
                     vp_content.currentItem = 2
+                } else if (tab == tabLayout.getTabAt(3)) {
+                    vp_content.currentItem = 3
                 }
             }
 

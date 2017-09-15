@@ -14,7 +14,6 @@ import android.os.IBinder
 import android.widget.Toast
 import catherine.messagecenter.AsyncResponse
 import catherine.messagecenter.Server
-import com.catherine.webservices.network.NetworkHealthListener
 import com.catherine.webservices.toolkits.CLog
 
 /**

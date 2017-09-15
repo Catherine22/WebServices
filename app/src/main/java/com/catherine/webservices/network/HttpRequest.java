@@ -12,15 +12,15 @@ public final class HttpRequest {
     private String url;
     private Map<String, String> headers;
     private String body;
-    private HttpResponseListener listener;
     private CacheControl cacheControl;
+    private HttpResponseListener listener;
 
     public HttpRequest(Builder builder) {
         this.url = builder.url;
         this.headers = builder.headers;
         this.body = builder.body;
-        this.listener = builder.listener;
         this.cacheControl = builder.cacheControl;
+        this.listener = builder.listener;
     }
 
     public static class Builder {

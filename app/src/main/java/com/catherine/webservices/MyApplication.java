@@ -29,7 +29,6 @@ import org.apache.http.protocol.HTTP;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Queue;
 import java.util.Stack;
 
 import catherine.messagecenter.Client;

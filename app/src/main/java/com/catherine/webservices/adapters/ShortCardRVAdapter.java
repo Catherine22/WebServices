@@ -39,7 +39,7 @@ import java.util.Locale;
  */
 
 /**
- * Cache images
+ * Cache images with DiskLruCache
  */
 public class ShortCardRVAdapter extends RecyclerView.Adapter<ShortCardRVAdapter.MainRvHolder> {
     private final static String TAG = "ShortCardRVAdapter";

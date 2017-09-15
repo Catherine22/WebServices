@@ -1,17 +1,20 @@
 package com.catherine.webservices.network;
 
 
+import android.net.http.HttpResponseCache;
+import android.os.Build;
 import android.text.TextUtils;
 
 import com.catherine.webservices.Constants;
+import com.catherine.webservices.MyApplication;
 import com.catherine.webservices.toolkits.CLog;
 import com.catherine.webservices.toolkits.StreamUtils;
 
 import org.apache.http.protocol.HTTP;
 
+import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
@@ -36,6 +39,7 @@ public class MyHttpURLConnection {
         headers.put("Authorization", Constants.AUTHORIZATION);
         headers.put("Content-type", "application/x-www-form-urlencoded; charset=UTF-8");
         headers.put("Accept-Language", Locale.getDefault().toString());
+        headers.put("Connection", "keep-alive");
         return headers;
     }
 
@@ -61,13 +65,22 @@ public class MyHttpURLConnection {
         String error = "";
         Exception e = null;
         try {
+            boolean cacheable = isCacheable(request);
+            if (cacheable) {
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+                    Class.forName("android.net.http.HttpResponseCache").getMethod("install", File.class, long.class).invoke(null, MyApplication.INSTANCE.getDiskCacheDir("entity"), MyHttpURLConnection.MAX_CACHE_SIZE);
+                else
+                    HttpResponseCache.install(MyApplication.INSTANCE.getDiskCacheDir("entity"), MyHttpURLConnection.MAX_CACHE_SIZE);
+            } else {
+
+            }
+
             HttpURLConnection conn = (HttpURLConnection) new URL(request.getUrl()).openConnection();
             //默认GET请求，所以可略
             conn.setRequestMethod("GET");
             //默认可读服务器读结果流，所以可略
             conn.setDoInput(true);
-            //禁用网络缓存
-            conn.setUseCaches(false);
+            conn.setUseCaches(cacheable);
             conn.setConnectTimeout(CONNECT_TIMEOUT);
 
             //设置标头
@@ -78,15 +91,12 @@ public class MyHttpURLConnection {
                 }
             }
 
-//            CLog.Companion.i(TAG, "url: " + url);
-//            CLog.Companion.i(TAG, "Content Encoding: " + conn.getContentEncoding());
-//            CLog.Companion.i(TAG, "Content Length: " + conn.getContentLength());
-//            CLog.Companion.i(TAG, "Content Type: " + conn.getContentType());
-//            CLog.Companion.i(TAG, "Date: " + conn.getDate());
-
             long currentTime = System.currentTimeMillis();
+            String cacheControl = conn.getHeaderField("Cache-Control");
             long expires = conn.getHeaderFieldDate("Expires", currentTime);
-            long lastModified = conn.getHeaderFieldDate("Last-Modified", currentTime);
+            String lastModified = conn.getHeaderField("Last-Modified");
+
+            CLog.Companion.i(TAG, "Cache-Control: " + cacheControl);
             CLog.Companion.i(TAG, "Expires: " + expires);
             CLog.Companion.i(TAG, "Last Modified: " + lastModified);
 
@@ -116,6 +126,11 @@ public class MyHttpURLConnection {
             listener.connectSuccess(new HttpResponse.Builder().code(code).codeString(msg).body(response).build());
         else
             listener.connectFailure(new HttpResponse.Builder().code(code).codeString(msg).errorMessage(response).build(), e);
+
+        HttpResponseCache cache = HttpResponseCache.getInstalled();
+        if (cache != null)
+            cache.flush();
+
     }
 
     public void doPost(HttpRequest request, HttpResponseListener listener) {
@@ -125,12 +140,19 @@ public class MyHttpURLConnection {
         String error = "";
         Exception e = null;
         try {
+            boolean cacheable = isCacheable(request);
+            if (cacheable) {
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+                    Class.forName("android.net.http.HttpResponseCache").getMethod("install", File.class, long.class).invoke(null, MyApplication.INSTANCE.getDiskCacheDir("entity"), MyHttpURLConnection.MAX_CACHE_SIZE);
+                else
+                    HttpResponseCache.install(MyApplication.INSTANCE.getDiskCacheDir("entity"), MyHttpURLConnection.MAX_CACHE_SIZE);
+            }
+
             HttpURLConnection conn = (HttpURLConnection) new URL(request.getUrl()).openConnection();
             conn.setRequestMethod("POST");
             //默认可读服务器读结果流，所以可略
             conn.setDoInput(true);
-            //禁用网络缓存
-            conn.setUseCaches(false);
+            conn.setUseCaches(cacheable);
             conn.setConnectTimeout(CONNECT_TIMEOUT);
 
 
@@ -147,15 +169,11 @@ public class MyHttpURLConnection {
             os.write(request.getBody().getBytes(HTTP.UTF_8));
             os.close();
 
-//            CLog.Companion.i(TAG, "url: " + url);
-//            CLog.Companion.i(TAG, "Content Encoding: " + conn.getContentEncoding());
-//            CLog.Companion.i(TAG, "Content Length: " + conn.getContentLength());
-//            CLog.Companion.i(TAG, "Content Type: " + conn.getContentType());
-//            CLog.Companion.i(TAG, "Date: " + conn.getDate());
-
             long currentTime = System.currentTimeMillis();
+            String cacheControl = conn.getHeaderField("Cache-Control");
             long expires = conn.getHeaderFieldDate("Expires", currentTime);
-            long lastModified = conn.getHeaderFieldDate("Last-Modified", currentTime);
+            String lastModified = conn.getHeaderField("Last-Modified");
+            CLog.Companion.i(TAG, "Cache-Control: " + cacheControl);
             CLog.Companion.i(TAG, "Expires: " + expires);
             CLog.Companion.i(TAG, "Last Modified: " + lastModified);
 
@@ -184,5 +202,21 @@ public class MyHttpURLConnection {
             listener.connectSuccess(new HttpResponse.Builder().code(code).codeString(msg).body(response).build());
         else
             listener.connectFailure(new HttpResponse.Builder().code(code).codeString(msg).errorMessage(response).build(), e);
+
+        HttpResponseCache cache = HttpResponseCache.getInstalled();
+        if (cache != null)
+            cache.flush();
+    }
+
+    private static boolean isCacheable(HttpRequest request) {
+        CacheControl cacheControl = request.getCacheControl();
+        if (cacheControl == null)
+            return false;
+        else {
+            if (cacheControl.isNoStore() || cacheControl.isNoCache() || cacheControl.getMaxAgeSeconds() <= 0)
+                return false;
+            else
+                return true;
+        }
     }
 }

@@ -5,7 +5,6 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -15,40 +14,34 @@ import android.view.View;
 
 import com.catherine.webservices.Constants;
 import com.catherine.webservices.R;
-import com.catherine.webservices.adapters.CardRVAdapter;
+import com.catherine.webservices.adapters.TextCardRVAdapter;
 import com.catherine.webservices.interfaces.MainInterface;
 import com.catherine.webservices.interfaces.OnRequestPermissionsListener;
-import com.catherine.webservices.network.DownloadRequest;
-import com.catherine.webservices.network.DownloaderAsyncTask;
-import com.catherine.webservices.network.DownloaderListener;
-import com.catherine.webservices.network.HttpResponse;
 import com.catherine.webservices.toolkits.CLog;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 /**
- * Created by Catherine on 2017/9/11.
+ * Created by Catherine on 2017/9/15.
  * Soft-World Inc.
  * catherine919@soft-world.com.tw
  */
 
-public class P03_Downloader extends LazyFragment {
-    public final static String TAG = "P03_Downloader";
+public class P05_Cache extends LazyFragment {
+    public final static String TAG = "P05_Cache";
     private List<String> features;
     private List<String> descriptions;
     private SwipeRefreshLayout srl_container;
     private MainInterface mainInterface;
-    private CardRVAdapter adapter;
-    private int total = 0;
+    private TextCardRVAdapter adapter;
 
-    public static P03_Downloader newInstance(boolean isLazyLoad) {
+    public static P05_Cache newInstance(boolean isLazyLoad) {
         Bundle args = new Bundle();
         args.putBoolean(LazyFragment.INTENT_BOOLEAN_LAZYLOAD, isLazyLoad);
-        P03_Downloader fragment = new P03_Downloader();
+        P05_Cache fragment = new P05_Cache();
         fragment.setArguments(args);
         return fragment;
     }
@@ -56,7 +49,7 @@ public class P03_Downloader extends LazyFragment {
     @Override
     public void onCreateViewLazy(Bundle savedInstanceState) {
         super.onCreateViewLazy(savedInstanceState);
-        setContentView(R.layout.f_03_download);
+        setContentView(R.layout.f_05_cache);
         mainInterface = (MainInterface) getActivity();
         init();
     }
@@ -117,10 +110,10 @@ public class P03_Downloader extends LazyFragment {
 
     private void fillInData() {
         features = new ArrayList<>();
-        features.add("Download files");
+        features.add("Cache images");
 
         descriptions = new ArrayList<>();
-        descriptions.add("Download a file with 3 threads.");
+        descriptions.add("Download images from the internet and cache them.");
     }
 
     private void initComponent() {
@@ -137,44 +130,12 @@ public class P03_Downloader extends LazyFragment {
         RecyclerView rv_main_list = (RecyclerView) findViewById(R.id.rv_main_list);
 //        rv_main_list.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.Companion.getVERTICAL_LIST()));
         rv_main_list.setLayoutManager(new LinearLayoutManager(getActivity()));
-        adapter = new CardRVAdapter(getActivity(), null, features, descriptions, new CardRVAdapter.OnItemClickListener() {
+        adapter = new TextCardRVAdapter(getActivity(), null, features, descriptions, new TextCardRVAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick(@NotNull View view, final int position) {
+            public void onItemClick(@NotNull View view, int position) {
                 switch (position) {
                     case 0:
-                        DownloadRequest request5 = new DownloadRequest(new DownloadRequest.Builder()
-                                .url(String.format(Locale.ENGLISH, "%sfmc.apk", Constants.DOWNLOAD_HOST))
-                                .listener(new DownloaderListener() {
-                                    @Override
-                                    public void update(final int downloadedLength, final int LENGTH) {
-                                        getActivity().runOnUiThread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                total += downloadedLength;
-                                                adapter.updateProgress(position, LENGTH, total);
-                                                adapter.notifyDataSetChanged();
-                                                if (total == LENGTH) {
-                                                    CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess downloadedLength:%d, LENGTH:%d", total, LENGTH));
-                                                    total = 0;
-                                                }
-                                            }
-                                        });
-                                    }
-
-                                    @Override
-                                    public void connectFailure(final HttpResponse response, final Exception e) {
-                                        getActivity().runOnUiThread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                CLog.Companion.e(TAG, String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s", response.getCode(), response.getCodeString()));
-                                                if (e != null)
-                                                    CLog.Companion.e(TAG, e.getMessage());
-                                            }
-                                        });
-
-                                    }
-                                }));
-                        new DownloaderAsyncTask(request5).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                        mainInterface.callFragment(Constants.P04_GALLERY);
                         break;
                 }
             }

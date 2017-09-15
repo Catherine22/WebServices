@@ -18,9 +18,6 @@ import com.catherine.webservices.R;
 import com.catherine.webservices.adapters.CardRVAdapter;
 import com.catherine.webservices.interfaces.MainInterface;
 import com.catherine.webservices.interfaces.OnRequestPermissionsListener;
-import com.catherine.webservices.network.DownloadRequest;
-import com.catherine.webservices.network.DownloaderAsyncTask;
-import com.catherine.webservices.network.DownloaderListener;
 import com.catherine.webservices.network.HttpAsyncTask;
 import com.catherine.webservices.network.HttpRequest;
 import com.catherine.webservices.network.HttpResponse;
@@ -50,7 +47,6 @@ public class P02_HttpURLConnection extends LazyFragment {
     private SwipeRefreshLayout srl_container;
     private MainInterface mainInterface;
     private CardRVAdapter adapter;
-    private int total = 0;
 
     public static P02_HttpURLConnection newInstance(boolean isLazyLoad) {
         Bundle args = new Bundle();
@@ -127,15 +123,11 @@ public class P02_HttpURLConnection extends LazyFragment {
         features = new ArrayList<>();
         features.add("HttpGet");
         features.add("HttpPost");
-        features.add("Download files");
-        features.add("Cache");
 
 
         descriptions = new ArrayList<>();
         descriptions.add("Set the method for the URL request.");
         descriptions.add("Set the method for the URL request.");
-        descriptions.add("Download a file.");
-        descriptions.add("Cache the URL response.");
     }
 
     private void initComponent() {
@@ -266,44 +258,6 @@ public class P02_HttpURLConnection extends LazyFragment {
                                 })
                         );
                         new HttpAsyncTask(request4).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-                        break;
-                    case 2:
-                        DownloadRequest request5 = new DownloadRequest(new DownloadRequest.Builder()
-                                .url(String.format(Locale.ENGLISH, "%sfmc.apk", Constants.DOWNLOAD_HOST))
-                                .listener(new DownloaderListener() {
-                                    @Override
-                                    public void update(final int downloadedLength, final int LENGTH) {
-                                        getActivity().runOnUiThread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                total += downloadedLength;
-                                                adapter.updateProgress(2, LENGTH, total);
-                                                adapter.notifyDataSetChanged();
-                                                if (total == LENGTH) {
-                                                    CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess downloadedLength:%d, LENGTH:%d", total, LENGTH));
-                                                    total = 0;
-                                                }
-                                            }
-                                        });
-                                    }
-
-                                    @Override
-                                    public void connectFailure(final HttpResponse response, final Exception e) {
-                                        getActivity().runOnUiThread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                CLog.Companion.e(TAG, String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s", response.getCode(), response.getCodeString()));
-                                                if (e != null)
-                                                    CLog.Companion.e(TAG, e.getMessage());
-                                            }
-                                        });
-
-                                    }
-                                }));
-                        new DownloaderAsyncTask(request5).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-                        break;
-                    case 3:
-                        mainInterface.callFragment(Constants.P04_GALLERY);
                         break;
                 }
             }

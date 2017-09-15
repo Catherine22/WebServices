@@ -103,7 +103,6 @@ The ```Cache-Control``` header is the most important header to set as it effecti
 Superseded by ```Cache-Control``` header. And ```Cache-Control``` has priority over ```Expires```.		
 If both ```Expires``` and ```max-age``` are set ```max-age``` will take precedence.		
 ```Expires``` header defines a precise time but some of the users can't synchronize the latest response because they are in other time zones.		
-When ```Expires``` header is less than 0, it's equal to ```Cache-Control: no-cache```
 
 ```html
 Expires:Tue, 03 May 2016 09:33:34 GMT

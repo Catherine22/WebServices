@@ -37,13 +37,20 @@ class CardRVAdapter(private var ctx: Context, var images: List<String>?, var tit
     private var progressList = arrayOfNulls<ProgressBarInfo>(titles.size)
 
     override fun onBindViewHolder(holder: MainRvHolder, position: Int) {
-        val onClickListener = View.OnClickListener { view ->
+        val listener1 = View.OnClickListener { view ->
             when (view.id) {
                 R.id.cv -> onClickListener.onItemClick(view, position)
             }
         }
+        val listener2 = View.OnLongClickListener { view ->
+            when (view.id) {
+                R.id.cv -> onClickListener.onItemLongClick(view, position)
+            }
+            false
+        }
 
         if (images != null) {
+            holder.itemView.iv_main.visibility = View.VISIBLE
             handler.post {
                 try {
                     val url = URL(images!![position])
@@ -55,15 +62,17 @@ class CardRVAdapter(private var ctx: Context, var images: List<String>?, var tit
                 } catch (e: IOException) {
                     e.printStackTrace()
                 }
-
             }
+        } else {
+            holder.itemView.iv_main.visibility = View.GONE
         }
 
         holder.itemView.tv_title.text = titles[position]
 
         if (subtitles != null)
             holder.itemView.tv_subtitle.text = subtitles!![position]
-        holder.itemView.cv.setOnClickListener(onClickListener)
+        holder.itemView.cv.setOnClickListener(listener1)
+        holder.itemView.cv.setOnLongClickListener(listener2)
 
         if (progressList[position] == null || progressList[position]?.MAX_PROGRESS == -1 || progressList[position]?.cur_progress == -1)
             holder.itemView.pb.visibility = View.INVISIBLE
