@@ -3,6 +3,7 @@ package com.catherine.webservices.fragments;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -203,5 +204,14 @@ public class P04_Gallery extends LazyFragment {
             }
         });
         rv_main_list.setAdapter(adapter);
+
+
+
+        FloatingActionButton fab_delete = (FloatingActionButton)  findViewById(R.id.fab_delete);
+        fab_delete.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                adapter.deleteCache();
+            }
+        });
     }
 }

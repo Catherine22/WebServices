@@ -59,14 +59,7 @@ public class ShortCardRVAdapter extends RecyclerView.Adapter<ShortCardRVAdapter.
 
     @Override
     public MainRvHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        try {
-            int version = ctx.getPackageManager().getPackageInfo(ctx.getPackageName(), 0).versionCode;
-            diskLruCache = DiskLruCache.open(MyApplication.INSTANCE.getDiskCacheDir("image"), version, 1, (long) MyHttpURLConnection.MAX_CACHE_SIZE);
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        openDiskLruCache();
         return new MainRvHolder(LayoutInflater.from(ctx).inflate(R.layout.rv_short_card, viewGroup, false));
     }
 
@@ -81,6 +74,9 @@ public class ShortCardRVAdapter extends RecyclerView.Adapter<ShortCardRVAdapter.
                 @Override
                 public void run() {
                     try {
+                        if (diskLruCache.isClosed())
+                            openDiskLruCache();
+
                         final String key = Encryption.doMd5Safely(new ByteArrayInputStream(images.get(position).getBytes()));
                         DiskLruCache.Snapshot snapshot = diskLruCache.get(key);
                         if (snapshot != null) {
@@ -206,6 +202,26 @@ public class ShortCardRVAdapter extends RecyclerView.Adapter<ShortCardRVAdapter.
 
     public void setSubtitles(List<String> subtitles) {
         this.subtitles = subtitles;
+    }
+
+
+    private void openDiskLruCache() {
+        try {
+            int version = ctx.getPackageManager().getPackageInfo(ctx.getPackageName(), 0).versionCode;
+            diskLruCache = DiskLruCache.open(MyApplication.INSTANCE.getDiskCacheDir("image"), version, 1, (long) MyHttpURLConnection.MAX_CACHE_SIZE);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void deleteCache() {
+        try {
+            diskLruCache.delete();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private Bitmap.CompressFormat getCompressFormat(String url) {
