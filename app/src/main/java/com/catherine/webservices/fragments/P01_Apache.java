@@ -12,6 +12,7 @@ import com.catherine.webservices.Constants;
 import com.catherine.webservices.MyApplication;
 import com.catherine.webservices.R;
 import com.catherine.webservices.adapters.RVAdapter;
+import com.catherine.webservices.network.HttpResponse;
 import com.catherine.webservices.network.HttpResponseListener;
 import com.catherine.webservices.network.MyApache;
 import com.catherine.webservices.toolkits.CLog;
@@ -71,13 +72,15 @@ public class P01_Apache extends LazyFragment {
     private void initComponent() {
         myApache = new MyApache(new HttpResponseListener() {
             @Override
-            public void connectSuccess(int code, @NotNull String message, @NotNull String body) {
-                CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", code, message, body));
+            public void connectSuccess(HttpResponse response) {
+                //Running in a non-UI thread right now.
+                CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
             }
 
             @Override
-            public void connectFailure(int code, @NotNull String message, @NotNull String errorStream, @org.jetbrains.annotations.Nullable Exception e) {
-                CLog.Companion.e(TAG, String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, body:%s", code, message, errorStream));
+            public void connectFailure(HttpResponse response,  Exception e) {
+                //Running in a non-UI thread right now.
+                CLog.Companion.e(TAG, String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getErrorMessage()));
                 if (e != null)
                     CLog.Companion.e(TAG, e.getMessage());
             }

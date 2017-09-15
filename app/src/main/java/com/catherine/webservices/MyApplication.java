@@ -5,6 +5,9 @@ import android.app.Application;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.HandlerThread;
+import android.text.TextUtils;
+
+import com.catherine.webservices.toolkits.FileUtils;
 
 import org.apache.http.HttpVersion;
 import org.apache.http.client.HttpClient;
@@ -26,6 +29,9 @@ import org.apache.http.protocol.HTTP;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
+
+import catherine.messagecenter.Client;
 
 /**
  * Created by Catherine on 2017/8/23.
@@ -38,12 +44,14 @@ public class MyApplication extends Application {
     public HandlerThread calHandlerThread;
     public HttpClient httpClient;
     private List<String> runningActivities;
+    private Stack<Client> localBroadCastReceivers;
 
     @Override
     public void onCreate() {
         INSTANCE = this;
         httpClient = getHttpClient();
         runningActivities = new ArrayList<>();
+        localBroadCastReceivers = new Stack<>();
         init();
 
         registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
@@ -93,6 +101,12 @@ public class MyApplication extends Application {
                 //当应用已无运行画面时释放HandlerThread
                 if (runningActivities.size() == 0)
                     stopLooper(calHandlerThread);
+
+                //释放全部的localBroadCastReceiver
+                while (localBroadCastReceivers.size() > 0) {
+                    localBroadCastReceivers.peek().release();
+                    localBroadCastReceivers.pop();
+                }
             }
         });
         super.onCreate();
@@ -114,6 +128,38 @@ public class MyApplication extends Application {
         File rootDir = new File(Constants.ROOT_PATH);
         if (!rootDir.exists())
             rootDir.mkdirs();
+    }
+
+    /**
+     * 添加接收器，最后关闭应用时一并释放
+     *
+     * @param client
+     */
+    public void registerLocalBroadCastReceiver(Client client) {
+        localBroadCastReceivers.add(client);
+    }
+
+    public File getDiskCacheDir() throws NullPointerException {
+        return getDiskCacheDir(null);
+    }
+
+    public File getDiskCacheDir(String dirName) throws NullPointerException {
+        String cachePath = (FileUtils.Companion.isExternalStorageWritable()) ? Constants.CACHE_PATH : getCacheDir().getAbsolutePath();
+        File dir = new File(cachePath);
+        boolean b = true;
+        if (!dir.exists())
+            b = dir.mkdirs();
+
+        if (!TextUtils.isEmpty(dirName)) {
+            dir = new File(cachePath + dirName + "/");
+            if (!dir.exists())
+                b = dir.mkdirs();
+        }
+
+        if (!b)
+            throw new NullPointerException(String.format("Failed to access external storage, isExternalStorageWritable:%s", FileUtils.Companion.isExternalStorageWritable()));
+        else
+            return dir;
     }
 
     public boolean isActivityAvaliable(Activity activity) {

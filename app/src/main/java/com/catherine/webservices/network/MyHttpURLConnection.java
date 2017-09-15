@@ -1,13 +1,18 @@
 package com.catherine.webservices.network;
 
 
+import android.net.http.HttpResponseCache;
+import android.os.Build;
 import android.text.TextUtils;
 
 import com.catherine.webservices.Constants;
+import com.catherine.webservices.MyApplication;
+import com.catherine.webservices.toolkits.CLog;
 import com.catherine.webservices.toolkits.StreamUtils;
 
 import org.apache.http.protocol.HTTP;
 
+import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -25,6 +30,8 @@ import java.util.Set;
 
 public class MyHttpURLConnection {
     public final static String TAG = "MyHttpURLConnection";
+    public final static int CONNECT_TIMEOUT = 10000;
+    public final static int MAX_CACHE_SIZE = 10 * 1024 * 1024;//10M
 
     public static Map<String, String> getDefaultHeaders() {
         Map<String, String> headers = new HashMap<>();
@@ -32,6 +39,7 @@ public class MyHttpURLConnection {
         headers.put("Authorization", Constants.AUTHORIZATION);
         headers.put("Content-type", "application/x-www-form-urlencoded; charset=UTF-8");
         headers.put("Accept-Language", Locale.getDefault().toString());
+        headers.put("Connection", "keep-alive");
         return headers;
     }
 
@@ -50,41 +58,47 @@ public class MyHttpURLConnection {
         return sb.toString();
     }
 
-    public void doGet(String url, HttpResponseListener listener) {
-        doGet(url, getDefaultHeaders(), listener);
-    }
-
-    public void doGet(String url, Map<String, String> headers, HttpResponseListener listener) {
+    public void doGet(HttpRequest request, HttpResponseListener listener) {
         int code = -1;
         String msg = "";
         String response = "";
         String error = "";
         Exception e = null;
         try {
-            HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
+            boolean cacheable = isCacheable(request);
+            if (cacheable) {
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+                    Class.forName("android.net.http.HttpResponseCache").getMethod("install", File.class, long.class).invoke(null, MyApplication.INSTANCE.getDiskCacheDir("entity"), MyHttpURLConnection.MAX_CACHE_SIZE);
+                else
+                    HttpResponseCache.install(MyApplication.INSTANCE.getDiskCacheDir("entity"), MyHttpURLConnection.MAX_CACHE_SIZE);
+            } else {
+
+            }
+
+            HttpURLConnection conn = (HttpURLConnection) new URL(request.getUrl()).openConnection();
             //默认GET请求，所以可略
             conn.setRequestMethod("GET");
             //默认可读服务器读结果流，所以可略
             conn.setDoInput(true);
-            //禁用网络缓存
-            conn.setUseCaches(false);
-
+            conn.setUseCaches(cacheable);
+            conn.setConnectTimeout(CONNECT_TIMEOUT);
 
             //设置标头
-            if (headers != null) {
-                Set<String> set = headers.keySet();
+            if (request.getHeaders() != null) {
+                Set<String> set = request.getHeaders().keySet();
                 for (String name : set) {
-                    conn.setRequestProperty(name, headers.get(name));
+                    conn.setRequestProperty(name, request.getHeaders().get(name));
                 }
             }
 
-//            CLog.Companion.i(TAG, "url: " + url);
-//            CLog.Companion.i(TAG, "Content Encoding: " + conn.getContentEncoding());
-//            CLog.Companion.i(TAG, "Content Length: " + conn.getContentLength());
-//            CLog.Companion.i(TAG, "Content Type: " + conn.getContentType());
-//            CLog.Companion.i(TAG, "Date: " + conn.getDate());
-//            CLog.Companion.i(TAG, "Expiration: " + conn.getExpiration());
-//            CLog.Companion.i(TAG, "Last Modified: " + conn.getLastModified());
+            long currentTime = System.currentTimeMillis();
+            String cacheControl = conn.getHeaderField("Cache-Control");
+            long expires = conn.getHeaderFieldDate("Expires", currentTime);
+            String lastModified = conn.getHeaderField("Last-Modified");
+
+            CLog.Companion.i(TAG, "Cache-Control: " + cacheControl);
+            CLog.Companion.i(TAG, "Expires: " + expires);
+            CLog.Companion.i(TAG, "Last Modified: " + lastModified);
 
             conn.connect();
 
@@ -107,51 +121,61 @@ public class MyHttpURLConnection {
             ex.printStackTrace();
             e = ex;
         }
+
         if (e == null && TextUtils.isEmpty(error))
-            listener.connectSuccess(code, msg, response);
+            listener.connectSuccess(new HttpResponse.Builder().code(code).codeString(msg).body(response).build());
         else
-            listener.connectFailure(code, msg, error, e);
+            listener.connectFailure(new HttpResponse.Builder().code(code).codeString(msg).errorMessage(response).build(), e);
+
+        HttpResponseCache cache = HttpResponseCache.getInstalled();
+        if (cache != null)
+            cache.flush();
+
     }
 
-    public void doPost(String url, String body, HttpResponseListener listener) {
-        doPost(url, getDefaultHeaders(), body, listener);
-    }
-
-    public void doPost(String url, Map<String, String> headers, String body, HttpResponseListener listener) {
+    public void doPost(HttpRequest request, HttpResponseListener listener) {
         int code = -1;
         String msg = "";
         String response = "";
         String error = "";
         Exception e = null;
         try {
-            HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
+            boolean cacheable = isCacheable(request);
+            if (cacheable) {
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+                    Class.forName("android.net.http.HttpResponseCache").getMethod("install", File.class, long.class).invoke(null, MyApplication.INSTANCE.getDiskCacheDir("entity"), MyHttpURLConnection.MAX_CACHE_SIZE);
+                else
+                    HttpResponseCache.install(MyApplication.INSTANCE.getDiskCacheDir("entity"), MyHttpURLConnection.MAX_CACHE_SIZE);
+            }
+
+            HttpURLConnection conn = (HttpURLConnection) new URL(request.getUrl()).openConnection();
             conn.setRequestMethod("POST");
             //默认可读服务器读结果流，所以可略
             conn.setDoInput(true);
-            //禁用网络缓存
-            conn.setUseCaches(false);
+            conn.setUseCaches(cacheable);
+            conn.setConnectTimeout(CONNECT_TIMEOUT);
 
 
             //设置标头
-            if (headers != null) {
-                Set<String> set = headers.keySet();
+            if (request.getHeaders() != null) {
+                Set<String> set = request.getHeaders().keySet();
                 for (String name : set) {
-                    conn.setRequestProperty(name, headers.get(name));
+                    conn.setRequestProperty(name, request.getHeaders().get(name));
                 }
             }
 
             //获取conn的输出流
             OutputStream os = conn.getOutputStream();
-            os.write(body.getBytes(HTTP.UTF_8));
+            os.write(request.getBody().getBytes(HTTP.UTF_8));
             os.close();
 
-//            CLog.Companion.i(TAG, "url: " + url);
-//            CLog.Companion.i(TAG, "Content Encoding: " + conn.getContentEncoding());
-//            CLog.Companion.i(TAG, "Content Length: " + conn.getContentLength());
-//            CLog.Companion.i(TAG, "Content Type: " + conn.getContentType());
-//            CLog.Companion.i(TAG, "Date: " + conn.getDate());
-//            CLog.Companion.i(TAG, "Expiration: " + conn.getExpiration());
-//            CLog.Companion.i(TAG, "Last Modified: " + conn.getLastModified());
+            long currentTime = System.currentTimeMillis();
+            String cacheControl = conn.getHeaderField("Cache-Control");
+            long expires = conn.getHeaderFieldDate("Expires", currentTime);
+            String lastModified = conn.getHeaderField("Last-Modified");
+            CLog.Companion.i(TAG, "Cache-Control: " + cacheControl);
+            CLog.Companion.i(TAG, "Expires: " + expires);
+            CLog.Companion.i(TAG, "Last Modified: " + lastModified);
 
             conn.connect();
 
@@ -170,14 +194,29 @@ public class MyHttpURLConnection {
                 error = su.getString(is);
                 is.close();
             }
-
         } catch (Exception ex) {
             ex.printStackTrace();
             e = ex;
         }
         if (e == null && TextUtils.isEmpty(error))
-            listener.connectSuccess(code, msg, response);
+            listener.connectSuccess(new HttpResponse.Builder().code(code).codeString(msg).body(response).build());
         else
-            listener.connectFailure(code, msg, error, e);
+            listener.connectFailure(new HttpResponse.Builder().code(code).codeString(msg).errorMessage(response).build(), e);
+
+        HttpResponseCache cache = HttpResponseCache.getInstalled();
+        if (cache != null)
+            cache.flush();
+    }
+
+    private static boolean isCacheable(HttpRequest request) {
+        CacheControl cacheControl = request.getCacheControl();
+        if (cacheControl == null)
+            return false;
+        else {
+            if (cacheControl.isNoStore() || cacheControl.isNoCache() || cacheControl.getMaxAgeSeconds() <= 0)
+                return false;
+            else
+                return true;
+        }
     }
 }

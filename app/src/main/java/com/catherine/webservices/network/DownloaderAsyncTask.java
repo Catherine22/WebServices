@@ -5,7 +5,7 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.text.TextUtils;
 
-import com.catherine.webservices.Constants;
+import com.catherine.webservices.MyApplication;
 import com.catherine.webservices.toolkits.CLog;
 import com.catherine.webservices.toolkits.StreamUtils;
 
@@ -17,7 +17,6 @@ import java.io.RandomAccessFile;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -26,43 +25,21 @@ import java.util.Set;
  * catherine919@soft-world.com.tw
  */
 
+/**
+ * Response on the non-UI thread
+ */
 public class DownloaderAsyncTask extends AsyncTask<String, Void, Void> {
     private final static String TAG = "DownloaderAsyncTask";
     private final static int THREAD_NUM = 3;
-    private String url;
-    private Map<String, String> headers;
-    private String body;
-    private DownloaderListener listener;
+    private DownloadRequest request;
+
+    //    private String body;
     private StreamUtils su = new StreamUtils();
     private boolean[] downloadCompleted = new boolean[THREAD_NUM];
     private HandlerThread[] threadPool = new HandlerThread[THREAD_NUM];
 
-    public DownloaderAsyncTask(String url, DownloaderListener listener) {
-        this(url, MyHttpURLConnection.getDefaultHeaders(), "", listener);
-    }
-
-    public DownloaderAsyncTask(String url, Map<String, String> headers, DownloaderListener listener) {
-        this(url, headers, "", listener);
-    }
-
-    public DownloaderAsyncTask(String url, String body, DownloaderListener listener) {
-        this(url, MyHttpURLConnection.getDefaultHeaders(), body, listener);
-    }
-
-    public DownloaderAsyncTask(String url, Map<String, String> headers, String body, DownloaderListener listener) {
-        this.url = url;
-        this.headers = headers;
-        this.body = body;
-        this.listener = listener;
-
-        File cacheDir = new File(Constants.CACHE_PATH);
-        boolean isDirectoryCreated = true;
-        if (!cacheDir.exists())
-            isDirectoryCreated = cacheDir.mkdirs();
-
-        if (!isDirectoryCreated) {
-            // do something
-        }
+    public DownloaderAsyncTask(DownloadRequest request) {
+        this.request = request;
     }
 
     @Override
@@ -71,9 +48,9 @@ public class DownloaderAsyncTask extends AsyncTask<String, Void, Void> {
         int LENGTH;
         String msg = "";
         Exception e = null;
-        if (TextUtils.isEmpty(body)) {
+        if (TextUtils.isEmpty(request.getBody())) {
             try {
-                HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
+                HttpURLConnection conn = (HttpURLConnection) new URL(request.getUrl()).openConnection();
                 //默认GET请求，所以可略
                 conn.setRequestMethod("GET");
                 //默认可读服务器读结果流，所以可略
@@ -83,10 +60,10 @@ public class DownloaderAsyncTask extends AsyncTask<String, Void, Void> {
 
 
                 //设置标头
-                if (headers != null) {
-                    Set<String> set = headers.keySet();
+                if (request.getHeaders() != null) {
+                    Set<String> set = request.getHeaders().keySet();
                     for (String name : set) {
-                        conn.setRequestProperty(name, headers.get(name));
+                        conn.setRequestProperty(name, request.getHeaders().get(name));
                     }
                 }
 
@@ -103,12 +80,12 @@ public class DownloaderAsyncTask extends AsyncTask<String, Void, Void> {
                 LENGTH = conn.getContentLength();
 
                 if (LENGTH == 0) {
-                    listener.connectFailure(code, msg, new IOException("Content Length = 0"));
+                    request.getListener().connectFailure(new HttpResponse.Builder().code(code).codeString(msg).build(), new IOException("Content Length = 0"));
                     return null;
                 }
 
-                int start = url.lastIndexOf("/") + 1;
-                String fileName = url.substring(start, url.length());
+                int start = request.getUrl().lastIndexOf("/") + 1;
+                String fileName = request.getUrl().substring(start, request.getUrl().length());
 
                 /*
                  * "r"    以只读方式打开。调用结果对象的任何 write 方法都将导致抛出 IOException。
@@ -116,7 +93,7 @@ public class DownloaderAsyncTask extends AsyncTask<String, Void, Void> {
                  * "rws"  打开以便读取和写入。相对于 "rw"，"rws" 还要求对“文件的内容”或“meta-data”的每个更新都同步写入到基础存储设备。
                  * "rwd"  打开以便读取和写入，相对于 "rw"，"rwd" 还要求对“文件的内容”的每个更新都同步写入到基础存储设备。
                  */
-                RandomAccessFile file = new RandomAccessFile(Constants.CACHE_PATH + fileName, "rwd");
+                RandomAccessFile file = new RandomAccessFile(MyApplication.INSTANCE.getDiskCacheDir() + fileName, "rwd");
 
                 // 1.在本地创建一个文件 文件大小要跟服务器文件的大小一致
                 file.setLength(LENGTH);
@@ -134,7 +111,7 @@ public class DownloaderAsyncTask extends AsyncTask<String, Void, Void> {
                 int blockSize = LENGTH / THREAD_NUM;
                 for (int i = 0; i < THREAD_NUM; i++) {
                     int startPos = i * blockSize;
-                    int endPos = (i + 1) * blockSize -1;
+                    int endPos = (i + 1) * blockSize - 1;
 
                     //注意最后一个线程的结束位置为文件长度
                     if (i == (THREAD_NUM - 1))
@@ -155,8 +132,9 @@ public class DownloaderAsyncTask extends AsyncTask<String, Void, Void> {
 
         }
         if (e != null) {
-            listener.connectFailure(code, msg, null);
+            request.getListener().connectFailure(new HttpResponse.Builder().code(code).codeString(msg).build(), null);
         }
+
         return null;
     }
 
@@ -173,14 +151,14 @@ public class DownloaderAsyncTask extends AsyncTask<String, Void, Void> {
             this.startPos = startPos;
             this.endPos = endPos;
             this.LENGTH = LENGTH;
-            int start = url.lastIndexOf("/") + 1;
-            fileName = url.substring(start, url.length());
+            int start = request.getUrl().lastIndexOf("/") + 1;
+            fileName = request.getUrl().substring(start, request.getUrl().length());
         }
 
         @Override
         public void run() {
             try {
-                HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
+                HttpURLConnection conn = (HttpURLConnection) new URL(request.getUrl()).openConnection();
                 //默认GET请求，所以可略
                 conn.setRequestMethod("GET");
                 //默认可读服务器读结果流，所以可略
@@ -189,15 +167,15 @@ public class DownloaderAsyncTask extends AsyncTask<String, Void, Void> {
                 conn.setConnectTimeout(5000);
 
                 //设置标头
-                if (headers != null) {
-                    Set<String> set = headers.keySet();
+                if (request.getHeaders() != null) {
+                    Set<String> set = request.getHeaders().keySet();
                     for (String name : set) {
-                        conn.setRequestProperty(name, headers.get(name));
+                        conn.setRequestProperty(name, request.getHeaders().get(name));
                     }
                 }
 
                 //用一份文件记录下载进度
-                File positionFile = new File(Constants.CACHE_PATH + fileName + threadId + ".dat");
+                File positionFile = new File(MyApplication.INSTANCE.getDiskCacheDir() + fileName + threadId + ".dat");
                 if (positionFile.exists()) {
                     FileInputStream fis = new FileInputStream(positionFile);
                     byte[] result = su.getBytes(fis);
@@ -218,7 +196,7 @@ public class DownloaderAsyncTask extends AsyncTask<String, Void, Void> {
                 conn.setRequestProperty("Range", String.format(Locale.ENGLISH, "bytes=%d-%d", startPos, endPos));
 
                 //设置数据从那个位置开始写
-                RandomAccessFile file = new RandomAccessFile(Constants.CACHE_PATH + fileName, "rwd");
+                RandomAccessFile file = new RandomAccessFile(MyApplication.INSTANCE.getDiskCacheDir() + fileName, "rwd");
                 file.seek(startPos);
                 byte[] buffer = new byte[1024];
                 // 文件长度，当length = -1代表文件读完了
@@ -227,7 +205,7 @@ public class DownloaderAsyncTask extends AsyncTask<String, Void, Void> {
                 int currentPos = startPos;
                 while ((len = conn.getInputStream().read(buffer)) != -1) {
                     file.write(buffer, 0, len);
-                    listener.update(len, LENGTH);
+                    request.getListener().update(len, LENGTH);
                     currentPos += len;
                 }
                 CLog.Companion.w(TAG, "currentPos:" + currentPos);

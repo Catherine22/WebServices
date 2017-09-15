@@ -22,5 +22,9 @@ public class Constants {
 
     public final static String ROOT_PATH = Environment.getExternalStorageDirectory().getAbsolutePath() + "/WebServices/";
     public final static String EXT_PATH = ROOT_PATH + "data/";
-    public final static String CACHE_PATH = ROOT_PATH + "cache/";
+    protected final static String CACHE_PATH = ROOT_PATH + "cache/";
+
+    //Fragments
+    public final static int P04_GALLERY = 4;
+
 }
