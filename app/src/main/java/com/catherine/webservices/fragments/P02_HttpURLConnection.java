@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -19,9 +18,9 @@ import com.catherine.webservices.R;
 import com.catherine.webservices.adapters.CardRVAdapter;
 import com.catherine.webservices.interfaces.MainInterface;
 import com.catherine.webservices.interfaces.OnRequestPermissionsListener;
-import com.catherine.webservices.network.DownloaderAsyncTask;
-import com.catherine.webservices.network.DownloaderListener;
 import com.catherine.webservices.network.HttpAsyncTask;
+import com.catherine.webservices.network.HttpRequest;
+import com.catherine.webservices.network.HttpResponse;
 import com.catherine.webservices.network.HttpResponseListener;
 import com.catherine.webservices.network.MyHttpURLConnection;
 import com.catherine.webservices.toolkits.CLog;
@@ -48,7 +47,6 @@ public class P02_HttpURLConnection extends LazyFragment {
     private SwipeRefreshLayout srl_container;
     private MainInterface mainInterface;
     private CardRVAdapter adapter;
-    private int total = 0;
 
     public static P02_HttpURLConnection newInstance(boolean isLazyLoad) {
         Bundle args = new Bundle();
@@ -92,7 +90,7 @@ public class P02_HttpURLConnection extends LazyFragment {
                 myAlertDialog.setIcon(android.R.drawable.ic_dialog_alert)
                         .setCancelable(false)
                         .setTitle("注意")
-                        .setMessage(String.format("您目前未授权%1$s存取权限，未授权将造成程式无法执行，是否开启权限？", context.toString()))
+                        .setMessage(String.format("您目前未授权%s存取权限，未授权将造成程式无法执行，是否开启权限？", context.toString()))
                         .setNegativeButton("继续关闭", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -125,13 +123,11 @@ public class P02_HttpURLConnection extends LazyFragment {
         features = new ArrayList<>();
         features.add("HttpGet");
         features.add("HttpPost");
-        features.add("Download files");
 
 
         descriptions = new ArrayList<>();
-        descriptions.add("Set the method for the URL request");
-        descriptions.add("Set the method for the URL request");
-        descriptions.add("Set the method for the URL request");
+        descriptions.add("Set the method for the URL request.");
+        descriptions.add("Set the method for the URL request.");
     }
 
     private void initComponent() {
@@ -148,7 +144,7 @@ public class P02_HttpURLConnection extends LazyFragment {
         RecyclerView rv_main_list = (RecyclerView) findViewById(R.id.rv_main_list);
 //        rv_main_list.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.Companion.getVERTICAL_LIST()));
         rv_main_list.setLayoutManager(new LinearLayoutManager(getActivity()));
-        adapter = new CardRVAdapter(getActivity(), features, descriptions, new CardRVAdapter.OnItemClickListener() {
+        adapter = new CardRVAdapter(getActivity(), null, features, descriptions, new CardRVAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(@NotNull View view, int position) {
                 switch (position) {
@@ -156,34 +152,41 @@ public class P02_HttpURLConnection extends LazyFragment {
                         Map<String, String> h1 = MyHttpURLConnection.getDefaultHeaders();
                         h1.put("h1", "Hi there!");
                         h1.put("h2", "I am a mobile phone.");
-                        new HttpAsyncTask(Constants.HOST + "LoginServlet?name=zhangsan&password=123456", h1, new HttpResponseListener() {
-                            @Override
-                            public void connectSuccess(int code, @NotNull String message, @NotNull String body) {
-                                CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", code, message, body));
-                            }
+                        HttpRequest request0 = new HttpRequest(new HttpRequest.Builder()
+                                .url(String.format(Locale.ENGLISH, "%sLoginServlet?name=zhangsan&password=123456", Constants.HOST))
+                                .headers(h1)
+                                .listener(new HttpResponseListener() {
+                                    @Override
+                                    public void connectSuccess(HttpResponse response) {
+                                        CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
+                                    }
 
-                            @Override
-                            public void connectFailure(int code, @NotNull String message, @NotNull String errorStream, @org.jetbrains.annotations.Nullable Exception e) {
-                                CLog.Companion.e(TAG, String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, body:%s", code, message, errorStream));
-                                if (e != null)
-                                    CLog.Companion.e(TAG, e.getMessage());
-                            }
-                        }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                                    @Override
+                                    public void connectFailure(HttpResponse response, Exception e) {
+                                        CLog.Companion.e(TAG, String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, error:%s", response.getCode(), response.getCodeString(), response.getErrorMessage()));
+                                        if (e != null)
+                                            CLog.Companion.e(TAG, e.getMessage());
+                                    }
+                                }));
+                        new HttpAsyncTask(request0).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
+                        HttpRequest request1 = new HttpRequest(new HttpRequest.Builder()
+                                .url("http://dictionary.cambridge.org/zhs/%E6%90%9C%E7%B4%A2/%E8%8B%B1%E8%AF%AD-%E6%B1%89%E8%AF%AD-%E7%AE%80%E4%BD%93/direct/?q=philosopher")
+                                .listener(new HttpResponseListener() {
+                                    @Override
+                                    public void connectSuccess(HttpResponse response) {
+                                        CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
+                                    }
 
-                        new HttpAsyncTask("http://dictionary.cambridge.org/zhs/%E6%90%9C%E7%B4%A2/%E8%8B%B1%E8%AF%AD-%E6%B1%89%E8%AF%AD-%E7%AE%80%E4%BD%93/direct/?q=philosopher", new HttpResponseListener() {
-                            @Override
-                            public void connectSuccess(int code, @NotNull String message, @NotNull String body) {
-                                CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", code, message, body));
-                            }
-
-                            @Override
-                            public void connectFailure(int code, @NotNull String message, @NotNull String errorStream, @org.jetbrains.annotations.Nullable Exception e) {
-                                CLog.Companion.e(TAG, String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, body:%s", code, message, errorStream));
-                                if (e != null)
-                                    CLog.Companion.e(TAG, e.getMessage());
-                            }
-                        }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                                    @Override
+                                    public void connectFailure(HttpResponse response, Exception e) {
+                                        CLog.Companion.e(TAG, String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, error:%s", response.getCode(), response.getCodeString(), response.getErrorMessage()));
+                                        if (e != null)
+                                            CLog.Companion.e(TAG, e.getMessage());
+                                    }
+                                })
+                        );
+                        new HttpAsyncTask(request1).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                         break;
                     case 1:
                         Map<String, String> h2 = MyHttpURLConnection.getDefaultHeaders();
@@ -191,75 +194,70 @@ public class P02_HttpURLConnection extends LazyFragment {
                         Map<String, String> body = new HashMap<>();
                         body.put("name", "zhangsan");
                         body.put("password", "123456");
-                        new HttpAsyncTask(Constants.HOST + "LoginServlet", h2, MyHttpURLConnection.getSimpleStringBody(body), new HttpResponseListener() {
-                            @Override
-                            public void connectSuccess(int code, @NotNull String message, @NotNull String body) {
-                                CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", code, message, body));
-                            }
 
-                            @Override
-                            public void connectFailure(int code, @NotNull String message, @NotNull String errorStream, @org.jetbrains.annotations.Nullable Exception e) {
-                                CLog.Companion.e(TAG, String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, body:%s", code, message, errorStream));
-                                if (e != null)
-                                    CLog.Companion.e(TAG, e.getMessage());
-                            }
-                        }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                        HttpRequest request2 = new HttpRequest(new HttpRequest.Builder()
+                                .url(String.format(Locale.ENGLISH, "%sLoginServlet", Constants.HOST))
+                                .headers(h2)
+                                .body(MyHttpURLConnection.getSimpleStringBody(body))
+                                .listener(new HttpResponseListener() {
+                                    @Override
+                                    public void connectSuccess(HttpResponse response) {
+                                        CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
+                                    }
+
+                                    @Override
+                                    public void connectFailure(HttpResponse response, Exception e) {
+                                        CLog.Companion.e(TAG, String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, error:%s", response.getCode(), response.getCodeString(), response.getErrorMessage()));
+                                        if (e != null)
+                                            CLog.Companion.e(TAG, e.getMessage());
+                                    }
+                                })
+                        );
+                        new HttpAsyncTask(request2, true).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
 
                         body.put("name", "");
                         body.put("password", "");
-                        new HttpAsyncTask(Constants.HOST + "LoginServlet", MyHttpURLConnection.getSimpleStringBody(body), new HttpResponseListener() {
-                            @Override
-                            public void connectSuccess(int code, @NotNull String message, @NotNull String body) {
-                                CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", code, message, body));
-                            }
+                        HttpRequest request3 = new HttpRequest(new HttpRequest.Builder()
+                                .url(String.format(Locale.ENGLISH, "%sLoginServlet", Constants.HOST))
+                                .body(MyHttpURLConnection.getSimpleStringBody(body))
+                                .listener(new HttpResponseListener() {
+                                    @Override
+                                    public void connectSuccess(HttpResponse response) {
+                                        CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
+                                    }
 
-                            @Override
-                            public void connectFailure(int code, @NotNull String message, @NotNull String errorStream, @org.jetbrains.annotations.Nullable Exception e) {
-                                CLog.Companion.e(TAG, String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, body:%s", code, message, errorStream));
-                                if (e != null)
-                                    CLog.Companion.e(TAG, e.getMessage());
-                            }
-                        }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                                    @Override
+                                    public void connectFailure(HttpResponse response, Exception e) {
+                                        CLog.Companion.e(TAG, String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, error:%s", response.getCode(), response.getCodeString(), response.getErrorMessage()));
+                                        if (e != null)
+                                            CLog.Companion.e(TAG, e.getMessage());
+                                    }
+                                })
+                        );
+                        new HttpAsyncTask(request3).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
 
                         body.put("name", "zhangsan");
                         body.put("password", "123456");
-                        new HttpAsyncTask(Constants.HOST + "LoginServlet", MyHttpURLConnection.getSimpleStringBody(body), new HttpResponseListener() {
-                            @Override
-                            public void connectSuccess(int code, @NotNull String message, @NotNull String body) {
-                                CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", code, message, body));
-                            }
+                        HttpRequest request4 = new HttpRequest(new HttpRequest.Builder()
+                                .url(String.format(Locale.ENGLISH, "%sLoginServlet", Constants.HOST))
+                                .body(MyHttpURLConnection.getSimpleStringBody(body))
+                                .listener(new HttpResponseListener() {
+                                    @Override
+                                    public void connectSuccess(HttpResponse response) {
+                                        CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
+                                    }
 
-                            @Override
-                            public void connectFailure(int code, @NotNull String message, @NotNull String errorStream, @org.jetbrains.annotations.Nullable Exception e) {
-                                CLog.Companion.e(TAG, String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, body:%s", code, message, errorStream));
-                                if (e != null)
-                                    CLog.Companion.e(TAG, e.getMessage());
-                            }
-                        }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-                        break;
-                    case 2:
-                        final Handler h = new Handler();
-                        new DownloaderAsyncTask(Constants.DOWNLOAD_HOST + "fmc.apk", new DownloaderListener() {
-                            @Override
-                            public void update(int downloadedLength, int LENGTH) {
-                                total += downloadedLength;
-                                adapter.updateProgress(2, LENGTH, total);
-                                h.post(updateListRunnable);
-                                if (total == LENGTH) {
-                                    CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess downloadedLength:%d, LENGTH:%d", total, LENGTH));
-                                    total = 0;
-                                }
-                            }
-
-                            @Override
-                            public void connectFailure(int code, @NotNull String message, @org.jetbrains.annotations.Nullable Exception e) {
-                                CLog.Companion.e(TAG, String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, body:%s", code, message));
-                                if (e != null)
-                                    CLog.Companion.e(TAG, e.getMessage());
-
-                            }
-                        }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                                    @Override
+                                    public void connectFailure(HttpResponse response, Exception e) {
+                                        CLog.Companion.e(TAG, String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, error:%s", response.getCode(), response.getCodeString(), response.getErrorMessage()));
+                                        if (e != null)
+                                            CLog.Companion.e(TAG, e.getMessage());
+                                    }
+                                })
+                        );
+                        new HttpAsyncTask(request4).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                         break;
                 }
             }
@@ -271,11 +269,4 @@ public class P02_HttpURLConnection extends LazyFragment {
         });
         rv_main_list.setAdapter(adapter);
     }
-
-    private Runnable updateListRunnable = new Runnable() {
-        @Override
-        public void run() {
-            adapter.notifyDataSetChanged();
-        }
-    };
 }

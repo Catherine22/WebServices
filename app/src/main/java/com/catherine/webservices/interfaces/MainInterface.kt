@@ -8,4 +8,7 @@ package com.catherine.webservices.interfaces
  */
 interface MainInterface {
     fun getPermissions(permissions: Array<String>, listener: OnRequestPermissionsListener)
+    fun callFragment(id: Int)
+    fun backToPreviousPage()
+    fun clearAllFragments()
 }

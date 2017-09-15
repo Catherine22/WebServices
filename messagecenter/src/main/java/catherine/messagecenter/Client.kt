@@ -12,7 +12,7 @@ import android.support.v4.content.LocalBroadcastManager
  * Soft-World Inc.
  * catherine919@soft-world.com.tw
  */
-class Client {
+class Client(ctx: Context, cr: CustomReceiver) {
     private var ctx: Context? = null
     private var result: Result? = null
     private var cr: CustomReceiver? = null
@@ -23,10 +23,8 @@ class Client {
     /**
      * Before you use gotMessages(), you should initialize this constructor
      *
-     * @param ctx Context
-     * @param cr  Implements
      */
-    fun Client(ctx: Context, cr: CustomReceiver) {
+    init {
         this.ctx = ctx
         this.cr = cr
         this.result = Result()

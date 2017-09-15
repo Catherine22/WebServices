@@ -3,6 +3,11 @@ package com.catherine.webservices.network
 import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
+import android.net.Uri
+import catherine.messagecenter.Client
+import catherine.messagecenter.CustomReceiver
+import catherine.messagecenter.Result
+import com.catherine.webservices.MyApplication
 import com.catherine.webservices.services.NetworkHealthService
 import com.catherine.webservices.toolkits.CLog
 import java.net.InetAddress
@@ -15,23 +20,55 @@ import java.util.*
  * catherine919@soft-world.com.tw
  */
 class NetworkHelper(private val ctx: Context) {
+    private var client: Client? = null
+
     companion object {
         val TAG = "NetworkHelper"
+
+
+        fun encodeURL(url: String): String {
+            val ALLOWED_URI_CHARS = "@#&=*+-_.,:!?()/~'%"
+            return Uri.encode(url, ALLOWED_URI_CHARS)
+        }
+
+        fun getFileNameFromUrl(url: String): String {
+            val fileNames = url.split("/")
+            return fileNames[fileNames.size - 1]
+        }
     }
+
     fun isNetworkHealth(): Boolean {
         val cm = ctx.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val activeNetwork = cm.activeNetworkInfo
-        CLog.e(TAG, activeNetwork!!.extraInfo)
-        return activeNetwork != null && activeNetwork.isConnectedOrConnecting
+        return if (activeNetwork != null) {
+            CLog.e(TAG, activeNetwork.extraInfo)
+            activeNetwork.isConnectedOrConnecting
+        } else
+            false
     }
 
     fun isWifi(): Boolean {
         val cm = ctx.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val activeNetwork = cm.activeNetworkInfo
-        return activeNetwork.type == ConnectivityManager.TYPE_WIFI
+        return if (activeNetwork == null)
+            false
+        else
+            activeNetwork.type == ConnectivityManager.TYPE_WIFI
     }
 
-    fun listenToNetworkState() {
+    fun listenToNetworkState(listener: NetworkHealthListener) {
+        client = Client(ctx, object : CustomReceiver {
+            override fun onBroadcastReceive(result: Result) {
+                val b = result.mBundle
+                if (b!!.getBoolean("isConnectedOrConnecting", false)) {
+                    listener.networkConnected(b.getString("typeName", "N/A"))
+                } else {
+                    listener.networkDisable()
+                }
+            }
+        })
+        client?.gotMessages("C_NETWORK_STATE")
+        MyApplication.INSTANCE.registerLocalBroadCastReceiver(client)
         val nhs = Intent(ctx, NetworkHealthService::class.java)
         ctx.startService(nhs)
     }
