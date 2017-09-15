@@ -52,6 +52,7 @@ android {
 
 ### Cache
 
+An application using HTTP cache headers is able to control this caching behavior and alleviate server-side load.		
 For example, you got a HTTP response like this.
 ```html
 HTTP/1.1 200 OK
@@ -118,6 +119,7 @@ If-Modified-Since:Tue, 03 Mar 2015 01:38:18 GMT
 
 - **Expires**
 
+Superseded by Cache-Control header.		
 Expires header defines a precise time but some of the users can't synchronize the latest response because they are in other time zones.		
 When expires header is less than 0, it's equal to Cache-Control: no-cache
 ```html
@@ -148,6 +150,15 @@ If your cache is not available, then you request ETag (with If-None-Match) or La
 Your server returns 304 when it's okay to use the cache you've stored or you might get 200 with new resources.
 
 
+- Download and cache images
+
+1. Download a url list.		
+2. Check internal or external storage of the device and if the image has had cache, skip step 3 and show it.
+3. Download each image from the list and try to cache it.		
+4. Show images whatever it has been cached.		
+
+Here is the example: [P04_Gallery], [ShortCardRVAdapter]
+
 
 - WebView cache
 
@@ -170,3 +181,5 @@ Your server returns 304 when it's okay to use the cache you've stored or you mig
 [HTTP 1.1 doc]:<https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html>
 [Google Web Fundamentals]:<https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/http-caching>
 [cache cn]:<https://segmentfault.com/a/1190000004486640>
+[ShortCardRVAdapter]:<https://github.com/Catherine22/WebServices/blob/master/app/src/main/java/com/catherine/webservices/adapters/ShortCardRVAdapter.java>
+[P04_Gallery]:<https://github.com/Catherine22/WebServices/blob/master/app/src/main/java/com/catherine/webservices/fragments/P04_Gallery.java>

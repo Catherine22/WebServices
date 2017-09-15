@@ -25,8 +25,6 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -40,13 +38,16 @@ import java.util.Locale;
  * catherine919@soft-world.com.tw
  */
 
+/**
+ * Cache images
+ */
 public class ShortCardRVAdapter extends RecyclerView.Adapter<ShortCardRVAdapter.MainRvHolder> {
     private final static String TAG = "ShortCardRVAdapter";
     private Context ctx;
     private List<String> images, titles, subtitles;
     private OnItemClickListener listener;
-    private Handler handler = new Handler(MyApplication.INSTANCE.calHandlerThread.getLooper());
     private DiskLruCache diskLruCache;
+    private Handler handler = new Handler(MyApplication.INSTANCE.calHandlerThread.getLooper());
 
     public ShortCardRVAdapter(Context ctx, List<String> images, List<String> titles, List<String> subtitles, OnItemClickListener listener) {
         this.ctx = ctx;
@@ -101,7 +102,7 @@ public class ShortCardRVAdapter extends RecyclerView.Adapter<ShortCardRVAdapter.
                             URL url = new URL(images.get(position));
                             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
-                            //Show images first in case the external/internal storage is not work.
+                            //Show images at first in case the external/internal storage not works.
                             final Bitmap bitmap = BitmapFactory.decodeStream(conn.getInputStream());
                             conn.disconnect();
                             ((Activity) ctx).runOnUiThread(new Runnable() {
