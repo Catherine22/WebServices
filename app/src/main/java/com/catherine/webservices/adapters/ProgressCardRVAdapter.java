@@ -7,7 +7,6 @@ import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,13 +39,12 @@ public class ProgressCardRVAdapter extends RecyclerView.Adapter<ProgressCardRVAd
     private OnItemClickListener onClickListener;
     private ProgressBarInfo[] progressList;
 
-    public ProgressCardRVAdapter(Context ctx, List<String> images, List<String> titles, List<String> subtitles, List<String> infos, OnItemClickListener onClickListener) {
+    public ProgressCardRVAdapter(Context ctx, List<String> images, List<String> titles, List<String> subtitles, List<String> infos) {
         this.ctx = ctx;
         this.images = images;
         this.titles = titles;
         this.subtitles = subtitles;
         this.infos = infos;
-        this.onClickListener = onClickListener;
         progressList = new ProgressBarInfo[getItemCount()];
         handler = new Handler(MyApplication.INSTANCE.calHandlerThread.getLooper());
     }
@@ -133,6 +131,10 @@ public class ProgressCardRVAdapter extends RecyclerView.Adapter<ProgressCardRVAd
     @Override
     public int getItemCount() {
         return titles.size();
+    }
+
+    public void setOnItemClickListener(OnItemClickListener onClickListener) {
+        this.onClickListener = onClickListener;
     }
 
     public void updateProgress(int pos, int MAX, int cur) {
