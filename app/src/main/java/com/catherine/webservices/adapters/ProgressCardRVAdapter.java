@@ -111,7 +111,6 @@ public class ProgressCardRVAdapter extends RecyclerView.Adapter<ProgressCardRVAd
             if (progressList[position].cur_progress == progressList[position].MAX_PROGRESS)
                 mainRvHolder.pb.setVisibility(View.INVISIBLE);
         }
-
         mainRvHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

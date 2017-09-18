@@ -7,7 +7,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import com.catherine.webservices.fragments.P01_Apache;
 import com.catherine.webservices.fragments.P02_HttpURLConnection;
 import com.catherine.webservices.fragments.P03_Downloader;
-import com.catherine.webservices.fragments.P05_Cache;
+import com.catherine.webservices.fragments.P04_Cache;
 
 /**
  * Created by Catherine on 2017/8/25.
@@ -31,7 +31,7 @@ public class MainViewPagerAdapter extends FragmentPagerAdapter {
         } else if (position == 2) {
             return P03_Downloader.newInstance(true);
         } else if (position == 3) {
-            return P05_Cache.newInstance(true);
+            return P04_Cache.newInstance(true);
         }
         return P01_Apache.newInstance(true);
 

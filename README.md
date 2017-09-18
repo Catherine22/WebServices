@@ -181,7 +181,7 @@ Cache-Control:no-cache, no-store
 3. Download each image from the list and try to cache it.		
 4. Show images whatever it has been cached.		
 
-Here is the example: [P04_Gallery], [ShortCardRVAdapter]
+Here is the example: [P05_Gallery], [ShortCardRVAdapter]
 
 
 - WebView cache
@@ -206,4 +206,4 @@ Here is the example: [P04_Gallery], [ShortCardRVAdapter]
 [Google Web Fundamentals]:<https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/http-caching>
 [increasing-application-performance-with-http-cache-headers]:<https://devcenter.heroku.com/articles/increasing-application-performance-with-http-cache-headers>
 [ShortCardRVAdapter]:<https://github.com/Catherine22/WebServices/blob/master/app/src/main/java/com/catherine/webservices/adapters/ShortCardRVAdapter.java>
-[P04_Gallery]:<https://github.com/Catherine22/WebServices/blob/master/app/src/main/java/com/catherine/webservices/fragments/P04_Gallery.java>
+[P05_Gallery]:<https://github.com/Catherine22/WebServices/blob/master/app/src/main/java/com/catherine/webservices/fragments/P05_Gallery.java>

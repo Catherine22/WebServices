@@ -12,8 +12,12 @@ import android.support.design.widget.TabLayout
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
+import android.support.v4.app.FragmentManager
+import android.view.KeyEvent
+import android.view.View
 import com.catherine.webservices.adapters.MainViewPagerAdapter
-import com.catherine.webservices.fragments.P04_Gallery
+import com.catherine.webservices.fragments.P05_Gallery
+import com.catherine.webservices.interfaces.BackKeyListener
 import com.catherine.webservices.interfaces.MainInterface
 import com.catherine.webservices.interfaces.OnRequestPermissionsListener
 import com.catherine.webservices.network.NetworkHealthListener
@@ -271,7 +275,7 @@ class MainActivity : FragmentActivity(), MainInterface {
 
 
     private val fm = supportFragmentManager
-    private val titles = Stack<String>()
+
     /**
      * 跳页至某Fragment
      *
@@ -285,19 +289,16 @@ class MainActivity : FragmentActivity(), MainInterface {
         when (id) {
             Constants.P04_GALLERY -> {
                 title = "P04_GALLERY"
-                fragment = P04_Gallery.newInstance(true)
+                fragment = P05_Gallery.newInstance(true)
                 tag = "P04"
             }
         }
-
-        titles.push(title)
-//        tv_title.setText(title)
-
         val transaction = fm.beginTransaction()
         transaction.add(R.id.fl_container, fragment, tag)
         transaction.addToBackStack(title)
         transaction.commitAllowingStateLoss()
     }
+
 
     /**
      * Clear all fragments in stack
@@ -305,32 +306,45 @@ class MainActivity : FragmentActivity(), MainInterface {
     override fun clearAllFragments() {
         for (i in 0 until fm.backStackEntryCount) {
             fm.popBackStack()
-            titles.pop()
         }
-        titles.push("Features")
     }
 
     /**
      * Simulate BackKey event
      */
     override fun backToPreviousPage() {
-        onBackPressed()
+        if (fm.backStackEntryCount > 0) {
+            fm.popBackStack()
+
+        } else
+            onBackPressed()
     }
 
+    private var backKeyEventListener: MutableList<BackKeyListener?>? = null
+    override fun setBackKeyListener(listener: BackKeyListener) {
+        backKeyEventListener?.set(vp_content.currentItem, listener)
+    }
+
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if (backKeyEventListener?.get(vp_content.currentItem) != null) {
+                backKeyEventListener?.get(vp_content.currentItem)?.OnKeyDown()
+                return true
+            }
+        }
+        return super.onKeyDown(keyCode, event)
+    }
 
     private fun setView() {
         vp_content.adapter = MainViewPagerAdapter(supportFragmentManager)
         tabLayout.setupWithViewPager(vp_content)
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
-                if (tab == tabLayout.getTabAt(0)) {
-                    vp_content.currentItem = 0
-                } else if (tab == tabLayout.getTabAt(1)) {
-                    vp_content.currentItem = 1
-                } else if (tab == tabLayout.getTabAt(2)) {
-                    vp_content.currentItem = 2
-                } else if (tab == tabLayout.getTabAt(3)) {
-                    vp_content.currentItem = 3
+                when (tab) {
+                    tabLayout.getTabAt(0) -> vp_content.currentItem = 0
+                    tabLayout.getTabAt(1) -> vp_content.currentItem = 1
+                    tabLayout.getTabAt(2) -> vp_content.currentItem = 2
+                    tabLayout.getTabAt(3) -> vp_content.currentItem = 3
                 }
             }
 
@@ -342,7 +356,10 @@ class MainActivity : FragmentActivity(), MainInterface {
 
             }
         })
-
+        backKeyEventListener = ArrayList<BackKeyListener?>()
+        for (i in 0 until tabLayout.tabCount) {
+            backKeyEventListener?.add(null)
+        }
     }
 
     fun testKotlin() {

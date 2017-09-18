@@ -1,6 +1,7 @@
 package com.catherine.webservices.interfaces
 
 
+
 /**
  * Created by Catherine on 2017/8/28.
  * Soft-World Inc.
@@ -11,4 +12,5 @@ interface MainInterface {
     fun callFragment(id: Int)
     fun backToPreviousPage()
     fun clearAllFragments()
+    fun setBackKeyListener(listener:BackKeyListener)
 }

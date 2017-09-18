@@ -37,7 +37,7 @@ import java.util.Locale;
  * catherine919@soft-world.com.tw
  */
 
-public class P04_Gallery extends LazyFragment {
+public class P05_Gallery extends LazyFragment {
     private final static String TAG = "P04_Gallery";
     private List<String> titles;
     private List<String> attrs;
@@ -50,10 +50,10 @@ public class P04_Gallery extends LazyFragment {
     private ADID_AsyncTask adid_asyncTask;
     private boolean retry;
 
-    public static P04_Gallery newInstance(boolean isLazyLoad) {
+    public static P05_Gallery newInstance(boolean isLazyLoad) {
         Bundle args = new Bundle();
         args.putBoolean(LazyFragment.INTENT_BOOLEAN_LAZYLOAD, isLazyLoad);
-        P04_Gallery fragment = new P04_Gallery();
+        P05_Gallery fragment = new P05_Gallery();
         fragment.setArguments(args);
         return fragment;
     }
@@ -61,7 +61,7 @@ public class P04_Gallery extends LazyFragment {
     @Override
     public void onCreateViewLazy(Bundle savedInstanceState) {
         super.onCreateViewLazy(savedInstanceState);
-        setContentView(R.layout.f_04_gallery);
+        setContentView(R.layout.f_05_gallery);
         rv_main_list = (RecyclerView) findViewById(R.id.rv_main_list);
         tv_offline = (TextView) findViewById(R.id.tv_offline);
         titles = new ArrayList<>();
