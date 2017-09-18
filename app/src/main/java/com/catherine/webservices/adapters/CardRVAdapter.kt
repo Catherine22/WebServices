@@ -10,6 +10,8 @@ import android.view.View
 import android.view.ViewGroup
 import com.catherine.webservices.MyApplication
 import com.catherine.webservices.R
+import com.catherine.webservices.entities.ProgressBarInfo
+import com.catherine.webservices.interfaces.OnItemClickListener
 import kotlinx.android.synthetic.main.rv_card.view.*
 import java.io.IOException
 import java.net.HttpURLConnection
@@ -28,12 +30,6 @@ class CardRVAdapter(private var ctx: Context, var images: List<String>?, var tit
 
     private val handler = Handler(MyApplication.INSTANCE.calHandlerThread.looper)
     private val activity = ctx as Activity
-
-    interface OnItemClickListener {
-        fun onItemClick(view: View, position: Int)
-        fun onItemLongClick(view: View, position: Int)
-    }
-
     private var progressList = arrayOfNulls<ProgressBarInfo>(titles.size)
 
     override fun onBindViewHolder(holder: MainRvHolder, position: Int) {
@@ -104,6 +100,5 @@ class CardRVAdapter(private var ctx: Context, var images: List<String>?, var tit
 
     }
 
-    data class ProgressBarInfo(var MAX_PROGRESS: Int = -1, var cur_progress: Int = -1)
     class MainRvHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 }

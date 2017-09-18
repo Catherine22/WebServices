@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.catherine.webservices.Constants;
 import com.catherine.webservices.R;
 import com.catherine.webservices.adapters.ShortCardRVAdapter;
+import com.catherine.webservices.interfaces.OnItemClickListener;
 import com.catherine.webservices.network.HttpAsyncTask;
 import com.catherine.webservices.network.HttpRequest;
 import com.catherine.webservices.network.HttpResponse;
@@ -193,7 +194,7 @@ public class P04_Gallery extends LazyFragment {
 
         RecyclerView rv_main_list = (RecyclerView) findViewById(R.id.rv_main_list);
         rv_main_list.setLayoutManager(new LinearLayoutManager(getActivity()));
-        adapter = new ShortCardRVAdapter(getActivity(), images, titles, attrs, new ShortCardRVAdapter.OnItemClickListener() {
+        adapter = new ShortCardRVAdapter(getActivity(), images, titles, attrs, new OnItemClickListener() {
             @Override
             public void onItemLongClick(@NotNull View view, int position) {
 

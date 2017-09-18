@@ -30,16 +30,18 @@ import java.util.Set;
  */
 public class DownloaderAsyncTask extends AsyncTask<String, Void, Void> {
     private final static String TAG = "DownloaderAsyncTask";
-    private final static int THREAD_NUM = 3;
     private DownloadRequest request;
-
-    //    private String body;
+    private int THREAD_NUM;
+    private boolean stop;
     private StreamUtils su = new StreamUtils();
-    private boolean[] downloadCompleted = new boolean[THREAD_NUM];
-    private HandlerThread[] threadPool = new HandlerThread[THREAD_NUM];
+    private boolean[] downloadCompleted;
+    private HandlerThread[] threadPool;
 
     public DownloaderAsyncTask(DownloadRequest request) {
         this.request = request;
+        THREAD_NUM = (request.getTHREAD_NUM() > 0) ? request.getTHREAD_NUM() : 1;
+        downloadCompleted = new boolean[THREAD_NUM];
+        threadPool = new HandlerThread[THREAD_NUM];
     }
 
     @Override
@@ -55,9 +57,7 @@ public class DownloaderAsyncTask extends AsyncTask<String, Void, Void> {
                 conn.setRequestMethod("GET");
                 //默认可读服务器读结果流，所以可略
                 conn.setDoInput(true);
-                //禁用网络缓存
                 conn.setUseCaches(false);
-
 
                 //设置标头
                 if (request.getHeaders() != null) {
@@ -66,14 +66,6 @@ public class DownloaderAsyncTask extends AsyncTask<String, Void, Void> {
                         conn.setRequestProperty(name, request.getHeaders().get(name));
                     }
                 }
-
-//            CLog.Companion.i(TAG, "url: " + url);
-//            CLog.Companion.i(TAG, "Content Encoding: " + conn.getContentEncoding());
-//            CLog.Companion.i(TAG, "Content Length: " + conn.getContentLength());
-//            CLog.Companion.i(TAG, "Content Type: " + conn.getContentType());
-//            CLog.Companion.i(TAG, "Date: " + conn.getDate());
-//            CLog.Companion.i(TAG, "Expiration: " + conn.getExpiration());
-//            CLog.Companion.i(TAG, "Last Modified: " + conn.getLastModified());
 
                 code = conn.getResponseCode();
                 msg = conn.getResponseMessage();
@@ -136,6 +128,20 @@ public class DownloaderAsyncTask extends AsyncTask<String, Void, Void> {
         }
 
         return null;
+    }
+
+    /**
+     * Stop downloading
+     */
+    public void stop() {
+        stop = true;
+    }
+
+    /**
+     * back to download
+     */
+    public void resume() {
+        stop = false;
     }
 
     class MyRunnable implements Runnable {
@@ -203,9 +209,9 @@ public class DownloaderAsyncTask extends AsyncTask<String, Void, Void> {
                 int len;
                 //当前进度
                 int currentPos = startPos;
-                while ((len = conn.getInputStream().read(buffer)) != -1) {
+                while ((len = conn.getInputStream().read(buffer)) != -1 || !stop) {
                     file.write(buffer, 0, len);
-                    request.getListener().update(len, LENGTH);
+                    request.getListener().update(threadId, len, LENGTH);
                     currentPos += len;
                 }
                 CLog.Companion.w(TAG, "currentPos:" + currentPos);

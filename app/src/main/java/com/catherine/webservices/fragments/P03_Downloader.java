@@ -15,8 +15,9 @@ import android.view.View;
 
 import com.catherine.webservices.Constants;
 import com.catherine.webservices.R;
-import com.catherine.webservices.adapters.CardRVAdapter;
+import com.catherine.webservices.adapters.ProgressCardRVAdapter;
 import com.catherine.webservices.interfaces.MainInterface;
+import com.catherine.webservices.interfaces.OnItemClickListener;
 import com.catherine.webservices.interfaces.OnRequestPermissionsListener;
 import com.catherine.webservices.network.DownloadRequest;
 import com.catherine.webservices.network.DownloaderAsyncTask;
@@ -29,6 +30,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Catherine on 2017/9/11.
@@ -40,10 +42,15 @@ public class P03_Downloader extends LazyFragment {
     public final static String TAG = "P03_Downloader";
     private List<String> features;
     private List<String> descriptions;
+    private List<String> infos;
+    private List<Boolean> stopFlags;
     private SwipeRefreshLayout srl_container;
     private MainInterface mainInterface;
-    private CardRVAdapter adapter;
+    private ProgressCardRVAdapter adapter;
+    private DownloaderAsyncTask task0, task1;
     private int total = 0;
+    private int THREAD_NUM = 3;
+    private int[] threadProgress;
 
     public static P03_Downloader newInstance(boolean isLazyLoad) {
         Bundle args = new Bundle();
@@ -116,11 +123,23 @@ public class P03_Downloader extends LazyFragment {
     }
 
     private void fillInData() {
+        threadProgress = new int[THREAD_NUM];
+
         features = new ArrayList<>();
-        features.add("Download files");
+        features.add("Download an APK");
+        features.add("Download an APK");
 
         descriptions = new ArrayList<>();
-        descriptions.add("Download a file with 3 threads.");
+        descriptions.add("Download a file with a single thread.");
+        descriptions.add("Download a file with three threads.");
+
+        infos = new ArrayList<>();
+        infos.add("");
+        infos.add("");
+
+        stopFlags = new ArrayList<>();
+        stopFlags.add(false);
+        stopFlags.add(false);
     }
 
     private void initComponent() {
@@ -137,44 +156,128 @@ public class P03_Downloader extends LazyFragment {
         RecyclerView rv_main_list = (RecyclerView) findViewById(R.id.rv_main_list);
 //        rv_main_list.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.Companion.getVERTICAL_LIST()));
         rv_main_list.setLayoutManager(new LinearLayoutManager(getActivity()));
-        adapter = new CardRVAdapter(getActivity(), null, features, descriptions, new CardRVAdapter.OnItemClickListener() {
+        adapter = new ProgressCardRVAdapter(getActivity(), null, features, descriptions, null, new OnItemClickListener() {
             @Override
             public void onItemClick(@NotNull View view, final int position) {
                 switch (position) {
                     case 0:
-                        DownloadRequest request5 = new DownloadRequest(new DownloadRequest.Builder()
-                                .url(String.format(Locale.ENGLISH, "%sfmc.apk", Constants.DOWNLOAD_HOST))
-                                .listener(new DownloaderListener() {
-                                    @Override
-                                    public void update(final int downloadedLength, final int LENGTH) {
-                                        getActivity().runOnUiThread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                total += downloadedLength;
-                                                adapter.updateProgress(position, LENGTH, total);
-                                                adapter.notifyDataSetChanged();
-                                                if (total == LENGTH) {
-                                                    CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess downloadedLength:%d, LENGTH:%d", total, LENGTH));
-                                                    total = 0;
+                        CLog.Companion.d(TAG, "click");
+                        if (!stopFlags.get(position)) {
+                            final long time = System.currentTimeMillis();
+                            DownloadRequest r0 = new DownloadRequest(new DownloadRequest.Builder()
+                                    .url(String.format(Locale.ENGLISH, "%sfmc.apk", Constants.DOWNLOAD_HOST))
+                                    .THREAD_NUM(1)
+                                    .listener(new DownloaderListener() {
+                                        @Override
+                                        public void update(final int threadID, final int downloadedLength, final int LENGTH) {
+                                            getActivity().runOnUiThread(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    total += downloadedLength;
+                                                    adapter.updateProgress(position, LENGTH, total);
+                                                    adapter.notifyDataSetChanged();
+                                                    if (total == LENGTH) {
+                                                        CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess downloadedLength:%d, LENGTH:%d \n Spent %d (sec)", total, LENGTH, TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - time)));
+                                                        total = 0;
+                                                        infos.set(position, String.format(Locale.ENGLISH, "connectSuccess downloadedLength:%d, LENGTH:%d \n Spent %d (sec)", total, LENGTH, TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - time)));
+                                                        adapter.updateInfo(infos);
+                                                        adapter.notifyDataSetChanged();
+                                                    }
                                                 }
-                                            }
-                                        });
-                                    }
+                                            });
+                                        }
 
-                                    @Override
-                                    public void connectFailure(final HttpResponse response, final Exception e) {
-                                        getActivity().runOnUiThread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                CLog.Companion.e(TAG, String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s", response.getCode(), response.getCodeString()));
-                                                if (e != null)
-                                                    CLog.Companion.e(TAG, e.getMessage());
-                                            }
-                                        });
+                                        @Override
+                                        public void connectFailure(final HttpResponse response, final Exception e) {
+                                            getActivity().runOnUiThread(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    CLog.Companion.e(TAG, String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s", response.getCode(), response.getCodeString()));
+                                                    if (e != null)
+                                                        CLog.Companion.e(TAG, e.getMessage());
 
-                                    }
-                                }));
-                        new DownloaderAsyncTask(request5).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                                                    infos.set(position, String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s", response.getCode(), response.getCodeString()));
+                                                    adapter.updateInfo(infos);
+                                                    adapter.notifyDataSetChanged();
+                                                }
+                                            });
+
+                                        }
+                                    }));
+                            stopFlags.set(position, true);
+                            task0 = new DownloaderAsyncTask(r0);
+                            task0.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+                            infos.set(position, "Start to download...");
+                            adapter.updateInfo(infos);
+                            adapter.notifyDataSetChanged();
+                        } else {
+                            stopFlags.set(position, false);
+                            infos.set(position, "Stop");
+                            adapter.updateInfo(infos);
+                            adapter.notifyDataSetChanged();
+                            task0.stop();
+                        }
+                        break;
+                    case 1:
+                        CLog.Companion.d(TAG, "click");
+                        if (!stopFlags.get(position)) {
+                            final long time = System.currentTimeMillis();
+                            DownloadRequest r1 = new DownloadRequest(new DownloadRequest.Builder()
+                                    .url(String.format(Locale.ENGLISH, "%sfmc.apk", Constants.DOWNLOAD_HOST))
+                                    .THREAD_NUM(THREAD_NUM)
+                                    .listener(new DownloaderListener() {
+                                        @Override
+                                        public void update(final int threadID, final int downloadedLength, final int LENGTH) {
+                                            getActivity().runOnUiThread(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    threadProgress[threadID] += downloadedLength;
+                                                    total += downloadedLength;
+                                                    infos.set(position, String.format(Locale.ENGLISH, "Start to download...\n Thread0: %d\n Thread1: %d\n Thread2: %d", threadProgress[0], threadProgress[1], threadProgress[2]));
+                                                    adapter.updateProgress(position, LENGTH, total);
+                                                    adapter.notifyDataSetChanged();
+                                                    if (total == LENGTH) {
+                                                        CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess downloadedLength:%d, LENGTH:%d \n Spent %d (sec)", total, LENGTH, TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - time)));
+                                                        total = 0;
+                                                        infos.set(position, String.format(Locale.ENGLISH, "connectSuccess downloadedLength:%d, LENGTH:%d \n Spent %d (sec)", total, LENGTH, TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - time)));
+                                                        adapter.updateInfo(infos);
+                                                        adapter.notifyDataSetChanged();
+                                                    }
+                                                }
+                                            });
+                                        }
+
+                                        @Override
+                                        public void connectFailure(final HttpResponse response, final Exception e) {
+                                            getActivity().runOnUiThread(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    CLog.Companion.e(TAG, String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s", response.getCode(), response.getCodeString()));
+                                                    if (e != null)
+                                                        CLog.Companion.e(TAG, e.getMessage());
+
+                                                    infos.set(position, String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s", response.getCode(), response.getCodeString()));
+                                                    adapter.updateInfo(infos);
+                                                    adapter.notifyDataSetChanged();
+                                                }
+                                            });
+
+                                        }
+                                    }));
+                            stopFlags.set(position, true);
+                            task1 = new DownloaderAsyncTask(r1);
+                            task1.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                            infos.set(position, "Start to download...");
+                            adapter.updateInfo(infos);
+                            adapter.notifyDataSetChanged();
+                        } else {
+                            stopFlags.set(position, false);
+                            infos.set(position, "Stop");
+                            adapter.updateInfo(infos);
+                            adapter.notifyDataSetChanged();
+                            task1.stop();
+                        }
                         break;
                 }
             }
