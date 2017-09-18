@@ -206,8 +206,6 @@ public class P05_Gallery extends LazyFragment {
         });
         rv_main_list.setAdapter(adapter);
 
-
-
         FloatingActionButton fab_delete = (FloatingActionButton)  findViewById(R.id.fab_delete);
         fab_delete.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {

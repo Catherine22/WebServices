@@ -1,6 +1,7 @@
 package com.catherine.webservices.network;
 
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.text.TextUtils;
@@ -11,6 +12,7 @@ import com.catherine.webservices.toolkits.StreamUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -111,7 +113,6 @@ public class DownloaderAsyncTask extends AsyncTask<String, Void, Void> {
 
                     threadPool[i] = new HandlerThread("DownloadLooper" + i);
                     threadPool[i].start();
-
                     MyRunnable runnable = new MyRunnable(i, startPos, endPos, LENGTH);
                     Handler handler = new Handler(threadPool[i].getLooper());
                     handler.post(runnable);
@@ -135,6 +136,10 @@ public class DownloaderAsyncTask extends AsyncTask<String, Void, Void> {
      */
     public void stop() {
         stop = true;
+    }
+
+    public boolean isStop() {
+        return stop;
     }
 
     /**
@@ -192,7 +197,9 @@ public class DownloaderAsyncTask extends AsyncTask<String, Void, Void> {
                         int newStartPosition = Integer.parseInt(str);
 
                         if (newStartPosition > startPos) {
+                            request.getListener().update(threadId, newStartPosition - startPos, LENGTH);
                             startPos = newStartPosition;
+
                         }
                     }
                 }
@@ -209,10 +216,14 @@ public class DownloaderAsyncTask extends AsyncTask<String, Void, Void> {
                 int len;
                 //当前进度
                 int currentPos = startPos;
-                while ((len = conn.getInputStream().read(buffer)) != -1 || !stop) {
-                    file.write(buffer, 0, len);
-                    request.getListener().update(threadId, len, LENGTH);
-                    currentPos += len;
+
+                while ((len = conn.getInputStream().read(buffer)) != -1) {
+                    if (!stop) {
+                        file.write(buffer, 0, len);
+                        request.getListener().update(threadId, len, LENGTH);
+                        currentPos += len;
+                    } else
+                        break;
                 }
                 CLog.Companion.w(TAG, "currentPos:" + currentPos);
 
