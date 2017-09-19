@@ -1,7 +1,6 @@
 package com.catherine.webservices.network;
 
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.text.TextUtils;
@@ -12,7 +11,6 @@ import com.catherine.webservices.toolkits.StreamUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -87,7 +85,7 @@ public class DownloaderAsyncTask extends AsyncTask<String, Void, Void> {
                  * "rws"  打开以便读取和写入。相对于 "rw"，"rws" 还要求对“文件的内容”或“meta-data”的每个更新都同步写入到基础存储设备。
                  * "rwd"  打开以便读取和写入，相对于 "rw"，"rwd" 还要求对“文件的内容”的每个更新都同步写入到基础存储设备。
                  */
-                RandomAccessFile file = new RandomAccessFile(MyApplication.INSTANCE.getDiskCacheDir() + fileName, "rwd");
+                RandomAccessFile file = new RandomAccessFile(MyApplication.INSTANCE.getDiskCacheDir() + "/" + fileName, "rwd");
 
                 // 1.在本地创建一个文件 文件大小要跟服务器文件的大小一致
                 file.setLength(LENGTH);
@@ -131,22 +129,11 @@ public class DownloaderAsyncTask extends AsyncTask<String, Void, Void> {
         return null;
     }
 
-    /**
-     * Stop downloading
-     */
-    public void stop() {
+    @Override
+    protected void onCancelled(Void aVoid) {
+        super.onCancelled(aVoid);
         stop = true;
-    }
-
-    public boolean isStop() {
-        return stop;
-    }
-
-    /**
-     * back to download
-     */
-    public void resume() {
-        stop = false;
+        CLog.Companion.d(TAG, "cancel task");
     }
 
     class MyRunnable implements Runnable {
@@ -186,7 +173,7 @@ public class DownloaderAsyncTask extends AsyncTask<String, Void, Void> {
                 }
 
                 //用一份文件记录下载进度
-                File positionFile = new File(MyApplication.INSTANCE.getDiskCacheDir() + fileName + threadId + ".dat");
+                File positionFile = new File(MyApplication.INSTANCE.getDiskCacheDir() + "/" + fileName + threadId + ".dat");
                 if (positionFile.exists()) {
                     FileInputStream fis = new FileInputStream(positionFile);
                     byte[] result = su.getBytes(fis);
@@ -197,7 +184,9 @@ public class DownloaderAsyncTask extends AsyncTask<String, Void, Void> {
                         int newStartPosition = Integer.parseInt(str);
 
                         if (newStartPosition > startPos) {
+                            //当应用重启或页面重新加载时回调上次下载进度
                             request.getListener().update(threadId, newStartPosition - startPos, LENGTH);
+
                             startPos = newStartPosition;
 
                         }
@@ -209,7 +198,7 @@ public class DownloaderAsyncTask extends AsyncTask<String, Void, Void> {
                 conn.setRequestProperty("Range", String.format(Locale.ENGLISH, "bytes=%d-%d", startPos, endPos));
 
                 //设置数据从那个位置开始写
-                RandomAccessFile file = new RandomAccessFile(MyApplication.INSTANCE.getDiskCacheDir() + fileName, "rwd");
+                RandomAccessFile file = new RandomAccessFile(MyApplication.INSTANCE.getDiskCacheDir() + "/" + fileName, "rwd");
                 file.seek(startPos);
                 byte[] buffer = new byte[1024];
                 // 文件长度，当length = -1代表文件读完了
