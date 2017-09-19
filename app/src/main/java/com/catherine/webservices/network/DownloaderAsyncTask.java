@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.RandomAccessFile;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -30,6 +31,7 @@ import java.util.Set;
  */
 public class DownloaderAsyncTask extends AsyncTask<String, Void, Void> {
     private final static String TAG = "DownloaderAsyncTask";
+    public final static int CONNECT_TIMEOUT = 10000;
     private DownloadRequest request;
     private int THREAD_NUM;
     private boolean stop;
@@ -49,8 +51,10 @@ public class DownloaderAsyncTask extends AsyncTask<String, Void, Void> {
         int code = 0;
         int LENGTH;
         String msg = "";
+        String error = "";
         Exception e = null;
         if (TextUtils.isEmpty(request.getBody())) {
+            //do GET
             try {
                 HttpURLConnection conn = (HttpURLConnection) new URL(request.getUrl()).openConnection();
                 //默认GET请求，所以可略
@@ -58,6 +62,7 @@ public class DownloaderAsyncTask extends AsyncTask<String, Void, Void> {
                 //默认可读服务器读结果流，所以可略
                 conn.setDoInput(true);
                 conn.setUseCaches(false);
+                conn.setConnectTimeout(CONNECT_TIMEOUT);
 
                 //设置标头
                 if (request.getHeaders() != null) {
@@ -70,6 +75,11 @@ public class DownloaderAsyncTask extends AsyncTask<String, Void, Void> {
                 code = conn.getResponseCode();
                 msg = conn.getResponseMessage();
                 LENGTH = conn.getContentLength();
+                InputStream is = conn.getErrorStream();
+                if (is != null) {
+                    error = su.getString(is);
+                    is.close();
+                }
 
                 if (LENGTH == 0) {
                     request.getListener().connectFailure(new HttpResponse.Builder().code(code).codeString(msg).build(), new IOException("Content Length = 0"));
@@ -117,15 +127,17 @@ public class DownloaderAsyncTask extends AsyncTask<String, Void, Void> {
                 }
 
             } catch (Exception ex) {
-                ex.printStackTrace();
                 e = ex;
+                ex.printStackTrace();
             }
 
-        }
-        if (e != null) {
-            request.getListener().connectFailure(new HttpResponse.Builder().code(code).codeString(msg).build(), null);
-        }
+            if (e != null || !TextUtils.isEmpty(error))
+                request.getListener().connectFailure(new HttpResponse.Builder().code(code).codeString(msg).errorMessage(error).build(), e);
 
+
+        } else {
+            //do POST
+        }
         return null;
     }
 
@@ -153,6 +165,10 @@ public class DownloaderAsyncTask extends AsyncTask<String, Void, Void> {
 
         @Override
         public void run() {
+            int code = 0;
+            String msg = "";
+            String error = "";
+            Exception e = null;
             try {
                 HttpURLConnection conn = (HttpURLConnection) new URL(request.getUrl()).openConnection();
                 //默认GET请求，所以可略
@@ -168,6 +184,14 @@ public class DownloaderAsyncTask extends AsyncTask<String, Void, Void> {
                     for (String name : set) {
                         conn.setRequestProperty(name, request.getHeaders().get(name));
                     }
+                }
+
+                code = conn.getResponseCode();
+                msg = conn.getResponseMessage();
+                InputStream is = conn.getErrorStream();
+                if (is != null) {
+                    error = su.getString(is);
+                    is.close();
                 }
 
                 //用一份文件记录下载进度
@@ -228,9 +252,13 @@ public class DownloaderAsyncTask extends AsyncTask<String, Void, Void> {
                     positionFile.delete();
                     file.close();
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch (Exception ex) {
+                e = ex;
+                ex.printStackTrace();
             }
+            if (e != null || !TextUtils.isEmpty(error))
+                request.getListener().connectFailure(new HttpResponse.Builder().code(code).codeString(msg).errorMessage(error).build(), e);
+
         }
     }
 }

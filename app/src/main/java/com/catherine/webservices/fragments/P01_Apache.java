@@ -187,7 +187,7 @@ public class P01_Apache extends LazyFragment {
             public void connectSuccess(HttpResponse response) {
                 //Running in a non-UI thread right now.
                 CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
-                contents.add(position, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
+                contents.set(position, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
                 adapter.setContents(contents);
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
@@ -208,7 +208,7 @@ public class P01_Apache extends LazyFragment {
                     sb.append(e.getMessage());
                     CLog.Companion.e(TAG, e.getMessage());
                 }
-                contents.add(position, sb.toString());
+                contents.set(position, sb.toString());
                 adapter.setContents(contents);
                 getActivity().runOnUiThread(new Runnable() {
                     @Override

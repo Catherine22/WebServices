@@ -2,6 +2,7 @@ package com.catherine.webservices.adapters
 
 import android.content.Context
 import android.support.v7.widget.RecyclerView
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -34,13 +35,13 @@ class TextCardRVAdapter(private var ctx: Context, var contents: List<String>?, v
 
         holder.itemView.tv_title.text = titles[position]
 
-        if (contents != null && contents!!.size > position) {
+        if (contents != null && contents!!.size > position && !TextUtils.isEmpty(contents!![position])) {
             holder.itemView.tv_main.visibility = View.VISIBLE
             holder.itemView.tv_main.text = contents!![position]
         } else
             holder.itemView.tv_main.visibility = View.GONE
 
-        if (subtitles != null && subtitles!!.size > position)
+        if (subtitles != null && subtitles!!.size > position && !TextUtils.isEmpty(subtitles!![position]))
             holder.itemView.tv_subtitle.text = subtitles!![position]
         holder.itemView.cv.setOnClickListener(listener1)
         holder.itemView.cv.setOnLongClickListener(listener2)

@@ -16,6 +16,7 @@ import android.view.View;
 import com.catherine.webservices.Constants;
 import com.catherine.webservices.R;
 import com.catherine.webservices.adapters.CardRVAdapter;
+import com.catherine.webservices.adapters.TextCardRVAdapter;
 import com.catherine.webservices.interfaces.MainInterface;
 import com.catherine.webservices.interfaces.OnItemClickListener;
 import com.catherine.webservices.interfaces.OnRequestPermissionsListener;
@@ -43,11 +44,9 @@ import java.util.Map;
 
 public class P02_HttpURLConnection extends LazyFragment {
     public final static String TAG = "P02_HttpURLConnection";
-    private List<String> features;
-    private List<String> descriptions;
+    private List<String> features, descriptions, contents;
     private SwipeRefreshLayout srl_container;
-    private MainInterface mainInterface;
-    private CardRVAdapter adapter;
+    private TextCardRVAdapter adapter;
 
     public static P02_HttpURLConnection newInstance(boolean isLazyLoad) {
         Bundle args = new Bundle();
@@ -62,58 +61,10 @@ public class P02_HttpURLConnection extends LazyFragment {
     public void onCreateViewLazy(Bundle savedInstanceState) {
         super.onCreateViewLazy(savedInstanceState);
         setContentView(R.layout.f_02_http_url_connection);
-        mainInterface = (MainInterface) getActivity();
-        init();
+        fillInData();
+        initComponent();
     }
 
-    private void init() {
-        mainInterface.getPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, new OnRequestPermissionsListener() {
-            @Override
-            public void onGranted() {
-                fillInData();
-                initComponent();
-            }
-
-            @Override
-            public void onDenied(@org.jetbrains.annotations.Nullable List<String> deniedPermissions) {
-                StringBuilder context = new StringBuilder();
-                if (deniedPermissions != null) {
-                    for (String p : deniedPermissions) {
-                        if (Manifest.permission.WRITE_EXTERNAL_STORAGE.equals(p)) {
-                            context.append("存储、");
-                        }
-                    }
-                }
-
-                context.deleteCharAt(context.length() - 1);
-
-                AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(getActivity());
-                myAlertDialog.setIcon(android.R.drawable.ic_dialog_alert)
-                        .setCancelable(false)
-                        .setTitle("注意")
-                        .setMessage(String.format("您目前未授权%s存取权限，未授权将造成程式无法执行，是否开启权限？", context.toString()))
-                        .setNegativeButton("继续关闭", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                getActivity().finish();
-                            }
-                        }).setPositiveButton("确定开启", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Intent intent = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-                                Uri.fromParts("package", getActivity().getPackageName(), null));
-                        startActivityForResult(intent, Constants.OPEN_SETTINGS);
-                    }
-                });
-                myAlertDialog.show();
-            }
-
-            @Override
-            public void onRetry() {
-                init();
-            }
-        });
-    }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -122,13 +73,21 @@ public class P02_HttpURLConnection extends LazyFragment {
 
     private void fillInData() {
         features = new ArrayList<>();
-        features.add("HttpGet");
-        features.add("HttpPost");
-
-
+        contents = new ArrayList<>();
         descriptions = new ArrayList<>();
-        descriptions.add("Set the method for the URL request.");
-        descriptions.add("Set the method for the URL request.");
+        features.add("HttpGet in AsyncTask");
+        features.add("HttpPost in AsyncTask");
+        features.add("HttpPost in AsyncTask");
+        features.add("HttpPost in AsyncTask");
+        features.add("HttpGet in AsyncTask");
+        descriptions.add("Connect to the server with user-defined headers");
+        descriptions.add("Connect to the server with correct account");
+        descriptions.add("Connect to the server with false Authorization");
+        descriptions.add("Connect to the server with false account");
+        descriptions.add("Connect to Cambridge dictionary server");
+        for (int i = 0; i < features.size(); i++) {
+            contents.add("");
+        }
     }
 
     private void initComponent() {
@@ -137,7 +96,8 @@ public class P02_HttpURLConnection extends LazyFragment {
         srl_container.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                CLog.Companion.d(TAG, "refresh");
+                fillInData();
+                initComponent();
                 srl_container.setRefreshing(false);
             }
         });
@@ -145,120 +105,64 @@ public class P02_HttpURLConnection extends LazyFragment {
         RecyclerView rv_main_list = (RecyclerView) findViewById(R.id.rv_main_list);
 //        rv_main_list.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.Companion.getVERTICAL_LIST()));
         rv_main_list.setLayoutManager(new LinearLayoutManager(getActivity()));
-        adapter = new CardRVAdapter(getActivity(), null, features, descriptions, new OnItemClickListener() {
+        adapter = new TextCardRVAdapter(getActivity(), null, features, descriptions, new OnItemClickListener() {
             @Override
             public void onItemClick(@NotNull View view, int position) {
                 switch (position) {
                     case 0:
-                        Map<String, String> h1 = MyHttpURLConnection.getDefaultHeaders();
-                        h1.put("h1", "Hi there!");
-                        h1.put("h2", "I am a mobile phone.");
+                        Map<String, String> h0 = MyHttpURLConnection.getDefaultHeaders();
+                        h0.put("h1", "Hi there!");
+                        h0.put("h2", "I am a mobile phone.");
                         HttpRequest request0 = new HttpRequest(new HttpRequest.Builder()
                                 .url(String.format(Locale.ENGLISH, "%sLoginServlet?name=zhangsan&password=123456", Constants.HOST))
-                                .headers(h1)
-                                .listener(new HttpResponseListener() {
-                                    @Override
-                                    public void connectSuccess(HttpResponse response) {
-                                        CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
-                                    }
-
-                                    @Override
-                                    public void connectFailure(HttpResponse response, Exception e) {
-                                        CLog.Companion.e(TAG, String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, error:%s", response.getCode(), response.getCodeString(), response.getErrorMessage()));
-                                        if (e != null)
-                                            CLog.Companion.e(TAG, e.getMessage());
-                                    }
-                                }));
+                                .headers(h0)
+                                .listener(buildListener(position)));
                         new HttpAsyncTask(request0).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-
-                        HttpRequest request1 = new HttpRequest(new HttpRequest.Builder()
-                                .url("http://dictionary.cambridge.org/zhs/%E6%90%9C%E7%B4%A2/%E8%8B%B1%E8%AF%AD-%E6%B1%89%E8%AF%AD-%E7%AE%80%E4%BD%93/direct/?q=philosopher")
-                                .listener(new HttpResponseListener() {
-                                    @Override
-                                    public void connectSuccess(HttpResponse response) {
-                                        CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
-                                    }
-
-                                    @Override
-                                    public void connectFailure(HttpResponse response, Exception e) {
-                                        CLog.Companion.e(TAG, String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, error:%s", response.getCode(), response.getCodeString(), response.getErrorMessage()));
-                                        if (e != null)
-                                            CLog.Companion.e(TAG, e.getMessage());
-                                    }
-                                })
-                        );
-                        new HttpAsyncTask(request1).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                         break;
                     case 1:
+                        Map<String, String> body1 = new HashMap<>();
+                        body1.put("name", "zhangsan");
+                        body1.put("password", "123456");
+                        HttpRequest r1 = new HttpRequest(new HttpRequest.Builder()
+                                .url(String.format(Locale.ENGLISH, "%sLoginServlet", Constants.HOST))
+                                .body(MyHttpURLConnection.getSimpleStringBody(body1))
+                                .listener(buildListener(position))
+                        );
+                        new HttpAsyncTask(r1).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                        break;
+                    case 2:
                         Map<String, String> h2 = MyHttpURLConnection.getDefaultHeaders();
                         h2.put("Authorization", "12345");
-                        Map<String, String> body = new HashMap<>();
-                        body.put("name", "zhangsan");
-                        body.put("password", "123456");
+                        Map<String, String> body2 = new HashMap<>();
+                        body2.put("name", "zhangsan");
+                        body2.put("password", "123456");
 
-                        HttpRequest request2 = new HttpRequest(new HttpRequest.Builder()
+                        HttpRequest r2 = new HttpRequest(new HttpRequest.Builder()
                                 .url(String.format(Locale.ENGLISH, "%sLoginServlet", Constants.HOST))
                                 .headers(h2)
-                                .body(MyHttpURLConnection.getSimpleStringBody(body))
-                                .listener(new HttpResponseListener() {
-                                    @Override
-                                    public void connectSuccess(HttpResponse response) {
-                                        CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
-                                    }
-
-                                    @Override
-                                    public void connectFailure(HttpResponse response, Exception e) {
-                                        CLog.Companion.e(TAG, String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, error:%s", response.getCode(), response.getCodeString(), response.getErrorMessage()));
-                                        if (e != null)
-                                            CLog.Companion.e(TAG, e.getMessage());
-                                    }
-                                })
+                                .body(MyHttpURLConnection.getSimpleStringBody(body2))
+                                .listener(buildListener(position))
                         );
-                        new HttpAsyncTask(request2, true).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                        new HttpAsyncTask(r2, true).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
-
-                        body.put("name", "");
-                        body.put("password", "");
-                        HttpRequest request3 = new HttpRequest(new HttpRequest.Builder()
+                        break;
+                    case 3:
+                        Map<String, String> body3 = new HashMap<>();
+                        body3.put("name", "");
+                        body3.put("password", "");
+                        HttpRequest r3 = new HttpRequest(new HttpRequest.Builder()
                                 .url(String.format(Locale.ENGLISH, "%sLoginServlet", Constants.HOST))
-                                .body(MyHttpURLConnection.getSimpleStringBody(body))
-                                .listener(new HttpResponseListener() {
-                                    @Override
-                                    public void connectSuccess(HttpResponse response) {
-                                        CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
-                                    }
-
-                                    @Override
-                                    public void connectFailure(HttpResponse response, Exception e) {
-                                        CLog.Companion.e(TAG, String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, error:%s", response.getCode(), response.getCodeString(), response.getErrorMessage()));
-                                        if (e != null)
-                                            CLog.Companion.e(TAG, e.getMessage());
-                                    }
-                                })
+                                .body(MyHttpURLConnection.getSimpleStringBody(body3))
+                                .listener(buildListener(position))
                         );
-                        new HttpAsyncTask(request3).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-
-
-                        body.put("name", "zhangsan");
-                        body.put("password", "123456");
-                        HttpRequest request4 = new HttpRequest(new HttpRequest.Builder()
-                                .url(String.format(Locale.ENGLISH, "%sLoginServlet", Constants.HOST))
-                                .body(MyHttpURLConnection.getSimpleStringBody(body))
-                                .listener(new HttpResponseListener() {
-                                    @Override
-                                    public void connectSuccess(HttpResponse response) {
-                                        CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
-                                    }
-
-                                    @Override
-                                    public void connectFailure(HttpResponse response, Exception e) {
-                                        CLog.Companion.e(TAG, String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, error:%s", response.getCode(), response.getCodeString(), response.getErrorMessage()));
-                                        if (e != null)
-                                            CLog.Companion.e(TAG, e.getMessage());
-                                    }
-                                })
+                        new HttpAsyncTask(r3).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                        break;
+                    case 4:
+                        HttpRequest r4 = new HttpRequest(new HttpRequest.Builder()
+                                .url("http://dictionary.cambridge.org/zhs/%E6%90%9C%E7%B4%A2/%E8%8B%B1%E8%AF%AD-%E6%B1%89%E8%AF%AD-%E7%AE%80%E4%BD%93/direct/?q=philosopher")
+                                .listener(buildListener(position))
                         );
-                        new HttpAsyncTask(request4).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                        new HttpAsyncTask(r4).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                         break;
                 }
             }
@@ -269,5 +173,37 @@ public class P02_HttpURLConnection extends LazyFragment {
             }
         });
         rv_main_list.setAdapter(adapter);
+    }
+
+    private HttpResponseListener buildListener(final int position) {
+        return new HttpResponseListener() {
+            @Override
+            public void connectSuccess(HttpResponse response) {
+                CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
+                contents.set(position, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
+                adapter.setContents(contents);
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void connectFailure(HttpResponse response, Exception e) {
+                StringBuilder sb = new StringBuilder();
+                sb.append(String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getErrorMessage()));
+                CLog.Companion.e(TAG, sb.toString());
+                if (e != null) {
+                    sb.append("\n");
+                    sb.append(e.getMessage());
+                    CLog.Companion.e(TAG, e.getMessage());
+                }
+                contents.set(position, sb.toString());
+                adapter.setContents(contents);
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        adapter.notifyDataSetChanged();
+                    }
+                });
+            }
+        };
     }
 }

@@ -128,7 +128,7 @@ public class P04_Cache extends LazyFragment {
         srl_container.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                CLog.Companion.d(TAG, "refresh");
+                init();
                 srl_container.setRefreshing(false);
             }
         });
