@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.catherine.webservices.R
+import com.catherine.webservices.interfaces.OnItemClickListener
 import kotlinx.android.synthetic.main.rv_item.view.*
 
 /**
@@ -14,10 +15,6 @@ import kotlinx.android.synthetic.main.rv_item.view.*
  * catherine919@soft-world.com.tw
  */
 class RVAdapter(private var ctx: Context, var data: List<String>, private var onClickListener: OnItemClickListener) : RecyclerView.Adapter<RVAdapter.MainRvHolder>() {
-    interface OnItemClickListener {
-        fun onItemClick(view: View, position: Int)
-        fun onItemLongClick(view: View, position: Int)
-    }
 
 
     override fun onBindViewHolder(holder: MainRvHolder, position: Int) {

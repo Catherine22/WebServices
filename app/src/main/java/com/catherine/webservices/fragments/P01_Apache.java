@@ -12,6 +12,7 @@ import com.catherine.webservices.Constants;
 import com.catherine.webservices.MyApplication;
 import com.catherine.webservices.R;
 import com.catherine.webservices.adapters.RVAdapter;
+import com.catherine.webservices.interfaces.OnItemClickListener;
 import com.catherine.webservices.network.HttpResponse;
 import com.catherine.webservices.network.HttpResponseListener;
 import com.catherine.webservices.network.MyApache;
@@ -97,7 +98,7 @@ public class P01_Apache extends LazyFragment {
         RecyclerView rv_main_list = (RecyclerView) findViewById(R.id.rv_main_list);
         rv_main_list.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.Companion.getVERTICAL_LIST()));
         rv_main_list.setLayoutManager(new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL));
-        rv_main_list.setAdapter(new RVAdapter(getActivity(), features, new RVAdapter.OnItemClickListener() {
+        rv_main_list.setAdapter(new RVAdapter(getActivity(), features, new OnItemClickListener() {
             @Override
             public void onItemClick(@NotNull View view, int position) {
                 switch (position) {

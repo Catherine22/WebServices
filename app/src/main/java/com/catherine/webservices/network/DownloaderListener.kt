@@ -6,6 +6,6 @@ package com.catherine.webservices.network
  * catherine919@soft-world.com.tw
  */
 interface DownloaderListener {
-    fun update(downloadedLength: Int, LENGTH: Int)
+    fun update(threadID: Int, downloadedLength: Int, LENGTH: Int)
     fun connectFailure(response: HttpResponse, e: Exception?)
 }

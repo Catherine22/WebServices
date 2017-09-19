@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.catherine.webservices.MyApplication;
 import com.catherine.webservices.R;
+import com.catherine.webservices.interfaces.OnItemClickListener;
 import com.catherine.webservices.network.MyHttpURLConnection;
 import com.catherine.webservices.security.Encryption;
 import com.catherine.webservices.toolkits.CLog;
@@ -234,12 +235,6 @@ public class ShortCardRVAdapter extends RecyclerView.Adapter<ShortCardRVAdapter.
             return Bitmap.CompressFormat.WEBP;
         }
         return Bitmap.CompressFormat.JPEG;
-    }
-
-    public interface OnItemClickListener {
-        void onItemClick(View view, int position);
-
-        void onItemLongClick(View view, int position);
     }
 
     class MainRvHolder extends RecyclerView.ViewHolder {

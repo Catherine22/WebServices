@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.catherine.webservices.R
+import com.catherine.webservices.interfaces.OnItemClickListener
 import kotlinx.android.synthetic.main.rv_text_card.view.*
 
 /**
@@ -17,12 +18,6 @@ class TextCardRVAdapter(private var ctx: Context, var contents: List<String>?, v
     companion object {
         val TAG = "TextCardRVAdapter"
     }
-
-    interface OnItemClickListener {
-        fun onItemClick(view: View, position: Int)
-        fun onItemLongClick(view: View, position: Int)
-    }
-
 
     override fun onBindViewHolder(holder: MainRvHolder, position: Int) {
         val listener1 = View.OnClickListener { view ->

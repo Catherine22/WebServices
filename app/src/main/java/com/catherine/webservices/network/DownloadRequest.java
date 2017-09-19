@@ -12,26 +12,22 @@ public final class DownloadRequest {
     private String url;
     private Map<String, String> headers;
     private String body;
+    private int THREAD_NUM = 1;
     private DownloaderListener listener;
 
     public DownloadRequest(Builder builder) {
         this.url = builder.url;
         this.headers = builder.headers;
         this.body = builder.body;
+        this.THREAD_NUM = builder.THREAD_NUM;
         this.listener = builder.listener;
-    }
-
-    public DownloadRequest(String url, Map<String, String> headers, String body, DownloaderListener listener) {
-        this.url = url;
-        this.headers = headers;
-        this.body = body;
-        this.listener = listener;
     }
 
     public static class Builder {
         private String url;
         private Map<String, String> headers;
         private String body;
+        private int THREAD_NUM = 1;
         private DownloaderListener listener;
 
         public Builder() {
@@ -51,6 +47,11 @@ public final class DownloadRequest {
 
         public Builder body(String body) {
             this.body = body;
+            return this;
+        }
+
+        public Builder THREAD_NUM(int THREAD_NUM) {
+            this.THREAD_NUM = THREAD_NUM;
             return this;
         }
 
@@ -74,6 +75,10 @@ public final class DownloadRequest {
 
     public String getBody() {
         return body;
+    }
+
+    public int getTHREAD_NUM() {
+        return THREAD_NUM;
     }
 
     public DownloaderListener getListener() {

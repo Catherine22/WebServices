@@ -17,6 +17,7 @@ import com.catherine.webservices.Constants;
 import com.catherine.webservices.R;
 import com.catherine.webservices.adapters.CardRVAdapter;
 import com.catherine.webservices.interfaces.MainInterface;
+import com.catherine.webservices.interfaces.OnItemClickListener;
 import com.catherine.webservices.interfaces.OnRequestPermissionsListener;
 import com.catherine.webservices.network.HttpAsyncTask;
 import com.catherine.webservices.network.HttpRequest;
@@ -144,7 +145,7 @@ public class P02_HttpURLConnection extends LazyFragment {
         RecyclerView rv_main_list = (RecyclerView) findViewById(R.id.rv_main_list);
 //        rv_main_list.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.Companion.getVERTICAL_LIST()));
         rv_main_list.setLayoutManager(new LinearLayoutManager(getActivity()));
-        adapter = new CardRVAdapter(getActivity(), null, features, descriptions, new CardRVAdapter.OnItemClickListener() {
+        adapter = new CardRVAdapter(getActivity(), null, features, descriptions, new OnItemClickListener() {
             @Override
             public void onItemClick(@NotNull View view, int position) {
                 switch (position) {
