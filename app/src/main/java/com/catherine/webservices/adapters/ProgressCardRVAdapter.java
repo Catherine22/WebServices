@@ -101,9 +101,10 @@ public class ProgressCardRVAdapter extends RecyclerView.Adapter<ProgressCardRVAd
             mainRvHolder.iv_main.setVisibility(View.GONE);
         }
 
-        if (progressList == null || progressList.length <= position || progressList[position] == null || progressList[position].MAX_PROGRESS == -1 || progressList[position].cur_progress == -1)
+        if (progressList == null || progressList.length <= position || progressList[position] == null || progressList[position].MAX_PROGRESS < 0 || progressList[position].cur_progress < 0) {
+            mainRvHolder.pb.setProgress(0);
             mainRvHolder.pb.setVisibility(View.INVISIBLE);
-        else {
+        } else {
             mainRvHolder.pb.setVisibility(View.VISIBLE);
             mainRvHolder.pb.setMax(progressList[position].MAX_PROGRESS);
             mainRvHolder.pb.setProgress(progressList[position].cur_progress);

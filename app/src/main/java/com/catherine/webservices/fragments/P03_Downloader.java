@@ -152,6 +152,7 @@ public class P03_Downloader extends LazyFragment {
         requests = new DownloadRequest[features.size()];//two elements of RecyclerView
 
         //DownloadRequest
+        total = 0;
         final long time0 = System.currentTimeMillis();
         final int position0 = 0;
         requests[0] = new DownloadRequest(new DownloadRequest.Builder()
@@ -172,7 +173,6 @@ public class P03_Downloader extends LazyFragment {
                                     infos.set(position0, String.format(Locale.ENGLISH, "connectSuccess downloadedLength:%d, LENGTH:%d \n Spent %d (sec)", total, LENGTH, TimeUnit.MILLISECONDS.toSeconds(periods[position0])));
                                     adapter.updateInfo(infos);
                                     adapter.notifyDataSetChanged();
-                                    total = 0;
                                 }
                             }
 
@@ -218,7 +218,6 @@ public class P03_Downloader extends LazyFragment {
                                     infos.set(position1, String.format(Locale.ENGLISH, "connectSuccess downloadedLength:%d, LENGTH:%d \n Spent %d (sec)", total, LENGTH, TimeUnit.MILLISECONDS.toSeconds(periods[position1])));
                                     adapter.updateInfo(infos);
                                     adapter.notifyDataSetChanged();
-                                    total = 0;
                                 }
                             }
                         });
@@ -248,10 +247,10 @@ public class P03_Downloader extends LazyFragment {
             @Override
             public void onRefresh() {
                 for (int i = 0; i < tasks.length; i++) {
+                    tasks[i].stop();
                     tasks[i].cancel(true);
                     updateView(i, IDLE);
                 }
-                total = 0;
                 init();
                 srl_container.setRefreshing(false);
             }
@@ -266,16 +265,19 @@ public class P03_Downloader extends LazyFragment {
             public void onItemClick(final View view, final int position) {
                 switch (isRunning[position]) {
                     case IDLE:
+                        total = 0;
                         tasks[position] = new DownloaderAsyncTask(requests[position]);
                         tasks[position].executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                         updateView(position, DOWNLOADING);
                         break;
                     case PAUSED:
+                        total = 0;
                         tasks[position] = new DownloaderAsyncTask(requests[position]);
                         tasks[position].executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                         updateView(position, DOWNLOADING);
                         break;
                     case DOWNLOADING:
+                        tasks[position].stop();
                         tasks[position].cancel(true);
                         updateView(position, PAUSED);
                         break;
@@ -305,6 +307,7 @@ public class P03_Downloader extends LazyFragment {
                     fab_stop.setImageDrawable(getResources().getDrawable(android.R.drawable.ic_media_pause));
                     for (int i = 0; i < isRunning.length; i++) {
                         if (isRunning[i] == DOWNLOADING) {
+                            tasks[i].stop();
                             tasks[i].cancel(true);
                             updateView(i, PAUSED);
                         }
@@ -312,6 +315,7 @@ public class P03_Downloader extends LazyFragment {
                 } else {
                     for (int i = 0; i < isRunning.length; i++) {
                         if (isRunning[i] == PAUSED) {
+                            total = 0;
                             tasks[i] = new DownloaderAsyncTask(requests[i]);
                             tasks[i].executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                             updateView(i, DOWNLOADING);
@@ -350,6 +354,10 @@ public class P03_Downloader extends LazyFragment {
                 break;
         }
 
+        if (total == 0 && adapter != null) {
+            adapter.updateProgress(position, -1, total);
+            adapter.notifyDataSetChanged();
+        }
 
         int running = 0;
         for (int anIsRunning : isRunning) {

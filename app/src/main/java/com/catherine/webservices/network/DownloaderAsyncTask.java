@@ -129,11 +129,9 @@ public class DownloaderAsyncTask extends AsyncTask<String, Void, Void> {
         return null;
     }
 
-    @Override
-    protected void onCancelled(Void aVoid) {
-        super.onCancelled(aVoid);
+    public void stop() {
+        CLog.Companion.i(TAG, "stop");
         stop = true;
-        CLog.Companion.d(TAG, "cancel task");
     }
 
     class MyRunnable implements Runnable {
