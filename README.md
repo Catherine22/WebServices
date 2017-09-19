@@ -46,8 +46,10 @@ android {
 
 
 ### Multiple-threading download
-- Download a single file with a few threads [P02_HttpURLConnection]
-- Download images
+- Download a single file with multiple threads 
+- Show progressbar
+- [P03_Downloader]
+- [DownloaderAsyncTask]
 
 
 ### Cache
@@ -200,10 +202,12 @@ Here is the example: [P05_Gallery], [ShortCardRVAdapter]
 [MyHttpURLConnection]:<https://github.com/Catherine22/WebServices/blob/master/app/src/main/java/com/catherine/webservices/network/MyHttpURLConnection.java>
 [P01_Apache]:<https://github.com/Catherine22/WebServices/blob/master/app/src/main/java/com/catherine/webservices/fragments/P01_Apache.java>
 [P02_HttpURLConnection]:<https://github.com/Catherine22/WebServices/blob/master/app/src/main/java/com/catherine/webservices/fragments/P02_HttpURLConnection.java>
+[P03_Downloader]:<https://github.com/Catherine22/WebServices/blob/master/app/src/main/java/com/catherine/webservices/fragments/P03_Downloader.java>
+[P05_Gallery]:<https://github.com/Catherine22/WebServices/blob/master/app/src/main/java/com/catherine/webservices/fragments/P05_Gallery.java>
 [HttpAsyncTask]:<https://github.com/Catherine22/WebServices/blob/master/app/src/main/java/com/catherine/webservices/network/HttpAsyncTask.java>
+[DownloaderAsyncTask]:<https://github.com/Catherine22/WebServices/blob/master/app/src/main/java/com/catherine/webservices/network/DownloaderAsyncTask.java>
 [Tencent bugly]:<https://mp.weixin.qq.com/s/qOMO0LIdA47j3RjhbCWUEQ>
 [HTTP 1.1 doc]:<https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html>
 [Google Web Fundamentals]:<https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/http-caching>
 [increasing-application-performance-with-http-cache-headers]:<https://devcenter.heroku.com/articles/increasing-application-performance-with-http-cache-headers>
 [ShortCardRVAdapter]:<https://github.com/Catherine22/WebServices/blob/master/app/src/main/java/com/catherine/webservices/adapters/ShortCardRVAdapter.java>
-[P05_Gallery]:<https://github.com/Catherine22/WebServices/blob/master/app/src/main/java/com/catherine/webservices/fragments/P05_Gallery.java>
