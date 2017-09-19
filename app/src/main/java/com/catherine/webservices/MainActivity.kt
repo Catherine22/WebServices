@@ -12,9 +12,7 @@ import android.support.design.widget.TabLayout
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
-import android.support.v4.app.FragmentManager
 import android.view.KeyEvent
-import android.view.View
 import com.catherine.webservices.adapters.MainViewPagerAdapter
 import com.catherine.webservices.fragments.P05_Gallery
 import com.catherine.webservices.interfaces.BackKeyListener

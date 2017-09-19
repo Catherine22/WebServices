@@ -184,10 +184,15 @@ public class P03_Downloader extends LazyFragment {
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                CLog.Companion.e(TAG, String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s", response.getCode(), response.getCodeString()));
-                                if (e != null)
+                                StringBuilder sb = new StringBuilder();
+                                sb.append(String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getErrorMessage()));
+                                CLog.Companion.e(TAG, sb.toString());
+                                if (e != null) {
+                                    sb.append("\n");
+                                    sb.append(e.getMessage());
                                     CLog.Companion.e(TAG, e.getMessage());
-
+                                }
+                                infos.set(position0, sb.toString());
                                 updateView(position0, ERROR);
                             }
                         });
@@ -228,10 +233,15 @@ public class P03_Downloader extends LazyFragment {
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                CLog.Companion.e(TAG, String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s", response.getCode(), response.getCodeString()));
-                                if (e != null)
+                                StringBuilder sb = new StringBuilder();
+                                sb.append(String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getErrorMessage()));
+                                CLog.Companion.e(TAG, sb.toString());
+                                if (e != null) {
+                                    sb.append("\n");
+                                    sb.append(e.getMessage());
                                     CLog.Companion.e(TAG, e.getMessage());
-
+                                }
+                                infos.set(position1, sb.toString());
                                 updateView(position1, ERROR);
                             }
                         });
@@ -247,8 +257,10 @@ public class P03_Downloader extends LazyFragment {
             @Override
             public void onRefresh() {
                 for (int i = 0; i < tasks.length; i++) {
-                    tasks[i].stop();
-                    tasks[i].cancel(true);
+                    if (tasks[i] != null) {
+                        tasks[i].stop();
+                        tasks[i].cancel(true);
+                    }
                     updateView(i, IDLE);
                 }
                 init();

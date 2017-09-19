@@ -132,6 +132,4 @@ public class MyApache {
         else
             listener.connectFailure(new com.catherine.webservices.network.HttpResponse.Builder().code(code).codeString(msg).errorMessage(error).build(), e);
     }
-
-
 }

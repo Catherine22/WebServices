@@ -42,7 +42,7 @@ import java.util.Locale;
 /**
  * Cache images with DiskLruCache
  */
-public class ShortCardRVAdapter extends RecyclerView.Adapter<ShortCardRVAdapter.MainRvHolder> {
+public class ImageCardRVAdapter extends RecyclerView.Adapter<ImageCardRVAdapter.MainRvHolder> {
     private final static String TAG = "ShortCardRVAdapter";
     private Context ctx;
     private List<String> images, titles, subtitles;
@@ -50,7 +50,7 @@ public class ShortCardRVAdapter extends RecyclerView.Adapter<ShortCardRVAdapter.
     private DiskLruCache diskLruCache;
     private Handler handler = new Handler(MyApplication.INSTANCE.calHandlerThread.getLooper());
 
-    public ShortCardRVAdapter(Context ctx, List<String> images, List<String> titles, List<String> subtitles, OnItemClickListener listener) {
+    public ImageCardRVAdapter(Context ctx, List<String> images, List<String> titles, List<String> subtitles, OnItemClickListener listener) {
         this.ctx = ctx;
         this.images = images;
         this.titles = titles;
