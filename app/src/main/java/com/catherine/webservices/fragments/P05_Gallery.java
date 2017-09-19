@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.catherine.webservices.Constants;
 import com.catherine.webservices.R;
-import com.catherine.webservices.adapters.ShortCardRVAdapter;
+import com.catherine.webservices.adapters.ImageCardRVAdapter;
 import com.catherine.webservices.interfaces.OnItemClickListener;
 import com.catherine.webservices.network.HttpAsyncTask;
 import com.catherine.webservices.network.HttpRequest;
@@ -43,7 +43,7 @@ public class P05_Gallery extends LazyFragment {
     private List<String> attrs;
     private List<String> images;
     private SwipeRefreshLayout srl_container;
-    private ShortCardRVAdapter adapter;
+    private ImageCardRVAdapter adapter;
     private TextView tv_offline;
     private RecyclerView rv_main_list;
     private NetworkHelper helper;
@@ -194,7 +194,7 @@ public class P05_Gallery extends LazyFragment {
 
         RecyclerView rv_main_list = (RecyclerView) findViewById(R.id.rv_main_list);
         rv_main_list.setLayoutManager(new LinearLayoutManager(getActivity()));
-        adapter = new ShortCardRVAdapter(getActivity(), images, titles, attrs, new OnItemClickListener() {
+        adapter = new ImageCardRVAdapter(getActivity(), images, titles, attrs, new OnItemClickListener() {
             @Override
             public void onItemLongClick(@NotNull View view, int position) {
 

@@ -34,13 +34,13 @@ class TextCardRVAdapter(private var ctx: Context, var contents: List<String>?, v
 
         holder.itemView.tv_title.text = titles[position]
 
-        if (contents != null) {
+        if (contents != null && contents!!.size > position) {
             holder.itemView.tv_main.visibility = View.VISIBLE
             holder.itemView.tv_main.text = contents!![position]
         } else
             holder.itemView.tv_main.visibility = View.GONE
 
-        if (subtitles != null)
+        if (subtitles != null && subtitles!!.size > position)
             holder.itemView.tv_subtitle.text = subtitles!![position]
         holder.itemView.cv.setOnClickListener(listener1)
         holder.itemView.cv.setOnLongClickListener(listener2)

@@ -2,6 +2,7 @@ package com.catherine.webservices.fragments;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.HandlerThread;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
@@ -11,13 +12,12 @@ import android.view.View;
 import com.catherine.webservices.Constants;
 import com.catherine.webservices.MyApplication;
 import com.catherine.webservices.R;
-import com.catherine.webservices.adapters.RVAdapter;
+import com.catherine.webservices.adapters.TextCardRVAdapter;
 import com.catherine.webservices.interfaces.OnItemClickListener;
 import com.catherine.webservices.network.HttpResponse;
 import com.catherine.webservices.network.HttpResponseListener;
 import com.catherine.webservices.network.MyApache;
 import com.catherine.webservices.toolkits.CLog;
-import com.catherine.webservices.views.DividerItemDecoration;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -36,9 +36,12 @@ import java.util.Map;
 
 public class P01_Apache extends LazyFragment {
     public final static String TAG = "P01_Apache";
-    private List<String> features;
+    private List<String> features, contents, desc;
     private SwipeRefreshLayout srl_container;
+    private Handler networkTask;
     private MyApache myApache;
+    private TextCardRVAdapter adapter;
+    private HandlerThread handlerThreadB, handlerThreadC;
 
     public static P01_Apache newInstance(boolean isLazyLoad) {
         Bundle args = new Bundle();
@@ -64,60 +67,73 @@ public class P01_Apache extends LazyFragment {
 
     private void fillInData() {
         features = new ArrayList<>();
-        features.add("HttpGet");
-        features.add("HttpPost");
-        for (int i = 2; i < 50; i++)
-            features.add("" + i);
+        contents = new ArrayList<>();
+        desc = new ArrayList<>();
+        features.add("HttpGet in looper A");
+        features.add("HttpPost in looper A");
+        features.add("HttpPost in looper A");
+        features.add("HttpPost in looper B");
+        features.add("HttpGet in looper C");
+        desc.add("Connect to the server with user-defined headers");
+        desc.add("Connect to the server with correct account");
+        desc.add("Connect to the server with false Authorization");
+        desc.add("Connect to the server with false account");
+        desc.add("Connect to Cambridge dictionary server");
+        for (int i = 0; i < features.size(); i++) {
+            contents.add("");
+        }
     }
 
     private void initComponent() {
-        myApache = new MyApache(new HttpResponseListener() {
-            @Override
-            public void connectSuccess(HttpResponse response) {
-                //Running in a non-UI thread right now.
-                CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
-            }
+        handlerThreadB = new HandlerThread("Looper B");
+        handlerThreadB.start();
 
-            @Override
-            public void connectFailure(HttpResponse response,  Exception e) {
-                //Running in a non-UI thread right now.
-                CLog.Companion.e(TAG, String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getErrorMessage()));
-                if (e != null)
-                    CLog.Companion.e(TAG, e.getMessage());
-            }
-        });
+        handlerThreadC = new HandlerThread("Looper C");
+        handlerThreadC.start();
+        networkTask = new Handler(MyApplication.INSTANCE.calHandlerThread.getLooper());
         srl_container = (SwipeRefreshLayout) findViewById(R.id.srl_container);
         srl_container.setColorSchemeResources(R.color.colorPrimary, R.color.colorAccent, R.color.colorPrimaryDark, R.color.colorAccentDark);
         srl_container.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                CLog.Companion.d(TAG, "refresh");
+                fillInData();
+                initComponent();
                 srl_container.setRefreshing(false);
             }
         });
         RecyclerView rv_main_list = (RecyclerView) findViewById(R.id.rv_main_list);
-        rv_main_list.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.Companion.getVERTICAL_LIST()));
+//        rv_main_list.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.Companion.getVERTICAL_LIST()));
         rv_main_list.setLayoutManager(new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL));
-        rv_main_list.setAdapter(new RVAdapter(getActivity(), features, new OnItemClickListener() {
+        adapter = new TextCardRVAdapter(getActivity(), null, features, desc, new OnItemClickListener() {
             @Override
-            public void onItemClick(@NotNull View view, int position) {
+            public void onItemClick(@NotNull View view, final int position) {
                 switch (position) {
                     case 0:
-                        Handler networkTask = new Handler(MyApplication.INSTANCE.calHandlerThread.getLooper());
                         networkTask.post(new Runnable() {
                             @Override
                             public void run() {
                                 Map<String, String> headers = MyApache.getDefaultHeaders();
                                 headers.put("h1", "Hi there!");
                                 headers.put("h2", "I am a mobile phone.");
+                                setupApache(position);
                                 myApache.doGet(Constants.HOST + "LoginServlet?name=zhangsan&password=123456", headers);
-                                myApache.doGet("http://dictionary.cambridge.org/zhs/%E6%90%9C%E7%B4%A2/%E8%8B%B1%E8%AF%AD-%E6%B1%89%E8%AF%AD-%E7%AE%80%E4%BD%93/direct/?q=philosopher");
                             }
                         });
                         break;
                     case 1:
-                        Handler networkTask1 = new Handler(MyApplication.INSTANCE.calHandlerThread.getLooper());
-                        networkTask1.post(new Runnable() {
+                        networkTask.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                List<NameValuePair> nameValuePairs = new ArrayList<>();
+                                nameValuePairs.add(new BasicNameValuePair("name", "zhangsan"));
+                                nameValuePairs.add(new BasicNameValuePair("password", "123456"));
+                                setupApache(position);
+                                myApache.doPost(Constants.HOST + "LoginServlet", nameValuePairs);
+                            }
+                        });
+                        break;
+                    case 2:
+                        networkTask.post(new Runnable() {
                             @Override
                             public void run() {
                                 Map<String, String> headers = MyApache.getDefaultHeaders();
@@ -125,28 +141,32 @@ public class P01_Apache extends LazyFragment {
                                 List<NameValuePair> nameValuePairs = new ArrayList<>();
                                 nameValuePairs.add(new BasicNameValuePair("name", "zhangsan"));
                                 nameValuePairs.add(new BasicNameValuePair("password", "123456"));
+                                setupApache(position);
                                 myApache.doPost(Constants.HOST + "LoginServlet", headers, nameValuePairs);
                             }
                         });
-
-                        networkTask1.post(new Runnable() {
+                        break;
+                    case 3:
+                        Handler networkTaskB = new Handler(handlerThreadB.getLooper());
+                        networkTaskB.post(new Runnable() {
                             @Override
                             public void run() {
                                 List<NameValuePair> nameValuePairs = new ArrayList<>();
                                 nameValuePairs.add(new BasicNameValuePair("name", ""));
                                 nameValuePairs.add(new BasicNameValuePair("password", ""));
+                                setupApache(position);
                                 myApache.doPost(Constants.HOST + "LoginServlet", nameValuePairs);
                             }
                         });
-
-
-                        networkTask1.post(new Runnable() {
+                        break;
+                    case 4:
+                        Handler networkTaskC = new Handler(handlerThreadC.getLooper());
+                        networkTaskC.post(new Runnable() {
                             @Override
                             public void run() {
-                                List<NameValuePair> nameValuePairs = new ArrayList<>();
-                                nameValuePairs.add(new BasicNameValuePair("name", "zhangsan"));
-                                nameValuePairs.add(new BasicNameValuePair("password", "123456"));
-                                myApache.doPost(Constants.HOST + "LoginServlet", nameValuePairs);
+                                setupApache(position);
+                                myApache.doGet("http://dictionary.cambridge.org/zhs/%E6%90%9C%E7%B4%A2/%E8%8B%B1%E8%AF%AD-%E6%B1%89%E8%AF%AD-%E7%AE%80%E4%BD%93/direct/?q=philosopher");
+
                             }
                         });
                         break;
@@ -157,7 +177,46 @@ public class P01_Apache extends LazyFragment {
             public void onItemLongClick(@NotNull View view, int position) {
 
             }
-        }));
+        });
+        rv_main_list.setAdapter(adapter);
     }
 
+    private void setupApache(final int position) {
+        myApache = new MyApache(new HttpResponseListener() {
+            @Override
+            public void connectSuccess(HttpResponse response) {
+                //Running in a non-UI thread right now.
+                CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
+                contents.add(position, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
+                adapter.setContents(contents);
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        adapter.notifyDataSetChanged();
+                    }
+                });
+            }
+
+            @Override
+            public void connectFailure(HttpResponse response, Exception e) {
+                //Running in a non-UI thread right now.
+                StringBuilder sb = new StringBuilder();
+                sb.append(String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getErrorMessage()));
+                CLog.Companion.e(TAG, sb.toString());
+                if (e != null) {
+                    sb.append("\n");
+                    sb.append(e.getMessage());
+                    CLog.Companion.e(TAG, e.getMessage());
+                }
+                contents.add(position, sb.toString());
+                adapter.setContents(contents);
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        adapter.notifyDataSetChanged();
+                    }
+                });
+            }
+        });
+    }
 }
