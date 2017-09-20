@@ -47,9 +47,12 @@ android {
 
 ### Multiple-threading download
 - Download a single file with multiple threads 
-- Show progressbar
+- Show the progressbar
 - [P03_Downloader]
 - [DownloaderAsyncTask]
+
+### Upload files to the server
+- [P06_Upload]
 
 
 ### Cache
@@ -180,7 +183,7 @@ Cache-Control:no-cache, no-store
 
 1. Download a url list.		
 2. Check internal or external storage of the device and if the image has had cache, skip step 3 and show it.
-3. Download each image from the list and try to cache it.		
+3. Download each image from the list and try to cache them.		
 4. Show images whatever it has been cached.		
 
 Here is the example: [P05_Gallery], [ImageCardRVAdapter]
@@ -204,6 +207,7 @@ Here is the example: [P05_Gallery], [ImageCardRVAdapter]
 [P02_HttpURLConnection]:<https://github.com/Catherine22/WebServices/blob/master/app/src/main/java/com/catherine/webservices/fragments/P02_HttpURLConnection.java>
 [P03_Downloader]:<https://github.com/Catherine22/WebServices/blob/master/app/src/main/java/com/catherine/webservices/fragments/P03_Downloader.java>
 [P05_Gallery]:<https://github.com/Catherine22/WebServices/blob/master/app/src/main/java/com/catherine/webservices/fragments/P05_Gallery.java>
+[P06_Upload]:<https://github.com/Catherine22/WebServices/blob/master/app/src/main/java/com/catherine/webservices/fragments/P06_Upload.java>
 [HttpAsyncTask]:<https://github.com/Catherine22/WebServices/blob/master/app/src/main/java/com/catherine/webservices/network/HttpAsyncTask.java>
 [DownloaderAsyncTask]:<https://github.com/Catherine22/WebServices/blob/master/app/src/main/java/com/catherine/webservices/network/DownloaderAsyncTask.java>
 [Tencent bugly]:<https://mp.weixin.qq.com/s/qOMO0LIdA47j3RjhbCWUEQ>

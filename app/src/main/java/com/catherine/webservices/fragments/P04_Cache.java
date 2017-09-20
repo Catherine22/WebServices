@@ -36,7 +36,7 @@ import java.util.List;
  */
 
 public class P04_Cache extends LazyFragment {
-    public final static String TAG = "P05_Cache";
+    public final static String TAG = "P04_Cache";
     private List<String> features;
     private List<String> descriptions;
     private SwipeRefreshLayout srl_container;

@@ -42,7 +42,7 @@
             android:layout_below="@+id/pb"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
-            android:textSize="30sp"
+            android:textSize="16sp"
         />
 
         <TextView
@@ -52,7 +52,7 @@
             android:layout_below="@+id/tv_title"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
-            android:textSize="16sp"
+            android:textSize="14sp"
         />
     </RelativeLayout>
 

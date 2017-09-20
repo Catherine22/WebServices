@@ -105,16 +105,19 @@ public class MyHttpURLConnection {
             code = conn.getResponseCode();
             msg = conn.getResponseMessage();
             StreamUtils su = new StreamUtils();
-            InputStream is = conn.getInputStream();
-            if (is != null) {
-                response = su.getString(is);
-                is.close();
-            }
 
-            is = conn.getErrorStream();
-            if (is != null) {
-                error = su.getString(is);
-                is.close();
+            if (code == 200) {
+                InputStream is = conn.getInputStream();
+                if (is != null) {
+                    response = su.getString(is);
+                    is.close();
+                }
+            } else {
+                InputStream is = conn.getErrorStream();
+                if (is != null) {
+                    error = su.getString(is);
+                    is.close();
+                }
             }
 
         } catch (Exception ex) {
