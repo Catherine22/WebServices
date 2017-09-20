@@ -9,15 +9,19 @@ import com.catherine.webservices.MyApplication;
 import com.catherine.webservices.toolkits.CLog;
 import com.catherine.webservices.toolkits.StreamUtils;
 
+import org.apache.http.protocol.HTTP;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.RandomAccessFile;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -31,18 +35,19 @@ import java.util.Set;
  */
 public class DownloaderAsyncTask extends AsyncTask<String, Void, Void> {
     private final static String TAG = "DownloaderAsyncTask";
-    public final static int CONNECT_TIMEOUT = 10000;
+    private final static int CONNECT_TIMEOUT = 10000;
     private DownloadRequest request;
     private int THREAD_NUM;
     private boolean stop;
-    private StreamUtils su = new StreamUtils();
-    private boolean[] downloadCompleted;
+    private StreamUtils su;
+//    private boolean[] downloadCompleted;
     private HandlerThread[] threadPool;
 
     public DownloaderAsyncTask(DownloadRequest request) {
         this.request = request;
+        su = new StreamUtils();
         THREAD_NUM = (request.getTHREAD_NUM() > 0) ? request.getTHREAD_NUM() : 1;
-        downloadCompleted = new boolean[THREAD_NUM];
+//        downloadCompleted = new boolean[THREAD_NUM];
         threadPool = new HandlerThread[THREAD_NUM];
     }
 
@@ -53,41 +58,47 @@ public class DownloaderAsyncTask extends AsyncTask<String, Void, Void> {
         String msg = "";
         String error = "";
         Exception e = null;
-        if (TextUtils.isEmpty(request.getBody())) {
-            //do GET
-            try {
-                HttpURLConnection conn = (HttpURLConnection) new URL(request.getUrl()).openConnection();
-                //默认GET请求，所以可略
+
+        try {
+            HttpURLConnection conn = (HttpURLConnection) new URL(request.getUrl()).openConnection();
+            if (TextUtils.isEmpty(request.getBody())) {
                 conn.setRequestMethod("GET");
-                //默认可读服务器读结果流，所以可略
-                conn.setDoInput(true);
-                conn.setUseCaches(false);
-                conn.setConnectTimeout(CONNECT_TIMEOUT);
+            } else {
+                conn.setRequestMethod("POST");
+                //获取conn的输出流
+                OutputStream os = conn.getOutputStream();
+                os.write(request.getBody().getBytes(HTTP.UTF_8));
+                os.close();
+            }
+            //默认可读服务器读结果流，所以可略
+            conn.setDoInput(true);
+            conn.setUseCaches(false);
+            conn.setConnectTimeout(CONNECT_TIMEOUT);
+            conn.setRequestProperty("Connection", "keep-Alive");
 
-                //设置标头
-                if (request.getHeaders() != null) {
-                    Set<String> set = request.getHeaders().keySet();
-                    for (String name : set) {
-                        conn.setRequestProperty(name, request.getHeaders().get(name));
-                    }
-                }
+            //设置标头
+            Map<String, String> headers = (request.getHeaders() != null) ? request.getHeaders() : MyHttpURLConnection.getDefaultHeaders();
+            Set<String> set = headers.keySet();
+            for (String name : set) {
+                conn.setRequestProperty(name, headers.get(name));
+            }
 
-                code = conn.getResponseCode();
-                msg = conn.getResponseMessage();
-                LENGTH = conn.getContentLength();
-                InputStream is = conn.getErrorStream();
-                if (is != null) {
-                    error = su.getString(is);
-                    is.close();
-                }
+            code = conn.getResponseCode();
+            msg = conn.getResponseMessage();
+            LENGTH = conn.getContentLength();
+            InputStream is = conn.getErrorStream();
+            if (is != null) {
+                error = su.getString(is);
+                is.close();
+            }
 
-                if (LENGTH == 0) {
-                    request.getListener().connectFailure(new HttpResponse.Builder().code(code).codeString(msg).build(), new IOException("Content Length = 0"));
-                    return null;
-                }
+            if (LENGTH == 0) {
+                request.getListener().connectFailure(new HttpResponse.Builder().code(code).codeString(msg).build(), new IOException("Content Length = 0"));
+                return null;
+            }
 
-                int start = request.getUrl().lastIndexOf("/") + 1;
-                String fileName = request.getUrl().substring(start, request.getUrl().length());
+            int start = request.getUrl().lastIndexOf("/") + 1;
+            String fileName = request.getUrl().substring(start, request.getUrl().length());
 
                 /*
                  * "r"    以只读方式打开。调用结果对象的任何 write 方法都将导致抛出 IOException。
@@ -95,12 +106,12 @@ public class DownloaderAsyncTask extends AsyncTask<String, Void, Void> {
                  * "rws"  打开以便读取和写入。相对于 "rw"，"rws" 还要求对“文件的内容”或“meta-data”的每个更新都同步写入到基础存储设备。
                  * "rwd"  打开以便读取和写入，相对于 "rw"，"rwd" 还要求对“文件的内容”的每个更新都同步写入到基础存储设备。
                  */
-                RandomAccessFile file = new RandomAccessFile(MyApplication.INSTANCE.getDiskCacheDir() + "/" + fileName, "rwd");
+            RandomAccessFile file = new RandomAccessFile(MyApplication.INSTANCE.getDiskCacheDir() + "/" + fileName, "rwd");
 
-                // 1.在本地创建一个文件 文件大小要跟服务器文件的大小一致
-                file.setLength(LENGTH);
-                file.close();
-                CLog.Companion.i(TAG, "LENGTH:" + LENGTH);
+            // 1.在本地创建一个文件 文件大小要跟服务器文件的大小一致
+            file.setLength(LENGTH);
+            file.close();
+            CLog.Companion.i(TAG, "LENGTH:" + LENGTH);
 
                 /*
                  * 2. 多线程下载，分配每个线程下载如下
@@ -110,34 +121,30 @@ public class DownloaderAsyncTask extends AsyncTask<String, Void, Void> {
                  * ...
                  * 线程n: (n-1)*blockSize~len <br>
                  */
-                int blockSize = LENGTH / THREAD_NUM;
-                for (int i = 0; i < THREAD_NUM; i++) {
-                    int startPos = i * blockSize;
-                    int endPos = (i + 1) * blockSize - 1;
+            int blockSize = LENGTH / THREAD_NUM;
+            for (int i = 0; i < THREAD_NUM; i++) {
+                int startPos = i * blockSize;
+                int endPos = (i + 1) * blockSize - 1;
 
-                    //注意最后一个线程的结束位置为文件长度
-                    if (i == (THREAD_NUM - 1))
-                        endPos = LENGTH;
+                //注意最后一个线程的结束位置为文件长度
+                if (i == (THREAD_NUM - 1))
+                    endPos = LENGTH;
 
-                    threadPool[i] = new HandlerThread("DownloadLooper" + i);
-                    threadPool[i].start();
-                    MyRunnable runnable = new MyRunnable(i, startPos, endPos, LENGTH);
-                    Handler handler = new Handler(threadPool[i].getLooper());
-                    handler.post(runnable);
-                }
-
-            } catch (Exception ex) {
-                e = ex;
-                ex.printStackTrace();
+                threadPool[i] = new HandlerThread("DownloadLooper" + i);
+                threadPool[i].start();
+                MyRunnable runnable = new MyRunnable(i, startPos, endPos, LENGTH);
+                Handler handler = new Handler(threadPool[i].getLooper());
+                handler.post(runnable);
             }
 
-            if (e != null || !TextUtils.isEmpty(error))
-                request.getListener().connectFailure(new HttpResponse.Builder().code(code).codeString(msg).errorMessage(error).build(), e);
-
-
-        } else {
-            //do POST
+        } catch (Exception ex) {
+            e = ex;
+            ex.printStackTrace();
         }
+
+        if (e != null || !TextUtils.isEmpty(error))
+            request.getListener().connectFailure(new HttpResponse.Builder().code(code).codeString(msg).errorMessage(error).build(), e);
+
         return null;
     }
 
@@ -171,12 +178,19 @@ public class DownloaderAsyncTask extends AsyncTask<String, Void, Void> {
             Exception e = null;
             try {
                 HttpURLConnection conn = (HttpURLConnection) new URL(request.getUrl()).openConnection();
-                //默认GET请求，所以可略
-                conn.setRequestMethod("GET");
+                if (TextUtils.isEmpty(request.getBody())) {
+                    conn.setRequestMethod("GET");
+                } else {
+                    conn.setRequestMethod("POST");
+                    //获取conn的输出流
+                    OutputStream os = conn.getOutputStream();
+                    os.write(request.getBody().getBytes(HTTP.UTF_8));
+                    os.close();
+                }
                 //默认可读服务器读结果流，所以可略
                 conn.setDoInput(true);
                 //设置逾时
-                conn.setConnectTimeout(5000);
+                conn.setConnectTimeout(CONNECT_TIMEOUT);
 
                 //设置标头
                 if (request.getHeaders() != null) {
@@ -184,14 +198,6 @@ public class DownloaderAsyncTask extends AsyncTask<String, Void, Void> {
                     for (String name : set) {
                         conn.setRequestProperty(name, request.getHeaders().get(name));
                     }
-                }
-
-                code = conn.getResponseCode();
-                msg = conn.getResponseMessage();
-                InputStream is = conn.getErrorStream();
-                if (is != null) {
-                    error = su.getString(is);
-                    is.close();
                 }
 
                 //用一份文件记录下载进度
@@ -218,6 +224,14 @@ public class DownloaderAsyncTask extends AsyncTask<String, Void, Void> {
 
                 //设置请求内容字节范围
                 conn.setRequestProperty("Range", String.format(Locale.ENGLISH, "bytes=%d-%d", startPos, endPos));
+
+                code = conn.getResponseCode();
+                msg = conn.getResponseMessage();
+                InputStream is = conn.getErrorStream();
+                if (is != null) {
+                    error = su.getString(is);
+                    is.close();
+                }
 
                 //设置数据从那个位置开始写
                 RandomAccessFile file = new RandomAccessFile(MyApplication.INSTANCE.getDiskCacheDir() + "/" + fileName, "rwd");
@@ -248,7 +262,7 @@ public class DownloaderAsyncTask extends AsyncTask<String, Void, Void> {
 
                 if (currentPos == LENGTH || currentPos == endPos + 1) {
                     CLog.Companion.d(TAG, "threadId_" + threadId + " finished");
-                    downloadCompleted[threadId] = true;
+//                    downloadCompleted[threadId] = true;
                     positionFile.delete();
                     file.close();
                 }

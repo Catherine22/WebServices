@@ -38,7 +38,7 @@ import java.util.Locale;
  */
 
 public class P05_Gallery extends LazyFragment {
-    private final static String TAG = "P04_Gallery";
+    private final static String TAG = "P05_Gallery";
     private List<String> titles;
     private List<String> attrs;
     private List<String> images;

@@ -14,7 +14,7 @@ public class StreamUtils {
     public String getString(InputStream inputStream) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         byte[] buffer = new byte[1024];
-        int length;
+        int length = -1;
         String result;
         while ((length = inputStream.read(buffer)) != -1) {
             baos.write(buffer, 0, length);
@@ -28,7 +28,7 @@ public class StreamUtils {
     public byte[] getBytes(InputStream is) throws Exception {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         byte[] buffer = new byte[1024];
-        int len = 0;
+        int len = -1;
         while ((len = is.read(buffer)) != -1) {
             bos.write(buffer, 0, len);
         }
