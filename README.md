@@ -51,6 +51,9 @@ android {
 - [P03_Downloader]
 - [DownloaderAsyncTask]
 
+### Upload files to the server
+- [P06_Upload]
+
 
 ### Cache
 
@@ -204,6 +207,7 @@ Here is the example: [P05_Gallery], [ImageCardRVAdapter]
 [P02_HttpURLConnection]:<https://github.com/Catherine22/WebServices/blob/master/app/src/main/java/com/catherine/webservices/fragments/P02_HttpURLConnection.java>
 [P03_Downloader]:<https://github.com/Catherine22/WebServices/blob/master/app/src/main/java/com/catherine/webservices/fragments/P03_Downloader.java>
 [P05_Gallery]:<https://github.com/Catherine22/WebServices/blob/master/app/src/main/java/com/catherine/webservices/fragments/P05_Gallery.java>
+[P06_Upload]:<https://github.com/Catherine22/WebServices/blob/master/app/src/main/java/com/catherine/webservices/fragments/P06_Upload.java>
 [HttpAsyncTask]:<https://github.com/Catherine22/WebServices/blob/master/app/src/main/java/com/catherine/webservices/network/HttpAsyncTask.java>
 [DownloaderAsyncTask]:<https://github.com/Catherine22/WebServices/blob/master/app/src/main/java/com/catherine/webservices/network/DownloaderAsyncTask.java>
 [Tencent bugly]:<https://mp.weixin.qq.com/s/qOMO0LIdA47j3RjhbCWUEQ>
