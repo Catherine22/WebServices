@@ -61,15 +61,6 @@ public class DownloaderAsyncTask extends AsyncTask<String, Void, Void> {
 
         try {
             HttpURLConnection conn = (HttpURLConnection) new URL(request.getUrl()).openConnection();
-            if (TextUtils.isEmpty(request.getBody())) {
-                conn.setRequestMethod("GET");
-            } else {
-                conn.setRequestMethod("POST");
-                //获取conn的输出流
-                OutputStream os = conn.getOutputStream();
-                os.write(request.getBody().getBytes(HTTP.UTF_8));
-                os.close();
-            }
             //默认可读服务器读结果流，所以可略
             conn.setDoInput(true);
             conn.setUseCaches(false);
@@ -83,6 +74,15 @@ public class DownloaderAsyncTask extends AsyncTask<String, Void, Void> {
                 conn.setRequestProperty(name, headers.get(name));
             }
 
+            if (TextUtils.isEmpty(request.getBody())) {
+                conn.setRequestMethod("GET");
+            } else {
+                conn.setRequestMethod("POST");
+                //获取conn的输出流
+                OutputStream os = conn.getOutputStream();
+                os.write(request.getBody().getBytes(HTTP.UTF_8));
+                os.close();
+            }
             code = conn.getResponseCode();
             msg = conn.getResponseMessage();
             LENGTH = conn.getContentLength();

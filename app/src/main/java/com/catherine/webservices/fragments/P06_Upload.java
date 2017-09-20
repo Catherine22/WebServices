@@ -22,6 +22,7 @@ import com.catherine.webservices.interfaces.MainInterface;
 import com.catherine.webservices.interfaces.OnItemClickListener;
 import com.catherine.webservices.interfaces.OnRequestPermissionsListener;
 import com.catherine.webservices.network.HttpResponse;
+import com.catherine.webservices.network.MyHttpURLConnection;
 import com.catherine.webservices.network.UploadRequest;
 import com.catherine.webservices.network.UploaderAsyncTask;
 import com.catherine.webservices.network.UploaderListener;
@@ -32,8 +33,10 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * Created by Catherine on 2017/9/19.
@@ -157,7 +160,6 @@ public class P06_Upload extends LazyFragment {
                                     UploadRequest request = new UploadRequest(new UploadRequest.Builder()
                                             .file(new File(MyApplication.INSTANCE.getDataCacheDir() + "/big_o_cheat_sheet_poster.jpg"))
                                             .url(String.format(Locale.ENGLISH, "%sUploadServlet", Constants.HOST, ADID))
-                                            .isGET(false)
                                             .listener(new UploaderListener() {
                                                 @Override
                                                 public void connectSuccess(@NotNull HttpResponse response) {
@@ -195,10 +197,12 @@ public class P06_Upload extends LazyFragment {
                             @Override
                             public void onResponse(@NotNull String ADID) {
                                 try {
+                                    Map<String, String> body = new HashMap<>();
+                                    body.put("ADID", ADID);
                                     UploadRequest request = new UploadRequest(new UploadRequest.Builder()
                                             .file(new File(MyApplication.INSTANCE.getDataCacheDir() + "/big_o_cheat_sheet_poster.jpg"))
                                             .url(String.format(Locale.ENGLISH, "%sUploadServlet", Constants.HOST, ADID))
-                                            .isGET(true)
+                                            .body(body)
                                             .listener(new UploaderListener() {
                                                 @Override
                                                 public void connectSuccess(@NotNull HttpResponse response) {

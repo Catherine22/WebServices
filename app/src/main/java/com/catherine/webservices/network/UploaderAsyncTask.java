@@ -6,13 +6,9 @@ import android.text.TextUtils;
 import com.catherine.webservices.toolkits.CLog;
 import com.catherine.webservices.toolkits.StreamUtils;
 
-import org.apache.http.protocol.HTTP;
-
 import java.io.DataOutputStream;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Map;
@@ -53,8 +49,6 @@ public class UploaderAsyncTask extends AsyncTask<String, Void, Void> {
         String crlf = "\r\n";
         String twoHyphens = "--";
         String boundary = "*****";
-        String file = "big_o_cheat_sheet_poster";
-        String fileName = "big_o_cheat_sheet_poster.jpg";
 
         try {
             HttpURLConnection conn = (HttpURLConnection) new URL(request.getUrl()).openConnection();
@@ -77,11 +71,15 @@ public class UploaderAsyncTask extends AsyncTask<String, Void, Void> {
             conn.setRequestProperty("Charset", "UTF-8");
 
 
-            if (request.isGET()) {
+            if (request.getBody() == null) {
                 conn.setRequestMethod("GET");
             } else {
                 conn.setRequestMethod("POST");
             }
+
+            String file = request.getFile().getName();
+            int start = file.lastIndexOf(".");
+            String fileName = file.substring(0, start);
 
             //设置DataOutputStream
             DataOutputStream dos = new DataOutputStream(conn.getOutputStream());
@@ -97,8 +95,23 @@ public class UploaderAsyncTask extends AsyncTask<String, Void, Void> {
                 dos.write(buf, 0, len);
             }
             dos.writeBytes(crlf);
-            dos.writeBytes(String.format("%s%s%s%s", twoHyphens, boundary, twoHyphens, crlf));
             fis.close();
+
+            if (request.getBody() != null) {
+                //加入POST方法夹带的本文
+                for (String key : request.getBody().keySet()) {
+                    String value = request.getBody().get(key);
+
+                    dos.writeBytes(twoHyphens + boundary + crlf);
+                    dos.writeBytes(String.format("Content-Disposition: form-data; name=\"%s\"%s", key, crlf));
+                    dos.writeBytes(String.format("Content-Type: text/plain%s", crlf));
+                    dos.writeBytes(crlf);
+                    dos.writeBytes(value);
+                    dos.writeBytes(crlf);
+                }
+            }
+
+            dos.writeBytes(String.format("%s%s%s%s", twoHyphens, boundary, twoHyphens, crlf));
             dos.flush();
             dos.close();
 
