@@ -25,7 +25,7 @@ import java.util.Set;
  */
 
 public class UploaderAsyncTask extends AsyncTask<String, Void, Void> {
-    public final static String TAG = "MyHttpURLConnection";
+    public final static String TAG = "UploaderAsyncTask";
     private final static int CONNECT_TIMEOUT = 10000;
     private boolean responseOnUIThread;
     private UploadRequest request;
@@ -50,23 +50,14 @@ public class UploaderAsyncTask extends AsyncTask<String, Void, Void> {
 
     @Override
     protected Void doInBackground(String... strings) {
-        String boundary = "*****";
+        String crlf = "\r\n";
         String twoHyphens = "--";
-        String end = "\r\n";
-        String fileName = "test1";
-        String newFileName = "test2";
+        String boundary = "*****";
+        String file = "big_o_cheat_sheet_poster";
+        String fileName = "big_o_cheat_sheet_poster.jpg";
 
         try {
             HttpURLConnection conn = (HttpURLConnection) new URL(request.getUrl()).openConnection();
-            if (TextUtils.isEmpty(request.getBody())) {
-                conn.setRequestMethod("GET");
-            } else {
-                conn.setRequestMethod("POST");
-                //获取conn的输出流
-                OutputStream os = conn.getOutputStream();
-                os.write(request.getBody().getBytes(HTTP.UTF_8));
-                os.close();
-            }
             //默认可读服务器读结果流，所以可略
             conn.setDoInput(true);
             conn.setDoOutput(true);
@@ -82,17 +73,21 @@ public class UploaderAsyncTask extends AsyncTask<String, Void, Void> {
 
             //添加额外预设标头
             conn.setRequestProperty("Content-type", "multipart/form-data; boundary=" + boundary);
+            conn.setRequestProperty("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8");
             conn.setRequestProperty("Charset", "UTF-8");
+
+
+            if (request.isGET()) {
+                conn.setRequestMethod("GET");
+            } else {
+                conn.setRequestMethod("POST");
+            }
 
             //设置DataOutputStream
             DataOutputStream dos = new DataOutputStream(conn.getOutputStream());
-            dos.writeBytes(String.format("%s%s%s", twoHyphens, boundary, end));
-            dos.writeBytes(String.format("Content-Disposition: form-data; name=\"%s\"; filename=\"%s\" %s", fileName, newFileName, end));
-            dos.writeBytes(end);
-
-            File f = request.getFile();
-            CLog.Companion.i(TAG,"file:"+f.exists());
-            CLog.Companion.i(TAG,"file:"+f.getPath());
+            dos.writeBytes(String.format("%s%s%s", twoHyphens, boundary, crlf));
+            dos.writeBytes(String.format("Content-Disposition: form-data; name=\"%s\"; filename=\"%s\" %s", file, fileName, crlf));
+            dos.writeBytes(crlf);
 
             //取得文件的FileInputStream
             FileInputStream fis = new FileInputStream(request.getFile());
@@ -101,26 +96,29 @@ public class UploaderAsyncTask extends AsyncTask<String, Void, Void> {
             while ((len = fis.read(buf)) != -1) {
                 dos.write(buf, 0, len);
             }
-            dos.writeBytes(end);
-            dos.writeBytes(String.format("%s%s%s%s", twoHyphens, boundary, twoHyphens, end));
+            dos.writeBytes(crlf);
+            dos.writeBytes(String.format("%s%s%s%s", twoHyphens, boundary, twoHyphens, crlf));
             fis.close();
             dos.flush();
+            dos.close();
 
             code = conn.getResponseCode();
             msg = conn.getResponseMessage();
-            InputStream is = conn.getInputStream();
-            if (is != null) {
-                response = su.getString(is);
-                is.close();
+
+            if (code == 200) {
+                InputStream is = conn.getInputStream();
+                if (is != null) {
+                    response = su.getString(is);
+                    is.close();
+                }
+            } else {
+                InputStream is = conn.getErrorStream();
+                if (is != null) {
+                    error = su.getString(is);
+                    is.close();
+                }
             }
 
-            is = conn.getErrorStream();
-            if (is != null) {
-                error = su.getString(is);
-                is.close();
-            }
-
-            dos.close();
 
         } catch (Exception ex) {
             e = ex;
@@ -131,7 +129,7 @@ public class UploaderAsyncTask extends AsyncTask<String, Void, Void> {
             if (e == null && TextUtils.isEmpty(error))
                 request.getListener().connectSuccess(new HttpResponse.Builder().code(code).codeString(msg).body(response).build());
             else
-                request.getListener().connectFailure(new HttpResponse.Builder().code(code).codeString(msg).errorMessage(response).build(), e);
+                request.getListener().connectFailure(new HttpResponse.Builder().code(code).codeString(msg).errorMessage(error).build(), e);
         }
         return null;
     }

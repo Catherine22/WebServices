@@ -12,14 +12,14 @@ import java.util.Map;
 public final class UploadRequest {
     private String url;
     private Map<String, String> headers;
-    private String body;
+    private Boolean isGET;
     private File file;
     private UploaderListener listener;
 
     public UploadRequest(Builder builder) {
         this.url = builder.url;
         this.headers = builder.headers;
-        this.body = builder.body;
+        this.isGET = builder.isGET;
         this.file = builder.file;
         this.listener = builder.listener;
     }
@@ -27,12 +27,12 @@ public final class UploadRequest {
     public static class Builder {
         private String url;
         private Map<String, String> headers;
-        private String body;
+        private Boolean isGET;
         private File file;
         private UploaderListener listener;
 
         public Builder() {
-            this.body = "";
+            this.isGET = false;
             this.headers = MyHttpURLConnection.getDefaultHeaders();
         }
 
@@ -46,8 +46,8 @@ public final class UploadRequest {
             return this;
         }
 
-        public Builder body(String body) {
-            this.body = body;
+        public Builder isGET(boolean isGET) {
+            this.isGET = isGET;
             return this;
         }
 
@@ -74,8 +74,8 @@ public final class UploadRequest {
         return headers;
     }
 
-    public String getBody() {
-        return body;
+    public boolean isGET() {
+        return isGET;
     }
 
     public File getFile() {

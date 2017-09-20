@@ -178,6 +178,18 @@ public class DownloaderAsyncTask extends AsyncTask<String, Void, Void> {
             Exception e = null;
             try {
                 HttpURLConnection conn = (HttpURLConnection) new URL(request.getUrl()).openConnection();
+                conn.setDoInput(true);
+                conn.setUseCaches(false);
+                conn.setConnectTimeout(CONNECT_TIMEOUT);
+
+
+                //设置标头
+                if (request.getHeaders() != null) {
+                    Set<String> set = request.getHeaders().keySet();
+                    for (String name : set) {
+                        conn.setRequestProperty(name, request.getHeaders().get(name));
+                    }
+                }
                 if (TextUtils.isEmpty(request.getBody())) {
                     conn.setRequestMethod("GET");
                 } else {
@@ -186,18 +198,6 @@ public class DownloaderAsyncTask extends AsyncTask<String, Void, Void> {
                     OutputStream os = conn.getOutputStream();
                     os.write(request.getBody().getBytes(HTTP.UTF_8));
                     os.close();
-                }
-                //默认可读服务器读结果流，所以可略
-                conn.setDoInput(true);
-                //设置逾时
-                conn.setConnectTimeout(CONNECT_TIMEOUT);
-
-                //设置标头
-                if (request.getHeaders() != null) {
-                    Set<String> set = request.getHeaders().keySet();
-                    for (String name : set) {
-                        conn.setRequestProperty(name, request.getHeaders().get(name));
-                    }
                 }
 
                 //用一份文件记录下载进度

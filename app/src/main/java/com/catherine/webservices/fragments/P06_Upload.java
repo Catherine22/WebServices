@@ -18,8 +18,6 @@ import com.catherine.webservices.Constants;
 import com.catherine.webservices.MyApplication;
 import com.catherine.webservices.R;
 import com.catherine.webservices.adapters.ProgressCardRVAdapter;
-import com.catherine.webservices.adapters.TextCardRVAdapter;
-import com.catherine.webservices.interfaces.BackKeyListener;
 import com.catherine.webservices.interfaces.MainInterface;
 import com.catherine.webservices.interfaces.OnItemClickListener;
 import com.catherine.webservices.interfaces.OnRequestPermissionsListener;
@@ -33,7 +31,6 @@ import com.catherine.webservices.toolkits.CLog;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -126,9 +123,11 @@ public class P06_Upload extends LazyFragment {
     private void fillInData() {
         features = new ArrayList<>();
         features.add("Upload an image from assets");
+        features.add("Upload an image from assets");
 
         descriptions = new ArrayList<>();
-        descriptions.add("Upload an image.");
+        descriptions.add("GET");
+        descriptions.add("POST");
     }
 
     private void initComponent() {
@@ -151,13 +150,55 @@ public class P06_Upload extends LazyFragment {
             public void onItemClick(@NotNull View view, int position) {
                 switch (position) {
                     case 0:
-                        adid_asyncTask = new ADID_AsyncTask(new ADID_AsyncTask.ADID_Callback() {
+                         adid_asyncTask = new ADID_AsyncTask(new ADID_AsyncTask.ADID_Callback() {
                             @Override
                             public void onResponse(@NotNull String ADID) {
                                 try {
                                     UploadRequest request = new UploadRequest(new UploadRequest.Builder()
                                             .file(new File(MyApplication.INSTANCE.getDataCacheDir() + "/big_o_cheat_sheet_poster.jpg"))
-                                            .url(String.format(Locale.ENGLISH, "%sUploadServlet?ADID={%s}&IDFA={}", Constants.HOST, ADID))
+                                            .url(String.format(Locale.ENGLISH, "%sUploadServlet", Constants.HOST, ADID))
+                                            .isGET(false)
+                                            .listener(new UploaderListener() {
+                                                @Override
+                                                public void connectSuccess(@NotNull HttpResponse response) {
+                                                    CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
+                                                }
+
+                                                @Override
+                                                public void connectFailure(@NotNull HttpResponse response, @org.jetbrains.annotations.Nullable Exception e) {
+                                                    StringBuilder sb = new StringBuilder();
+                                                    sb.append(String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getErrorMessage()));
+                                                    CLog.Companion.e(TAG, sb.toString());
+                                                    if (e != null) {
+                                                        sb.append("\n");
+                                                        sb.append(e.getMessage());
+                                                        CLog.Companion.e(TAG, e.getMessage());
+                                                    }
+                                                }
+                                            }));
+                                    new UploaderAsyncTask(request).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+
+                            @Override
+                            public void onError(@NotNull Exception e) {
+
+                            }
+                        });
+                        adid_asyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                        break;
+
+                    case 1:
+                         adid_asyncTask = new ADID_AsyncTask(new ADID_AsyncTask.ADID_Callback() {
+                            @Override
+                            public void onResponse(@NotNull String ADID) {
+                                try {
+                                    UploadRequest request = new UploadRequest(new UploadRequest.Builder()
+                                            .file(new File(MyApplication.INSTANCE.getDataCacheDir() + "/big_o_cheat_sheet_poster.jpg"))
+                                            .url(String.format(Locale.ENGLISH, "%sUploadServlet", Constants.HOST, ADID))
+                                            .isGET(true)
                                             .listener(new UploaderListener() {
                                                 @Override
                                                 public void connectSuccess(@NotNull HttpResponse response) {
