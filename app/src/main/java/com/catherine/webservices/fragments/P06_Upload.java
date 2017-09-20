@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -17,12 +16,11 @@ import android.view.View;
 import com.catherine.webservices.Constants;
 import com.catherine.webservices.MyApplication;
 import com.catherine.webservices.R;
-import com.catherine.webservices.adapters.ProgressCardRVAdapter;
+import com.catherine.webservices.adapters.TextCardRVAdapter;
 import com.catherine.webservices.interfaces.MainInterface;
 import com.catherine.webservices.interfaces.OnItemClickListener;
 import com.catherine.webservices.interfaces.OnRequestPermissionsListener;
 import com.catherine.webservices.network.HttpResponse;
-import com.catherine.webservices.network.MyHttpURLConnection;
 import com.catherine.webservices.network.UploadRequest;
 import com.catherine.webservices.network.UploaderAsyncTask;
 import com.catherine.webservices.network.UploaderListener;
@@ -46,10 +44,10 @@ import java.util.Map;
 
 public class P06_Upload extends LazyFragment {
     public final static String TAG = "P06_Upload";
-    private List<String> features, descriptions;
+    private List<String> features, descriptions, contents;
     private MainInterface mainInterface;
     private SwipeRefreshLayout srl_container;
-    private ProgressCardRVAdapter adapter;
+    private TextCardRVAdapter adapter;
     private ADID_AsyncTask adid_asyncTask;
 
     public static P06_Upload newInstance(boolean isLazyLoad) {
@@ -127,10 +125,18 @@ public class P06_Upload extends LazyFragment {
         features = new ArrayList<>();
         features.add("Upload an image from assets");
         features.add("Upload an image from assets");
+        features.add("Upload a large file from assets");
 
         descriptions = new ArrayList<>();
         descriptions.add("GET");
         descriptions.add("POST");
+        descriptions.add("POST");
+
+
+        contents = new ArrayList<>();
+        for (int i = 0; i < features.size(); i++) {
+            contents.add("");
+        }
     }
 
     private void initComponent() {
@@ -147,23 +153,25 @@ public class P06_Upload extends LazyFragment {
         RecyclerView rv_main_list = (RecyclerView) findViewById(R.id.rv_main_list);
 //        rv_main_list.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.Companion.getVERTICAL_LIST()));
         rv_main_list.setLayoutManager(new LinearLayoutManager(getActivity()));
-        adapter = new ProgressCardRVAdapter(getActivity(), null, features, descriptions, null);
-        adapter.setOnItemClickListener(new OnItemClickListener() {
+        adapter = new TextCardRVAdapter(getActivity(), null, features, descriptions, new OnItemClickListener() {
             @Override
-            public void onItemClick(@NotNull View view, int position) {
+            public void onItemClick(@NotNull View view, final int position) {
                 switch (position) {
                     case 0:
-                         adid_asyncTask = new ADID_AsyncTask(new ADID_AsyncTask.ADID_Callback() {
+                        adid_asyncTask = new ADID_AsyncTask(new ADID_AsyncTask.ADID_Callback() {
                             @Override
                             public void onResponse(@NotNull String ADID) {
                                 try {
                                     UploadRequest request = new UploadRequest(new UploadRequest.Builder()
                                             .file(new File(MyApplication.INSTANCE.getDataCacheDir() + "/big_o_cheat_sheet_poster.jpg"))
-                                            .url(String.format(Locale.ENGLISH, "%sUploadServlet", Constants.HOST, ADID))
+                                            .url(String.format(Locale.ENGLISH, "%sUploadServlet", Constants.HOST))
                                             .listener(new UploaderListener() {
                                                 @Override
                                                 public void connectSuccess(@NotNull HttpResponse response) {
                                                     CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
+                                                    contents.set(position, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
+                                                    adapter.setContents(contents);
+                                                    adapter.notifyDataSetChanged();
                                                 }
 
                                                 @Override
@@ -176,6 +184,9 @@ public class P06_Upload extends LazyFragment {
                                                         sb.append(e.getMessage());
                                                         CLog.Companion.e(TAG, e.getMessage());
                                                     }
+                                                    contents.set(position, sb.toString());
+                                                    adapter.setContents(contents);
+                                                    adapter.notifyDataSetChanged();
                                                 }
                                             }));
                                     new UploaderAsyncTask(request).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
@@ -185,15 +196,46 @@ public class P06_Upload extends LazyFragment {
                             }
 
                             @Override
-                            public void onError(@NotNull Exception e) {
+                            public void onError(@NotNull Exception ex) {
+                                CLog.Companion.e(TAG, ex.getMessage());
+                                try {
+                                    UploadRequest request = new UploadRequest(new UploadRequest.Builder()
+                                            .file(new File(MyApplication.INSTANCE.getDataCacheDir() + "/big_o_cheat_sheet_poster.jpg"))
+                                            .url(String.format(Locale.ENGLISH, "%sUploadServlet", Constants.HOST))
+                                            .listener(new UploaderListener() {
+                                                @Override
+                                                public void connectSuccess(@NotNull HttpResponse response) {
+                                                    CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
+                                                    contents.set(position, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
+                                                    adapter.setContents(contents);
+                                                    adapter.notifyDataSetChanged();
+                                                }
 
+                                                @Override
+                                                public void connectFailure(@NotNull HttpResponse response, @org.jetbrains.annotations.Nullable Exception e) {
+                                                    StringBuilder sb = new StringBuilder();
+                                                    sb.append(String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getErrorMessage()));
+                                                    CLog.Companion.e(TAG, sb.toString());
+                                                    if (e != null) {
+                                                        sb.append("\n");
+                                                        sb.append(e.getMessage());
+                                                        CLog.Companion.e(TAG, e.getMessage());
+                                                    }
+                                                    contents.set(position, sb.toString());
+                                                    adapter.setContents(contents);
+                                                    adapter.notifyDataSetChanged();
+                                                }
+                                            }));
+                                    new UploaderAsyncTask(request).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
                             }
                         });
-                        adid_asyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                         break;
 
                     case 1:
-                         adid_asyncTask = new ADID_AsyncTask(new ADID_AsyncTask.ADID_Callback() {
+                        adid_asyncTask = new ADID_AsyncTask(new ADID_AsyncTask.ADID_Callback() {
                             @Override
                             public void onResponse(@NotNull String ADID) {
                                 try {
@@ -201,12 +243,16 @@ public class P06_Upload extends LazyFragment {
                                     body.put("ADID", ADID);
                                     UploadRequest request = new UploadRequest(new UploadRequest.Builder()
                                             .file(new File(MyApplication.INSTANCE.getDataCacheDir() + "/big_o_cheat_sheet_poster.jpg"))
-                                            .url(String.format(Locale.ENGLISH, "%sUploadServlet", Constants.HOST, ADID))
+                                            .url(String.format(Locale.ENGLISH, "%sUploadServlet", Constants.HOST))
                                             .body(body)
                                             .listener(new UploaderListener() {
                                                 @Override
                                                 public void connectSuccess(@NotNull HttpResponse response) {
                                                     CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
+                                                    contents.set(position, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
+                                                    adapter.setContents(contents);
+                                                    adapter.notifyDataSetChanged();
+
                                                 }
 
                                                 @Override
@@ -219,6 +265,9 @@ public class P06_Upload extends LazyFragment {
                                                         sb.append(e.getMessage());
                                                         CLog.Companion.e(TAG, e.getMessage());
                                                     }
+                                                    contents.set(position, sb.toString());
+                                                    adapter.setContents(contents);
+                                                    adapter.notifyDataSetChanged();
                                                 }
                                             }));
                                     new UploaderAsyncTask(request).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
@@ -228,8 +277,128 @@ public class P06_Upload extends LazyFragment {
                             }
 
                             @Override
-                            public void onError(@NotNull Exception e) {
+                            public void onError(@NotNull Exception ex) {
+                                CLog.Companion.e(TAG, ex.getMessage());
+                                try {
+                                    Map<String, String> body = new HashMap<>();
+                                    body.put("ADID", "UNKNOWN");
+                                    UploadRequest request = new UploadRequest(new UploadRequest.Builder()
+                                            .file(new File(MyApplication.INSTANCE.getDataCacheDir() + "/big_o_cheat_sheet_poster.jpg"))
+                                            .url(String.format(Locale.ENGLISH, "%sUploadServlet", Constants.HOST))
+                                            .body(body)
+                                            .listener(new UploaderListener() {
+                                                @Override
+                                                public void connectSuccess(@NotNull HttpResponse response) {
+                                                    CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
+                                                    contents.set(position, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
+                                                    adapter.setContents(contents);
+                                                    adapter.notifyDataSetChanged();
 
+                                                }
+
+                                                @Override
+                                                public void connectFailure(@NotNull HttpResponse response, @org.jetbrains.annotations.Nullable Exception e) {
+                                                    StringBuilder sb = new StringBuilder();
+                                                    sb.append(String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getErrorMessage()));
+                                                    CLog.Companion.e(TAG, sb.toString());
+                                                    if (e != null) {
+                                                        sb.append("\n");
+                                                        sb.append(e.getMessage());
+                                                        CLog.Companion.e(TAG, e.getMessage());
+                                                    }
+                                                    contents.set(position, sb.toString());
+                                                    adapter.setContents(contents);
+                                                    adapter.notifyDataSetChanged();
+                                                }
+                                            }));
+                                    new UploaderAsyncTask(request).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
+                        break;
+                    case 2:
+                        adid_asyncTask = new ADID_AsyncTask(new ADID_AsyncTask.ADID_Callback() {
+                            @Override
+                            public void onResponse(@NotNull String ADID) {
+                                try {
+                                    Map<String, String> body = new HashMap<>();
+                                    body.put("ADID", ADID);
+                                    UploadRequest request = new UploadRequest(new UploadRequest.Builder()
+                                            .file(new File(MyApplication.INSTANCE.getDataCacheDir() + "/邓俊辉_数据结构.pdf"))
+                                            .url(String.format(Locale.ENGLISH, "%sUploadServlet", Constants.HOST))
+                                            .body(body)
+                                            .listener(new UploaderListener() {
+                                                @Override
+                                                public void connectSuccess(@NotNull HttpResponse response) {
+                                                    CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
+                                                    contents.set(position, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
+                                                    adapter.setContents(contents);
+                                                    adapter.notifyDataSetChanged();
+
+                                                }
+
+                                                @Override
+                                                public void connectFailure(@NotNull HttpResponse response, @org.jetbrains.annotations.Nullable Exception e) {
+                                                    StringBuilder sb = new StringBuilder();
+                                                    sb.append(String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getErrorMessage()));
+                                                    CLog.Companion.e(TAG, sb.toString());
+                                                    if (e != null) {
+                                                        sb.append("\n");
+                                                        sb.append(e.getMessage());
+                                                        CLog.Companion.e(TAG, e.getMessage());
+                                                    }
+                                                    contents.set(position, sb.toString());
+                                                    adapter.setContents(contents);
+                                                    adapter.notifyDataSetChanged();
+                                                }
+                                            }));
+                                    new UploaderAsyncTask(request).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+
+                            @Override
+                            public void onError(@NotNull Exception ex) {
+                                ex.printStackTrace();
+                                try {
+                                    Map<String, String> body = new HashMap<>();
+                                    body.put("ADID", "KNOWN");
+                                    UploadRequest request = new UploadRequest(new UploadRequest.Builder()
+                                            .file(new File(MyApplication.INSTANCE.getDataCacheDir() + "/邓俊辉_数据结构.pdf"))
+                                            .url(String.format(Locale.ENGLISH, "%sUploadServlet", Constants.HOST))
+                                            .body(body)
+                                            .listener(new UploaderListener() {
+                                                @Override
+                                                public void connectSuccess(@NotNull HttpResponse response) {
+                                                    CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
+                                                    contents.set(position, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
+                                                    adapter.setContents(contents);
+                                                    adapter.notifyDataSetChanged();
+
+                                                }
+
+                                                @Override
+                                                public void connectFailure(@NotNull HttpResponse response, @org.jetbrains.annotations.Nullable Exception e) {
+                                                    StringBuilder sb = new StringBuilder();
+                                                    sb.append(String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getErrorMessage()));
+                                                    CLog.Companion.e(TAG, sb.toString());
+                                                    if (e != null) {
+                                                        sb.append("\n");
+                                                        sb.append(e.getMessage());
+                                                        CLog.Companion.e(TAG, e.getMessage());
+                                                    }
+                                                    contents.set(position, sb.toString());
+                                                    adapter.setContents(contents);
+                                                    adapter.notifyDataSetChanged();
+                                                }
+                                            }));
+                                    new UploaderAsyncTask(request).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
                             }
                         });
                         adid_asyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);

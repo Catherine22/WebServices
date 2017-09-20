@@ -3,7 +3,6 @@ package com.catherine.webservices.network;
 import android.os.AsyncTask;
 import android.text.TextUtils;
 
-import com.catherine.webservices.toolkits.CLog;
 import com.catherine.webservices.toolkits.StreamUtils;
 
 import java.io.DataOutputStream;
@@ -71,15 +70,16 @@ public class UploaderAsyncTask extends AsyncTask<String, Void, Void> {
             conn.setRequestProperty("Charset", "UTF-8");
 
 
-            if (request.getBody() == null) {
+            if (request.getBody() == null)
                 conn.setRequestMethod("GET");
-            } else {
+            else
                 conn.setRequestMethod("POST");
-            }
+
 
             String file = request.getFile().getName();
-            int start = file.lastIndexOf(".");
-            String fileName = file.substring(0, start);
+//            int start = file.lastIndexOf(".");
+//            String fileName = file.substring(0, start);
+            String fileName = file;
 
             //设置DataOutputStream
             DataOutputStream dos = new DataOutputStream(conn.getOutputStream());

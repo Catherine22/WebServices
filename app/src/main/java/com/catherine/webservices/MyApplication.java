@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Application;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.HandlerThread;
 import android.text.TextUtils;
 
@@ -53,7 +54,6 @@ public class MyApplication extends Application {
         runningActivities = new ArrayList<>();
         localBroadCastReceivers = new Stack<>();
         init();
-
         registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
             @Override
             public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
