@@ -8,6 +8,7 @@ import com.catherine.webservices.fragments.P01_Apache;
 import com.catherine.webservices.fragments.P02_HttpURLConnection;
 import com.catherine.webservices.fragments.P03_Downloader;
 import com.catherine.webservices.fragments.P04_Cache;
+import com.catherine.webservices.fragments.P06_Upload;
 
 /**
  * Created by Catherine on 2017/8/25.
@@ -20,7 +21,7 @@ public class MainViewPagerAdapter extends FragmentPagerAdapter {
         super(fm);
     }
 
-    private String[] mTitles = new String[]{"HttpClient", "HttpURLConnection", "Downloader", "Cache"};
+    private String[] mTitles = new String[]{"HttpClient", "HttpURLConnection", "Downloader", "Cache", "Upload"};
 
     @Override
     public Fragment getItem(int position) {
@@ -32,6 +33,8 @@ public class MainViewPagerAdapter extends FragmentPagerAdapter {
             return P03_Downloader.newInstance(true);
         } else if (position == 3) {
             return P04_Cache.newInstance(true);
+        } else if (position == 4) {
+            return P06_Upload.newInstance(true);
         }
         return P01_Apache.newInstance(true);
 

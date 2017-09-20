@@ -128,6 +128,7 @@ public class MyApplication extends Application {
         File rootDir = new File(Constants.ROOT_PATH);
         if (!rootDir.exists())
             rootDir.mkdirs();
+        FileUtils.copyAssets();
     }
 
     /**
@@ -144,7 +145,7 @@ public class MyApplication extends Application {
     }
 
     public File getDiskCacheDir(String dirName) throws NullPointerException {
-        String cachePath = (FileUtils.Companion.isExternalStorageWritable()) ? Constants.CACHE_PATH : getCacheDir().getAbsolutePath();
+        String cachePath = (FileUtils.isExternalStorageWritable()) ? Constants.CACHE_PATH : getCacheDir().getAbsolutePath();
         File dir = new File(cachePath);
         boolean b = true;
         if (!dir.exists())
@@ -157,7 +158,30 @@ public class MyApplication extends Application {
         }
 
         if (!b)
-            throw new NullPointerException(String.format("Failed to access external storage, isExternalStorageWritable:%s", FileUtils.Companion.isExternalStorageWritable()));
+            throw new NullPointerException(String.format("Failed to access external storage, isExternalStorageWritable:%s", FileUtils.isExternalStorageWritable()));
+        else
+            return dir;
+    }
+
+    public File getDataCacheDir() throws NullPointerException {
+        return getDataCacheDir(null);
+    }
+
+    public File getDataCacheDir(String dirName) throws NullPointerException {
+        String dataPath = (FileUtils.isExternalStorageWritable()) ? Constants.EXT_PATH : getCacheDir().getAbsolutePath();
+        File dir = new File(dataPath);
+        boolean b = true;
+        if (!dir.exists())
+            b = dir.mkdirs();
+
+        if (!TextUtils.isEmpty(dirName)) {
+            dir = new File(dataPath + dirName + "/");
+            if (!dir.exists())
+                b = dir.mkdirs();
+        }
+
+        if (!b)
+            throw new NullPointerException(String.format("Failed to access external storage, isExternalStorageWritable:%s", FileUtils.isExternalStorageWritable()));
         else
             return dir;
     }

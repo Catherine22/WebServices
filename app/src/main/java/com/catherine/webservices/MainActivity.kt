@@ -343,6 +343,7 @@ class MainActivity : FragmentActivity(), MainInterface {
                     tabLayout.getTabAt(1) -> vp_content.currentItem = 1
                     tabLayout.getTabAt(2) -> vp_content.currentItem = 2
                     tabLayout.getTabAt(3) -> vp_content.currentItem = 3
+                    tabLayout.getTabAt(4) -> vp_content.currentItem = 4
                 }
             }
 
