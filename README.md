@@ -1,6 +1,9 @@
 ## Thread
-Don't hold references to any type of UI specific objects in any threading scenarios.    
-Don't declare your task as an inner class of an activity.
+----------
+
+> Don't hold references to any type of UI specific objects in any
+> threading scenarios.     
+> Don't declare your task as an inner class of an activity.
 
 Looper class keeps the thread alive, holds a message queue and pop works off a queue and execute on.
 Handler class helps put work at the head, the tail or even set a time-based delay.
@@ -24,7 +27,11 @@ Handler class helps put work at the head, the tail or even set a time-based dela
 - It's ideal for background tasks.
 - Helps get intents off UI thread.
 
+
+
 ## Web
+----------
+
 
 It's the easiest way to update UIs by running on AsyncTask, and HandlerThread is also a excellent solution for the work that not deal with UI updates.
 
@@ -45,8 +52,14 @@ android {
 - HttpURLConnection settings:[MyHttpURLConnection]
 
 
+### OkHttp
+
+
+### Volley
+
+
 ### Multiple-threading download
-- Download a single file with multiple threads 
+- Download a single file with multiple threads
 - Show the progressbar
 - [P03_Downloader]
 - [DownloaderAsyncTask]
@@ -77,7 +90,7 @@ You can find something about cache in HTTP headers
 ```html
 Cache-Control: no-cache
 ```
-The upper description is equal to 
+The upper description is equal to
 ```html
 Cache-Control: max-age=0 (seconds)
 ```
@@ -177,6 +190,8 @@ Both values are required as IE uses ```no-cache```, and Firefox uses ```no-store
 Cache-Control:no-cache, no-store
 ```
 
+- WebView cache
+
 
 
 ### Download and cache images
@@ -189,7 +204,7 @@ Cache-Control:no-cache, no-store
 Here is the example: [P05_Gallery], [ImageCardRVAdapter]
 
 
-- WebView cache
+### Socket
 
 
 ### References

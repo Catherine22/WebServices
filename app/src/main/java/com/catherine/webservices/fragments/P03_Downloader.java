@@ -26,7 +26,6 @@ import com.catherine.webservices.network.DownloaderListener;
 import com.catherine.webservices.network.HttpResponse;
 import com.catherine.webservices.toolkits.CLog;
 
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;

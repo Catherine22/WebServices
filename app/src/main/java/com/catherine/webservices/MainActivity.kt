@@ -13,7 +13,9 @@ import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
 import android.view.KeyEvent
+import android.view.View
 import com.catherine.webservices.adapters.MainViewPagerAdapter
+import com.catherine.webservices.P00_DeviceInfo
 import com.catherine.webservices.fragments.P05_Gallery
 import com.catherine.webservices.interfaces.BackKeyListener
 import com.catherine.webservices.interfaces.MainInterface
@@ -285,10 +287,10 @@ class MainActivity : FragmentActivity(), MainInterface {
         var tag: String? = null
         var title = ""
         when (id) {
-            Constants.P04_GALLERY -> {
-                title = "P04_GALLERY"
+            Constants.P05_Gallery -> {
+                title = "P05_Gallery"
                 fragment = P05_Gallery.newInstance(true)
-                tag = "P04"
+                tag = "P05"
             }
         }
         val transaction = fm.beginTransaction()
@@ -344,6 +346,7 @@ class MainActivity : FragmentActivity(), MainInterface {
                     tabLayout.getTabAt(2) -> vp_content.currentItem = 2
                     tabLayout.getTabAt(3) -> vp_content.currentItem = 3
                     tabLayout.getTabAt(4) -> vp_content.currentItem = 4
+                    tabLayout.getTabAt(5) -> vp_content.currentItem = 5
                 }
             }
 
@@ -358,6 +361,12 @@ class MainActivity : FragmentActivity(), MainInterface {
         backKeyEventListener = ArrayList<BackKeyListener?>()
         for (i in 0 until tabLayout.tabCount) {
             backKeyEventListener?.add(null)
+        }
+
+        tv_info.setOnClickListener {
+            val intent = Intent()
+            intent.setClass(this, P00_DeviceInfo::class.java)
+            startActivity(intent)
         }
     }
 

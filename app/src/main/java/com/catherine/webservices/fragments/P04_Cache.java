@@ -12,7 +12,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.KeyEvent;
 import android.view.View;
 
 import com.catherine.webservices.Constants;
@@ -141,7 +140,7 @@ public class P04_Cache extends LazyFragment {
             public void onItemClick(@NotNull View view, int position) {
                 switch (position) {
                     case 0:
-                        callFragment(Constants.P04_GALLERY);
+                        callFragment(Constants.P05_Gallery);
                         mainInterface.setBackKeyListener(new BackKeyListener() {
                             @Override
                             public void OnKeyDown() {
@@ -169,10 +168,10 @@ public class P04_Cache extends LazyFragment {
         String tag = "";
         String title = "";
         switch (id) {
-            case Constants.P04_GALLERY:
-                title = "P04_GALLERY";
+            case Constants.P05_Gallery:
+                title = "P05_Gallery";
                 fragment = P05_Gallery.newInstance(true);
-                tag = "P04";
+                tag = "P05";
                 break;
 
         }
