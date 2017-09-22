@@ -74,7 +74,7 @@ public class P05_Gallery extends LazyFragment {
             showPicOffline = getArguments().getBoolean("show_pic_offline", false);
         }
 
-        sp = getActivity().getPreferences(Context.MODE_PRIVATE);
+        sp = getActivity().getSharedPreferences(TAG, Context.MODE_PRIVATE);
         titles = new ArrayList<>();
         attrs = new ArrayList<>();
         images = new ArrayList<>();
@@ -89,7 +89,7 @@ public class P05_Gallery extends LazyFragment {
 
             @Override
             public void networkDisable() {
-                if(!showPicOffline) {
+                if (!showPicOffline) {
                     tv_offline.setText(getString(R.string.offline));
                     tv_offline.setVisibility(View.VISIBLE);
                 }
@@ -107,140 +107,95 @@ public class P05_Gallery extends LazyFragment {
     private void fillInData() {
         retry = false;
         tv_offline.setVisibility(View.GONE);
-        adid_asyncTask = new ADID_AsyncTask(new ADID_AsyncTask.ADID_Callback() {
-            @Override
-            public void onResponse(@NotNull String ADID) {
-                HttpRequest r = new HttpRequest(new HttpRequest.Builder()
-                        .url(NetworkHelper.Companion.encodeURL(String.format(Locale.ENGLISH, "%sResourceServlet?ADID={%s}&IDFA={}", Constants.HOST, ADID)))
-                        .listener(new HttpResponseListener() {
-                            @Override
-                            public void connectSuccess(HttpResponse response) {
-                                pb.setVisibility(View.INVISIBLE);
-                                CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
-                                try {
-                                    JSONObject jo = new JSONObject(response.getBody());
-                                    if (showPicOffline)
-                                        saveResponse(jo.toString());
-                                    loadResponse(jo);
-                                } catch (Exception e) {
-                                    CLog.Companion.e(TAG, "Json error:" + e.getMessage());
-                                }
-                            }
+        images.clear();
+        titles.clear();
+        attrs.clear();
+        adapter.setImages(images);
+        adapter.setTitles(titles);
+        adapter.setSubtitles(attrs);
+        adapter.notifyDataSetChanged();
+        adid_asyncTask = new ADID_AsyncTask(
+                new ADID_AsyncTask.ADID_Callback() {
+                    @Override
+                    public void onResponse(String ADID) {
+                        getPicList(ADID);
+                    }
 
-                            @Override
-                            public void connectFailure(HttpResponse response, Exception e) {
-                                pb.setVisibility(View.INVISIBLE);
-                                StringBuilder sb = new StringBuilder();
-                                sb.append(String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, error:%s", response.getCode(), response.getCodeString(), response.getErrorMessage()));
-                                CLog.Companion.e(TAG, sb.toString());
-                                if (e != null) {
-                                    sb.append("\n" + e.getMessage());
-                                    CLog.Companion.e(TAG, e.getMessage());
-                                }
+                    @Override
+                    public void onError(Exception e) {
+                        CLog.Companion.e(TAG, "Failed to get ADID: " + e.toString());
+                        getPicList("FAKE-ADID");
 
-                                if (helper.isNetworkHealth()) {
-                                    //retry?
-                                    tv_offline.setText(sb.toString());
-                                    tv_offline.setVisibility(View.VISIBLE);
-                                } else {
-                                    retry = true;
-                                    if (showPicOffline) {
-                                        String s = sp.getString(TAG, "");
-                                        if (TextUtils.isEmpty(s)) {
-                                            tv_offline.setText(getString(R.string.offline));
-                                            tv_offline.setVisibility(View.VISIBLE);
-                                        } else {
-                                            try {
-                                                JSONObject jo = new JSONObject(s);
-                                                loadResponse(jo);
-                                            } catch (JSONException e1) {
-                                                e1.printStackTrace();
-                                                CLog.Companion.e(TAG, "Json error:" + e1.getMessage());
-                                            }
-                                        }
-                                    } else {
-                                        tv_offline.setText(getString(R.string.offline));
-                                        tv_offline.setVisibility(View.VISIBLE);
-                                    }
-                                }
-                            }
-                        })
-                );
-                new HttpAsyncTask(r).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-            }
-
-            @Override
-            public void onError(@NotNull Exception e) {
-                CLog.Companion.e(TAG, "Failed to get ADID: " + e.toString());
-                String ADID = "FAKE-ADID";
-                HttpRequest request = new HttpRequest(new HttpRequest.Builder()
-                        .url(NetworkHelper.Companion.encodeURL(String.format(Locale.ENGLISH, "%sResourceServlet?ADID={%s}&IDFA={}", Constants.HOST, ADID)))
-                        .listener(new HttpResponseListener() {
-                            @Override
-                            public void connectSuccess(HttpResponse response) {
-                                pb.setVisibility(View.INVISIBLE);
-                                CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
-                                try {
-                                    JSONObject jo = new JSONObject(response.getBody());
-                                    if (showPicOffline)
-                                        saveResponse(jo.toString());
-                                    loadResponse(jo);
-                                } catch (Exception e) {
-                                    CLog.Companion.e(TAG, "Json error:" + e.getMessage());
-                                }
-                            }
-
-                            @Override
-                            public void connectFailure(HttpResponse response, Exception e) {
-                                pb.setVisibility(View.INVISIBLE);
-                                StringBuilder sb = new StringBuilder();
-                                sb.append(String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, error:%s", response.getCode(), response.getCodeString(), response.getErrorMessage()));
-                                CLog.Companion.e(TAG, sb.toString());
-                                if (e != null) {
-                                    sb.append("\n" + e.getMessage());
-                                    CLog.Companion.e(TAG, e.getMessage());
-                                }
-
-                                if (helper.isNetworkHealth()) {
-                                    //retry?
-                                    tv_offline.setText(sb.toString());
-                                    tv_offline.setVisibility(View.VISIBLE);
-                                } else {
-                                    retry = true;
-                                    if (showPicOffline) {
-                                        String s = sp.getString(TAG, "");
-                                        if (TextUtils.isEmpty(s)) {
-                                            tv_offline.setText(getString(R.string.offline));
-                                            tv_offline.setVisibility(View.VISIBLE);
-                                        } else {
-                                            try {
-                                                JSONObject jo = new JSONObject(s);
-                                                loadResponse(jo);
-                                            } catch (JSONException e1) {
-                                                e1.printStackTrace();
-                                                CLog.Companion.e(TAG, "Json error:" + e1.getMessage());
-                                            }
-                                        }
-                                    } else {
-                                        tv_offline.setText(getString(R.string.offline));
-                                        tv_offline.setVisibility(View.VISIBLE);
-                                    }
-                                }
-                            }
-                        })
-                );
-                new HttpAsyncTask(request).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-
-            }
-        });
+                    }
+                });
         adid_asyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    }
+
+    private void getPicList(String ADID) {
+        HttpRequest r = new HttpRequest(new HttpRequest.Builder()
+                .url(NetworkHelper.Companion.encodeURL(String.format(Locale.ENGLISH, "%sResourceServlet?ADID={%s}&IDFA={}", Constants.HOST, ADID)))
+                .listener(new HttpResponseListener() {
+                    @Override
+                    public void connectSuccess(HttpResponse response) {
+                        pb.setVisibility(View.INVISIBLE);
+                        CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
+                        try {
+                            JSONObject jo = new JSONObject(response.getBody());
+                            SharedPreferences.Editor editor = sp.edit();
+                            editor.putString("pic_list", jo.toString());
+                            editor.apply();
+
+                            loadResponse(jo);
+                        } catch (Exception e) {
+                            CLog.Companion.e(TAG, "Json error:" + e.getMessage());
+                        }
+                    }
+
+                    @Override
+                    public void connectFailure(HttpResponse response, Exception e) {
+                        pb.setVisibility(View.INVISIBLE);
+                        StringBuilder sb = new StringBuilder();
+                        sb.append(String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, error:%s", response.getCode(), response.getCodeString(), response.getErrorMessage()));
+                        CLog.Companion.e(TAG, sb.toString());
+                        if (e != null) {
+                            sb.append("\n" + e.getMessage());
+                            CLog.Companion.e(TAG, e.getMessage());
+                        }
+
+                        if (helper.isNetworkHealth()) {
+                            //retry?
+                            tv_offline.setText(sb.toString());
+                            tv_offline.setVisibility(View.VISIBLE);
+                        } else {
+                            retry = true;
+                            if (showPicOffline) {
+                                String s = sp.getString("pic_list", "");
+                                CLog.Companion.d(TAG, "cache response:" + s);
+                                if (TextUtils.isEmpty(s)) {
+                                    tv_offline.setText("No cache");
+                                    tv_offline.setVisibility(View.VISIBLE);
+                                } else {
+                                    try {
+                                        JSONObject jo = new JSONObject(s);
+                                        loadResponse(jo);
+                                    } catch (JSONException e1) {
+                                        e1.printStackTrace();
+                                        CLog.Companion.e(TAG, "Json error:" + e1.getMessage());
+                                    }
+                                }
+                            } else {
+                                tv_offline.setText(getString(R.string.offline));
+                                tv_offline.setVisibility(View.VISIBLE);
+                            }
+                        }
+                    }
+                })
+        );
+        new HttpAsyncTask(r).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     private void loadResponse(JSONObject jo) throws JSONException {
         JSONArray pics = jo.getJSONArray("pics");
-        images.clear();
-        titles.clear();
-        attrs.clear();
         for (int i = 0; i < pics.length(); i++) {
             images.add(pics.getString(i));
             titles.add(NetworkHelper.Companion.getFileNameFromUrl(pics.getString(i)));
@@ -253,11 +208,6 @@ public class P05_Gallery extends LazyFragment {
         adapter.notifyDataSetChanged();
     }
 
-    private void saveResponse(String s) {
-        SharedPreferences.Editor editor = sp.edit();
-        editor.putString(TAG, s);
-        editor.apply();
-    }
 
     private void initComponent() {
         srl_container = (SwipeRefreshLayout) findViewById(R.id.srl_container);
@@ -267,14 +217,14 @@ public class P05_Gallery extends LazyFragment {
             public void onRefresh() {
                 pb.setVisibility(View.VISIBLE);
                 CLog.Companion.d(TAG, "refresh");
-                srl_container.setRefreshing(false);
                 fillInData();
+                srl_container.setRefreshing(false);
             }
         });
 
         RecyclerView rv_main_list = (RecyclerView) findViewById(R.id.rv_main_list);
         rv_main_list.setLayoutManager(new LinearLayoutManager(getActivity()));
-        adapter = new ImageCardRVAdapter(getActivity(), images, titles, attrs, new OnItemClickListener() {
+        adapter = new ImageCardRVAdapter(getActivity(), images, titles, attrs, showPicOffline, new OnItemClickListener() {
             @Override
             public void onItemLongClick(@NotNull View view, int position) {
 
@@ -294,7 +244,7 @@ public class P05_Gallery extends LazyFragment {
             public void onClick(View v) {
                 adapter.deleteCache();
                 SharedPreferences.Editor editor = sp.edit();
-                editor.remove(TAG);
+                editor.remove("pic_list");
                 editor.apply();
             }
         });
