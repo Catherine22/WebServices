@@ -8,6 +8,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.catherine.webservices.Constants;
@@ -44,6 +45,7 @@ public class P05_Gallery extends LazyFragment {
     private List<String> images;
     private SwipeRefreshLayout srl_container;
     private ImageCardRVAdapter adapter;
+    private ProgressBar pb;
     private TextView tv_offline;
     private RecyclerView rv_main_list;
     private NetworkHelper helper;
@@ -62,6 +64,7 @@ public class P05_Gallery extends LazyFragment {
     public void onCreateViewLazy(Bundle savedInstanceState) {
         super.onCreateViewLazy(savedInstanceState);
         setContentView(R.layout.f_05_gallery);
+        pb = (ProgressBar) findViewById(R.id.pb);
         rv_main_list = (RecyclerView) findViewById(R.id.rv_main_list);
         tv_offline = (TextView) findViewById(R.id.tv_offline);
         titles = new ArrayList<>();
@@ -102,6 +105,7 @@ public class P05_Gallery extends LazyFragment {
                         .listener(new HttpResponseListener() {
                             @Override
                             public void connectSuccess(HttpResponse response) {
+                                pb.setVisibility(View.INVISIBLE);
                                 CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
                                 try {
                                     JSONObject jo = new JSONObject(response.getBody());
@@ -124,6 +128,7 @@ public class P05_Gallery extends LazyFragment {
 
                             @Override
                             public void connectFailure(HttpResponse response, Exception e) {
+                                pb.setVisibility(View.INVISIBLE);
                                 CLog.Companion.e(TAG, String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, error:%s", response.getCode(), response.getCodeString(), response.getErrorMessage()));
                                 if (e != null)
                                     CLog.Companion.e(TAG, e.getMessage());
@@ -131,11 +136,11 @@ public class P05_Gallery extends LazyFragment {
                                 if (helper.isNetworkHealth()) {
                                     //retry?
                                     tv_offline.setVisibility(View.VISIBLE);
-                                    rv_main_list.setVisibility(View.GONE);
+//                                    rv_main_list.setVisibility(View.INVISIBLE);
                                 } else {
                                     retry = true;
                                     tv_offline.setVisibility(View.VISIBLE);
-                                    rv_main_list.setVisibility(View.GONE);
+//                                    rv_main_list.setVisibility(View.INVISIBLE);
                                 }
                             }
                         })
@@ -152,11 +157,13 @@ public class P05_Gallery extends LazyFragment {
                         .listener(new HttpResponseListener() {
                             @Override
                             public void connectSuccess(HttpResponse response) {
+                                pb.setVisibility(View.INVISIBLE);
                                 CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
                             }
 
                             @Override
                             public void connectFailure(HttpResponse response, Exception e) {
+                                pb.setVisibility(View.INVISIBLE);
                                 CLog.Companion.e(TAG, String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, error:%s", response.getCode(), response.getCodeString(), response.getErrorMessage()));
                                 if (e != null)
                                     CLog.Companion.e(TAG, e.getMessage());
@@ -164,11 +171,11 @@ public class P05_Gallery extends LazyFragment {
                                 if (helper.isNetworkHealth()) {
                                     //retry?
                                     tv_offline.setVisibility(View.VISIBLE);
-                                    rv_main_list.setVisibility(View.GONE);
+//                                    rv_main_list.setVisibility(View.INVISIBLE);
                                 } else {
                                     retry = true;
                                     tv_offline.setVisibility(View.VISIBLE);
-                                    rv_main_list.setVisibility(View.GONE);
+//                                    rv_main_list.setVisibility(View.INVISIBLE);
                                 }
                             }
                         })
@@ -186,6 +193,7 @@ public class P05_Gallery extends LazyFragment {
         srl_container.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                pb.setVisibility(View.VISIBLE);
                 CLog.Companion.d(TAG, "refresh");
                 srl_container.setRefreshing(false);
                 fillInData();

@@ -22,7 +22,7 @@ public class MainViewPagerAdapter extends FragmentPagerAdapter {
         super(fm);
     }
 
-    private String[] mTitles = new String[]{"HttpClient", "HttpURLConnection", "Downloader", "Upload", "Cache", "Socket"};
+    private String[] mTitles = new String[]{"HttpClient", "HttpURLConnection", "Downloader", "Cache", "Upload", "Socket"};
 
     @Override
     public Fragment getItem(int position) {

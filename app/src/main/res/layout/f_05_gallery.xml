@@ -20,13 +20,6 @@
 
     </android.support.v4.widget.SwipeRefreshLayout>
 
-    <TextView
-        android:id="@+id/tv_offline"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="@string/offline"
-        android:visibility="gone"/>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_delete"
@@ -40,4 +33,21 @@
         android:src="@drawable/trash_bin"
         app:backgroundTint="@android:color/white"
         app:elevation="4dp"/>
+
+
+    <TextView
+        android:id="@+id/tv_offline"
+        android:background="@android:color/white"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/offline"
+        android:visibility="gone"/>
+
+    <ProgressBar
+        android:id="@+id/pb"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"/>
 </FrameLayout>

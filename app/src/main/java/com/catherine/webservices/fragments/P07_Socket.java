@@ -26,10 +26,7 @@ import com.catherine.webservices.toolkits.CLog;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.InetAddress;
@@ -54,10 +51,6 @@ public class P07_Socket extends LazyFragment {
 
     private List<Socket> sockets;
     private ServerSocket server;
-    private boolean isRunning;
-    private ServerSocket serverSocket;
-    private InetAddress address;
-    private String ip;
     private Socket socket = null;
 
     public static P07_Socket newInstance(boolean isLazyLoad) {
@@ -134,14 +127,10 @@ public class P07_Socket extends LazyFragment {
 
     private void fillInData() {
         features = new ArrayList<>();
-        features.add("Run socket server and wait for the messages from Localhost");
         features.add("Send messages to a specific ip address");
-        features.add("Send messages to Localhost");
         features.add("UDP");
 
         descriptions = new ArrayList<>();
-        descriptions.add("Socket connection based on TCP/IP.");
-        descriptions.add("Socket connection based on TCP/IP.");
         descriptions.add("Socket connection based on TCP/IP.");
         descriptions.add("Socket connection based on UDP.");
 
@@ -182,7 +171,6 @@ public class P07_Socket extends LazyFragment {
                 try {
                     sockets.clear();
                     socket.close();
-                    serverSocket.close();
                     CLog.Companion.i(TAG, "Socket server is closed.");
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -219,7 +207,6 @@ public class P07_Socket extends LazyFragment {
                     try {
                         sockets.clear();
                         socket.close();
-                        serverSocket.close();
                         CLog.Companion.i(TAG, "Socket server is closed.");
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -238,75 +225,6 @@ public class P07_Socket extends LazyFragment {
             public void onItemClick(@NotNull View view, final int position) {
                 switch (position) {
                     case 0:
-                        handler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                CLog.Companion.i(TAG, "Is running? " + isRunning);
-                                String s;
-                                try {
-
-                                    if (isRunning) {
-                                        for (Socket sk : sockets) {
-                                            if (sk != null) {
-                                                sk.close();
-                                            }
-                                        }
-                                        sockets.clear();
-                                        socket.close();
-                                        serverSocket.close();
-                                        CLog.Companion.i(TAG, "Socket server is closed.");
-                                    } else {
-                                        // 1.创建一个服务器端Socket，即ServerSocket，指定绑定的端口，并监听此端口
-                                        serverSocket = new ServerSocket(Constants.SOCKET_PORT);
-                                        address = InetAddress.getLocalHost();
-                                        ip = address.getHostAddress();
-                                        CLog.Companion.i(TAG, "Socket server is ready, ip is : " + ip);
-                                    }
-
-                                    while (isRunning) {
-                                        // 2.调用accept()等待客户端连接
-                                        socket = serverSocket.accept();
-                                        sockets.add(socket);
-                                        // 3.连接后获取输入流，读取客户端信息
-                                        InputStream is = socket.getInputStream(); // 获取输入流
-                                        InputStreamReader isr = new InputStreamReader(is, "UTF-8");
-                                        BufferedReader br = new BufferedReader(isr);
-                                        String info;
-
-                                        while ((info = br.readLine()) != null) {// 循环读取客户端的信息
-                                            CLog.Companion.i(TAG, "You got the message: " + info);
-                                            s = contents.get(position);
-                                            s += "\n" + "You got the message: " + info;
-                                            contents.set(position, s);
-                                            adapter.setContents(contents);
-                                            getActivity().runOnUiThread(new Runnable() {
-                                                @Override
-                                                public void run() {
-                                                    adapter.notifyDataSetChanged();
-                                                }
-                                            });
-                                            socket.shutdownInput();// 关闭输入流
-                                        }
-                                    }
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                    s = contents.get(position);
-                                    s += "\n" + "Error: " + e.getMessage();
-                                    contents.set(position, s);
-                                    adapter.setContents(contents);
-                                    getActivity().runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            adapter.notifyDataSetChanged();
-                                        }
-                                    });
-                                }
-                                isRunning = !isRunning;
-                            }
-                        });
-
-                        break;
-                    case 1:
                         handler.post(new Runnable() {
                             @Override
                             public void run() {
@@ -352,51 +270,7 @@ public class P07_Socket extends LazyFragment {
                             }
                         });
                         break;
-                    case 2:
-                        handler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                String s;
-                                try {
-                                    //1.创建客户端Socket，指定服务器地址和端口
-                                    Socket socket = new Socket("127.0.0.1", Constants.SOCKET_PORT);
-                                    //2.获取输出流，向服务器端发送信息
-                                    OutputStream os = socket.getOutputStream();//字节输出流
-                                    PrintWriter pw = new PrintWriter(os);//将输出流包装为打印流
-                                    //获取客户端的IP地址
-                                    InetAddress address = InetAddress.getLocalHost();
-                                    String ip = address.getHostAddress();
-                                    pw.write("Hi there, I am " + ip);
-                                    pw.flush();
-                                    socket.shutdownOutput();//关闭输出流
-                                    socket.close();
-
-                                    CLog.Companion.i(TAG, "Send the message");
-                                    s = contents.get(position);
-                                    s += "\n" + "Send the message";
-                                    contents.set(position, s);
-                                    adapter.setContents(contents);
-                                    getActivity().runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            adapter.notifyDataSetChanged();
-                                        }
-                                    });
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                    s = contents.get(position);
-                                    s += "\n" + "Error: " + e.getMessage();
-                                    contents.set(position, s);
-                                    adapter.setContents(contents);
-                                    getActivity().runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            adapter.notifyDataSetChanged();
-                                        }
-                                    });
-                                }
-                            }
-                        });
+                    case 1:
                         break;
                 }
             }

@@ -10,7 +10,7 @@
         android:id="@+id/coordinatorLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/tv_submit">
+        android:layout_above="@+id/tv_info">
 
         <android.support.design.widget.AppBarLayout
             android:id="@+id/appBarLayout"
