@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -52,7 +53,6 @@ public class P05_Gallery extends LazyFragment {
     private ProgressBar pb;
     private TextView tv_offline;
     private NetworkHelper helper;
-    private ADID_AsyncTask adid_asyncTask;
     private boolean retry;
     private boolean showPicOffline;
     private SharedPreferences sp;
@@ -114,15 +114,15 @@ public class P05_Gallery extends LazyFragment {
         adapter.setTitles(titles);
         adapter.setSubtitles(attrs);
         adapter.notifyDataSetChanged();
-        adid_asyncTask = new ADID_AsyncTask(
+        ADID_AsyncTask adid_asyncTask = new ADID_AsyncTask(
                 new ADID_AsyncTask.ADID_Callback() {
                     @Override
-                    public void onResponse(String ADID) {
+                    public void onResponse(@NonNull String ADID) {
                         getPicList(ADID);
                     }
 
                     @Override
-                    public void onError(Exception e) {
+                    public void onError(@NonNull Exception e) {
                         CLog.Companion.e(TAG, "Failed to get ADID: " + e.toString());
                         getPicList("FAKE-ADID");
 
@@ -136,7 +136,7 @@ public class P05_Gallery extends LazyFragment {
                 .url(NetworkHelper.Companion.encodeURL(String.format(Locale.ENGLISH, "%sResourceServlet?ADID={%s}&IDFA={}", Constants.HOST, ADID)))
                 .listener(new HttpResponseListener() {
                     @Override
-                    public void connectSuccess(HttpResponse response) {
+                    public void connectSuccess(@NonNull HttpResponse response) {
                         pb.setVisibility(View.INVISIBLE);
                         CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
                         try {
@@ -144,7 +144,6 @@ public class P05_Gallery extends LazyFragment {
                             SharedPreferences.Editor editor = sp.edit();
                             editor.putString("pic_list", jo.toString());
                             editor.apply();
-
                             loadResponse(jo);
                         } catch (Exception e) {
                             CLog.Companion.e(TAG, "Json error:" + e.getMessage());
@@ -152,13 +151,14 @@ public class P05_Gallery extends LazyFragment {
                     }
 
                     @Override
-                    public void connectFailure(HttpResponse response, Exception e) {
+                    public void connectFailure(@NonNull HttpResponse response, Exception e) {
                         pb.setVisibility(View.INVISIBLE);
                         StringBuilder sb = new StringBuilder();
                         sb.append(String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, error:%s", response.getCode(), response.getCodeString(), response.getErrorMessage()));
                         CLog.Companion.e(TAG, sb.toString());
                         if (e != null) {
-                            sb.append("\n" + e.getMessage());
+                            sb.append("\n");
+                            sb.append(e.getMessage());
                             CLog.Companion.e(TAG, e.getMessage());
                         }
 
@@ -170,9 +170,8 @@ public class P05_Gallery extends LazyFragment {
                             retry = true;
                             if (showPicOffline) {
                                 String s = sp.getString("pic_list", "");
-                                CLog.Companion.d(TAG, "cache response:" + s);
                                 if (TextUtils.isEmpty(s)) {
-                                    tv_offline.setText("No cache");
+                                    tv_offline.setText(getString(R.string.offline));
                                     tv_offline.setVisibility(View.VISIBLE);
                                 } else {
                                     try {

@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">WebServices</string>
     <string name="offline">offline</string>
+    <string name="no_cache">No cache</string>
 </resources>

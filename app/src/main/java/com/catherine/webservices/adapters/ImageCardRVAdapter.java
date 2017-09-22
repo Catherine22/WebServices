@@ -222,7 +222,6 @@ public class ImageCardRVAdapter extends RecyclerView.Adapter<ImageCardRVAdapter.
                         mainRvHolder.iv_main.setImageDrawable(ctx.getResources().getDrawable(R.drawable.default_pic));
                     } else {
                         //Hide the item instead of showing the default picture in offline mode.
-                        //And skip the error images
                         if (titles != null && titles.size() > position) {
                             mainRvHolder.tv_title.setVisibility(View.GONE);
                             titles.remove(position);
