@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -40,7 +41,8 @@ import java.util.Locale;
  */
 
 /**
- * Cache images with DiskLruCache
+ * Cache images with DiskLruCache,
+ * and hide images while there're exceptions.
  */
 public class ImageCardRVAdapter extends RecyclerView.Adapter<ImageCardRVAdapter.MainRvHolder> {
     private final static String TAG = "ShortCardRVAdapter";
@@ -66,105 +68,6 @@ public class ImageCardRVAdapter extends RecyclerView.Adapter<ImageCardRVAdapter.
 
     @Override
     public void onBindViewHolder(final MainRvHolder mainRvHolder, final int position) {
-        if (titles != null && titles.size() > position)
-            mainRvHolder.tv_title.setText(titles.get(position));
-        if (subtitles != null && subtitles.size() > position)
-            mainRvHolder.tv_subtitle.setText(subtitles.get(position));
-        if (images != null && images.size() > position) {
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        if (diskLruCache.isClosed())
-                            openDiskLruCache();
-
-                        final String key = Encryption.doMd5Safely(new ByteArrayInputStream(images.get(position).getBytes()));
-                        DiskLruCache.Snapshot snapshot = diskLruCache.get(key);
-                        if (snapshot != null) {
-                            if (subtitles != null) {
-                                final Bitmap bitmap = BitmapFactory.decodeStream(snapshot.getInputStream(0));
-                                ((Activity) ctx).runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        CLog.Companion.d(TAG, "cache");
-                                        subtitles.set(position, "cache");
-                                        mainRvHolder.tv_subtitle.setText(subtitles.get(position));
-                                        mainRvHolder.iv_main.setImageBitmap(bitmap);
-
-                                    }
-                                });
-                            }
-                        } else {
-                            CLog.Companion.d(TAG, "fresh");
-                            URL url = new URL(images.get(position));
-                            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-
-                            //Show images at first in case the external/internal storage not works.
-                            final Bitmap bitmap = BitmapFactory.decodeStream(conn.getInputStream());
-                            conn.disconnect();
-                            ((Activity) ctx).runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    CLog.Companion.d(TAG, "fresh");
-                                    subtitles.set(position, "fresh");
-                                    mainRvHolder.tv_subtitle.setText(subtitles.get(position));
-                                    mainRvHolder.iv_main.setImageBitmap(bitmap);
-
-                                }
-                            });
-
-                            //Cache bitmap
-                            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                            bitmap.compress(getCompressFormat(images.get(position)), 100, stream);
-                            InputStream is = new ByteArrayInputStream(stream.toByteArray());
-                            DiskLruCache.Editor editor = diskLruCache.edit(key);
-                            if (editor != null) {
-                                BufferedInputStream bis = new BufferedInputStream(is, MyHttpURLConnection.MAX_CACHE_SIZE);
-                                BufferedOutputStream bos = new BufferedOutputStream(editor.newOutputStream(0), MyHttpURLConnection.MAX_CACHE_SIZE);
-
-                                byte[] buffer = new byte[1024]; // or other buffer size
-                                int read = -1;
-                                while ((read = bis.read(buffer)) != -1) {
-                                    bos.write(buffer, 0, read);
-                                }
-                                is.close();
-                                bis.close();
-                                bos.flush();
-                                bos.close();
-                                editor.commit();
-                                CLog.Companion.d(TAG, "Cached image successfully.");
-                            } else {
-                                editor.abort();
-                            }
-                            diskLruCache.flush();
-                        }
-
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        ((Activity) ctx).runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (subtitles != null) {
-                                    subtitles.set(position, "IOException");
-                                    mainRvHolder.tv_subtitle.setText(subtitles.get(position));
-                                }
-                            }
-                        });
-                    } catch (NullPointerException e) {
-                        e.printStackTrace();
-                        ((Activity) ctx).runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (subtitles != null) {
-                                    subtitles.set(position, "NullPointerException");
-                                    mainRvHolder.tv_subtitle.setText(subtitles.get(position));
-                                }
-                            }
-                        });
-                    }
-                }
-            });
-        }
         mainRvHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -186,6 +89,140 @@ public class ImageCardRVAdapter extends RecyclerView.Adapter<ImageCardRVAdapter.
                 return false;
             }
         });
+        if (titles != null && titles.size() > position) {
+            mainRvHolder.tv_title.setVisibility(View.VISIBLE);
+            mainRvHolder.tv_title.setText(titles.get(position));
+        }
+        if (subtitles != null && subtitles.size() > position) {
+            mainRvHolder.tv_subtitle.setVisibility(View.VISIBLE);
+            mainRvHolder.tv_subtitle.setText(subtitles.get(position));
+        }
+        if (images != null && images.size() > position) {
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    //Stop the process when showed the image and tried to cache it.
+
+                    final String key = Encryption.doMd5Safely(new ByteArrayInputStream(images.get(position).getBytes()));
+                    try {
+                        //1. Show caches when there're caches in the storage.
+                        if (diskLruCache.isClosed())
+                            openDiskLruCache();
+
+                        DiskLruCache.Snapshot snapshot = diskLruCache.get(key);
+                        if (snapshot != null) {
+                            if (subtitles != null) {
+                                final Bitmap bitmap = BitmapFactory.decodeStream(snapshot.getInputStream(0));
+                                ((Activity) ctx).runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        CLog.Companion.d(TAG, "cache");
+                                        subtitles.set(position, "cache");
+                                        mainRvHolder.tv_subtitle.setText(subtitles.get(position));
+                                        mainRvHolder.iv_main.setVisibility(View.VISIBLE);
+                                        mainRvHolder.iv_main.setImageBitmap(bitmap);
+
+                                    }
+                                });
+                            }
+                            //Done
+                            return;
+                        }
+                    } catch (final Exception e) {
+                        e.printStackTrace();
+                        CLog.Companion.e(TAG, "DiskLruCache error");
+                    }
+
+                    //2. You will go on once there're no caches or caught exceptions.
+                    try {
+                        CLog.Companion.d(TAG, "fresh");
+                        URL url = new URL(images.get(position));
+                        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+                        //Show images at first in case the external/internal storage not works.
+                        final Bitmap bitmap = BitmapFactory.decodeStream(conn.getInputStream());
+                        conn.disconnect();
+                        ((Activity) ctx).runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                CLog.Companion.d(TAG, "fresh");
+                                subtitles.set(position, "fresh");
+                                mainRvHolder.tv_subtitle.setText(subtitles.get(position));
+                                mainRvHolder.iv_main.setVisibility(View.VISIBLE);
+                                mainRvHolder.iv_main.setImageBitmap(bitmap);
+
+                            }
+                        });
+
+                        //3. Cache the bitmap
+                        try {
+                            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                            bitmap.compress(getCompressFormat(images.get(position)), 100, stream);
+                            InputStream is = new ByteArrayInputStream(stream.toByteArray());
+                            DiskLruCache.Editor editor = diskLruCache.edit(key);
+                            if (editor != null) {
+                                BufferedInputStream bis = new BufferedInputStream(is, MyHttpURLConnection.MAX_CACHE_SIZE);
+                                BufferedOutputStream bos = new BufferedOutputStream(editor.newOutputStream(0), MyHttpURLConnection.MAX_CACHE_SIZE);
+
+                                byte[] buffer = new byte[1024]; // or other buffer size
+                                int read = -1;
+                                while ((read = bis.read(buffer)) != -1) {
+                                    bos.write(buffer, 0, read);
+                                }
+                                is.close();
+                                bis.close();
+                                bos.flush();
+                                bos.close();
+                                editor.commit();
+                                CLog.Companion.d(TAG, "Cached the image successfully.");
+                            } else {
+                                editor.abort();
+                            }
+                            diskLruCache.flush();
+                        } catch (final Exception e) {
+                            e.printStackTrace();
+                            CLog.Companion.e(TAG, "Failed to cache the image");
+                            ((Activity) ctx).runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+
+
+//                                if (titles != null && titles.size() > position) {
+//                                    mainRvHolder.tv_title.setVisibility(View.GONE);
+//                                    titles.remove(position);
+//                                }
+//                                if (subtitles != null && subtitles.size() > position) {
+//                                    mainRvHolder.tv_subtitle.setVisibility(View.GONE);
+//                                    subtitles.remove(position);
+//                                }
+//                                if (images != null && images.size() > position) {
+//                                    mainRvHolder.iv_main.setVisibility(View.GONE);
+//                                    images.remove(position);
+//                                }
+//
+//                                notifyDataSetChanged();
+                                }
+                            });
+                        }
+
+                    } catch (final Exception e) {
+                        e.printStackTrace();
+                        CLog.Companion.e(TAG, "HttpURLConnection error");
+                        ((Activity) ctx).runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                subtitles.set(position, "error");
+                                mainRvHolder.tv_subtitle.setText(subtitles.get(position));
+                                mainRvHolder.iv_main.setVisibility(View.VISIBLE);
+                                //Show default picture
+                                mainRvHolder.iv_main.setImageDrawable(ctx.getResources().getDrawable(R.drawable.default_pic));
+
+                            }
+                        });
+                    }
+                }
+            });
+        }
     }
 
     @Override

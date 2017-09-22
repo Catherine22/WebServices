@@ -116,9 +116,11 @@ public class P04_Cache extends LazyFragment {
     private void fillInData() {
         features = new ArrayList<>();
         features.add("Cache images");
+        features.add("Cache images");
 
         descriptions = new ArrayList<>();
         descriptions.add("Download images from the internet and cache them.");
+        descriptions.add("Download images from the internet and cache them, or show cache when the network not works.");
     }
 
     private void initComponent() {
@@ -140,7 +142,23 @@ public class P04_Cache extends LazyFragment {
             public void onItemClick(@NotNull View view, int position) {
                 switch (position) {
                     case 0:
-                        callFragment(Constants.P05_Gallery);
+                        Bundle b0 = new Bundle();
+                        b0.putBoolean("show_pic_offline", false);
+                        callFragment(Constants.P05_Gallery, b0);
+                        mainInterface.setBackKeyListener(new BackKeyListener() {
+                            @Override
+                            public void OnKeyDown() {
+                                if (getChildFragmentManager().getBackStackEntryCount() > 0) {
+                                    getChildFragmentManager().popBackStack();
+                                } else
+                                    mainInterface.backToPreviousPage();
+                            }
+                        });
+                        break;
+                    case 1:
+                        Bundle b1 = new Bundle();
+                        b1.putBoolean("show_pic_offline", true);
+                        callFragment(Constants.P05_Gallery, b1);
                         mainInterface.setBackKeyListener(new BackKeyListener() {
                             @Override
                             public void OnKeyDown() {
@@ -162,7 +180,7 @@ public class P04_Cache extends LazyFragment {
         rv_main_list.setAdapter(adapter);
     }
 
-    private void callFragment(int id) {
+    private void callFragment(int id, Bundle bundle) {
         CLog.Companion.d(TAG, "call " + id);
         Fragment fragment = null;
         String tag = "";
@@ -171,6 +189,7 @@ public class P04_Cache extends LazyFragment {
             case Constants.P05_Gallery:
                 title = "P05_Gallery";
                 fragment = P05_Gallery.newInstance(true);
+                fragment.setArguments(bundle);
                 tag = "P05";
                 break;
 

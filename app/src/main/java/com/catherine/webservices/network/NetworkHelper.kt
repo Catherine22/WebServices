@@ -40,11 +40,10 @@ class NetworkHelper(private val ctx: Context) {
     fun isNetworkHealth(): Boolean {
         val cm = ctx.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val activeNetwork = cm.activeNetworkInfo
-        return if (activeNetwork != null) {
-            CLog.e(TAG, activeNetwork.extraInfo)
-            activeNetwork.isConnectedOrConnecting
+        if (activeNetwork != null) {
+            return activeNetwork.isConnectedOrConnecting
         } else
-            false
+            return false
     }
 
     fun isWifi(): Boolean {

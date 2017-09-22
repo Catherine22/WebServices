@@ -1,5 +1,7 @@
 package com.catherine.webservices.fragments;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -7,6 +9,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -26,6 +29,7 @@ import com.catherine.webservices.toolkits.CLog;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -47,10 +51,11 @@ public class P05_Gallery extends LazyFragment {
     private ImageCardRVAdapter adapter;
     private ProgressBar pb;
     private TextView tv_offline;
-    private RecyclerView rv_main_list;
     private NetworkHelper helper;
     private ADID_AsyncTask adid_asyncTask;
     private boolean retry;
+    private boolean showPicOffline;
+    private SharedPreferences sp;
 
     public static P05_Gallery newInstance(boolean isLazyLoad) {
         Bundle args = new Bundle();
@@ -64,9 +69,12 @@ public class P05_Gallery extends LazyFragment {
     public void onCreateViewLazy(Bundle savedInstanceState) {
         super.onCreateViewLazy(savedInstanceState);
         setContentView(R.layout.f_05_gallery);
-        pb = (ProgressBar) findViewById(R.id.pb);
-        rv_main_list = (RecyclerView) findViewById(R.id.rv_main_list);
-        tv_offline = (TextView) findViewById(R.id.tv_offline);
+
+        if (getArguments() != null) {
+            showPicOffline = getArguments().getBoolean("show_pic_offline", false);
+        }
+
+        sp = getActivity().getPreferences(Context.MODE_PRIVATE);
         titles = new ArrayList<>();
         attrs = new ArrayList<>();
         images = new ArrayList<>();
@@ -74,14 +82,17 @@ public class P05_Gallery extends LazyFragment {
         helper.listenToNetworkState(new NetworkHealthListener() {
             @Override
             public void networkConnected(@NotNull String type) {
-                if(retry){
+                if (retry) {
                     fillInData();
                 }
             }
 
             @Override
             public void networkDisable() {
-
+                if(!showPicOffline) {
+                    tv_offline.setText(getString(R.string.offline));
+                    tv_offline.setVisibility(View.VISIBLE);
+                }
             }
         });
         initComponent();
@@ -95,7 +106,6 @@ public class P05_Gallery extends LazyFragment {
 
     private void fillInData() {
         retry = false;
-        rv_main_list.setVisibility(View.VISIBLE);
         tv_offline.setVisibility(View.GONE);
         adid_asyncTask = new ADID_AsyncTask(new ADID_AsyncTask.ADID_Callback() {
             @Override
@@ -109,18 +119,9 @@ public class P05_Gallery extends LazyFragment {
                                 CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
                                 try {
                                     JSONObject jo = new JSONObject(response.getBody());
-                                    JSONArray pics = jo.getJSONArray("pics");
-                                    for (int i = 0; i < pics.length(); i++) {
-                                        images.add(pics.getString(i));
-                                        titles.add(NetworkHelper.Companion.getFileNameFromUrl(pics.getString(i)));
-                                        attrs.add("fresh");//not cache
-                                    }
-
-                                    adapter.setImages(images);
-                                    adapter.setTitles(titles);
-                                    adapter.setSubtitles(attrs);
-                                    adapter.notifyDataSetChanged();
-
+                                    if (showPicOffline)
+                                        saveResponse(jo.toString());
+                                    loadResponse(jo);
                                 } catch (Exception e) {
                                     CLog.Companion.e(TAG, "Json error:" + e.getMessage());
                                 }
@@ -129,18 +130,38 @@ public class P05_Gallery extends LazyFragment {
                             @Override
                             public void connectFailure(HttpResponse response, Exception e) {
                                 pb.setVisibility(View.INVISIBLE);
-                                CLog.Companion.e(TAG, String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, error:%s", response.getCode(), response.getCodeString(), response.getErrorMessage()));
-                                if (e != null)
+                                StringBuilder sb = new StringBuilder();
+                                sb.append(String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, error:%s", response.getCode(), response.getCodeString(), response.getErrorMessage()));
+                                CLog.Companion.e(TAG, sb.toString());
+                                if (e != null) {
+                                    sb.append("\n" + e.getMessage());
                                     CLog.Companion.e(TAG, e.getMessage());
+                                }
 
                                 if (helper.isNetworkHealth()) {
                                     //retry?
+                                    tv_offline.setText(sb.toString());
                                     tv_offline.setVisibility(View.VISIBLE);
-//                                    rv_main_list.setVisibility(View.INVISIBLE);
                                 } else {
                                     retry = true;
-                                    tv_offline.setVisibility(View.VISIBLE);
-//                                    rv_main_list.setVisibility(View.INVISIBLE);
+                                    if (showPicOffline) {
+                                        String s = sp.getString(TAG, "");
+                                        if (TextUtils.isEmpty(s)) {
+                                            tv_offline.setText(getString(R.string.offline));
+                                            tv_offline.setVisibility(View.VISIBLE);
+                                        } else {
+                                            try {
+                                                JSONObject jo = new JSONObject(s);
+                                                loadResponse(jo);
+                                            } catch (JSONException e1) {
+                                                e1.printStackTrace();
+                                                CLog.Companion.e(TAG, "Json error:" + e1.getMessage());
+                                            }
+                                        }
+                                    } else {
+                                        tv_offline.setText(getString(R.string.offline));
+                                        tv_offline.setVisibility(View.VISIBLE);
+                                    }
                                 }
                             }
                         })
@@ -159,23 +180,51 @@ public class P05_Gallery extends LazyFragment {
                             public void connectSuccess(HttpResponse response) {
                                 pb.setVisibility(View.INVISIBLE);
                                 CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
+                                try {
+                                    JSONObject jo = new JSONObject(response.getBody());
+                                    if (showPicOffline)
+                                        saveResponse(jo.toString());
+                                    loadResponse(jo);
+                                } catch (Exception e) {
+                                    CLog.Companion.e(TAG, "Json error:" + e.getMessage());
+                                }
                             }
 
                             @Override
                             public void connectFailure(HttpResponse response, Exception e) {
                                 pb.setVisibility(View.INVISIBLE);
-                                CLog.Companion.e(TAG, String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, error:%s", response.getCode(), response.getCodeString(), response.getErrorMessage()));
-                                if (e != null)
+                                StringBuilder sb = new StringBuilder();
+                                sb.append(String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, error:%s", response.getCode(), response.getCodeString(), response.getErrorMessage()));
+                                CLog.Companion.e(TAG, sb.toString());
+                                if (e != null) {
+                                    sb.append("\n" + e.getMessage());
                                     CLog.Companion.e(TAG, e.getMessage());
+                                }
 
                                 if (helper.isNetworkHealth()) {
                                     //retry?
+                                    tv_offline.setText(sb.toString());
                                     tv_offline.setVisibility(View.VISIBLE);
-//                                    rv_main_list.setVisibility(View.INVISIBLE);
                                 } else {
                                     retry = true;
-                                    tv_offline.setVisibility(View.VISIBLE);
-//                                    rv_main_list.setVisibility(View.INVISIBLE);
+                                    if (showPicOffline) {
+                                        String s = sp.getString(TAG, "");
+                                        if (TextUtils.isEmpty(s)) {
+                                            tv_offline.setText(getString(R.string.offline));
+                                            tv_offline.setVisibility(View.VISIBLE);
+                                        } else {
+                                            try {
+                                                JSONObject jo = new JSONObject(s);
+                                                loadResponse(jo);
+                                            } catch (JSONException e1) {
+                                                e1.printStackTrace();
+                                                CLog.Companion.e(TAG, "Json error:" + e1.getMessage());
+                                            }
+                                        }
+                                    } else {
+                                        tv_offline.setText(getString(R.string.offline));
+                                        tv_offline.setVisibility(View.VISIBLE);
+                                    }
                                 }
                             }
                         })
@@ -185,6 +234,29 @@ public class P05_Gallery extends LazyFragment {
             }
         });
         adid_asyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    }
+
+    private void loadResponse(JSONObject jo) throws JSONException {
+        JSONArray pics = jo.getJSONArray("pics");
+        images.clear();
+        titles.clear();
+        attrs.clear();
+        for (int i = 0; i < pics.length(); i++) {
+            images.add(pics.getString(i));
+            titles.add(NetworkHelper.Companion.getFileNameFromUrl(pics.getString(i)));
+            attrs.add("fresh");//not cache
+        }
+
+        adapter.setImages(images);
+        adapter.setTitles(titles);
+        adapter.setSubtitles(attrs);
+        adapter.notifyDataSetChanged();
+    }
+
+    private void saveResponse(String s) {
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putString(TAG, s);
+        editor.apply();
     }
 
     private void initComponent() {
@@ -214,10 +286,16 @@ public class P05_Gallery extends LazyFragment {
         });
         rv_main_list.setAdapter(adapter);
 
-        FloatingActionButton fab_delete = (FloatingActionButton)  findViewById(R.id.fab_delete);
+        pb = (ProgressBar) findViewById(R.id.pb);
+        tv_offline = (TextView) findViewById(R.id.tv_offline);
+
+        FloatingActionButton fab_delete = (FloatingActionButton) findViewById(R.id.fab_delete);
         fab_delete.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 adapter.deleteCache();
+                SharedPreferences.Editor editor = sp.edit();
+                editor.remove(TAG);
+                editor.apply();
             }
         });
     }

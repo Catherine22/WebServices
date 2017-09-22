@@ -32,14 +32,16 @@
                     android:scaleType="centerInside"
                     android:src="@drawable/github_icon"/>
 
-                <TextView android:layout_width="wrap_content"
-                          android:layout_height="30dp"
-                          android:layout_centerVertical="true"
-                          android:layout_toEndOf="@+id/iv_github"
-                          android:layout_toRightOf="@+id/iv_github"
-                          android:text="\@Catherine"
-                          android:textColor="@android:color/white"
-                          android:textSize="25sp"/>
+                <TextView
+                    android:id="@+id/tv_github"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:layout_centerVertical="true"
+                    android:layout_toEndOf="@+id/iv_github"
+                    android:layout_toRightOf="@+id/iv_github"
+                    android:text="\@Catherine22"
+                    android:textColor="@android:color/white"
+                    android:textSize="25sp"/>
 
             </RelativeLayout>
 
