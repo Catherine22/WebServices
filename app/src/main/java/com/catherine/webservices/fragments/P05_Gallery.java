@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.catherine.webservices.Constants;
 import com.catherine.webservices.R;
 import com.catherine.webservices.adapters.ImageCardRVAdapter;
+import com.catherine.webservices.entities.ImageCard;
 import com.catherine.webservices.interfaces.OnItemClickListener;
 import com.catherine.webservices.network.HttpAsyncTask;
 import com.catherine.webservices.network.HttpRequest;
@@ -45,9 +46,7 @@ import java.util.Locale;
 
 public class P05_Gallery extends LazyFragment {
     private final static String TAG = "P05_Gallery";
-    private List<String> titles;
-    private List<String> attrs;
-    private List<String> images;
+    private List<ImageCard> entities;
     private SwipeRefreshLayout srl_container;
     private ImageCardRVAdapter adapter;
     private ProgressBar pb;
@@ -75,9 +74,7 @@ public class P05_Gallery extends LazyFragment {
         }
 
         sp = getActivity().getSharedPreferences(TAG, Context.MODE_PRIVATE);
-        titles = new ArrayList<>();
-        attrs = new ArrayList<>();
-        images = new ArrayList<>();
+        entities = new ArrayList<>();
         helper = new NetworkHelper(getActivity());
         helper.listenToNetworkState(new NetworkHealthListener() {
             @Override
@@ -107,12 +104,8 @@ public class P05_Gallery extends LazyFragment {
     private void fillInData() {
         retry = false;
         tv_offline.setVisibility(View.GONE);
-        images.clear();
-        titles.clear();
-        attrs.clear();
-        adapter.setImages(images);
-        adapter.setTitles(titles);
-        adapter.setSubtitles(attrs);
+        entities.clear();
+        adapter.setImageCards(entities, false);
         adapter.notifyDataSetChanged();
         ADID_AsyncTask adid_asyncTask = new ADID_AsyncTask(
                 new ADID_AsyncTask.ADID_Callback() {
@@ -144,7 +137,7 @@ public class P05_Gallery extends LazyFragment {
                             SharedPreferences.Editor editor = sp.edit();
                             editor.putString("pic_list", jo.toString());
                             editor.apply();
-                            loadResponse(jo);
+                            loadResponse(jo, false);
                         } catch (Exception e) {
                             CLog.Companion.e(TAG, "Json error:" + e.getMessage());
                         }
@@ -171,12 +164,12 @@ public class P05_Gallery extends LazyFragment {
                             if (showPicOffline) {
                                 String s = sp.getString("pic_list", "");
                                 if (TextUtils.isEmpty(s)) {
-                                    tv_offline.setText(getString(R.string.offline));
+                                    tv_offline.setText(getString(R.string.no_cache));
                                     tv_offline.setVisibility(View.VISIBLE);
                                 } else {
                                     try {
                                         JSONObject jo = new JSONObject(s);
-                                        loadResponse(jo);
+                                        loadResponse(jo, true);
                                     } catch (JSONException e1) {
                                         e1.printStackTrace();
                                         CLog.Companion.e(TAG, "Json error:" + e1.getMessage());
@@ -193,17 +186,17 @@ public class P05_Gallery extends LazyFragment {
         new HttpAsyncTask(r).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
-    private void loadResponse(JSONObject jo) throws JSONException {
+    private void loadResponse(JSONObject jo, boolean shrinkList) throws JSONException {
         JSONArray pics = jo.getJSONArray("pics");
+        ImageCard imageCard;
         for (int i = 0; i < pics.length(); i++) {
-            images.add(pics.getString(i));
-            titles.add(NetworkHelper.Companion.getFileNameFromUrl(pics.getString(i)));
-            attrs.add("fresh");//not cache
+            imageCard = new ImageCard();
+            imageCard.image = pics.getString(i);
+            imageCard.title = NetworkHelper.Companion.getFileNameFromUrl(pics.getString(i));
+            imageCard.subtitle = "fresh";//not cache
+            entities.add(imageCard);
         }
-
-        adapter.setImages(images);
-        adapter.setTitles(titles);
-        adapter.setSubtitles(attrs);
+        adapter.setImageCards(entities, shrinkList);
         adapter.notifyDataSetChanged();
     }
 
@@ -223,7 +216,7 @@ public class P05_Gallery extends LazyFragment {
 
         RecyclerView rv_main_list = (RecyclerView) findViewById(R.id.rv_main_list);
         rv_main_list.setLayoutManager(new LinearLayoutManager(getActivity()));
-        adapter = new ImageCardRVAdapter(getActivity(), images, titles, attrs, showPicOffline, new OnItemClickListener() {
+        adapter = new ImageCardRVAdapter(getActivity(), entities, showPicOffline, new OnItemClickListener() {
             @Override
             public void onItemLongClick(@NotNull View view, int position) {
 

@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.catherine.webservices.MyApplication;
 import com.catherine.webservices.R;
+import com.catherine.webservices.entities.ImageCard;
 import com.catherine.webservices.interfaces.OnItemClickListener;
 import com.catherine.webservices.network.MyHttpURLConnection;
 import com.catherine.webservices.network.NetworkHelper;
@@ -46,28 +47,26 @@ import java.util.Locale;
  * and hide images while there're exceptions.
  */
 public class ImageCardRVAdapter extends RecyclerView.Adapter<ImageCardRVAdapter.MainRvHolder> {
-    private final static String TAG = "ShortCardRVAdapter";
+    private final static String TAG = "ImageCardRVAdapter";
     private Context ctx;
     private boolean offlineMode;
-    private List<String> images, titles, subtitles;
+    private List<ImageCard> entities;
     private OnItemClickListener listener;
     private DiskLruCache diskLruCache;
     private NetworkHelper helper;
     private Handler handler = new Handler(MyApplication.INSTANCE.calHandlerThread.getLooper());
 
-    public ImageCardRVAdapter(Context ctx, List<String> images, List<String> titles, List<String> subtitles, boolean offlineMode, OnItemClickListener listener) {
+    public ImageCardRVAdapter(Context ctx, List<ImageCard> entities, boolean offlineMode, OnItemClickListener listener) {
         this.ctx = ctx;
-        this.images = images;
-        this.titles = titles;
-        this.subtitles = subtitles;
+        this.entities = entities;
         this.offlineMode = offlineMode;
         this.listener = listener;
+        openDiskLruCache();
+        helper = new NetworkHelper(ctx);
     }
 
     @Override
     public MainRvHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        openDiskLruCache();
-        helper = new NetworkHelper(ctx);
         return new MainRvHolder(LayoutInflater.from(ctx).inflate(R.layout.rv_short_card, viewGroup, false));
     }
 
@@ -94,117 +93,119 @@ public class ImageCardRVAdapter extends RecyclerView.Adapter<ImageCardRVAdapter.
                 return false;
             }
         });
-        if (titles != null && titles.size() > position) {
-            mainRvHolder.tv_title.setVisibility(View.VISIBLE);
-            mainRvHolder.tv_title.setText(titles.get(position));
-        }
-        if (subtitles != null && subtitles.size() > position) {
-            mainRvHolder.tv_subtitle.setVisibility(View.VISIBLE);
-            mainRvHolder.tv_subtitle.setText(subtitles.get(position));
-        }
-        if (images != null && images.size() > position) {
-            mainRvHolder.iv_main.setVisibility(View.VISIBLE);
-            mainRvHolder.iv_main.setImageDrawable(ctx.getResources().getDrawable(R.drawable.default_pic));
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    //Stop the process when showed the image and tried to cache it.
 
-                    final String key = Encryption.doMd5Safely(new ByteArrayInputStream(images.get(position).getBytes()));
-                    try {
-                        //1. Show caches when there're caches in the storage.
-                        if (diskLruCache.isClosed())
-                            openDiskLruCache();
+        if (entities != null && entities.size() > position) {
 
-                        DiskLruCache.Snapshot snapshot = diskLruCache.get(key);
-                        if (snapshot != null) {
-                            if (subtitles != null) {
+            if (entities.get(position).title != null) {
+                mainRvHolder.tv_title.setVisibility(View.VISIBLE);
+                mainRvHolder.tv_title.setText(entities.get(position).title);
+            }
+            if (entities.get(position).subtitle != null) {
+                mainRvHolder.tv_subtitle.setVisibility(View.VISIBLE);
+                mainRvHolder.tv_subtitle.setText(entities.get(position).subtitle);
+            }
+            if (entities.get(position).image != null) {
+                mainRvHolder.iv_main.setVisibility(View.VISIBLE);
+                mainRvHolder.iv_main.setImageDrawable(ctx.getResources().getDrawable(R.drawable.default_pic));
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        //Stop the process when showed the image and tried to cache it.
+
+                        final String key = Encryption.doMd5Safely(new ByteArrayInputStream(entities.get(position).image.getBytes()));
+                        try {
+                            //1. Show caches when there're caches in the storage.
+                            if (diskLruCache.isClosed())
+                                openDiskLruCache();
+
+                            DiskLruCache.Snapshot snapshot = diskLruCache.get(key);
+                            if (snapshot != null) {
                                 final Bitmap bitmap = BitmapFactory.decodeStream(snapshot.getInputStream(0));
                                 ((Activity) ctx).runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
-                                        CLog.Companion.d(TAG, "cache");
-                                        subtitles.set(position, "cache");
-                                        mainRvHolder.tv_subtitle.setText(subtitles.get(position));
+                                        CLog.Companion.d(TAG, "show cache " + position);
+                                        entities.get(position).subtitle = "cache";
+                                        mainRvHolder.tv_subtitle.setText(entities.get(position).subtitle);
                                         mainRvHolder.iv_main.setVisibility(View.VISIBLE);
                                         mainRvHolder.iv_main.setImageBitmap(bitmap);
 
                                     }
                                 });
+
+                                //Done
+                                return;
                             }
-                            //Done
-                            return;
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            CLog.Companion.e(TAG, "DiskLruCache error");
                         }
-                    } catch (final Exception e) {
-                        e.printStackTrace();
-                        CLog.Companion.e(TAG, "DiskLruCache error");
-                    }
 
-                    //2. You will go on once there're no caches or caught exceptions.
-                    try {
-                        CLog.Companion.d(TAG, "url:" + images.get(position));
-                        URL url = new URL(images.get(position));
-                        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                        conn.setRequestMethod("GET");//default
-                        conn.setDoInput(true);//default
-                        conn.setUseCaches(false);
-                        conn.setConnectTimeout(MyHttpURLConnection.CONNECT_TIMEOUT);
+                        //2. You will go on once there're no caches or caught exceptions.
+                        try {
+                            URL url = new URL(entities.get(position).image);
+                            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                            conn.setRequestMethod("GET");//default
+                            conn.setDoInput(true);//default
+                            conn.setUseCaches(false);
+                            conn.setConnectTimeout(MyHttpURLConnection.CONNECT_TIMEOUT);
 
-                        //Show images at first in case the external/internal storage not works.
-                        final Bitmap bitmap = BitmapFactory.decodeStream(conn.getInputStream());
-                        conn.disconnect();
+                            //Show images at first in case the external/internal storage not works.
+                            final Bitmap bitmap = BitmapFactory.decodeStream(conn.getInputStream());
+                            conn.disconnect();
 
-                        if (bitmap != null) {
-                            ((Activity) ctx).runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    CLog.Companion.d(TAG, "fresh");
-                                    subtitles.set(position, "fresh");
-                                    mainRvHolder.tv_subtitle.setText(subtitles.get(position));
-                                    mainRvHolder.iv_main.setVisibility(View.VISIBLE);
-                                    mainRvHolder.iv_main.setImageBitmap(bitmap);
+                            if (bitmap != null) {
+                                ((Activity) ctx).runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        CLog.Companion.d(TAG, "fresh");
+                                        entities.get(position).subtitle = "fresh";
+                                        mainRvHolder.tv_subtitle.setText(entities.get(position).subtitle);
+                                        mainRvHolder.iv_main.setVisibility(View.VISIBLE);
+                                        mainRvHolder.iv_main.setImageBitmap(bitmap);
 
-                                }
-                            });
-                            //3. Cache the bitmap
-                            try {
-                                ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                                bitmap.compress(getCompressFormat(images.get(position)), 100, stream);
-                                InputStream is = new ByteArrayInputStream(stream.toByteArray());
-                                DiskLruCache.Editor editor = diskLruCache.edit(key);
-                                if (editor != null) {
-                                    BufferedInputStream bis = new BufferedInputStream(is, MyHttpURLConnection.MAX_CACHE_SIZE);
-                                    BufferedOutputStream bos = new BufferedOutputStream(editor.newOutputStream(0), MyHttpURLConnection.MAX_CACHE_SIZE);
-
-                                    byte[] buffer = new byte[1024]; // or other buffer size
-                                    int read = -1;
-                                    while ((read = bis.read(buffer)) != -1) {
-                                        bos.write(buffer, 0, read);
                                     }
-                                    is.close();
-                                    bis.close();
-                                    bos.flush();
-                                    bos.close();
-                                    editor.commit();
-                                    CLog.Companion.d(TAG, "Cached the image successfully.");
-                                } else {
-                                    editor.abort();
+                                });
+                                //3. Cache the bitmap
+                                try {
+                                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                                    bitmap.compress(getCompressFormat(entities.get(position).image), 100, stream);
+                                    InputStream is = new ByteArrayInputStream(stream.toByteArray());
+                                    DiskLruCache.Editor editor = diskLruCache.edit(key);
+                                    if (editor != null) {
+                                        BufferedInputStream bis = new BufferedInputStream(is, MyHttpURLConnection.MAX_CACHE_SIZE);
+                                        BufferedOutputStream bos = new BufferedOutputStream(editor.newOutputStream(0), MyHttpURLConnection.MAX_CACHE_SIZE);
+
+                                        byte[] buffer = new byte[1024]; // or other buffer size
+                                        int read = -1;
+                                        while ((read = bis.read(buffer)) != -1) {
+                                            bos.write(buffer, 0, read);
+                                        }
+                                        is.close();
+                                        bis.close();
+                                        bos.flush();
+                                        bos.close();
+                                        editor.commit();
+                                        CLog.Companion.d(TAG, "Cached the image successfully.");
+                                    } else {
+                                        editor.abort();
+                                    }
+                                    diskLruCache.flush();
+                                } catch (final Exception e) {
+                                    e.printStackTrace();
+                                    CLog.Companion.e(TAG, "Failed to cache the image");
                                 }
-                                diskLruCache.flush();
-                            } catch (final Exception e) {
-                                e.printStackTrace();
-                                CLog.Companion.e(TAG, "Failed to cache the image");
+                            } else {
+                                handleErrorPics(position, mainRvHolder);
                             }
-                        } else {
+                        } catch (final Exception e) {
+                            e.printStackTrace();
+                            CLog.Companion.e(TAG, "HttpURLConnection error");
                             handleErrorPics(position, mainRvHolder);
                         }
-                    } catch (final Exception e) {
-                        e.printStackTrace();
-                        CLog.Companion.e(TAG, "HttpURLConnection error");
-                        handleErrorPics(position, mainRvHolder);
                     }
-                }
-            });
+                });
+            }
         }
     }
 
@@ -215,31 +216,21 @@ public class ImageCardRVAdapter extends RecyclerView.Adapter<ImageCardRVAdapter.
 
                 if (offlineMode) {
                     if (helper.isNetworkHealth()) {
-                        subtitles.set(position, "error");
-                        mainRvHolder.tv_subtitle.setText(subtitles.get(position));
+                        entities.get(position).subtitle = "error";
+                        mainRvHolder.tv_subtitle.setText(entities.get(position).subtitle);
                         mainRvHolder.iv_main.setVisibility(View.VISIBLE);
                         //Show default picture
                         mainRvHolder.iv_main.setImageDrawable(ctx.getResources().getDrawable(R.drawable.default_pic));
                     } else {
-                        //Hide the item instead of showing the default picture in offline mode.
-                        if (titles != null && titles.size() > position) {
-                            mainRvHolder.tv_title.setVisibility(View.GONE);
-                            titles.remove(position);
+                        //Remove the item instead of showing the default picture in offline mode.
+                        if (entities.size() > position) {
+                            entities.remove(position);
+                            notifyDataSetChanged();
                         }
-                        if (subtitles != null && subtitles.size() > position) {
-                            mainRvHolder.tv_subtitle.setVisibility(View.GONE);
-                            subtitles.remove(position);
-                        }
-                        if (images != null && images.size() > position) {
-                            mainRvHolder.iv_main.setVisibility(View.GONE);
-                            images.remove(position);
-                        }
-
-                        notifyDataSetChanged();
                     }
                 } else {
-                    subtitles.set(position, "error");
-                    mainRvHolder.tv_subtitle.setText(subtitles.get(position));
+                    entities.get(position).subtitle = "error";
+                    mainRvHolder.tv_subtitle.setText(entities.get(position).subtitle);
                     mainRvHolder.iv_main.setVisibility(View.VISIBLE);
                     //Show default picture
                     mainRvHolder.iv_main.setImageDrawable(ctx.getResources().getDrawable(R.drawable.default_pic));
@@ -250,27 +241,40 @@ public class ImageCardRVAdapter extends RecyclerView.Adapter<ImageCardRVAdapter.
 
     @Override
     public int getItemCount() {
-        return titles.size();
+        return entities.size();
     }
 
-    public void setImages(List<String> images) {
-        this.images = images;
+    /**
+     * @param entities
+     * @param shrinkList Remove data which hasn't been cached.
+     */
+    public void setImageCards(List<ImageCard> entities, boolean shrinkList) {
+        CLog.Companion.d(TAG, "total:" + entities.size());
+        int count = 0;
+        if (shrinkList) {
+            if (diskLruCache.isClosed())
+                openDiskLruCache();
+            for (int i = 0; i < entities.size(); i++) {
+                final String key = Encryption.doMd5Safely(new ByteArrayInputStream(entities.get(i).image.getBytes()));
+                try {
+                    DiskLruCache.Snapshot snapshot = diskLruCache.get(key);
+                    if (snapshot == null) {
+                        entities.remove(i);
+                        count++;
+                    }
+                } catch (Exception e) {
+                    entities.remove(i);
+                    count++;
+                }
+            }
+        }
+        this.entities = entities;
+        CLog.Companion.d(TAG, "removed:" + count);
+        CLog.Companion.d(TAG, "entities size:" + this.entities.size() + " " + shrinkList);
     }
-
-    public void setTitles(List<String> titles) {
-        this.titles = titles;
-    }
-
-    public void setSubtitles(List<String> subtitles) {
-        this.subtitles = subtitles;
-    }
-
-    public void isOfflineMode(boolean offlineMode) {
-        this.offlineMode = offlineMode;
-    }
-
 
     private void openDiskLruCache() {
+        CLog.Companion.i(TAG, "open DiskLruCache");
         try {
             int version = ctx.getPackageManager().getPackageInfo(ctx.getPackageName(), 0).versionCode;
             diskLruCache = DiskLruCache.open(MyApplication.INSTANCE.getDiskCacheDir("image"), version, 1, (long) MyHttpURLConnection.MAX_CACHE_SIZE);
