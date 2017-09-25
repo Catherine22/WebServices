@@ -206,6 +206,9 @@ Here is the example: [P05_Gallery], [ImageCardRVAdapter]
 
 ### Socket
 
+1. Run [MySocket] on eclipse
+2. Run [P07_Socket] on Android devices.
+
 
 ### References
 - [Tencent bugly]
@@ -232,3 +235,5 @@ Here is the example: [P05_Gallery], [ImageCardRVAdapter]
 [increasing-application-performance-with-http-cache-headers]:<https://devcenter.heroku.com/articles/increasing-application-performance-with-http-cache-headers>
 [ImageCardRVAdapter]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/adapters/ImageCardRVAdapter.java>
 [Socket tutorio]:<http://blog.csdn.net/coder_pig/article/details/48519629>
+[P07_Socket]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/P07_Socket.java>
+[MySocket]:<https://github.com/Catherine22/WebServices/blob/master/JavaSocketServer/MySocket/src/Main.java>

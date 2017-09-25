@@ -70,8 +70,8 @@
       <file leaf-file-name="P07_Socket.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P07_Socket.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="216">
-              <caret line="77" column="0" lean-forward="true" selection-start-line="77" selection-start-column="0" selection-end-line="77" selection-end-column="0" />
+            <state relative-caret-position="170">
+              <caret line="46" column="23" lean-forward="false" selection-start-line="46" selection-start-column="13" selection-end-line="46" selection-end-column="23" />
               <folding>
                 <element signature="method#init#0;class#P07_Socket#0" expanded="false" />
                 <element signature="e#5025#6816#0" expanded="true" />
@@ -5663,7 +5663,7 @@
       <option name="DEEP_LINK" value="" />
       <option name="ACTIVITY_CLASS" value="" />
       <method>
-        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="false" clearCache="false" clearProvisionedDevices="false" myTimestamp="1506332008106" />
+        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="false" clearCache="false" clearProvisionedDevices="false" myTimestamp="1506332426767" />
       </method>
     </configuration>
     <configuration default="true" type="AndroidTestRunConfigurationType" factoryName="Android Instrumented Tests">
@@ -5710,7 +5710,7 @@
         <option name="ADVANCED_PROFILING_ENABLED" value="false" />
       </Profilers>
       <method>
-        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="false" clearCache="false" clearProvisionedDevices="false" myTimestamp="1506332008106" />
+        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="false" clearCache="false" clearProvisionedDevices="false" myTimestamp="1506332426768" />
       </method>
     </configuration>
     <configuration default="true" type="Application" factoryName="Application">
@@ -5892,7 +5892,7 @@
       <option name="DEEP_LINK" value="" />
       <option name="ACTIVITY_CLASS" value="" />
       <method>
-        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="true" clearCache="false" clearProvisionedDevices="false" myTimestamp="1506332008107" />
+        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="true" clearCache="false" clearProvisionedDevices="false" myTimestamp="1506332426768" />
       </method>
     </configuration>
     <list size="6">
@@ -6553,8 +6553,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P07_Socket.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="216">
-          <caret line="77" column="0" lean-forward="true" selection-start-line="77" selection-start-column="0" selection-end-line="77" selection-end-column="0" />
+        <state relative-caret-position="170">
+          <caret line="46" column="23" lean-forward="false" selection-start-line="46" selection-start-column="13" selection-end-line="46" selection-end-column="23" />
           <folding>
             <element signature="method#init#0;class#P07_Socket#0" expanded="false" />
             <element signature="e#5025#6816#0" expanded="true" />
