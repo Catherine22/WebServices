@@ -1,4 +1,4 @@
-package com.catherine.webservices.sample.singleton
+package com.catherine.webservices.kotlin_sample.singleton
 
 /**
  * Created by Catherine on 2017/7/28.

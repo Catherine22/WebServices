@@ -1,4 +1,4 @@
-package com.catherine.webservices.sample.player
+package com.catherine.webservices.kotlin_sample.player
 
 import com.catherine.webservices.toolkits.CLog
 import kotlin.properties.Delegates

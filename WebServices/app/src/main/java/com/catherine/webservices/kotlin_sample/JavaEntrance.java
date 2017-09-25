@@ -1,7 +1,7 @@
-package com.catherine.webservices.sample;
+package com.catherine.webservices.kotlin_sample;
 
-import com.catherine.webservices.sample.data.Person;
-import com.catherine.webservices.sample.data.Person2;
+import com.catherine.webservices.kotlin_sample.data.Person;
+import com.catherine.webservices.kotlin_sample.data.Person2;
 import com.catherine.webservices.toolkits.CLog;
 
 import java.util.ArrayList;
