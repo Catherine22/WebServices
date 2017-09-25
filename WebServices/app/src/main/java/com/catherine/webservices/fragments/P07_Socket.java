@@ -4,15 +4,11 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -21,32 +17,26 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.catherine.webservices.Constants;
-import com.catherine.webservices.MyApplication;
 import com.catherine.webservices.R;
-import com.catherine.webservices.adapters.TextCardRVAdapter;
 import com.catherine.webservices.interfaces.BackKeyListener;
 import com.catherine.webservices.interfaces.MainInterface;
-import com.catherine.webservices.interfaces.OnItemClickListener;
 import com.catherine.webservices.interfaces.OnRequestPermissionsListener;
 import com.catherine.webservices.network.NetworkHelper;
-import com.catherine.webservices.toolkits.CLog;
+import com.catherine.webservices.network.SocketInputAsyncTask;
+import com.catherine.webservices.network.SocketListener;
+import com.catherine.webservices.network.SocketOutputAsyncTask;
 
-import org.jetbrains.annotations.NotNull;
-
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.PrintStream;
-import java.io.PrintWriter;
 import java.net.ConnectException;
 import java.net.InetAddress;
-import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Queue;
 
 /**
  * Created by Catherine on 2017/9/19.
@@ -57,7 +47,6 @@ import java.util.List;
 public class P07_Socket extends LazyFragment {
     public final static String TAG = "P07_Socket";
     private MainInterface mainInterface;
-    private Handler msgHandler, networkHandler;
     private TextView tv_history, tv_state;
     private EditText et_input;
     private Button bt_send;
@@ -66,6 +55,7 @@ public class P07_Socket extends LazyFragment {
     private List<Socket> sockets;
     private NetworkHelper helper;
     private Socket socket;
+    private Queue<String> msgQueue;
 
     public static P07_Socket newInstance(boolean isLazyLoad) {
         Bundle args = new Bundle();
@@ -81,9 +71,8 @@ public class P07_Socket extends LazyFragment {
         setContentView(R.layout.f_07_socket);
         helper = new NetworkHelper(getActivity());
         sockets = new ArrayList<>();
+        msgQueue = new ArrayDeque<>();
         mainInterface = (MainInterface) getActivity();
-        msgHandler = new Handler(MyApplication.INSTANCE.socketHandlerThread.getLooper());
-        networkHandler = new Handler(MyApplication.INSTANCE.socketHandlerThread.getLooper());
         init();
     }
 
@@ -92,6 +81,7 @@ public class P07_Socket extends LazyFragment {
             @Override
             public void onGranted() {
                 initComponent();
+                initSocket();
             }
 
             @Override
@@ -141,63 +131,19 @@ public class P07_Socket extends LazyFragment {
     }
 
 
-    private void initComponent() {
-        fab_disconnect = (FloatingActionButton) findViewById(R.id.fab_disconnect);
-        fab_settings = (FloatingActionButton) findViewById(R.id.fab_settings);
-        tv_state = (TextView) findViewById(R.id.tv_state);
-        tv_history = (TextView) findViewById(R.id.tv_history);
-        et_input = (EditText) findViewById(R.id.et_input);
-        bt_send = (Button) findViewById(R.id.bt_send);
-        bt_send.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                send(et_input.getText().toString());
-            }
-        });
-        mainInterface.setBackKeyListener(new BackKeyListener() {
-            @Override
-            public void OnKeyDown() {
-                mainInterface.backToPreviousPage();
-            }
-        });
-
-        fab_disconnect.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                send("*#DISCONNECT11223#*");
-                tv_state.setText("Stop connecting...");
-            }
-        });
-
-        fab_settings.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                if (!isFABOpen) {
-                    isFABOpen = true;
-                    fab_disconnect.animate().translationY(-getResources().getDimension(R.dimen.fab_01_m_b));
-                } else {
-                    isFABOpen = false;
-                    fab_disconnect.animate().translationY(0);
-                }
-            }
-        });
-
-    }
-
-
-    private void send(final String content) {
-        if (TextUtils.isEmpty(content))
-            return;
-
-        networkHandler.post(new Runnable() {
+    private void initSocket() {
+        new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
                     //1.创建客户端Socket，指定服务器地址和端口
                     socket = new Socket(Constants.SOCKET_HOST, Constants.SOCKET_PORT);
+                    sockets.add(socket);
+
                     final String state = (socket.isConnected()) ? "Connected" : "Failed to connect";
                     // 获取客户端的IP地址
                     InetAddress address = InetAddress.getLocalHost();
                     final String ip = address.getHostAddress();
-
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -205,24 +151,13 @@ public class P07_Socket extends LazyFragment {
                         }
                     });
 
-                    sockets.add(socket);
-                    msgHandler.post(new ClientRunnable(socket));
-
                     //2.获取输出流，向服务器端发送信息
-                    OutputStream os = socket.getOutputStream();//字节输出流
-                    PrintWriter pw = new PrintWriter(os);//将输出流包装为打印流
+                    is = socket.getInputStream(); //获取输入流
+                    os = socket.getOutputStream();//字节输出流
 
-                    pw.write(content);
-                    pw.flush();
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            tv_history.setText(String.format("%s\nYou sent: %s", tv_history.getText(), content));
-                        }
-                    });
-                    socket.shutdownOutput();//关闭输出流
-                    socket.close();
-
+                    while (msgQueue.size() > 0) {
+                        send(msgQueue.poll());
+                    }
                 } catch (ConnectException e) {
                     e.printStackTrace();
                     if (!helper.isNetworkHealth()) {
@@ -239,54 +174,122 @@ public class P07_Socket extends LazyFragment {
                     e.printStackTrace();
                 }
             }
+        }).start();
+    }
+
+    private void initComponent() {
+        fab_disconnect = (FloatingActionButton) findViewById(R.id.fab_disconnect);
+        fab_settings = (FloatingActionButton) findViewById(R.id.fab_settings);
+        tv_state = (TextView) findViewById(R.id.tv_state);
+        tv_history = (TextView) findViewById(R.id.tv_history);
+        et_input = (EditText) findViewById(R.id.et_input);
+        bt_send = (Button) findViewById(R.id.bt_send);
+        bt_send.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                send(et_input.getText().toString());
+            }
+        });
+        mainInterface.setBackKeyListener(new BackKeyListener() {
+            @Override
+            public void OnKeyDown() {
+                //release();
+                mainInterface.backToPreviousPage();
+            }
+        });
+
+        fab_disconnect.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                send("*#DISCONNECT11223#*");
+                tv_state.setText("Stop connecting...");
+                release();
+            }
+        });
+
+        fab_settings.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                if (!isFABOpen) {
+                    isFABOpen = true;
+                    fab_disconnect.animate().translationY(-getResources().getDimension(R.dimen.fab_01_m_b));
+                } else {
+                    isFABOpen = false;
+                    fab_disconnect.animate().translationY(0);
+                }
+            }
         });
     }
 
-    private class ClientRunnable implements Runnable {
-        private BufferedReader br;
-        private String info;
 
-        private ClientRunnable(Socket socket) throws IOException {
-            // 3.连接后获取输入流，读取客户端信息
-            InputStream is = socket.getInputStream(); // 获取输入流
-            InputStreamReader isr = new InputStreamReader(is, "UTF-8");
-            br = new BufferedReader(isr);
-        }
+    private InputStream is;
+    private OutputStream os;
 
-        @Override
-        public void run() {
-            try {
-                while ((info = br.readLine()) != null) {
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            if ("*#DISCONNECT11223#*".equals(info)) {
-                                try {
-                                    getActivity().runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            tv_state.setText(socket.getInetAddress() + " disconnected.");
-                                        }
-                                    });
-                                    sockets.remove(socket);
-                                    socket.shutdownInput();// 关闭输入流
-                                    socket.close();
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                            } else {
-                               getActivity().runOnUiThread(new Runnable() {
-                                   @Override
-                                   public void run() {
-                                       // 读取socket输入流的内容并打印
-                                       tv_history.setText(String.format("%s\nYou got: %s", tv_history.getText(), info));
-                                   }
-                               });
-                            }
-                        }
-                    });
+    private void send(String content) {
+        if (TextUtils.isEmpty(content))
+            return;
+
+        if (socket.isClosed()) {
+            msgQueue.add(content);
+            tv_state.setText("Connecting...");
+            initSocket();
+        } else {
+            new SocketInputAsyncTask(os, content, new SocketListener() {
+                @Override
+                public void connectSuccess(String message) {
+                    et_input.setText("");
+                    tv_history.setText(String.format("%s\nYou sent: %s", tv_history.getText(), message));
                 }
-            } catch (IOException e) {
+
+                @Override
+                public void connectFailure(Exception e) {
+                    e.printStackTrace();
+                }
+            }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+
+            new SocketOutputAsyncTask(is, new SocketListener() {
+                @Override
+                public void connectSuccess(String message) {
+                    if ("*#DISCONNECT11223#*".equals(message)) {
+                        tv_state.setText(socket.getInetAddress() + " disconnected.");
+                        release();
+                    } else {
+                        // 读取socket输入流的内容并打印
+                        tv_history.setText(String.format("%s\nYou got: %s", tv_history.getText(), message));
+                    }
+                }
+
+                @Override
+                public void connectFailure(Exception e) {
+                    e.printStackTrace();
+                    if (e instanceof ConnectException) {
+                        if (!helper.isNetworkHealth()) {
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(getActivity(), "Offline", Toast.LENGTH_LONG).show();
+                                }
+                            });
+                        }
+                    }
+                }
+            }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        }
+    }
+
+    private void release() {
+        for (Socket s : sockets) {
+            sockets.remove(s);
+            try {
+                if (os != null)
+                    os.close();
+                if (is != null)
+                    is.close();// 关闭输入流
+                if (s != null)
+                    s.close();
+
+                os = null;
+                is = null;
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }

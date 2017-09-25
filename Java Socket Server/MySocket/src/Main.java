@@ -25,11 +25,14 @@ public class Main {
 
 	/**
 	 * java.net.BindException: Address already in use In MAC, input and run
-	 * Terminal:
-	 * 
-	 * lsof -i:<port> -> find PID kill <PID>
-	 * 
-	 * In this case, your command would be lsof -i:11223 kill ????
+	 * Terminal:<br>
+	 * <br>
+	 * lsof -i:<port> -> find PID <br>
+	 * kill <PID> <br>
+	 * <br>
+	 * In this case, your command would be <br>
+	 * lsof -i:11223 <br>
+	 * kill ????
 	 * 
 	 * 
 	 * @throws IOException
@@ -44,6 +47,7 @@ public class Main {
 		System.out.println("Socket server is ready, ip is : " + ip);
 
 		while (sockets.size() < 999) {
+			System.out.println("accept()");
 			socket = serverSocket.accept();
 			sockets.add(socket);
 
@@ -65,7 +69,7 @@ public class Main {
 					socket.shutdownInput();// 关闭输入流
 					socket.close();
 				} else {
-					sendMessage("Server received: " + info);
+					sendMessage("I am server: " + info);
 				}
 			}
 		}
@@ -78,7 +82,8 @@ public class Main {
 				PrintWriter pw;
 				if (socket != null) {
 					pw = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF-8")));
-					pw.println(content);
+					pw.write(content+"\n");
+					pw.flush();
 				}
 			}
 		} catch (UnsupportedEncodingException e) {
