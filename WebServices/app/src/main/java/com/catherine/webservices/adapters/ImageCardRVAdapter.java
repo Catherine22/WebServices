@@ -222,11 +222,17 @@ public class ImageCardRVAdapter extends RecyclerView.Adapter<ImageCardRVAdapter.
                         //Show default picture
                         mainRvHolder.iv_main.setImageDrawable(ctx.getResources().getDrawable(R.drawable.default_pic));
                     } else {
-                        //Remove the item instead of showing the default picture in offline mode.
-                        if (entities.size() > position) {
-                            entities.remove(position);
-                            notifyDataSetChanged();
-                        }
+                        //Scenario1: Remove the item instead of showing the default picture in offline mode.
+//                        if (entities.size() > position) {
+//                            entities.remove(position);
+//                            notifyDataSetChanged();
+//                        }
+                        //Scenario2:
+                        entities.get(position).subtitle = "failed to cache";
+                        mainRvHolder.tv_subtitle.setText(entities.get(position).subtitle);
+                        mainRvHolder.iv_main.setVisibility(View.VISIBLE);
+                        //Show default picture
+                        mainRvHolder.iv_main.setImageDrawable(ctx.getResources().getDrawable(R.drawable.default_pic));
                     }
                 } else {
                     entities.get(position).subtitle = "error";
