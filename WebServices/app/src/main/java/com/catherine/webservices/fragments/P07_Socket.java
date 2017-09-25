@@ -4,10 +4,12 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -59,6 +61,8 @@ public class P07_Socket extends LazyFragment {
     private TextView tv_history, tv_state;
     private EditText et_input;
     private Button bt_send;
+    private FloatingActionButton fab_disconnect, fab_settings;
+    private boolean isFABOpen;
     private List<Socket> sockets;
     private NetworkHelper helper;
     private Socket socket;
@@ -76,6 +80,7 @@ public class P07_Socket extends LazyFragment {
         super.onCreateViewLazy(savedInstanceState);
         setContentView(R.layout.f_07_socket);
         helper = new NetworkHelper(getActivity());
+        sockets = new ArrayList<>();
         mainInterface = (MainInterface) getActivity();
         msgHandler = new Handler(MyApplication.INSTANCE.socketHandlerThread.getLooper());
         networkHandler = new Handler(MyApplication.INSTANCE.socketHandlerThread.getLooper());
@@ -86,7 +91,6 @@ public class P07_Socket extends LazyFragment {
         mainInterface.getPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, new OnRequestPermissionsListener() {
             @Override
             public void onGranted() {
-                fillInData();
                 initComponent();
             }
 
@@ -137,11 +141,9 @@ public class P07_Socket extends LazyFragment {
     }
 
 
-    private void fillInData() {
-        sockets = new ArrayList<>();
-    }
-
     private void initComponent() {
+        fab_disconnect = (FloatingActionButton) findViewById(R.id.fab_disconnect);
+        fab_settings = (FloatingActionButton) findViewById(R.id.fab_settings);
         tv_state = (TextView) findViewById(R.id.tv_state);
         tv_history = (TextView) findViewById(R.id.tv_history);
         et_input = (EditText) findViewById(R.id.et_input);
@@ -159,7 +161,27 @@ public class P07_Socket extends LazyFragment {
             }
         });
 
+        fab_disconnect.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                send("*#DISCONNECT11223#*");
+                tv_state.setText("Stop connecting...");
+            }
+        });
+
+        fab_settings.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                if (!isFABOpen) {
+                    isFABOpen = true;
+                    fab_disconnect.animate().translationY(-getResources().getDimension(R.dimen.fab_01_m_b));
+                } else {
+                    isFABOpen = false;
+                    fab_disconnect.animate().translationY(0);
+                }
+            }
+        });
+
     }
+
 
     private void send(final String content) {
         if (TextUtils.isEmpty(content))
@@ -238,12 +260,32 @@ public class P07_Socket extends LazyFragment {
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            // 读取socket输入流的内容并打印
-                            tv_history.setText(String.format("%s\nYou got: %s", tv_history.getText(), info));
+                            if ("*#DISCONNECT11223#*".equals(info)) {
+                                try {
+                                    getActivity().runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            tv_state.setText(socket.getInetAddress() + " disconnected.");
+                                        }
+                                    });
+                                    sockets.remove(socket);
+                                    socket.shutdownInput();// 关闭输入流
+                                    socket.close();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            } else {
+                               getActivity().runOnUiThread(new Runnable() {
+                                   @Override
+                                   public void run() {
+                                       // 读取socket输入流的内容并打印
+                                       tv_history.setText(String.format("%s\nYou got: %s", tv_history.getText(), info));
+                                   }
+                               });
+                            }
                         }
                     });
                 }
-//				socket.shutdownInput();// 关闭输入流
             } catch (IOException e) {
                 e.printStackTrace();
             }

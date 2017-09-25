@@ -23,14 +23,14 @@
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_stop"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="@dimen/fab_00"
+        android:layout_height="@dimen/fab_00"
         android:layout_gravity="bottom|end"
-        android:layout_marginBottom="55dp"
-        android:layout_marginEnd="15dp"
-        android:layout_marginRight="15dp"
+        android:layout_marginBottom="@dimen/fab_00_m_b"
+        android:layout_marginEnd="@dimen/fab_m"
+        android:layout_marginRight="@dimen/fab_m"
         android:scaleType="centerInside"
         android:src="@android:drawable/ic_media_pause"
         app:backgroundTint="@color/colorPrimary"
-        app:elevation="4dp"/>
+        app:fabSize="normal"/>
 </FrameLayout>
