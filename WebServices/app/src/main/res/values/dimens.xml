@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="fab_m">15dp</dimen>
+    <dimen name="fab_item_m">22dp</dimen>
+    <dimen name="fab_item_m_b">62dp</dimen>
+    <dimen name="fab_00">50dp</dimen>
+    <dimen name="fab_00_m_b">55dp</dimen>
+    <dimen name="fab_01">35dp</dimen>
+    <dimen name="fab_01_m_b">80dp</dimen>
+</resources>
