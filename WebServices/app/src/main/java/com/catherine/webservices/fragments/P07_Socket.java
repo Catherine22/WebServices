@@ -56,7 +56,7 @@ public class P07_Socket extends LazyFragment {
     public final static String TAG = "P07_Socket";
     private MainInterface mainInterface;
     private Handler msgHandler, networkHandler;
-    private TextView tv_history;
+    private TextView tv_history, tv_state;
     private EditText et_input;
     private Button bt_send;
     private List<Socket> sockets;
@@ -142,6 +142,7 @@ public class P07_Socket extends LazyFragment {
     }
 
     private void initComponent() {
+        tv_state = (TextView) findViewById(R.id.tv_state);
         tv_history = (TextView) findViewById(R.id.tv_history);
         et_input = (EditText) findViewById(R.id.et_input);
         bt_send = (Button) findViewById(R.id.bt_send);
@@ -171,10 +172,14 @@ public class P07_Socket extends LazyFragment {
                     //1.创建客户端Socket，指定服务器地址和端口
                     socket = new Socket(Constants.SOCKET_HOST, Constants.SOCKET_PORT);
                     final String state = (socket.isConnected()) ? "Connected" : "Failed to connect";
+                    // 获取客户端的IP地址
+                    InetAddress address = InetAddress.getLocalHost();
+                    final String ip = address.getHostAddress();
+
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            tv_history.setText(String.format("%s\n%s", tv_history.getText(), state));
+                            tv_state.setText(String.format("%s (Client): %s", ip, state));
                         }
                     });
 
@@ -184,16 +189,7 @@ public class P07_Socket extends LazyFragment {
                     //2.获取输出流，向服务器端发送信息
                     OutputStream os = socket.getOutputStream();//字节输出流
                     PrintWriter pw = new PrintWriter(os);//将输出流包装为打印流
-                    // 获取客户端的IP地址
-                    InetAddress address = InetAddress.getLocalHost();
-                    final String ip = address.getHostAddress();
-                    CLog.Companion.d(TAG, "ip:" + ip);
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            tv_history.setText(String.format("%s\nip: %s", tv_history.getText(), ip));
-                        }
-                    });
+
                     pw.write(content);
                     pw.flush();
                     getActivity().runOnUiThread(new Runnable() {

@@ -6,11 +6,19 @@
                 android:background="@android:color/white"
                 android:clickable="true"
                 android:focusable="true">
+    <TextView
+        android:id="@+id/tv_state"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:gravity="center"
+        android:textColor="@color/colorPrimary"/>
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/et_input"
+        android:layout_below="@+id/tv_state"
         android:layout_margin="10dp">
 
         <TextView
