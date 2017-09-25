@@ -1,4 +1,4 @@
-package com.catherine.webservices.sample.data;
+package com.catherine.webservices.kotlin_sample.data;
 
 /**
  * Created by Catherine on 2017/7/31.

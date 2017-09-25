@@ -1,4 +1,4 @@
-package com.catherine.webservices.sample
+package com.catherine.webservices.kotlin_sample
 
 import com.catherine.webservices.toolkits.CLog
 

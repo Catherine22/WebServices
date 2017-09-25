@@ -166,7 +166,7 @@ If the token hasn't been changed, the server returns a "304 Not Modified" respon
 
 So your cache strategy will be:
 
-[![Http caching](https://raw.githubusercontent.com/Catherine22/WebServices/master/app/src/main/res/drawable/http_cache_decision_tree.png)](https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/http-caching)
+[![Http caching](https://raw.githubusercontent.com/Catherine22/WebServices/master/WebServices/app/src/main/res/drawable/http_cache_decision_tree.png)](https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/http-caching)
 
 First of all, make sure your browser, application or something are available to cache responses. Then check whether the response has expired.
 ```html
@@ -206,27 +206,34 @@ Here is the example: [P05_Gallery], [ImageCardRVAdapter]
 
 ### Socket
 
+1. Run [MySocket] on eclipse
+2. Run [P07_Socket] on Android devices.
+
 
 ### References
 - [Tencent bugly]
 - [HTTP 1.1 doc]
 - [Google Web Fundamentals]
 - [increasing-application-performance-with-http-cache-headers]
+- [Socket tutorio]
 
 
-[MainActivity]:<https://github.com/Catherine22/WebServices/blob/master/app/src/main/java/com/catherine/webservices/MainActivity.kt>
-[MyApplication]:<https://github.com/Catherine22/WebServices/blob/master/app/src/main/java/com/catherine/webservices/MyApplication.java>
-[MyApache]:<https://github.com/Catherine22/WebServices/blob/master/app/src/main/java/com/catherine/webservices/network/MyApache.java>
-[MyHttpURLConnection]:<https://github.com/Catherine22/WebServices/blob/master/app/src/main/java/com/catherine/webservices/network/MyHttpURLConnection.java>
-[P01_Apache]:<https://github.com/Catherine22/WebServices/blob/master/app/src/main/java/com/catherine/webservices/fragments/P01_Apache.java>
-[P02_HttpURLConnection]:<https://github.com/Catherine22/WebServices/blob/master/app/src/main/java/com/catherine/webservices/fragments/P02_HttpURLConnection.java>
-[P03_Downloader]:<https://github.com/Catherine22/WebServices/blob/master/app/src/main/java/com/catherine/webservices/fragments/P03_Downloader.java>
-[P05_Gallery]:<https://github.com/Catherine22/WebServices/blob/master/app/src/main/java/com/catherine/webservices/fragments/P05_Gallery.java>
-[P06_Upload]:<https://github.com/Catherine22/WebServices/blob/master/app/src/main/java/com/catherine/webservices/fragments/P06_Upload.java>
-[HttpAsyncTask]:<https://github.com/Catherine22/WebServices/blob/master/app/src/main/java/com/catherine/webservices/network/HttpAsyncTask.java>
-[DownloaderAsyncTask]:<https://github.com/Catherine22/WebServices/blob/master/app/src/main/java/com/catherine/webservices/network/DownloaderAsyncTask.java>
+[MainActivity]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/MainActivity.kt>
+[MyApplication]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/MyApplication.java>
+[MyApache]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/network/MyApache.java>
+[MyHttpURLConnection]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/network/MyHttpURLConnection.java>
+[P01_Apache]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/P01_Apache.java>
+[P02_HttpURLConnection]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/P02_HttpURLConnection.java>
+[P03_Downloader]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/P03_Downloader.java>
+[P05_Gallery]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/P05_Gallery.java>
+[P06_Upload]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/P06_Upload.java>
+[HttpAsyncTask]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/network/HttpAsyncTask.java>
+[DownloaderAsyncTask]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/network/DownloaderAsyncTask.java>
 [Tencent bugly]:<https://mp.weixin.qq.com/s/qOMO0LIdA47j3RjhbCWUEQ>
 [HTTP 1.1 doc]:<https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html>
 [Google Web Fundamentals]:<https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/http-caching>
 [increasing-application-performance-with-http-cache-headers]:<https://devcenter.heroku.com/articles/increasing-application-performance-with-http-cache-headers>
-[ImageCardRVAdapter]:<https://github.com/Catherine22/WebServices/blob/master/app/src/main/java/com/catherine/webservices/adapters/ImageCardRVAdapter.java>
+[ImageCardRVAdapter]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/adapters/ImageCardRVAdapter.java>
+[Socket tutorio]:<http://blog.csdn.net/coder_pig/article/details/48519629>
+[P07_Socket]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/P07_Socket.java>
+[MySocket]:<https://github.com/Catherine22/WebServices/blob/master/JavaSocketServer/MySocket/src/Main.java>

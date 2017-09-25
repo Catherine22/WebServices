@@ -1,4 +1,4 @@
-package com.catherine.webservices.sample.player
+package com.catherine.webservices.kotlin_sample.player
 
 /**
  * Created by Catherine on 2017/7/28.
