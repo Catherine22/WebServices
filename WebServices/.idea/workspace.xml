@@ -6,7 +6,6 @@
     </shared>
   </component>
   <component name="AndroidLogFilters">
-    <option name="TOOL_WINDOW_CUSTOM_FILTER" value="ImageCardRVAdapter" />
     <option name="TOOL_WINDOW_LOG_LEVEL" value="verbose" />
     <option name="TOOL_WINDOW_CONFIGURED_FILTER" value="No Filters" />
   </component>
@@ -58,25 +57,12 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="ImageCardRVAdapter.java" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/adapters/ImageCardRVAdapter.java">
+      <file leaf-file-name="strings.xml" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="206">
-              <caret line="230" column="76" lean-forward="true" selection-start-line="230" selection-start-column="76" selection-end-line="230" selection-end-column="76" />
-              <folding>
-                <element signature="e#2642#2946#0" expanded="true" />
-                <element signature="e#2945#2946#0" expanded="true" />
-                <element signature="e#3002#3351#0" expanded="true" />
-                <element signature="e#3350#3351#0" expanded="true" />
-                <element signature="e#4120#9916#0" expanded="true" />
-                <element signature="e#4961#5606#0" expanded="true" />
-                <element signature="e#5605#5606#0" expanded="true" />
-                <element signature="e#6841#7469#0" expanded="true" />
-                <element signature="e#7468#7469#0" expanded="true" />
-                <element signature="e#9915#9916#0" expanded="true" />
-                <element signature="e#10077#11882#0" expanded="true" />
-                <element signature="e#11881#11882#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="85">
+              <caret line="5" column="0" lean-forward="false" selection-start-line="5" selection-start-column="0" selection-end-line="5" selection-end-column="0" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -84,8 +70,8 @@
       <file leaf-file-name="P05_Gallery.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P05_Gallery.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="357">
-              <caret line="138" column="43" lean-forward="false" selection-start-line="138" selection-start-column="43" selection-end-line="138" selection-end-column="43" />
+            <state relative-caret-position="97">
+              <caret line="157" column="34" lean-forward="false" selection-start-line="157" selection-start-column="28" selection-end-line="157" selection-end-column="34" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -93,11 +79,79 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="strings.xml" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml">
+      <file leaf-file-name="P07_Socket.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P07_Socket.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="17">
-              <caret line="1" column="28" lean-forward="false" selection-start-line="1" selection-start-column="4" selection-end-line="1" selection-end-column="28" />
+            <state relative-caret-position="169">
+              <caret line="172" column="76" lean-forward="false" selection-start-line="172" selection-start-column="76" selection-end-line="172" selection-end-column="76" />
+              <folding>
+                <element signature="method#init#0;class#P07_Socket#0" expanded="false" />
+                <element signature="e#5292#5293#0" expanded="true" />
+                <element signature="e#5335#5336#0" expanded="true" />
+                <element signature="e#5585#5757#0" expanded="true" />
+                <element signature="e#5756#5757#0" expanded="true" />
+                <element signature="e#6106#8696#0" expanded="true" />
+                <element signature="e#6482#6726#0" expanded="true" />
+                <element signature="e#6725#6726#0" expanded="true" />
+                <element signature="e#7289#7534#0" expanded="true" />
+                <element signature="e#7533#7534#0" expanded="true" />
+                <element signature="e#7656#7912#0" expanded="true" />
+                <element signature="e#7911#7912#0" expanded="true" />
+                <element signature="e#8197#8455#0" expanded="true" />
+                <element signature="e#8454#8455#0" expanded="true" />
+                <element signature="e#8695#8696#0" expanded="true" />
+                <element signature="e#9284#9585#0" expanded="true" />
+                <element signature="e#9584#9585#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="f_07_socket.xml" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/f_07_socket.xml">
+          <provider editor-type-id="android-designer2">
+            <state />
+          </provider>
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="272">
+              <caret line="16" column="40" lean-forward="false" selection-start-line="16" selection-start-column="40" selection-end-line="16" selection-end-column="40" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Constants.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/Constants.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="202">
+              <caret line="28" column="22" lean-forward="false" selection-start-line="28" selection-start-column="22" selection-end-line="28" selection-end-column="22" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="MainActivity.kt" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/MainActivity.kt">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="379">
+              <caret line="361" column="25" lean-forward="false" selection-start-line="361" selection-start-column="25" selection-end-line="361" selection-end-column="25" />
+              <folding>
+                <element signature="e#3648#5449#0" expanded="false" />
+                <element signature="e#5542#6218#0" expanded="false" />
+                <element signature="e#6334#7581#0" expanded="false" />
+                <element signature="e#7666#11879#0" expanded="false" />
+                <element signature="e#15065#15502#0" expanded="false" />
+                <element signature="e#15522#18127#0" expanded="false" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="colors.xml" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/res/values/colors.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="153">
+              <caret line="9" column="24" lean-forward="false" selection-start-line="9" selection-start-column="17" selection-end-line="9" selection-end-column="24" />
               <folding />
             </state>
           </provider>
@@ -113,24 +167,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="rv_short_card.xml" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/rv_short_card.xml">
-          <provider editor-type-id="android-designer2">
-            <state />
-          </provider>
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="MyApplication.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/MyApplication.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1938">
-              <caret line="146" column="31" lean-forward="false" selection-start-line="146" selection-start-column="16" selection-end-line="146" selection-end-column="31" />
+            <state relative-caret-position="360">
+              <caret line="105" column="50" lean-forward="false" selection-start-line="105" selection-start-column="50" selection-end-line="105" selection-end-column="50" />
               <folding>
                 <element signature="method#getHttpClient#0;class#MyApplication#0" expanded="false" />
                 <element signature="method#shutdownHttpClient#0;class#MyApplication#0" expanded="false" />
@@ -155,11 +196,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>&lt;string name=&quot;app_name&quot;&gt;</find>
-      <find>&quot;pic_list&quot;</find>
-      <find>titles</find>
-      <find>images.c</find>
-      <find>finishedLoadingAll</find>
       <find>listener</find>
       <find>addOnLayoutChangeListener</find>
       <find>loadmore</find>
@@ -185,6 +221,11 @@
       <find>diskLruCache</find>
       <find>handleErrorPics</find>
       <find>DiskLruCache.Snapshot</find>
+      <find>calHandlerThread</find>
+      <find>network</find>
+      <find>handler</find>
+      <find>he</find>
+      <find>shutdownOutput</find>
     </findStrings>
     <replaceStrings>
       <replace>CLog</replace>
@@ -201,7 +242,7 @@
     </dirStrings>
   </component>
   <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
   <component name="GradleLocalSettings">
     <option name="myGradleHomes">
@@ -5141,7 +5182,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/adapters/RVAdapter.kt" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/adapters/ShortCardRVAdapter.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P04_Gallery.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P05_Cache.java" />
@@ -5168,7 +5208,6 @@
         <option value="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/network/UploadRequest.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/network/UploaderAsyncTask.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P06_Upload.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/MyApplication.java" />
         <option value="$PROJECT_DIR$/proguard-android-optimize.txt" />
         <option value="$PROJECT_DIR$/app/proguard-rules.pro" />
         <option value="$PROJECT_DIR$/README.md" />
@@ -5178,8 +5217,6 @@
         <option value="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" />
         <option value="$PROJECT_DIR$/app/src/WebService2/res/values/strings.xml" />
         <option value="$PROJECT_DIR$/app/build.gradle" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/MainActivity.kt" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P07_Socket.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/f_lazy_fragment.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/adapters/MainViewPagerAdapter.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/f_04_cache.xml" />
@@ -5192,6 +5229,10 @@
         <option value="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/entities/ImageCard.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P05_Gallery.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/adapters/ImageCardRVAdapter.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/MyApplication.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/MainActivity.kt" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout/f_07_socket.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P07_Socket.java" />
       </list>
     </option>
   </component>
@@ -5215,7 +5256,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="PackagesPane" />
       <pane id="AndroidView">
         <subPane>
           <PATH>
@@ -5228,22 +5268,68 @@
               <option name="myItemType" value="com.android.tools.idea.navigator.nodes.android.AndroidBuildScriptsGroupNode" />
             </PATH_ELEMENT>
           </PATH>
-        </subPane>
-      </pane>
-      <pane id="Scope">
-        <subPane subId="Project Files">
           <PATH>
-            <PATH_ELEMENT USER_OBJECT="Root">
-              <option name="myItemId" value="" />
-              <option name="myItemType" value="" />
+            <PATH_ELEMENT>
+              <option name="myItemId" value="WebServices" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
             </PATH_ELEMENT>
-            <PATH_ELEMENT USER_OBJECT="WebServices">
-              <option name="myItemId" value="" />
-              <option name="myItemType" value="" />
+            <PATH_ELEMENT>
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.android.AndroidModuleNode" />
             </PATH_ELEMENT>
-            <PATH_ELEMENT USER_OBJECT="WebServices">
-              <option name="myItemId" value="" />
-              <option name="myItemType" value="" />
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="WebServices" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.android.AndroidModuleNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.android.AndroidSourceTypeNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="WebServices" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.android.AndroidModuleNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.android.AndroidSourceTypeNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="webservices" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.android.AndroidPsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="WebServices" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.android.AndroidModuleNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.android.AndroidSourceTypeNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="webservices" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.android.AndroidPsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="network" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
         </subPane>
@@ -5262,7 +5348,26 @@
           </PATH>
         </subPane>
       </pane>
+      <pane id="PackagesPane" />
       <pane id="Scratches" />
+      <pane id="Scope">
+        <subPane subId="Project Files">
+          <PATH>
+            <PATH_ELEMENT USER_OBJECT="Root">
+              <option name="myItemId" value="" />
+              <option name="myItemType" value="" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT USER_OBJECT="WebServices">
+              <option name="myItemId" value="" />
+              <option name="myItemType" value="" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT USER_OBJECT="WebServices">
+              <option name="myItemId" value="" />
+              <option name="myItemType" value="" />
+            </PATH_ELEMENT>
+          </PATH>
+        </subPane>
+      </pane>
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -5280,7 +5385,7 @@
     <property name="settings.editor.selected.configurable" value="vcs.Git" />
     <property name="android.sdk.path" value="$USER_HOME$/Documents/dev/android-sdk-macosx" />
     <property name="device.picker.selection" value="IPhone_6_API_23" />
-    <property name="SearchEverywhereHistoryKey" value="lazy&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/app/src/main/res/layout/f_lazy_fragment.xml&#10;MyHttpURLConnection&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/app/src/main/java/com/catherine/webservices/network/MyHttpURLConnection.java&#10;main&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/app/src/main/res/layout/activity_main.xml&#10;MyA&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/app/src/main/java/com/catherine/webservices/MyApplication.java&#10;04&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/app/src/main/java/com/catherine/webservices/fragments/P04_Cache.java&#10;P05&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/app/src/main/java/com/catherine/webservices/fragments/P05_Gallery.java&#10;p04&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/app/src/main/java/com/catherine/webservices/fragments/P04_Cache.java&#10;P0&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/app/src/main/java/com/catherine/webservices/fragments/P06_Upload.java&#10;P&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/app/src/main/java/com/catherine/webservices/fragments/P01_Apache.java&#10;Main&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/app/src/main/java/com/catherine/webservices/adapters/MainViewPagerAdapter.java&#10;MainA&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/app/src/main/java/com/catherine/webservices/MainActivity.kt&#10;proguard-android-optimize&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/proguard-android-optimize.txt&#10;proguard-an&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/proguard-android-optimize.txt&#10;proguard-android&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/proguard-android-optimize.txt&#10;CLog&#9;null&#9;null&#10;Do&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/app/src/main/java/com/catherine/webservices/network/DownloaderAsyncTask.java&#10;FileU&#9;null&#9;null&#10;Cons&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/app/src/main/java/com/catherine/webservices/Constants.java&#10;MyApa&#9;PSI&#9;JAVA://com.catherine.webservices.network.MyApache&#10;P04&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/app/src/main/java/com/catherine/webservices/fragments/P04_Gallery.java&#10;Ser&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/app/src/main/java/com/catherine/webservices/services/NetworkHealthService.kt&#10;My&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/app/src/main/java/com/catherine/webservices/MyApplication.java&#10;READ&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/README.md&#10;Net&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/app/src/main/java/com/catherine/webservices/network/NetworkHelper.kt&#10;Utils&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/app/src/main/java/com/catherine/webservices/toolkits/Utils.kt&#10;Ma&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/app/src/main/java/com/catherine/webservices/MainActivity.kt&#10;rv_card&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/app/src/main/res/layout/rv_card.xml&#10;CL&#9;null&#9;null&#10;02&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/app/src/main/java/com/catherine/webservices/fragments/P02_HttpURLConnection.java&#10;MyAppli&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/app/src/main/java/com/catherine/webservices/MyApplication.java&#10;01&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/app/src/main/java/com/catherine/webservices/fragments/P01_Apache.java&#10;f_&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/app/src/main/res/layout/f_01_apache.xml&#10;MyApp&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/app/src/main/java/com/catherine/webservices/MyApplication.java&#10;Intrinsics&#9;PSI&#9;JAVA://kotlin.jvm.internal.Intrinsics&#10;closeQuietly&#9;PSI&#9;JAVA://com.catherine.okhttp3.internal.Util#closeQuietly" />
+    <property name="SearchEverywhereHistoryKey" value="MainAc&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/MainActivity.kt&#10;Net&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/network/NetworkHelper.kt&#10;05&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/fragments/P05_Gallery.java&#10;06&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/fragments/P06_Upload.java&#10;soc&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/fragments/P07_Socket.java&#10;lazy&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/app/src/main/res/layout/f_lazy_fragment.xml&#10;MyHttpURLConnection&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/app/src/main/java/com/catherine/webservices/network/MyHttpURLConnection.java&#10;main&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/app/src/main/res/layout/activity_main.xml&#10;MyA&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/app/src/main/java/com/catherine/webservices/MyApplication.java&#10;04&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/app/src/main/java/com/catherine/webservices/fragments/P04_Cache.java&#10;P05&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/app/src/main/java/com/catherine/webservices/fragments/P05_Gallery.java&#10;p04&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/app/src/main/java/com/catherine/webservices/fragments/P04_Cache.java&#10;P0&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/app/src/main/java/com/catherine/webservices/fragments/P06_Upload.java&#10;P&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/app/src/main/java/com/catherine/webservices/fragments/P01_Apache.java&#10;Main&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/app/src/main/java/com/catherine/webservices/adapters/MainViewPagerAdapter.java&#10;MainA&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/app/src/main/java/com/catherine/webservices/MainActivity.kt&#10;proguard-android-optimize&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/proguard-android-optimize.txt&#10;proguard-an&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/proguard-android-optimize.txt&#10;proguard-android&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/proguard-android-optimize.txt&#10;CLog&#9;null&#9;null&#10;Do&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/app/src/main/java/com/catherine/webservices/network/DownloaderAsyncTask.java&#10;FileU&#9;null&#9;null&#10;Cons&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/app/src/main/java/com/catherine/webservices/Constants.java&#10;MyApa&#9;PSI&#9;JAVA://com.catherine.webservices.network.MyApache&#10;P04&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/app/src/main/java/com/catherine/webservices/fragments/P04_Gallery.java&#10;Ser&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/app/src/main/java/com/catherine/webservices/services/NetworkHealthService.kt&#10;My&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/app/src/main/java/com/catherine/webservices/MyApplication.java&#10;READ&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/README.md&#10;Utils&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/app/src/main/java/com/catherine/webservices/toolkits/Utils.kt&#10;Ma&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/app/src/main/java/com/catherine/webservices/MainActivity.kt&#10;rv_card&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/app/src/main/res/layout/rv_card.xml&#10;CL&#9;null&#9;null&#10;02&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/app/src/main/java/com/catherine/webservices/fragments/P02_HttpURLConnection.java&#10;MyAppli&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/app/src/main/java/com/catherine/webservices/MyApplication.java&#10;01&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/app/src/main/java/com/catherine/webservices/fragments/P01_Apache.java&#10;f_&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/app/src/main/res/layout/f_01_apache.xml&#10;MyApp&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/app/src/main/java/com/catherine/webservices/MyApplication.java&#10;Intrinsics&#9;PSI&#9;JAVA://kotlin.jvm.internal.Intrinsics&#10;closeQuietly&#9;PSI&#9;JAVA://com.catherine.okhttp3.internal.Util#closeQuietly" />
     <property name="android.project.structure.last.selected" value="SDK Location" />
     <property name="android.project.structure.proportion" value="0.15" />
     <property name="android.profiler.active" value="true" />
@@ -5531,7 +5636,7 @@
       <option name="DEEP_LINK" value="" />
       <option name="ACTIVITY_CLASS" value="" />
       <method>
-        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="false" clearCache="false" clearProvisionedDevices="false" myTimestamp="1506303838149" />
+        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="false" clearCache="false" clearProvisionedDevices="false" myTimestamp="1506311346419" />
       </method>
     </configuration>
     <configuration default="true" type="AndroidTestRunConfigurationType" factoryName="Android Instrumented Tests">
@@ -5578,7 +5683,7 @@
         <option name="ADVANCED_PROFILING_ENABLED" value="false" />
       </Profilers>
       <method>
-        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="false" clearCache="false" clearProvisionedDevices="false" myTimestamp="1506303838149" />
+        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="false" clearCache="false" clearProvisionedDevices="false" myTimestamp="1506311346419" />
       </method>
     </configuration>
     <configuration default="true" type="Application" factoryName="Application">
@@ -5739,7 +5844,7 @@
       <option name="DEEP_LINK" value="" />
       <option name="ACTIVITY_CLASS" value="" />
       <method>
-        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="true" clearCache="false" clearProvisionedDevices="false" myTimestamp="1506303838150" />
+        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="true" clearCache="false" clearProvisionedDevices="false" myTimestamp="1506311346420" />
       </method>
     </configuration>
     <list size="6">
@@ -5837,29 +5942,30 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1366" height="698" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info id="Android Profiler" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.42439863" sideWeight="0.56117827" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3298969" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3281787" sideWeight="0.47507554" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Build Variants" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.22809668" sideWeight="0.62628865" order="3" side_tool="true" content_ui="tabs" />
-      <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3281787" sideWeight="0.52492446" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33676976" sideWeight="0.49697885" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3298969" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3298969" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Logcat" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3419244" sideWeight="0.46827793" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Captures" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.43814433" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Logcat" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3419244" sideWeight="0.46827793" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Gradle Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33333334" sideWeight="0.53172207" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.19561933" sideWeight="0.37371135" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Gradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32930514" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.38659793" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Device File Explorer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32930514" sideWeight="0.5" order="3" side_tool="true" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3298969" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3281787" sideWeight="0.47507554" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32930514" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33676976" sideWeight="0.49697885" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3298969" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3298969" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Captures" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.43814433" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Gradle Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33333334" sideWeight="0.53172207" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.23489426" sideWeight="0.37371135" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.19931272" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Gradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32930514" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Theme Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.51111114" order="3" side_tool="true" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -5871,8 +5977,6 @@
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Android Model" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="true" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32930514" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.19931272" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
     <layout-to-restore>
       <window_info id="Android Profiler" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.46907216" sideWeight="0.5641994" order="7" side_tool="false" content_ui="tabs" />
@@ -5958,13 +6062,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/network/MyApache.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="871">
-          <caret line="88" column="16" lean-forward="false" selection-start-line="88" selection-start-column="16" selection-end-line="88" selection-end-column="16" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/network/HttpAsyncTask.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-185">
@@ -6087,11 +6184,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="238">
           <caret line="47" column="45" lean-forward="false" selection-start-line="47" selection-start-column="45" selection-end-line="47" selection-end-column="45" />
-          <folding>
-            <element signature="imports" expanded="false" />
-            <element signature="e#9256#9257#0" expanded="false" />
-            <element signature="e#9334#9335#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -6150,17 +6242,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/f_07_socket.xml">
-      <provider editor-type-id="android-designer2">
-        <state />
-      </provider>
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/P00_DeviceInfo.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="167">
@@ -6184,13 +6265,6 @@
         <state relative-caret-position="561">
           <caret line="33" column="0" lean-forward="false" selection-start-line="33" selection-start-column="0" selection-end-line="33" selection-end-column="0" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P07_Socket.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="134">
-          <caret line="142" column="36" lean-forward="false" selection-start-line="142" selection-start-column="36" selection-end-line="142" selection-end-column="36" />
         </state>
       </provider>
     </entry>
@@ -6224,13 +6298,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P06_Upload.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="217">
-          <caret line="173" column="58" lean-forward="true" selection-start-line="173" selection-start-column="58" selection-end-line="173" selection-end-column="58" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/f_05_gallery.xml">
       <provider editor-type-id="android-designer2">
         <state />
@@ -6239,7 +6306,7 @@
         <state relative-caret-position="87">
           <caret line="45" column="0" lean-forward="false" selection-start-line="45" selection-start-column="0" selection-end-line="45" selection-end-column="0" />
           <folding>
-            <element signature="e#1635#1652#0" expanded="true" />
+            <element signature="e#1635#1652#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -6255,14 +6322,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/Constants.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="134">
-          <caret line="24" column="28" lean-forward="false" selection-start-line="24" selection-start-column="28" selection-end-line="24" selection-end-column="28" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml">
       <provider editor-type-id="android-designer2">
         <state />
@@ -6270,28 +6329,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="189">
           <caret line="37" column="48" lean-forward="false" selection-start-line="37" selection-start-column="48" selection-end-line="37" selection-end-column="48" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/network/NetworkHelper.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="129">
-          <caret line="44" column="14" lean-forward="false" selection-start-line="44" selection-start-column="14" selection-end-line="44" selection-end-column="14" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/MainActivity.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-642">
-          <caret line="58" column="0" lean-forward="false" selection-start-line="58" selection-start-column="0" selection-end-line="58" selection-end-column="0" />
-          <folding>
-            <element signature="e#3648#5449#0" expanded="false" />
-            <element signature="e#5542#6218#0" expanded="false" />
-            <element signature="e#6334#7581#0" expanded="false" />
-            <element signature="e#7666#11879#0" expanded="false" />
-            <element signature="e#14908#15345#0" expanded="false" />
-            <element signature="e#15365#17970#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -6332,14 +6369,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="17">
-          <caret line="1" column="28" lean-forward="false" selection-start-line="1" selection-start-column="4" selection-end-line="1" selection-end-column="28" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/WebServices/res/values/strings.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="17">
@@ -6359,27 +6388,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/MyApplication.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1938">
-          <caret line="146" column="31" lean-forward="false" selection-start-line="146" selection-start-column="16" selection-end-line="146" selection-end-column="31" />
-          <folding>
-            <element signature="method#getHttpClient#0;class#MyApplication#0" expanded="false" />
-            <element signature="method#shutdownHttpClient#0;class#MyApplication#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P05_Gallery.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="357">
-          <caret line="138" column="43" lean-forward="false" selection-start-line="138" selection-start-column="43" selection-end-line="138" selection-end-column="43" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/network/MyHttpURLConnection.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-68">
@@ -6390,21 +6398,134 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/adapters/ImageCardRVAdapter.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="206">
-          <caret line="230" column="76" lean-forward="true" selection-start-line="230" selection-start-column="76" selection-end-line="230" selection-end-column="76" />
+        <state relative-caret-position="1502">
+          <caret line="230" column="76" lean-forward="false" selection-start-line="230" selection-start-column="76" selection-end-line="230" selection-end-column="76" />
           <folding>
-            <element signature="e#2642#2946#0" expanded="true" />
-            <element signature="e#2945#2946#0" expanded="true" />
-            <element signature="e#3002#3351#0" expanded="true" />
-            <element signature="e#3350#3351#0" expanded="true" />
-            <element signature="e#4120#9916#0" expanded="true" />
-            <element signature="e#4961#5606#0" expanded="true" />
-            <element signature="e#5605#5606#0" expanded="true" />
-            <element signature="e#6841#7469#0" expanded="true" />
-            <element signature="e#7468#7469#0" expanded="true" />
-            <element signature="e#9915#9916#0" expanded="true" />
-            <element signature="e#10077#11882#0" expanded="true" />
-            <element signature="e#11881#11882#0" expanded="true" />
+            <element signature="e#2642#2946#0" expanded="false" />
+            <element signature="e#2945#2946#0" expanded="false" />
+            <element signature="e#3002#3351#0" expanded="false" />
+            <element signature="e#3350#3351#0" expanded="false" />
+            <element signature="e#4120#9916#0" expanded="false" />
+            <element signature="e#4961#5606#0" expanded="false" />
+            <element signature="e#5605#5606#0" expanded="false" />
+            <element signature="e#6841#7469#0" expanded="false" />
+            <element signature="e#7468#7469#0" expanded="false" />
+            <element signature="e#9915#9916#0" expanded="false" />
+            <element signature="e#10077#11882#0" expanded="false" />
+            <element signature="e#11881#11882#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/values/colors.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="153">
+          <caret line="9" column="24" lean-forward="false" selection-start-line="9" selection-start-column="17" selection-end-line="9" selection-end-column="24" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/MyApplication.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="360">
+          <caret line="105" column="50" lean-forward="false" selection-start-line="105" selection-start-column="50" selection-end-line="105" selection-end-column="50" />
+          <folding>
+            <element signature="method#getHttpClient#0;class#MyApplication#0" expanded="false" />
+            <element signature="method#shutdownHttpClient#0;class#MyApplication#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P06_Upload.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-3041">
+          <caret line="173" column="58" lean-forward="true" selection-start-line="173" selection-start-column="58" selection-end-line="173" selection-end-column="58" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P05_Gallery.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="97">
+          <caret line="157" column="34" lean-forward="false" selection-start-line="157" selection-start-column="28" selection-end-line="157" selection-end-column="34" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/network/NetworkHelper.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="228">
+          <caret line="46" column="5" lean-forward="true" selection-start-line="46" selection-start-column="5" selection-end-line="46" selection-end-column="5" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/MainActivity.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="379">
+          <caret line="361" column="25" lean-forward="false" selection-start-line="361" selection-start-column="25" selection-end-line="361" selection-end-column="25" />
+          <folding>
+            <element signature="e#3648#5449#0" expanded="false" />
+            <element signature="e#5542#6218#0" expanded="false" />
+            <element signature="e#6334#7581#0" expanded="false" />
+            <element signature="e#7666#11879#0" expanded="false" />
+            <element signature="e#15065#15502#0" expanded="false" />
+            <element signature="e#15522#18127#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/Constants.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="202">
+          <caret line="28" column="22" lean-forward="false" selection-start-line="28" selection-start-column="22" selection-end-line="28" selection-end-column="22" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="85">
+          <caret line="5" column="0" lean-forward="false" selection-start-line="5" selection-start-column="0" selection-end-line="5" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/f_07_socket.xml">
+      <provider editor-type-id="android-designer2">
+        <state />
+      </provider>
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="272">
+          <caret line="16" column="40" lean-forward="false" selection-start-line="16" selection-start-column="40" selection-end-line="16" selection-end-column="40" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P07_Socket.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="169">
+          <caret line="172" column="76" lean-forward="false" selection-start-line="172" selection-start-column="76" selection-end-line="172" selection-end-column="76" />
+          <folding>
+            <element signature="method#init#0;class#P07_Socket#0" expanded="false" />
+            <element signature="e#5292#5293#0" expanded="true" />
+            <element signature="e#5335#5336#0" expanded="true" />
+            <element signature="e#5585#5757#0" expanded="true" />
+            <element signature="e#5756#5757#0" expanded="true" />
+            <element signature="e#6106#8696#0" expanded="true" />
+            <element signature="e#6482#6726#0" expanded="true" />
+            <element signature="e#6725#6726#0" expanded="true" />
+            <element signature="e#7289#7534#0" expanded="true" />
+            <element signature="e#7533#7534#0" expanded="true" />
+            <element signature="e#7656#7912#0" expanded="true" />
+            <element signature="e#7911#7912#0" expanded="true" />
+            <element signature="e#8197#8455#0" expanded="true" />
+            <element signature="e#8454#8455#0" expanded="true" />
+            <element signature="e#8695#8696#0" expanded="true" />
+            <element signature="e#9284#9585#0" expanded="true" />
+            <element signature="e#9584#9585#0" expanded="true" />
           </folding>
         </state>
       </provider>

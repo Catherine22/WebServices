@@ -42,7 +42,7 @@ import catherine.messagecenter.Client;
 
 public class MyApplication extends Application {
     public static MyApplication INSTANCE;
-    public HandlerThread calHandlerThread;
+    public HandlerThread calHandlerThread, socketHandlerThread;
     public HttpClient httpClient;
     private List<String> runningActivities;
     private Stack<Client> localBroadCastReceivers;
@@ -65,6 +65,8 @@ public class MyApplication extends Application {
                 if (runningActivities.size() == 0) {
                     calHandlerThread = new HandlerThread("cal_handler_thread");
                     calHandlerThread.start();
+                    socketHandlerThread = new HandlerThread("socket_handler_thread");
+                    socketHandlerThread.start();
                 }
                 runningActivities.add(activity.getLocalClassName());
             }
@@ -99,8 +101,10 @@ public class MyApplication extends Application {
                 //startActivity()后才能执行finish()，否则会计算错误
                 runningActivities.remove(activity.getLocalClassName());
                 //当应用已无运行画面时释放HandlerThread
-                if (runningActivities.size() == 0)
+                if (runningActivities.size() == 0) {
                     stopLooper(calHandlerThread);
+                    stopLooper(socketHandlerThread);
+                }
 
                 //释放全部的localBroadCastReceiver
                 while (localBroadCastReceivers.size() > 0) {

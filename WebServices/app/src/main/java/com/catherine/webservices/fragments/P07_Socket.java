@@ -11,7 +11,11 @@ import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.catherine.webservices.Constants;
@@ -22,16 +26,23 @@ import com.catherine.webservices.interfaces.BackKeyListener;
 import com.catherine.webservices.interfaces.MainInterface;
 import com.catherine.webservices.interfaces.OnItemClickListener;
 import com.catherine.webservices.interfaces.OnRequestPermissionsListener;
+import com.catherine.webservices.network.NetworkHelper;
 import com.catherine.webservices.toolkits.CLog;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.PrintStream;
 import java.io.PrintWriter;
+import java.net.ConnectException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,15 +54,14 @@ import java.util.List;
 
 public class P07_Socket extends LazyFragment {
     public final static String TAG = "P07_Socket";
-    private List<String> features, descriptions, contents;
     private MainInterface mainInterface;
-    private SwipeRefreshLayout srl_container;
-    private TextCardRVAdapter adapter;
-    private Handler handler;
-
+    private Handler msgHandler, networkHandler;
+    private TextView tv_history;
+    private EditText et_input;
+    private Button bt_send;
     private List<Socket> sockets;
-    private ServerSocket server;
-    private Socket socket = null;
+    private NetworkHelper helper;
+    private Socket socket;
 
     public static P07_Socket newInstance(boolean isLazyLoad) {
         Bundle args = new Bundle();
@@ -65,8 +75,10 @@ public class P07_Socket extends LazyFragment {
     public void onCreateViewLazy(Bundle savedInstanceState) {
         super.onCreateViewLazy(savedInstanceState);
         setContentView(R.layout.f_07_socket);
+        helper = new NetworkHelper(getActivity());
         mainInterface = (MainInterface) getActivity();
-        handler = new Handler(MyApplication.INSTANCE.calHandlerThread.getLooper());
+        msgHandler = new Handler(MyApplication.INSTANCE.socketHandlerThread.getLooper());
+        networkHandler = new Handler(MyApplication.INSTANCE.socketHandlerThread.getLooper());
         init();
     }
 
@@ -126,160 +138,119 @@ public class P07_Socket extends LazyFragment {
 
 
     private void fillInData() {
-        features = new ArrayList<>();
-        features.add("Send messages to a specific ip address");
-        features.add("UDP");
-
-        descriptions = new ArrayList<>();
-        descriptions.add("Socket connection based on TCP/IP.");
-        descriptions.add("Socket connection based on UDP.");
-
-
-        contents = new ArrayList<>();
-        for (int i = 0; i < features.size(); i++) {
-            contents.add("");
-        }
-
         sockets = new ArrayList<>();
     }
 
     private void initComponent() {
-        srl_container = (SwipeRefreshLayout) findViewById(R.id.srl_container);
-        srl_container.setColorSchemeResources(R.color.colorPrimary, R.color.colorAccent, R.color.colorPrimaryDark, R.color.colorAccentDark);
-        srl_container.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        tv_history = (TextView) findViewById(R.id.tv_history);
+        et_input = (EditText) findViewById(R.id.et_input);
+        bt_send = (Button) findViewById(R.id.bt_send);
+        bt_send.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onRefresh() {
-                if (server != null) {
-                    try {
-                        server.close();
-                        Toast.makeText(getApplicationContext(), "SocketServer closed", Toast.LENGTH_LONG).show();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-                for (Socket sk : sockets) {
-                    if (sk != null) {
-                        try {
-                            sk.close();
-                            Toast.makeText(getApplicationContext(), "SocketServer closed", Toast.LENGTH_LONG).show();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-
-                try {
-                    sockets.clear();
-                    socket.close();
-                    CLog.Companion.i(TAG, "Socket server is closed.");
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-                init();
-                srl_container.setRefreshing(false);
+            public void onClick(View view) {
+                send(et_input.getText().toString());
             }
         });
-
         mainInterface.setBackKeyListener(new BackKeyListener() {
             @Override
             public void OnKeyDown() {
-
-                if (server != null || sockets != null) {
-                    try {
-                        server.close();
-                        Toast.makeText(getApplicationContext(), "SocketServer closed", Toast.LENGTH_LONG).show();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-
-                    for (Socket sk : sockets) {
-                        if (sk != null) {
-                            try {
-                                sk.close();
-                                Toast.makeText(getApplicationContext(), "SocketServer closed", Toast.LENGTH_LONG).show();
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-
-                    try {
-                        sockets.clear();
-                        socket.close();
-                        CLog.Companion.i(TAG, "Socket server is closed.");
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    mainInterface.backToPreviousPage();
-                } else
-                    mainInterface.backToPreviousPage();
+                mainInterface.backToPreviousPage();
             }
         });
 
-        RecyclerView rv_main_list = (RecyclerView) findViewById(R.id.rv_main_list);
-//        rv_main_list.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.Companion.getVERTICAL_LIST()));
-        rv_main_list.setLayoutManager(new LinearLayoutManager(getActivity()));
-        adapter = new TextCardRVAdapter(getActivity(), null, features, descriptions, new OnItemClickListener() {
+    }
+
+    private void send(final String content) {
+        if (TextUtils.isEmpty(content))
+            return;
+
+        networkHandler.post(new Runnable() {
             @Override
-            public void onItemClick(@NotNull View view, final int position) {
-                switch (position) {
-                    case 0:
-                        handler.post(new Runnable() {
+            public void run() {
+                try {
+                    //1.创建客户端Socket，指定服务器地址和端口
+                    socket = new Socket(Constants.SOCKET_HOST, Constants.SOCKET_PORT);
+                    final String state = (socket.isConnected()) ? "Connected" : "Failed to connect";
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            tv_history.setText(String.format("%s\n%s", tv_history.getText(), state));
+                        }
+                    });
+
+                    sockets.add(socket);
+                    msgHandler.post(new ClientRunnable(socket));
+
+                    //2.获取输出流，向服务器端发送信息
+                    OutputStream os = socket.getOutputStream();//字节输出流
+                    PrintWriter pw = new PrintWriter(os);//将输出流包装为打印流
+                    // 获取客户端的IP地址
+                    InetAddress address = InetAddress.getLocalHost();
+                    final String ip = address.getHostAddress();
+                    CLog.Companion.d(TAG, "ip:" + ip);
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            tv_history.setText(String.format("%s\nip: %s", tv_history.getText(), ip));
+                        }
+                    });
+                    pw.write(content);
+                    pw.flush();
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            tv_history.setText(String.format("%s\nYou sent: %s", tv_history.getText(), content));
+                        }
+                    });
+                    socket.shutdownOutput();//关闭输出流
+                    socket.close();
+
+                } catch (ConnectException e) {
+                    e.printStackTrace();
+                    if (!helper.isNetworkHealth()) {
+                        getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                String s;
-                                try {
-                                    //1.创建客户端Socket，指定服务器地址和端口
-                                    Socket socket = new Socket(Constants.SOCKET_HOST, Constants.SOCKET_PORT);
-                                    //2.获取输出流，向服务器端发送信息
-                                    OutputStream os = socket.getOutputStream();//字节输出流
-                                    PrintWriter pw = new PrintWriter(os);//将输出流包装为打印流
-                                    //获取客户端的IP地址
-                                    InetAddress address = InetAddress.getLocalHost();
-                                    String ip = address.getHostAddress();
-                                    pw.write("Hi there, I am " + ip);
-                                    pw.flush();
-                                    socket.shutdownOutput();//关闭输出流
-                                    socket.close();
-
-                                    CLog.Companion.i(TAG, "Send the message");
-                                    s = contents.get(position);
-                                    s += "\n" + "Send the message";
-                                    contents.set(position, s);
-                                    adapter.setContents(contents);
-                                    getActivity().runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            adapter.notifyDataSetChanged();
-                                        }
-                                    });
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                    s = contents.get(position);
-                                    s += "\n" + "Error: " + e.getMessage();
-                                    contents.set(position, s);
-                                    adapter.setContents(contents);
-                                    getActivity().runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            adapter.notifyDataSetChanged();
-                                        }
-                                    });
-                                }
+                                Toast.makeText(getActivity(), "Offline", Toast.LENGTH_LONG).show();
                             }
                         });
-                        break;
-                    case 1:
-                        break;
+                    }
+                } catch (UnknownHostException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
-
-            @Override
-            public void onItemLongClick(@NotNull View view, int position) {
-
-            }
         });
-        rv_main_list.setAdapter(adapter);
+    }
+
+    private class ClientRunnable implements Runnable {
+        private BufferedReader br;
+        private String info;
+
+        private ClientRunnable(Socket socket) throws IOException {
+            // 3.连接后获取输入流，读取客户端信息
+            InputStream is = socket.getInputStream(); // 获取输入流
+            InputStreamReader isr = new InputStreamReader(is, "UTF-8");
+            br = new BufferedReader(isr);
+        }
+
+        @Override
+        public void run() {
+            try {
+                while ((info = br.readLine()) != null) {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            // 读取socket输入流的内容并打印
+                            tv_history.setText(String.format("%s\nYou got: %s", tv_history.getText(), info));
+                        }
+                    });
+                }
+//				socket.shutdownInput();// 关闭输入流
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
