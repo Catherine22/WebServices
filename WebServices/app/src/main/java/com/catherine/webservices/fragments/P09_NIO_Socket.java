@@ -21,6 +21,7 @@ import com.catherine.webservices.R;
 import com.catherine.webservices.interfaces.BackKeyListener;
 import com.catherine.webservices.interfaces.MainInterface;
 import com.catherine.webservices.interfaces.OnRequestPermissionsListener;
+import com.catherine.webservices.network.NIOSocketInputAsyncTask;
 import com.catherine.webservices.network.NetworkHelper;
 import com.catherine.webservices.network.SocketInputAsyncTask;
 import com.catherine.webservices.network.SocketListener;
@@ -60,10 +61,9 @@ public class P09_NIO_Socket extends LazyFragment {
     private FloatingActionButton fab_disconnect, fab_settings;
     private boolean isFABOpen;
     private NetworkHelper helper;
-
-    private Selector selector;
-    private Charset charset;
-    private SocketChannel sc;
+    private SocketChannel socketChannel;
+    private ByteBuffer readBuffer;
+    private int readBytes;
 
     public static P09_NIO_Socket newInstance(boolean isLazyLoad) {
         Bundle args = new Bundle();
@@ -136,64 +136,32 @@ public class P09_NIO_Socket extends LazyFragment {
         super.onViewCreated(view, savedInstanceState);
     }
 
-
     private void initSocket() {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    selector = Selector.open();
-                    charset = Charset.forName("UTF-8");
-                    InetSocketAddress isa = new InetSocketAddress(Constants.SOCKET_HOST, Constants.NIO_SOCKET_PORT);
-                    //调用open方法创建连接到指定主机的SocketChannel
-                    sc = SocketChannel.open(isa);
-                    //设置以非阻塞的方式工作
-                    sc.configureBlocking(false);
-                    //将socketChannel对象注册到指定selector
-                    sc.register(selector, SelectionKey.OP_READ);
-                    //启动读取服务器端数据端线程
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                while (selector.select() > 0) {
-                                    //遍历每个有可用IO操作Channel对应端SelectionKey
-                                    for (SelectionKey sk : selector.selectedKeys()) {
+                    //打开 SocketChannel
+                    socketChannel = SocketChannel.open(new InetSocketAddress(Constants.SOCKET_HOST, Constants.NIO_SOCKET_PORT));
+                    //设置为 非阻塞
+                    socketChannel.configureBlocking(false);
 
-                                        //删除正在处理的SelectionKey
-                                        selector.selectedKeys().remove(sk);
-                                        if (sk.isReadable()) {
-                                            //使用NIO读取Channel中的数据
-                                            SocketChannel sc = (SocketChannel) sk.channel();
-                                            ByteBuffer buf = ByteBuffer.allocate(1024);
-                                            String message = "";
-                                            while (sc.read(buf) > -1) {
-                                                sc.read(buf);
-                                                buf.flip();
-                                                message += charset.decode(buf);
-                                            }
-
-                                            CLog.Companion.i(TAG, "You got:" + message);
-//                                            getActivity().runOnUiThread(new Runnable() {
-//                                                @Override
-//                                                public void run() {
-//                                                    // 读取socket输入流的内容并打印
-//                                                    tv_history.setText(String.format("%s\nYou got: %s", tv_history.getText(), message));
-//
-//                                                }
-//                                            });
-                                            //为下次读取做准备
-                                            sk.interestOps(SelectionKey.OP_READ);
-                                        }
-                                    }
+                    readBuffer = ByteBuffer.allocate(1024);
+                    while (true) {
+                        readBuffer.clear();
+                        readBytes = socketChannel.read(readBuffer);
+                        if (readBytes > 0) {
+                            readBuffer.flip();
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    tv_history.setText(String.format("%s\nYou got: %s", tv_history.getText(), new String(readBuffer.array(), 0, readBytes)));
                                 }
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
+                            });
+                            socketChannel.close();
+                            break;
                         }
-                    }).start();
-
-
+                    }
                 } catch (ConnectException e) {
                     e.printStackTrace();
                     if (!helper.isNetworkHealth()) {
@@ -249,22 +217,31 @@ public class P09_NIO_Socket extends LazyFragment {
     }
 
 
-    private void send(String message) {
+    private void send(final String message) {
         if (TextUtils.isEmpty(message))
             return;
+        new NIOSocketInputAsyncTask(socketChannel, message, new SocketListener() {
+            @Override
+            public void connectSuccess(String message) {
+                et_input.setText("");
+                tv_history.setText(String.format("%s\nYou sent: %s", tv_history.getText(), message));
+            }
 
-//        tv_state.setText("Connecting...");
-//        initSocket();
-
-
-        try {
-            sc.write(charset.encode(message));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        et_input.setText("");
-        tv_history.setText(String.format("%s\nYou sent: %s", tv_history.getText(), message));
+            @Override
+            public void connectFailure(Exception e) {
+                e.printStackTrace();
+                if (e instanceof ConnectException) {
+                    if (!helper.isNetworkHealth()) {
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(getActivity(), "Offline", Toast.LENGTH_LONG).show();
+                            }
+                        });
+                    }
+                }
+            }
+        }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
 
     }
