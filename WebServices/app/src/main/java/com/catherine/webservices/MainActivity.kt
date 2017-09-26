@@ -358,7 +358,7 @@ class MainActivity : FragmentActivity(), MainInterface {
         })
 
         //set current tab
-        tabLayout.setScrollPosition(vp_content.adapter.count,0f,true)
+        tabLayout.setScrollPosition(vp_content.adapter.count, 0f, true)
         vp_content.currentItem = vp_content.adapter.count
 
 

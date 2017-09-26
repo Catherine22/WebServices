@@ -1,81 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout android:id="@+id/fl_container"
              xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:app="http://schemas.android.com/apk/res-auto"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
              android:background="@android:color/white"
-             android:clickable="true" android:focusable="true">
+             android:clickable="true"
+             android:focusable="true">
 
-    <RelativeLayout
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/srl_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <TextView
-            android:id="@+id/tv_state"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:gravity="center"
-            android:textColor="@color/colorPrimary"/>
 
-        <ScrollView
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_main_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@+id/et_input"
-            android:layout_below="@+id/tv_state"
-            android:layout_margin="10dp">
+            android:nestedScrollingEnabled="true"/>
 
-            <TextView
-                android:id="@+id/tv_history"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/grey900"
-                android:textSize="14sp"/>
-
-        </ScrollView>
-
-        <EditText
-            android:id="@+id/et_input"
-            android:layout_width="match_parent"
-            android:layout_height="35dp"
-            android:layout_alignParentBottom="true"
-            android:layout_toLeftOf="@+id/bt_send"/>
-
-        <Button
-            android:id="@+id/bt_send"
-            android:layout_width="wrap_content"
-            android:layout_height="35dp"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:text="SEND"/>
-
-    </RelativeLayout>
-
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_disconnect"
-        android:layout_width="@dimen/fab_01"
-        android:layout_height="@dimen/fab_01"
-        android:layout_gravity="bottom|end"
-        android:layout_marginBottom="@dimen/fab_item_m_b"
-        android:layout_marginEnd="@dimen/fab_item_m"
-        android:layout_marginRight="@dimen/fab_item_m"
-        android:scaleType="centerInside"
-        app:fabSize="mini"
-        app:srcCompat="@drawable/cancel"
-        app:backgroundTint="@android:color/white"/>
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_settings"
-        android:layout_width="@dimen/fab_00"
-        android:layout_height="@dimen/fab_00"
-        android:layout_gravity="bottom|end"
-        android:layout_marginBottom="@dimen/fab_00_m_b"
-        android:layout_marginEnd="@dimen/fab_m"
-        android:layout_marginRight="@dimen/fab_m"
-        android:scaleType="centerInside"
-        app:fabSize="normal"
-        app:srcCompat="@drawable/settings"
-        app:backgroundTint="@android:color/white"/>
+    </android.support.v4.widget.SwipeRefreshLayout>
 </FrameLayout>

@@ -27,6 +27,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 /**
  * Created by Catherine on 2017/9/15.
@@ -145,29 +146,11 @@ public class P04_Cache extends LazyFragment {
                         Bundle b0 = new Bundle();
                         b0.putBoolean("show_pic_offline", false);
                         callFragment(Constants.P05_Gallery, b0);
-                        mainInterface.setBackKeyListener(new BackKeyListener() {
-                            @Override
-                            public void OnKeyDown() {
-                                if (getChildFragmentManager().getBackStackEntryCount() > 0) {
-                                    getChildFragmentManager().popBackStack();
-                                } else
-                                    mainInterface.backToPreviousPage();
-                            }
-                        });
                         break;
                     case 1:
                         Bundle b1 = new Bundle();
                         b1.putBoolean("show_pic_offline", true);
                         callFragment(Constants.P05_Gallery, b1);
-                        mainInterface.setBackKeyListener(new BackKeyListener() {
-                            @Override
-                            public void OnKeyDown() {
-                                if (getChildFragmentManager().getBackStackEntryCount() > 0) {
-                                    getChildFragmentManager().popBackStack();
-                                } else
-                                    mainInterface.backToPreviousPage();
-                            }
-                        });
                         break;
                 }
             }
@@ -178,6 +161,15 @@ public class P04_Cache extends LazyFragment {
             }
         });
         rv_main_list.setAdapter(adapter);
+        mainInterface.setBackKeyListener(new BackKeyListener() {
+            @Override
+            public void OnKeyDown() {
+                if (getChildFragmentManager().getBackStackEntryCount() > 0) {
+                    getChildFragmentManager().popBackStack();
+                } else
+                    mainInterface.backToPreviousPage();
+            }
+        });
     }
 
     private void callFragment(int id, Bundle bundle) {
@@ -194,7 +186,6 @@ public class P04_Cache extends LazyFragment {
                 break;
 
         }
-
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         transaction.add(R.id.fl_container, fragment, tag);
         transaction.addToBackStack(title);
