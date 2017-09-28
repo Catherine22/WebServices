@@ -169,9 +169,7 @@ public class P03_Downloader extends LazyFragment {
                                 periods[position0] = System.currentTimeMillis() - time0;
                                 if (total == LENGTH) {
                                     CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess downloadedLength:%d, LENGTH:%d \n Spent %d (sec)", total, LENGTH, TimeUnit.MILLISECONDS.toSeconds(periods[position0])));
-                                    infos.set(position0, String.format(Locale.ENGLISH, "connectSuccess downloadedLength:%d, LENGTH:%d \n Spent %d (sec)", total, LENGTH, TimeUnit.MILLISECONDS.toSeconds(periods[position0])));
-                                    adapter.updateInfo(infos);
-                                    adapter.notifyDataSetChanged();
+                                    updateView(position0, IDLE);
                                 }
                             }
 
@@ -219,9 +217,7 @@ public class P03_Downloader extends LazyFragment {
                                 periods[position1] = System.currentTimeMillis() - time1;
                                 if (total == LENGTH) {
                                     CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess downloadedLength:%d, LENGTH:%d \n Spent %d (sec)", total, LENGTH, TimeUnit.MILLISECONDS.toSeconds(periods[position1])));
-                                    infos.set(position1, String.format(Locale.ENGLISH, "connectSuccess downloadedLength:%d, LENGTH:%d \n Spent %d (sec)", total, LENGTH, TimeUnit.MILLISECONDS.toSeconds(periods[position1])));
-                                    adapter.updateInfo(infos);
-                                    adapter.notifyDataSetChanged();
+                                    updateView(position1, IDLE);
                                 }
                             }
                         });

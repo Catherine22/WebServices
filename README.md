@@ -1,4 +1,4 @@
-## Thread
+# Thread
 
 > Don't hold references to any type of UI specific objects in any
 > threading scenarios.     
@@ -7,36 +7,36 @@
 Looper class keeps the thread alive, holds a message queue and pop works off a queue and execute on.
 Handler class helps put work at the head, the tail or even set a time-based delay.
 
-### AsyncTask：
+## AsyncTask：
 - Helps get work on/off the UI thread.
 
 - Basically, all AsyncTasks are created in a same thread, it means them will execute in a serial fashion from a single message queue.
 - There is a way to force AsyncTask works in thread-pooled way : AsyncTask.executeOnExecutor
 
-### HandlerThread
+## HandlerThread
 - Dedicated thread for API callbacks.
 
 - HandlerThread is a nifty solution for the work that not deal with UI updates.
 - Don't forget to assign the priority because CPU can only execute a few parallel threads.
 
-### ThreadPool
+## ThreadPool
 - Running lots of parallel small works.
 
-### IntentService
+## IntentService
 - It's ideal for background tasks.
 - Helps get intents off UI thread.
 
 *It's the easiest way to update UIs by running on AsyncTask, and HandlerThread is also a excellent solution for the work that not deal with UI updates.*
 
-## Web
+# Web
 
 
-### Tips
+## Tips
 [![TCP/IP model](https://raw.githubusercontent.com/Catherine22/WebServices/master/tcp_ip_model.png)](https://technet.microsoft.com/en-us/library/cc958821.aspx)
 
 
 > - TCP/IP specifies how data is exchanged over the internet.
-> - Socket is kind of like APIs which packages TCP/IP operations.
+> - Socket is kind of like APIs which packages TCP and UDP operations.
 > - HTTP, FTP, SMTP and the other protocols map to the application layer which only standardizes communication and depends upon the underlying
 > transport layer protocols to establish host-to-host data transfer
 > channels and manage the data exchange in a client-server or
@@ -47,7 +47,7 @@ Handler class helps put work at the head, the tail or even set a time-based dela
 
 
 
-### HttpClient (org.apache.http)
+## HttpClient (org.apache.http)
 - Android 6.0 release removes support for the Apache HTTP client. You still want to import this library while your target API is higher than 23, you have to declare the following codes in build.gradle:
 ```
 android {
@@ -59,28 +59,28 @@ android {
 - [P01_Apache]
 - HttpClient settings:[MyApplication], [MyApache]
 
-### HttpURLConnection (java.net.HttpURLConnection)
+## HttpURLConnection (java.net.HttpURLConnection)
 - [P02_HttpURLConnection]
 - HttpURLConnection settings:[MyHttpURLConnection]
 
 
-### OkHttp
+## OkHttp
 
 
-### Volley
+## Volley
 
 
-### Multiple-threading download
+## Multiple-threading download
 - Download a single file with multiple threads
 - Show the progressbar
 - [P03_Downloader]
 - [DownloaderAsyncTask]
 
-### Upload files to the server
+## Upload files to the server
 - [P06_Upload]
 
 
-### Cache
+## Cache
 
 >Under normal usage, the starting point for any developer should be to add as an aggressive caching strategy to the files in the application that will not change. 		
 >Normally this will include static files that are served by the application such as **images**, **CSS file** and **Javascript files**. 		
@@ -206,7 +206,7 @@ Cache-Control:no-cache, no-store
 
 
 
-### Download and cache images
+## Download and cache images
 
 1. Download a url list.		
 2. Check internal or external storage of the device and if the image has had cache, skip step 3 and show it.
@@ -216,18 +216,18 @@ Cache-Control:no-cache, no-store
 Here is the example: [P05_Gallery], [ImageCardRVAdapter]
 
 
-### TCP Sockets
+## TCP Sockets
 
 **Blocking socket**
-- Server : Run [MySocket] on eclipse
+- Server : Run [MySocket] with eclipse
 ```java
 tcpSocketReceiver();
 ```
-- Client : Run WebServices this app and open [P08_Blocking_Socket] fragment on Android devices.
+- Client : Run WebServices and open [P08_Blocking_Socket] fragment on Android devices.
 
 
 **Non-blocking socket (NIO Socket)**
-- Server : Run [MySocket] on eclipse
+- Server : Run [MySocket] with eclipse
 ```java
 InetAddress address = InetAddress.getLocalHost();
 Runnable runnable = new Runnable() {
@@ -242,13 +242,13 @@ Runnable runnable = new Runnable() {
 };
 new Thread(runnable, "Thread-1").start();
 ```
-- Client : Run WebServices this app and open [P09_NIO_Socket] fragment on Android devices.
+- Client : Run WebServices and open [P09_NIO_Socket] fragment on Android devices.
 
-### UDP Sockets
+## UDP Sockets
 
 
 
-### References
+## References
 - [Tencent bugly]
 - [HTTP 1.1 doc]
 - [Google Web Fundamentals]
