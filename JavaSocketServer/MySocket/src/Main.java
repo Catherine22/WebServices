@@ -12,6 +12,7 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketAddress;
 import java.net.SocketException;
 import java.nio.ByteBuffer;
 import java.nio.channels.Channel;
@@ -22,27 +23,36 @@ import java.nio.channels.SocketChannel;
 import java.nio.channels.spi.SelectorProvider;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 public class Main {
 	private static List<Socket> sockets = new ArrayList<>();
 	private final static int PORT1 = 11223;
-	private final static int PORT2 = 11345;
-	
-	//NIO
-	// 用于检测所有Channel状态的Selector
-	private static Selector selector = null;
-	// 定义实现编码、解码的字符集对象
-	private static Charset charset = Charset.forName("UTF-8");
-	private static String message = "N/A";
-
+	public final static int PORT2 = 11345;
 
 	public static void main(String[] args) throws IOException {
 		// tcpSocketReceiver();
-		nioSocketReceiver();
+
+		InetAddress address = InetAddress.getLocalHost();
+		Runnable runnable = new Runnable() {
+			@Override
+			public void run() {
+				try {
+					new Main(address.getHostAddress(), PORT2).startServer();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		};
+		new Thread(runnable, "Thread-1").start();
+		
+		
 		// asyncTcpSocketReceiver();
+
 	}
 
 	/**
@@ -114,153 +124,98 @@ public class Main {
 		}
 	}
 
+	private Selector selector;
+	private Map<SocketChannel, List> dataMapper;
+	private InetSocketAddress listenAddress;
 
-	public static void nioSocketReceiver() throws IOException {
-		HandlerSelectionKey handler = new HandlerHandlerSelectionKeyImpl();
+	public Main(String address, int port) throws IOException {
+		listenAddress = new InetSocketAddress(address, port);
+		dataMapper = new HashMap<SocketChannel, List>();
+	}
 
-		// 创建 ServerSocketChannel
-		ServerSocketChannel server = ServerSocketChannel.open();
-		server.configureBlocking(false);
-		server.bind(new InetSocketAddress(PORT2));
-		// 创建 Selector
-		Selector selector = Selector.open();
-		server.register(selector, SelectionKey.OP_ACCEPT);
-		// 死循环，持续接收 客户端连接
+	// create server channel
+	private void startServer() throws IOException {
+		this.selector = Selector.open();
+		ServerSocketChannel serverChannel = ServerSocketChannel.open();
+		serverChannel.configureBlocking(false);
+
+		// retrieve server socket and bind to port
+		serverChannel.socket().bind(listenAddress);
+		serverChannel.register(this.selector, SelectionKey.OP_ACCEPT);
+
+		System.out.println("Server started...");
+
 		while (true) {
-			// selector.select(); 是阻塞方法
-			int keys = selector.select();
-			if (keys > 0) {
-				Iterator<SelectionKey> it = selector.selectedKeys().iterator();
-				while (it.hasNext()) {
-					SelectionKey key = it.next();
-					it.remove();
-					// 处理 SelectionKey
-					handler.handler(key, selector);
+			// wait for events
+			this.selector.select();
+
+			// work on selected keys
+			Iterator keys = this.selector.selectedKeys().iterator();
+			while (keys.hasNext()) {
+				SelectionKey key = (SelectionKey) keys.next();
+
+				// this is necessary to prevent the same key from coming up
+				// again the next time around.
+				keys.remove();
+
+				if (!key.isValid()) {
+					continue;
+				}
+
+				if (key.isAcceptable()) {
+					this.accept(key);
+				} else if (key.isReadable()) {
+					this.read(key);
 				}
 			}
 		}
 	}
 
-	/**
-	 * SelectionKey 处理接口
-	 *
-	 */
-	public static interface HandlerSelectionKey {
+	// accept a connection made to this channel's socket
+	private void accept(SelectionKey key) throws IOException {
+		ServerSocketChannel serverChannel = (ServerSocketChannel) key.channel();
+		SocketChannel channel = serverChannel.accept();
+		channel.configureBlocking(false);
+		Socket socket = channel.socket();
+		SocketAddress remoteAddr = socket.getRemoteSocketAddress();
+		System.out.println("Connected to: " + remoteAddr);
 
-		public void handler(SelectionKey key, Selector selector) throws IOException;
-
+		// register channel with selector for further IO
+		dataMapper.put(channel, new ArrayList());
+		channel.register(this.selector, SelectionKey.OP_READ);
 	}
 
-	/**
-	 * SelectionKey 接口 实现类
-	 *
-	 */
-	public static class HandlerHandlerSelectionKeyImpl implements HandlerSelectionKey {
+	// read from the socket channel
+	private void read(SelectionKey key) throws IOException {
+		SocketChannel channel = (SocketChannel) key.channel();
+		ByteBuffer buffer = ByteBuffer.allocate(1024);
+		int numRead = -1;
+		numRead = channel.read(buffer);
 
-		@Override
-		public void handler(SelectionKey key, Selector selector) throws IOException {
-			int keyState = selectionKeyState(key);
-			switch (keyState) {
-			case SelectionKey.OP_ACCEPT:
-				System.out.println("OP_ACCEPT");
-				ServerSocketChannel serverSocketChannel = (ServerSocketChannel) key.channel();
-				accept(serverSocketChannel, selector);
-				break;
-			case SelectionKey.OP_READ:
-				System.out.println("OP_READ");
-				SocketChannel readSocketChannel = (SocketChannel) key.channel();
-				read(readSocketChannel, selector);
-				break;
-
-			case SelectionKey.OP_WRITE:
-				System.out.println("OP_WRITE");
-				SocketChannel writeSocketChannel = (SocketChannel) key.channel();
-				write(writeSocketChannel, selector, message);
-				break;
-			}
+		if (numRead == -1) {
+			this.dataMapper.remove(channel);
+			Socket socket = channel.socket();
+			SocketAddress remoteAddr = socket.getRemoteSocketAddress();
+			System.out.println("Connection closed by client: " + remoteAddr);
+			channel.close();
+			key.cancel();
+			return;
 		}
 
-		/**
-		 * 获取 SelectionKey 是什么事件
-		 * 
-		 * @param key
-		 * @return
-		 */
-		private int selectionKeyState(SelectionKey key) {
-			if (key.isAcceptable()) {
-				return SelectionKey.OP_ACCEPT;
-			} else if (key.isReadable()) {
-				return SelectionKey.OP_READ;
-			} else if (key.isWritable()) {
-				return SelectionKey.OP_WRITE;
-			}
-			return -1;
+		byte[] data = new byte[numRead];
+		System.arraycopy(buffer.array(), 0, data, 0, numRead);
+		String content = new String(data);
+		System.out.println("Got: " + content);
+
+		if ("*#DISCONNECT11223#*".equals(content)) {
+			InetAddress address = InetAddress.getLocalHost();
+			System.out.println("Connection closed by server: " + address.getHostAddress());
+			channel.close();
+			key.cancel();
+		} else {
+			String response = "Hi, I am server, I got your message: " + content;
+			channel.write(ByteBuffer.wrap(response.getBytes(Charset.forName("UTF-8"))));
 		}
-
-		/**
-		 * 接口客户端请求
-		 * 
-		 * @param serverSocketChannel
-		 * @param selector
-		 * @throws IOException
-		 */
-		private void accept(ServerSocketChannel serverSocketChannel, Selector selector) throws IOException {
-			SocketChannel socketChannel = serverSocketChannel.accept();
-			socketChannel.configureBlocking(false);
-			// 将 channel 注册到 Selector
-			socketChannel.register(selector, SelectionKey.OP_READ);
-		}
-
-
-		/**
-		 * 读取客户端发送过来的信息
-		 * 
-		 * @param socketChannel
-		 * @param selector
-		 * @throws IOException
-		 */
-		private void read(SocketChannel socketChannel, Selector selector) throws IOException {
-			ByteBuffer readBuffer = ByteBuffer.allocate(8192);
-			int readBytes = socketChannel.read(readBuffer);
-			if (readBytes > 0) {
-				String info = new String(readBuffer.array(), 0, readBytes);
-				System.out.println("You got the message: " + info);
-				message = "Hi, I am server! I got your message: " + info;
-
-				// disconnect
-				if ("*#DISCONNECT11223#*".equals(info)) {
-					System.out.println(socketChannel.getRemoteAddress() + " disconnected.");
-					message = "*#DISCONNECT11223#*";
-					// 将 channel 注册到 Selector
-					socketChannel.register(selector, SelectionKey.OP_WRITE);
-				} else {
-					// 将 channel 注册到 Selector
-					socketChannel.register(selector, SelectionKey.OP_WRITE);
-				}
-
-			}
-		}
-
-		/**
-		 * 响应客户端请求
-		 * 
-		 * @param socketChannel
-		 * @param selector
-		 * @throws IOException
-		 */
-		private void write(SocketChannel socketChannel, Selector selector, String message) throws IOException {
-			// 响应消息
-			String responseMsg = message;
-			byte[] responseByte = responseMsg.getBytes();
-			ByteBuffer writeBuffer = ByteBuffer.allocate(responseByte.length);
-			writeBuffer.put(responseByte);
-			writeBuffer.flip();
-			// 响应客户端
-			socketChannel.write(writeBuffer);
-			socketChannel.finishConnect();
-			socketChannel.close();
-		}
-
 	}
 
 	private static void udpSocket() throws IOException {

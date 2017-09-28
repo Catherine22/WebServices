@@ -7,12 +7,8 @@ import android.os.Looper;
 import android.os.Message;
 
 import com.catherine.webservices.Constants;
-import com.catherine.webservices.toolkits.CLog;
-
-import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.net.Socket;
-import java.net.SocketAddress;
+import java.net.SocketException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 import java.nio.charset.Charset;
@@ -24,7 +20,6 @@ import java.nio.charset.Charset;
  */
 
 public class MyNIOSocket {
-    private final static String TAG = "MyNIOSocket";
     private final static int SENT_SUCCESSFULLY = 0;
     private final static int FAILED_TO_SEND = 1;
     private SocketListener inputListener, outputListener;
@@ -64,7 +59,7 @@ public class MyNIOSocket {
         try {
             socketChannel.finishConnect();
             socketChannel.close();
-        } catch (IOException e1) {
+        } catch (Exception e1) {
             e1.printStackTrace();
         }
     }
@@ -103,16 +98,26 @@ public class MyNIOSocket {
                 socketChannel.configureBlocking(false);
 
                 readBuffer = ByteBuffer.allocate(1024);
-                Message msg = new Message();
-                Bundle bundle = new Bundle();
-                while (socketChannel.isOpen()) {
+                Message msg;
+                Bundle bundle;
+
+                while (true) {
                     readBuffer.clear();
                     readBytes = socketChannel.read(readBuffer);
                     if (readBytes > 0) {
                         readBuffer.flip();
+                        msg = new Message();
+                        bundle = new Bundle();
                         bundle.putString("msg", new String(readBuffer.array(), 0, readBytes));
                         msg.setData(bundle);
                         msg.what = SENT_SUCCESSFULLY;
+                        handler.sendMessage(msg);
+                    } else if (readBytes == -1) {
+                        //如果read（）接收到-1，表明服务端关闭，抛出异常
+                        e = new SocketException("Connection closed prematurely");
+                        MyNIOSocket.this.e = e;
+                        msg = new Message();
+                        msg.what = FAILED_TO_SEND;
                         handler.sendMessage(msg);
                         break;
                     }
@@ -132,7 +137,6 @@ public class MyNIOSocket {
         private SocketListener listener;
         private SocketChannel socketChannel;
         private String content;
-        private Exception e = null;
 
         NIOSocketInputAsyncTask(SocketChannel socketChannel, String content, SocketListener listener) {
             this.content = content;
@@ -146,7 +150,7 @@ public class MyNIOSocket {
                 //给服务端发送信息
                 socketChannel.write(ByteBuffer.wrap(content.getBytes(Charset.forName("UTF-8"))));
             } catch (Exception e) {
-                this.e = e;
+                MyNIOSocket.this.e = e;
             }
             return null;
         }

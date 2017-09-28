@@ -219,15 +219,30 @@ Here is the example: [P05_Gallery], [ImageCardRVAdapter]
 ### Socket
 
 **Blocking socket**
-1. Run [MySocket] on eclipse
+- Server : Run [MySocket] on eclipse
 ```java
 tcpSocketReceiver();
 ```
-2. Run WebServices this app and open [P08_Blocking_Socket] fragment on Android devices.
+- Client : Run WebServices this app and open [P08_Blocking_Socket] fragment on Android devices.
 
 
-**Non-blocking socket**
-
+**Non-blocking socket (NIO Socket)**
+- Server : Run [MySocket] on eclipse
+```java
+InetAddress address = InetAddress.getLocalHost();
+Runnable runnable = new Runnable() {
+	@Override
+	public void run() {
+		try {
+			new Main(address.getHostAddress(), 11345).startServer();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+};
+new Thread(runnable, "Thread-1").start();
+```
+- Client : Run WebServices this app and open [P09_NIO_Socket] fragment on Android devices.
 
 
 ### References
@@ -257,5 +272,6 @@ tcpSocketReceiver();
 [ImageCardRVAdapter]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/adapters/ImageCardRVAdapter.java>
 [Socket tutorial]:<http://blog.csdn.net/coder_pig/article/details/48519629>
 [P08_Blocking_Socket]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/P08_Blocking_Socket.java>
+[P09_NIO_Socket]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/P09_NIO_Socket.java>
 [MySocket]:<https://github.com/Catherine22/WebServices/blob/master/JavaSocketServer/MySocket/src/Main.java>
 [What are examples of TCP and UDP in real life scenario ?]:<https://learningnetwork.cisco.com/thread/87103>

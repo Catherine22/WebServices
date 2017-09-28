@@ -24,6 +24,7 @@ import com.catherine.webservices.network.NetworkHelper;
 import com.catherine.webservices.network.SocketListener;
 
 import java.net.ConnectException;
+import java.net.SocketException;
 import java.util.List;
 
 /**
@@ -171,13 +172,10 @@ public class P09_NIO_Socket extends LazyFragment {
             e.printStackTrace();
             if (e instanceof ConnectException) {
                 if (!helper.isNetworkHealth()) {
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(getActivity(), "Offline", Toast.LENGTH_LONG).show();
-                        }
-                    });
+                    tv_state.setText(getResources().getString(R.string.offline));
                 }
+            } else if (e instanceof SocketException) {
+                tv_state.setText("Server error");
             }
         }
     }
@@ -196,14 +194,14 @@ public class P09_NIO_Socket extends LazyFragment {
             e.printStackTrace();
             if (e instanceof ConnectException) {
                 if (!helper.isNetworkHealth()) {
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(getActivity(), "Offline", Toast.LENGTH_LONG).show();
-                        }
-                    });
+                    tv_state.setText(getResources().getString(R.string.offline));
                 }
+            } else if (e instanceof SocketException) {
+                tv_state.setText("Server error");
             }
+
+            et_input.setText("");
+            tv_history.setText(String.format("%s\n%s", tv_history.getText(), "Failed to send."));
         }
     }
 
