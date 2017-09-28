@@ -1,5 +1,6 @@
 package com.catherine.webservices.interfaces
 
+import android.view.View
 
 
 /**
@@ -12,5 +13,8 @@ interface MainInterface {
     fun callFragment(id: Int)
     fun backToPreviousPage()
     fun clearAllFragments()
-    fun setBackKeyListener(listener:BackKeyListener)
+    fun setBackKeyListener(listener: BackKeyListener)
+    fun addBottomLayout(id: Int)
+    fun getBottomLayout(): View
+    fun restoreBottomLayout()
 }

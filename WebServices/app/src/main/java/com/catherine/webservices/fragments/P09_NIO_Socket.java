@@ -5,7 +5,6 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -24,12 +23,7 @@ import com.catherine.webservices.network.MyNIOSocket;
 import com.catherine.webservices.network.NetworkHelper;
 import com.catherine.webservices.network.SocketListener;
 
-import java.io.IOException;
 import java.net.ConnectException;
-import java.net.InetSocketAddress;
-import java.net.UnknownHostException;
-import java.nio.ByteBuffer;
-import java.nio.channels.SocketChannel;
 import java.util.List;
 
 /**
@@ -60,7 +54,7 @@ public class P09_NIO_Socket extends LazyFragment {
     @Override
     public void onCreateViewLazy(Bundle savedInstanceState) {
         super.onCreateViewLazy(savedInstanceState);
-        setContentView(R.layout.f_09_nio_socket);
+        setContentView(R.layout.f_socket);
         helper = new NetworkHelper(getActivity());
         mainInterface = (MainInterface) getActivity();
         init();
@@ -132,8 +126,11 @@ public class P09_NIO_Socket extends LazyFragment {
         fab_settings = (FloatingActionButton) findViewById(R.id.fab_settings);
         tv_state = (TextView) findViewById(R.id.tv_state);
         tv_history = (TextView) findViewById(R.id.tv_history);
-        et_input = (EditText) findViewById(R.id.et_input);
-        bt_send = (Button) findViewById(R.id.bt_send);
+
+        mainInterface.addBottomLayout(R.layout.bottom_socket);
+        View bottom = mainInterface.getBottomLayout();
+        et_input = bottom.findViewById(R.id.et_input);
+        bt_send = bottom.findViewById(R.id.bt_send);
         bt_send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -143,8 +140,7 @@ public class P09_NIO_Socket extends LazyFragment {
 
         fab_disconnect.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                send("*#DISCONNECT11223#*");
-                tv_state.setText("Stop connecting...");
+                tv_state.setText("Stop");
                 release();
             }
         });
@@ -215,9 +211,10 @@ public class P09_NIO_Socket extends LazyFragment {
     private void send(final String message) {
         if (TextUtils.isEmpty(message))
             return;
-        nioSocket.execute(message);
+        nioSocket.write(message);
     }
 
     private void release() {
+        nioSocket.release();
     }
 }

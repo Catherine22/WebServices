@@ -162,6 +162,7 @@ public class P07_Socket extends LazyFragment {
             public void OnKeyDown() {
                 if (getChildFragmentManager().getBackStackEntryCount() > 0) {
                     getChildFragmentManager().popBackStack();
+                    mainInterface.restoreBottomLayout();
                 } else
                     mainInterface.backToPreviousPage();
             }

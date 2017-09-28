@@ -3,13 +3,16 @@ package com.catherine.webservices.network;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.HandlerThread;
+import android.os.Looper;
 import android.os.Message;
 
 import com.catherine.webservices.Constants;
-import com.catherine.webservices.MyApplication;
+import com.catherine.webservices.toolkits.CLog;
 
+import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.net.Socket;
+import java.net.SocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 import java.nio.charset.Charset;
@@ -21,6 +24,7 @@ import java.nio.charset.Charset;
  */
 
 public class MyNIOSocket {
+    private final static String TAG = "MyNIOSocket";
     private final static int SENT_SUCCESSFULLY = 0;
     private final static int FAILED_TO_SEND = 1;
     private SocketListener inputListener, outputListener;
@@ -33,7 +37,7 @@ public class MyNIOSocket {
     private MyNIOSocket(Builder builder) {
         this.inputListener = builder.inputListener;
         this.outputListener = builder.outputListener;
-        handler = new Handler(MyApplication.INSTANCE.socketHandlerThread.getLooper()) {
+        handler = new Handler(Looper.getMainLooper()) {
             @Override
             public void handleMessage(final Message msg) {
                 if (msg.what == SENT_SUCCESSFULLY) {
@@ -52,8 +56,17 @@ public class MyNIOSocket {
         new NIOSocketOutputAsyncTask(handler).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
-    public void execute(String content) {
+    public void write(String content) {
         new NIOSocketInputAsyncTask(socketChannel, content, inputListener).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    }
+
+    public void release() {
+        try {
+            socketChannel.finishConnect();
+            socketChannel.close();
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
     }
 
     public static class Builder {
@@ -74,7 +87,7 @@ public class MyNIOSocket {
         }
     }
 
-    class NIOSocketOutputAsyncTask extends AsyncTask<String, Void, Void> {
+    private class NIOSocketOutputAsyncTask extends AsyncTask<String, Void, Void> {
         private Handler handler;
 
         NIOSocketOutputAsyncTask(Handler handler) {
@@ -92,7 +105,7 @@ public class MyNIOSocket {
                 readBuffer = ByteBuffer.allocate(1024);
                 Message msg = new Message();
                 Bundle bundle = new Bundle();
-                while (true) {
+                while (socketChannel.isOpen()) {
                     readBuffer.clear();
                     readBytes = socketChannel.read(readBuffer);
                     if (readBytes > 0) {
@@ -101,7 +114,6 @@ public class MyNIOSocket {
                         msg.setData(bundle);
                         msg.what = SENT_SUCCESSFULLY;
                         handler.sendMessage(msg);
-                        socketChannel.close();
                         break;
                     }
                 }
@@ -116,7 +128,7 @@ public class MyNIOSocket {
         }
     }
 
-    class NIOSocketInputAsyncTask extends AsyncTask<String, Void, Void> {
+    private class NIOSocketInputAsyncTask extends AsyncTask<String, Void, Void> {
         private SocketListener listener;
         private SocketChannel socketChannel;
         private String content;

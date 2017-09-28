@@ -13,6 +13,8 @@ import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
 import android.view.KeyEvent
+import android.view.View
+import android.view.ViewGroup
 import com.catherine.webservices.adapters.MainViewPagerAdapter
 import com.catherine.webservices.fragments.P05_Gallery
 import com.catherine.webservices.interfaces.BackKeyListener
@@ -318,6 +320,20 @@ class MainActivity : FragmentActivity(), MainInterface {
             onBackPressed()
     }
 
+    override fun addBottomLayout(id: Int) {
+        val view = layoutInflater.inflate(id, null, false)
+        fl_bottom.addView(view)
+    }
+
+    override fun restoreBottomLayout() {
+        fl_bottom.removeAllViews()
+        addBottomLayout(R.layout.bottom_main)
+    }
+
+    override fun getBottomLayout(): View {
+        return fl_bottom
+    }
+
     private var backKeyEventListener: MutableList<BackKeyListener?>? = null
     override fun setBackKeyListener(listener: BackKeyListener) {
         backKeyEventListener?.set(vp_content.currentItem, listener)
@@ -367,7 +383,8 @@ class MainActivity : FragmentActivity(), MainInterface {
             backKeyEventListener?.add(null)
         }
 
-        tv_info.setOnClickListener {
+        addBottomLayout(R.layout.bottom_main)
+        fl_bottom.setOnClickListener {
             val intent = Intent()
             intent.setClass(this, P00_DeviceInfo::class.java)
             startActivity(intent)

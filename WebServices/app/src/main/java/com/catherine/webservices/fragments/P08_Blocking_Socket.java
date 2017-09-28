@@ -67,7 +67,7 @@ public class P08_Blocking_Socket extends LazyFragment {
     @Override
     public void onCreateViewLazy(Bundle savedInstanceState) {
         super.onCreateViewLazy(savedInstanceState);
-        setContentView(R.layout.f_08_blocking_socket);
+        setContentView(R.layout.f_socket);
         helper = new NetworkHelper(getActivity());
         sockets = new ArrayList<>();
         msgQueue = new ArrayDeque<>();
@@ -181,8 +181,11 @@ public class P08_Blocking_Socket extends LazyFragment {
         fab_settings = (FloatingActionButton) findViewById(R.id.fab_settings);
         tv_state = (TextView) findViewById(R.id.tv_state);
         tv_history = (TextView) findViewById(R.id.tv_history);
-        et_input = (EditText) findViewById(R.id.et_input);
-        bt_send = (Button) findViewById(R.id.bt_send);
+
+        mainInterface.addBottomLayout(R.layout.bottom_socket);
+        View bottom = mainInterface.getBottomLayout();
+        et_input = bottom.findViewById(R.id.et_input);
+        bt_send = bottom.findViewById(R.id.bt_send);
         bt_send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -218,6 +221,11 @@ public class P08_Blocking_Socket extends LazyFragment {
     private void send(String content) {
         if (TextUtils.isEmpty(content))
             return;
+
+        if(socket == null){
+            tv_state.setText("Server error");
+            return;
+        }
 
         if (socket.isClosed()) {
             msgQueue.add(content);
