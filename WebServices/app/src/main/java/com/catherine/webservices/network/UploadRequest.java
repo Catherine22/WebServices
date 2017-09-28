@@ -16,7 +16,7 @@ public final class UploadRequest {
     private File file;
     private UploaderListener listener;
 
-    public UploadRequest(Builder builder) {
+    private UploadRequest(Builder builder) {
         this.url = builder.url;
         this.headers = builder.headers;
         this.body = builder.body;

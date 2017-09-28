@@ -105,21 +105,22 @@ public class P02_HttpURLConnection extends LazyFragment {
                         Map<String, String> h0 = MyHttpURLConnection.getDefaultHeaders();
                         h0.put("h1", "Hi there!");
                         h0.put("h2", "I am a mobile phone.");
-                        HttpRequest request0 = new HttpRequest(new HttpRequest.Builder()
+                        HttpRequest request0 = new HttpRequest.Builder()
                                 .url(String.format(Locale.ENGLISH, "%sLoginServlet?name=zhangsan&password=123456", Constants.HOST))
                                 .headers(h0)
-                                .listener(buildListener(position)));
+                                .listener(buildListener(position))
+                                .build();
                         new HttpAsyncTask(request0).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                         break;
                     case 1:
                         Map<String, String> body1 = new HashMap<>();
                         body1.put("name", "zhangsan");
                         body1.put("password", "123456");
-                        HttpRequest r1 = new HttpRequest(new HttpRequest.Builder()
+                        HttpRequest r1 = new HttpRequest.Builder()
                                 .url(String.format(Locale.ENGLISH, "%sLoginServlet", Constants.HOST))
                                 .body(MyHttpURLConnection.getSimpleStringBody(body1))
                                 .listener(buildListener(position))
-                        );
+                                .build();
                         new HttpAsyncTask(r1).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                         break;
                     case 2:
@@ -129,12 +130,12 @@ public class P02_HttpURLConnection extends LazyFragment {
                         body2.put("name", "zhangsan");
                         body2.put("password", "123456");
 
-                        HttpRequest r2 = new HttpRequest(new HttpRequest.Builder()
+                        HttpRequest r2 = new HttpRequest.Builder()
                                 .url(String.format(Locale.ENGLISH, "%sLoginServlet", Constants.HOST))
                                 .headers(h2)
                                 .body(MyHttpURLConnection.getSimpleStringBody(body2))
                                 .listener(buildListener(position))
-                        );
+                                .build();
                         new HttpAsyncTask(r2, true).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
                         break;
@@ -142,18 +143,18 @@ public class P02_HttpURLConnection extends LazyFragment {
                         Map<String, String> body3 = new HashMap<>();
                         body3.put("name", "");
                         body3.put("password", "");
-                        HttpRequest r3 = new HttpRequest(new HttpRequest.Builder()
+                        HttpRequest r3 = new HttpRequest.Builder()
                                 .url(String.format(Locale.ENGLISH, "%sLoginServlet", Constants.HOST))
                                 .body(MyHttpURLConnection.getSimpleStringBody(body3))
                                 .listener(buildListener(position))
-                        );
+                                .build();
                         new HttpAsyncTask(r3).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                         break;
                     case 4:
-                        HttpRequest r4 = new HttpRequest(new HttpRequest.Builder()
+                        HttpRequest r4 = new HttpRequest.Builder()
                                 .url("http://dictionary.cambridge.org/zhs/%E6%90%9C%E7%B4%A2/%E8%8B%B1%E8%AF%AD-%E6%B1%89%E8%AF%AD-%E7%AE%80%E4%BD%93/direct/?q=philosopher")
                                 .listener(buildListener(position))
-                        );
+                                .build();
                         new HttpAsyncTask(r4).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                         break;
                 }

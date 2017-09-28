@@ -32,7 +32,7 @@ public class SocketOutputAsyncTask extends AsyncTask<String, Void, Void> {
     @Override
     protected Void doInBackground(String... strings) {
         try {
-            //2. 获取输入流，读取服务器端发送端信息
+            //2. 获取输入流，读取服务器端发送的信息
             InputStreamReader isr = new InputStreamReader(socketInputStream, "UTF-8");
             BufferedReader br = new BufferedReader(isr);
             while ((info = br.readLine()) != null) {

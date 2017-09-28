@@ -125,7 +125,7 @@ public class P05_Gallery extends LazyFragment {
     }
 
     private void getPicList(String ADID) {
-        HttpRequest r = new HttpRequest(new HttpRequest.Builder()
+        HttpRequest r = new HttpRequest.Builder()
                 .url(NetworkHelper.Companion.encodeURL(String.format(Locale.ENGLISH, "%sResourceServlet?ADID={%s}&IDFA={}", Constants.HOST, ADID)))
                 .listener(new HttpResponseListener() {
                     @Override
@@ -182,7 +182,7 @@ public class P05_Gallery extends LazyFragment {
                         }
                     }
                 })
-        );
+                .build();
         new HttpAsyncTask(r).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 

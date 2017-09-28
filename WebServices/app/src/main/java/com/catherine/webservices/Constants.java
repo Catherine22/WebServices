@@ -23,6 +23,7 @@ public class Constants {
 
     public final static String SOCKET_HOST = "192.168.3.131";
     public final static int SOCKET_PORT = 11223;
+    public final static int NIO_SOCKET_PORT = 11345;
 
     public final static String ROOT_PATH = Environment.getExternalStorageDirectory().getAbsolutePath() + "/WebServices/";
     public final static String EXT_PATH = ROOT_PATH + "data/";
@@ -30,5 +31,7 @@ public class Constants {
 
     //Fragments
     public final static int P05_Gallery = 5;
+    public final static int P08_BLOCKING_SOCKET = 8;
+    public final static int P09_NIO_SOCKET = 9;
 
 }

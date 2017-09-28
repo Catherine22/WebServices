@@ -17,7 +17,7 @@ public final class HttpResponse {
     private String codeString;
     private String errorMessage;
 
-    public HttpResponse(Builder builder) {
+    private HttpResponse(Builder builder) {
         this.url = builder.url;
         this.headers = builder.headers;
         this.body = builder.body;

@@ -15,7 +15,7 @@ public final class HttpRequest {
     private CacheControl cacheControl;
     private HttpResponseListener listener;
 
-    public HttpRequest(Builder builder) {
+    private HttpRequest(Builder builder) {
         this.url = builder.url;
         this.headers = builder.headers;
         this.body = builder.body;

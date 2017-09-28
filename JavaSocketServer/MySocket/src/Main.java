@@ -4,23 +4,55 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketAddress;
+import java.net.SocketException;
+import java.nio.ByteBuffer;
+import java.nio.channels.Channel;
+import java.nio.channels.SelectionKey;
+import java.nio.channels.Selector;
+import java.nio.channels.ServerSocketChannel;
+import java.nio.channels.SocketChannel;
+import java.nio.channels.spi.SelectorProvider;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 public class Main {
 	private static List<Socket> sockets = new ArrayList<>();
+	private final static int PORT1 = 11223;
+	public final static int PORT2 = 11345;
 
 	public static void main(String[] args) throws IOException {
-		tcpSocketReceiver();
+		// tcpSocketReceiver();
+
+		InetAddress address = InetAddress.getLocalHost();
+		Runnable runnable = new Runnable() {
+			@Override
+			public void run() {
+				try {
+					new Main(address.getHostAddress(), PORT2).startServer();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		};
+		new Thread(runnable, "Thread-1").start();
+		
+		
 		// asyncTcpSocketReceiver();
+
 	}
 
 	/**
@@ -39,7 +71,7 @@ public class Main {
 	 */
 	private static void tcpSocketReceiver() throws IOException {
 		// 1.创建一个服务器端Socket，即ServerSocket，指定绑定的端口，并监听此端口
-		ServerSocket serverSocket = new ServerSocket(11223);
+		ServerSocket serverSocket = new ServerSocket(PORT1);
 		InetAddress address = InetAddress.getLocalHost();
 		String ip = address.getHostAddress();
 		Socket socket = null;
@@ -47,7 +79,6 @@ public class Main {
 		System.out.println("Socket server is ready, ip is : " + ip);
 
 		while (sockets.size() < 999) {
-			System.out.println("accept()");
 			socket = serverSocket.accept();
 			sockets.add(socket);
 
@@ -82,7 +113,7 @@ public class Main {
 				PrintWriter pw;
 				if (socket != null) {
 					pw = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF-8")));
-					pw.write(content+"\n");
+					pw.write(content + "\n");
 					pw.flush();
 				}
 			}
@@ -93,7 +124,99 @@ public class Main {
 		}
 	}
 
+	private Selector selector;
+	private Map<SocketChannel, List> dataMapper;
+	private InetSocketAddress listenAddress;
 
+	public Main(String address, int port) throws IOException {
+		listenAddress = new InetSocketAddress(address, port);
+		dataMapper = new HashMap<SocketChannel, List>();
+	}
+
+	// create server channel
+	private void startServer() throws IOException {
+		this.selector = Selector.open();
+		ServerSocketChannel serverChannel = ServerSocketChannel.open();
+		serverChannel.configureBlocking(false);
+
+		// retrieve server socket and bind to port
+		serverChannel.socket().bind(listenAddress);
+		serverChannel.register(this.selector, SelectionKey.OP_ACCEPT);
+
+		System.out.println("Server started...");
+
+		while (true) {
+			// wait for events
+			this.selector.select();
+
+			// work on selected keys
+			Iterator keys = this.selector.selectedKeys().iterator();
+			while (keys.hasNext()) {
+				SelectionKey key = (SelectionKey) keys.next();
+
+				// this is necessary to prevent the same key from coming up
+				// again the next time around.
+				keys.remove();
+
+				if (!key.isValid()) {
+					continue;
+				}
+
+				if (key.isAcceptable()) {
+					this.accept(key);
+				} else if (key.isReadable()) {
+					this.read(key);
+				}
+			}
+		}
+	}
+
+	// accept a connection made to this channel's socket
+	private void accept(SelectionKey key) throws IOException {
+		ServerSocketChannel serverChannel = (ServerSocketChannel) key.channel();
+		SocketChannel channel = serverChannel.accept();
+		channel.configureBlocking(false);
+		Socket socket = channel.socket();
+		SocketAddress remoteAddr = socket.getRemoteSocketAddress();
+		System.out.println("Connected to: " + remoteAddr);
+
+		// register channel with selector for further IO
+		dataMapper.put(channel, new ArrayList());
+		channel.register(this.selector, SelectionKey.OP_READ);
+	}
+
+	// read from the socket channel
+	private void read(SelectionKey key) throws IOException {
+		SocketChannel channel = (SocketChannel) key.channel();
+		ByteBuffer buffer = ByteBuffer.allocate(1024);
+		int numRead = -1;
+		numRead = channel.read(buffer);
+
+		if (numRead == -1) {
+			this.dataMapper.remove(channel);
+			Socket socket = channel.socket();
+			SocketAddress remoteAddr = socket.getRemoteSocketAddress();
+			System.out.println("Connection closed by client: " + remoteAddr);
+			channel.close();
+			key.cancel();
+			return;
+		}
+
+		byte[] data = new byte[numRead];
+		System.arraycopy(buffer.array(), 0, data, 0, numRead);
+		String content = new String(data);
+		System.out.println("Got: " + content);
+
+		if ("*#DISCONNECT11223#*".equals(content)) {
+			InetAddress address = InetAddress.getLocalHost();
+			System.out.println("Connection closed by server: " + address.getHostAddress());
+			channel.close();
+			key.cancel();
+		} else {
+			String response = "Hi, I am server, I got your message: " + content;
+			channel.write(ByteBuffer.wrap(response.getBytes(Charset.forName("UTF-8"))));
+		}
+	}
 
 	private static void udpSocket() throws IOException {
 		/*
