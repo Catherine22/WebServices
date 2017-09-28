@@ -18,33 +18,19 @@ import android.widget.Toast;
 
 import com.catherine.webservices.Constants;
 import com.catherine.webservices.R;
-import com.catherine.webservices.interfaces.BackKeyListener;
 import com.catherine.webservices.interfaces.MainInterface;
 import com.catherine.webservices.interfaces.OnRequestPermissionsListener;
-import com.catherine.webservices.network.NIOSocketInputAsyncTask;
+import com.catherine.webservices.network.MyNIOSocket;
 import com.catherine.webservices.network.NetworkHelper;
-import com.catherine.webservices.network.SocketInputAsyncTask;
 import com.catherine.webservices.network.SocketListener;
-import com.catherine.webservices.network.SocketOutputAsyncTask;
-import com.catherine.webservices.toolkits.CLog;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.ConnectException;
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
-import java.net.Socket;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
-import java.nio.channels.SelectionKey;
-import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
-import java.nio.charset.Charset;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Queue;
 
 /**
  * Created by Catherine on 2017/9/19.
@@ -61,9 +47,7 @@ public class P09_NIO_Socket extends LazyFragment {
     private FloatingActionButton fab_disconnect, fab_settings;
     private boolean isFABOpen;
     private NetworkHelper helper;
-    private SocketChannel socketChannel;
-    private ByteBuffer readBuffer;
-    private int readBytes;
+    private MyNIOSocket nioSocket;
 
     public static P09_NIO_Socket newInstance(boolean isLazyLoad) {
         Bundle args = new Bundle();
@@ -137,48 +121,10 @@ public class P09_NIO_Socket extends LazyFragment {
     }
 
     private void initSocket() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    //打开 SocketChannel
-                    socketChannel = SocketChannel.open(new InetSocketAddress(Constants.SOCKET_HOST, Constants.NIO_SOCKET_PORT));
-                    //设置为 非阻塞
-                    socketChannel.configureBlocking(false);
-
-                    readBuffer = ByteBuffer.allocate(1024);
-                    while (true) {
-                        readBuffer.clear();
-                        readBytes = socketChannel.read(readBuffer);
-                        if (readBytes > 0) {
-                            readBuffer.flip();
-                            getActivity().runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    tv_history.setText(String.format("%s\nYou got: %s", tv_history.getText(), new String(readBuffer.array(), 0, readBytes)));
-                                }
-                            });
-                            socketChannel.close();
-                            break;
-                        }
-                    }
-                } catch (ConnectException e) {
-                    e.printStackTrace();
-                    if (!helper.isNetworkHealth()) {
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(getActivity(), "Offline", Toast.LENGTH_LONG).show();
-                            }
-                        });
-                    }
-                } catch (UnknownHostException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
+        nioSocket = new MyNIOSocket.Builder()
+                .inputListener(new Input())
+                .outputListener(new Output())
+                .build();
     }
 
     private void initComponent() {
@@ -216,34 +162,60 @@ public class P09_NIO_Socket extends LazyFragment {
         });
     }
 
+    class Output implements SocketListener {
+
+        @Override
+        public void connectSuccess(String message) {
+            tv_history.setText(String.format("%s\nYou got: %s", tv_history.getText(), message));
+
+        }
+
+        @Override
+        public void connectFailure(Exception e) {
+            e.printStackTrace();
+            if (e instanceof ConnectException) {
+                if (!helper.isNetworkHealth()) {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getActivity(), "Offline", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
+            }
+        }
+    }
+
+    class Input implements SocketListener {
+
+        @Override
+        public void connectSuccess(String message) {
+            et_input.setText("");
+            tv_history.setText(String.format("%s\nYou sent: %s", tv_history.getText(), message));
+
+        }
+
+        @Override
+        public void connectFailure(Exception e) {
+            e.printStackTrace();
+            if (e instanceof ConnectException) {
+                if (!helper.isNetworkHealth()) {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getActivity(), "Offline", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
+            }
+        }
+    }
+
 
     private void send(final String message) {
         if (TextUtils.isEmpty(message))
             return;
-        new NIOSocketInputAsyncTask(socketChannel, message, new SocketListener() {
-            @Override
-            public void connectSuccess(String message) {
-                et_input.setText("");
-                tv_history.setText(String.format("%s\nYou sent: %s", tv_history.getText(), message));
-            }
-
-            @Override
-            public void connectFailure(Exception e) {
-                e.printStackTrace();
-                if (e instanceof ConnectException) {
-                    if (!helper.isNetworkHealth()) {
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(getActivity(), "Offline", Toast.LENGTH_LONG).show();
-                            }
-                        });
-                    }
-                }
-            }
-        }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-
-
+        nioSocket.execute(message);
     }
 
     private void release() {

@@ -1,5 +1,4 @@
 ## Thread
-----------
 
 > Don't hold references to any type of UI specific objects in any
 > threading scenarios.     
@@ -27,13 +26,26 @@ Handler class helps put work at the head, the tail or even set a time-based dela
 - It's ideal for background tasks.
 - Helps get intents off UI thread.
 
-
+*It's the easiest way to update UIs by running on AsyncTask, and HandlerThread is also a excellent solution for the work that not deal with UI updates.*
 
 ## Web
-----------
 
 
-It's the easiest way to update UIs by running on AsyncTask, and HandlerThread is also a excellent solution for the work that not deal with UI updates.
+### Tips
+[![TCP/IP model](https://raw.githubusercontent.com/Catherine22/WebServices/master/tcp_ip_model.png)](https://technet.microsoft.com/en-us/library/cc958821.aspx)
+
+
+> - TCP/IP specifies how data is exchanged over the internet.
+> - Socket is kind of like APIs which packages TCP/IP operations.
+> - HTTP, FTP, SMTP and the other protocols map to the application layer which only standardizes communication and depends upon the underlying
+> transport layer protocols to establish host-to-host data transfer
+> channels and manage the data exchange in a client-server or
+> peer-to-peer networking model.
+> - In real life scenario examples:
+> 	- TCP : FTP, HTTP
+> 	- UDP : Voice and Video, Streaming movies online
+
+
 
 ### HttpClient (org.apache.http)
 - Android 6.0 release removes support for the Apache HTTP client. You still want to import this library while your target API is higher than 23, you have to declare the following codes in build.gradle:
@@ -161,12 +173,12 @@ If the resource hasn't changed, the server'll return **304** with an empty body.
 
 
 
-Even if your cache is up, it doesn't mean your cache is not working. Your response might contain an ETag which instructs the client to cache it for up to 120 seconds, and provides a validation token ("x234dff") that can be used after the response has expired to check if the resource has been modified.		
+Even if your cache is up, it doesn't mean your cache is not working. Your response might contain an ETag which instructs the client to cache it for up to a specific period and provides a validation token ( MD5 or something ) that can be used after the response has expired to check if the resource has been modified.		
 If the token hasn't been changed, the server returns a "304 Not Modified" response.
 
 So your cache strategy will be:
 
-[![Http caching](https://raw.githubusercontent.com/Catherine22/WebServices/master/WebServices/app/src/main/res/drawable/http_cache_decision_tree.png)](https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/http-caching)
+[![Http caching](https://raw.githubusercontent.com/Catherine22/WebServices/master/http_cache_decision_tree.png)](https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/http-caching)
 
 First of all, make sure your browser, application or something are available to cache responses. Then check whether the response has expired.
 ```html
@@ -213,6 +225,7 @@ tcpSocketReceiver();
 ```
 2. Run WebServices this app and open [P08_Blocking_Socket] fragment on Android devices.
 
+
 **Non-blocking socket**
 
 
@@ -222,7 +235,8 @@ tcpSocketReceiver();
 - [HTTP 1.1 doc]
 - [Google Web Fundamentals]
 - [increasing-application-performance-with-http-cache-headers]
-- [Socket tutorio]
+- [Socket tutorial]
+- [What are examples of TCP and UDP in real life scenario ?]
 
 
 [MainActivity]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/MainActivity.kt>
@@ -241,6 +255,7 @@ tcpSocketReceiver();
 [Google Web Fundamentals]:<https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/http-caching>
 [increasing-application-performance-with-http-cache-headers]:<https://devcenter.heroku.com/articles/increasing-application-performance-with-http-cache-headers>
 [ImageCardRVAdapter]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/adapters/ImageCardRVAdapter.java>
-[Socket tutorio]:<http://blog.csdn.net/coder_pig/article/details/48519629>
+[Socket tutorial]:<http://blog.csdn.net/coder_pig/article/details/48519629>
 [P08_Blocking_Socket]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/P08_Blocking_Socket.java>
 [MySocket]:<https://github.com/Catherine22/WebServices/blob/master/JavaSocketServer/MySocket/src/Main.java>
+[What are examples of TCP and UDP in real life scenario ?]:<https://learningnetwork.cisco.com/thread/87103>
