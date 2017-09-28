@@ -83,22 +83,13 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="MainInterface.kt" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/interfaces/MainInterface.kt">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="306">
-              <caret line="18" column="27" lean-forward="false" selection-start-line="18" selection-start-column="8" selection-end-line="18" selection-end-column="27" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="MyNIOSocket.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="MyNIOSocket.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/network/MyNIOSocket.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="136">
-              <caret line="8" column="43" lean-forward="false" selection-start-line="8" selection-start-column="43" selection-end-line="8" selection-end-column="43" />
+            <state relative-caret-position="563">
+              <caret line="102" column="0" lean-forward="true" selection-start-line="102" selection-start-column="0" selection-end-line="102" selection-end-column="0" />
               <folding>
+                <element signature="imports" expanded="true" />
                 <element signature="method#release#0;class#MyNIOSocket#0" expanded="false" />
                 <element signature="class#Builder#0;class#MyNIOSocket#0" expanded="false" />
                 <element signature="e#2761#2762#0" expanded="true" />
@@ -108,7 +99,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="P09_NIO_Socket.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="P09_NIO_Socket.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P09_NIO_Socket.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="2379">
@@ -155,8 +146,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>Non</find>
-      <find>Non UI</find>
       <find>Non U</find>
       <find>NO</find>
       <find>NON_UI</find>
@@ -173,17 +162,19 @@
       <find>HttpResponse</find>
       <find>HttpResponse(</find>
       <find>initSocket</find>
-      <find>HttpResponse()</find>
       <find>release</find>
       <find>et_input</find>
       <find>back</find>
       <find>tv_info</find>
       <find>socket</find>
       <find>NIOSocketOutputAsyncTask</find>
-      <find>tv</find>
       <find>socketChannel</find>
       <find>readBuffer</find>
       <find>addBottomLayout</find>
+      <find>HttpResponse()</find>
+      <find>UploadRequest</find>
+      <find>DownloadRequest</find>
+      <find>tv</find>
       <find>connectSuccess</find>
     </findStrings>
     <replaceStrings>
@@ -5143,11 +5134,7 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/app/src/main/res/layout/rv_text_card.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/network/DownloaderAsyncTask.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/network/UploadRequest.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/network/UploaderAsyncTask.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P06_Upload.java" />
         <option value="$PROJECT_DIR$/proguard-android-optimize.txt" />
         <option value="$PROJECT_DIR$/app/proguard-rules.pro" />
         <option value="$PROJECT_DIR$/README.md" />
@@ -5194,6 +5181,10 @@
         <option value="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P08_Blocking_Socket.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/network/MyNIOSocket.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P09_NIO_Socket.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/network/UploadRequest.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P06_Upload.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/network/DownloadRequest.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P03_Downloader.java" />
       </list>
     </option>
   </component>
@@ -5630,7 +5621,7 @@
       <option name="DEEP_LINK" value="" />
       <option name="ACTIVITY_CLASS" value="" />
       <method>
-        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="false" clearCache="false" clearProvisionedDevices="false" myTimestamp="1506585511549" />
+        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="false" clearCache="false" clearProvisionedDevices="false" myTimestamp="1506586118905" />
       </method>
     </configuration>
     <configuration default="true" type="AndroidTestRunConfigurationType" factoryName="Android Instrumented Tests">
@@ -5677,7 +5668,7 @@
         <option name="ADVANCED_PROFILING_ENABLED" value="false" />
       </Profilers>
       <method>
-        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="false" clearCache="false" clearProvisionedDevices="false" myTimestamp="1506585511550" />
+        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="false" clearCache="false" clearProvisionedDevices="false" myTimestamp="1506586118905" />
       </method>
     </configuration>
     <configuration default="true" type="Application" factoryName="Application">
@@ -5859,7 +5850,7 @@
       <option name="DEEP_LINK" value="" />
       <option name="ACTIVITY_CLASS" value="" />
       <method>
-        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="true" clearCache="false" clearProvisionedDevices="false" myTimestamp="1506585511550" />
+        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="true" clearCache="false" clearProvisionedDevices="false" myTimestamp="1506586118906" />
       </method>
     </configuration>
     <list size="6">
@@ -6078,24 +6069,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/entities/ImageCard.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="153">
-          <caret line="9" column="22" lean-forward="false" selection-start-line="9" selection-start-column="13" selection-end-line="9" selection-end-column="22" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/rv_short_card.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-      <provider editor-type-id="android-designer2">
-        <state />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/network/MyHttpURLConnection.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-68">
@@ -6107,13 +6080,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1502">
           <caret line="230" column="76" lean-forward="false" selection-start-line="230" selection-start-column="76" selection-end-line="230" selection-end-column="76" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P06_Upload.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-3041">
-          <caret line="173" column="58" lean-forward="true" selection-start-line="173" selection-start-column="58" selection-end-line="173" selection-end-column="58" />
         </state>
       </provider>
     </entry>
@@ -6197,14 +6163,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/network/HttpAsyncTask.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="287">
-          <caret line="77" column="5" lean-forward="false" selection-start-line="68" selection-start-column="4" selection-end-line="77" selection-end-column="5" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/Constants.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="153">
@@ -6247,14 +6205,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="381">
           <caret line="52" column="9" lean-forward="false" selection-start-line="32" selection-start-column="8" selection-end-line="52" selection-end-column="9" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/network/UploadRequest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-604">
-          <caret line="11" column="19" lean-forward="false" selection-start-line="11" selection-start-column="19" selection-end-line="11" selection-end-column="19" />
           <folding />
         </state>
       </provider>
@@ -6499,6 +6449,62 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/network/UploadRequest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="104">
+          <caret line="17" column="0" lean-forward="true" selection-start-line="17" selection-start-column="0" selection-end-line="17" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/network/HttpAsyncTask.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="287">
+          <caret line="77" column="5" lean-forward="false" selection-start-line="68" selection-start-column="4" selection-end-line="77" selection-end-column="5" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/network/DownloadRequest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="183">
+          <caret line="17" column="27" lean-forward="false" selection-start-line="17" selection-start-column="12" selection-end-line="17" selection-end-column="27" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P03_Downloader.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="33">
+          <caret line="156" column="26" lean-forward="false" selection-start-line="156" selection-start-column="26" selection-end-line="156" selection-end-column="26" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P06_Upload.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="224">
+          <caret line="206" column="45" lean-forward="false" selection-start-line="206" selection-start-column="45" selection-end-line="206" selection-end-column="45" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/network/MyNIOSocket.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="563">
+          <caret line="102" column="0" lean-forward="true" selection-start-line="102" selection-start-column="0" selection-end-line="102" selection-end-column="0" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="method#release#0;class#MyNIOSocket#0" expanded="false" />
+            <element signature="class#Builder#0;class#MyNIOSocket#0" expanded="false" />
+            <element signature="e#2761#2762#0" expanded="true" />
+            <element signature="e#2807#2808#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P09_NIO_Socket.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2379">
@@ -6509,19 +6515,6 @@
             <element signature="e#7258#7300#0" expanded="true" />
             <element signature="e#7765#7766#0" expanded="true" />
             <element signature="e#7800#7801#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/network/MyNIOSocket.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
-          <caret line="8" column="43" lean-forward="false" selection-start-line="8" selection-start-column="43" selection-end-line="8" selection-end-column="43" />
-          <folding>
-            <element signature="method#release#0;class#MyNIOSocket#0" expanded="false" />
-            <element signature="class#Builder#0;class#MyNIOSocket#0" expanded="false" />
-            <element signature="e#2761#2762#0" expanded="true" />
-            <element signature="e#2807#2808#0" expanded="true" />
           </folding>
         </state>
       </provider>

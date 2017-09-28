@@ -216,7 +216,7 @@ Cache-Control:no-cache, no-store
 Here is the example: [P05_Gallery], [ImageCardRVAdapter]
 
 
-### Socket
+### TCP Sockets
 
 **Blocking socket**
 - Server : Run [MySocket] on eclipse
@@ -243,6 +243,9 @@ Runnable runnable = new Runnable() {
 new Thread(runnable, "Thread-1").start();
 ```
 - Client : Run WebServices this app and open [P09_NIO_Socket] fragment on Android devices.
+
+### UDP Sockets
+
 
 
 ### References

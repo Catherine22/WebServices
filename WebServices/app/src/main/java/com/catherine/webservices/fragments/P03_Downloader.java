@@ -154,7 +154,7 @@ public class P03_Downloader extends LazyFragment {
         total = 0;
         final long time0 = System.currentTimeMillis();
         final int position0 = 0;
-        requests[0] = new DownloadRequest(new DownloadRequest.Builder()
+        requests[0] = new DownloadRequest.Builder()
                 .url(String.format(Locale.ENGLISH, "%sfmc1.apk", Constants.DOWNLOAD_HOST))
                 .THREAD_NUM(1)
                 .listener(new DownloaderListener() {
@@ -197,12 +197,12 @@ public class P03_Downloader extends LazyFragment {
                         });
 
                     }
-                }));
+                }).build();
 
 
         final long time1 = System.currentTimeMillis();
         final int position1 = 1;
-        requests[1] = new DownloadRequest(new DownloadRequest.Builder()
+        requests[1] = new DownloadRequest.Builder()
                 .url(String.format(Locale.ENGLISH, "%sfmc2.apk", Constants.DOWNLOAD_HOST))
                 .THREAD_NUM(THREAD_NUM)
                 .listener(new DownloaderListener() {
@@ -246,7 +246,7 @@ public class P03_Downloader extends LazyFragment {
                         });
 
                     }
-                }));
+                }).build();
     }
 
     private void initComponent() {

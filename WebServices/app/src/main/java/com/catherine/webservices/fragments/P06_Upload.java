@@ -162,7 +162,7 @@ public class P06_Upload extends LazyFragment {
                             @Override
                             public void onResponse(@NotNull String ADID) {
                                 try {
-                                    UploadRequest request = new UploadRequest(new UploadRequest.Builder()
+                                    UploadRequest request = new UploadRequest.Builder()
                                             .file(new File(MyApplication.INSTANCE.getDataCacheDir() + "/big_o_cheat_sheet_poster.jpg"))
                                             .url(String.format(Locale.ENGLISH, "%sUploadServlet", Constants.HOST))
                                             .listener(new UploaderListener() {
@@ -188,7 +188,7 @@ public class P06_Upload extends LazyFragment {
                                                     adapter.setContents(contents);
                                                     adapter.notifyDataSetChanged();
                                                 }
-                                            }));
+                                            }).build();
                                     new UploaderAsyncTask(request).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                                 } catch (Exception e) {
                                     e.printStackTrace();
@@ -199,7 +199,7 @@ public class P06_Upload extends LazyFragment {
                             public void onError(@NotNull Exception ex) {
                                 CLog.Companion.e(TAG, ex.getMessage());
                                 try {
-                                    UploadRequest request = new UploadRequest(new UploadRequest.Builder()
+                                    UploadRequest request = new UploadRequest.Builder()
                                             .file(new File(MyApplication.INSTANCE.getDataCacheDir() + "/big_o_cheat_sheet_poster.jpg"))
                                             .url(String.format(Locale.ENGLISH, "%sUploadServlet", Constants.HOST))
                                             .listener(new UploaderListener() {
@@ -225,7 +225,7 @@ public class P06_Upload extends LazyFragment {
                                                     adapter.setContents(contents);
                                                     adapter.notifyDataSetChanged();
                                                 }
-                                            }));
+                                            }).build();
                                     new UploaderAsyncTask(request).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                                 } catch (Exception e) {
                                     e.printStackTrace();
@@ -241,7 +241,7 @@ public class P06_Upload extends LazyFragment {
                                 try {
                                     Map<String, String> body = new HashMap<>();
                                     body.put("ADID", ADID);
-                                    UploadRequest request = new UploadRequest(new UploadRequest.Builder()
+                                    UploadRequest request = new UploadRequest.Builder()
                                             .file(new File(MyApplication.INSTANCE.getDataCacheDir() + "/big_o_cheat_sheet_poster.jpg"))
                                             .url(String.format(Locale.ENGLISH, "%sUploadServlet", Constants.HOST))
                                             .body(body)
@@ -269,7 +269,7 @@ public class P06_Upload extends LazyFragment {
                                                     adapter.setContents(contents);
                                                     adapter.notifyDataSetChanged();
                                                 }
-                                            }));
+                                            }).build();
                                     new UploaderAsyncTask(request).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                                 } catch (Exception e) {
                                     e.printStackTrace();
@@ -282,7 +282,7 @@ public class P06_Upload extends LazyFragment {
                                 try {
                                     Map<String, String> body = new HashMap<>();
                                     body.put("ADID", "UNKNOWN");
-                                    UploadRequest request = new UploadRequest(new UploadRequest.Builder()
+                                    UploadRequest request = new UploadRequest.Builder()
                                             .file(new File(MyApplication.INSTANCE.getDataCacheDir() + "/big_o_cheat_sheet_poster.jpg"))
                                             .url(String.format(Locale.ENGLISH, "%sUploadServlet", Constants.HOST))
                                             .body(body)
@@ -310,7 +310,7 @@ public class P06_Upload extends LazyFragment {
                                                     adapter.setContents(contents);
                                                     adapter.notifyDataSetChanged();
                                                 }
-                                            }));
+                                            }).build();
                                     new UploaderAsyncTask(request).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                                 } catch (Exception e) {
                                     e.printStackTrace();
@@ -325,7 +325,7 @@ public class P06_Upload extends LazyFragment {
                                 try {
                                     Map<String, String> body = new HashMap<>();
                                     body.put("ADID", ADID);
-                                    UploadRequest request = new UploadRequest(new UploadRequest.Builder()
+                                    UploadRequest request = new UploadRequest.Builder()
                                             .file(new File(MyApplication.INSTANCE.getDataCacheDir() + "/邓俊辉_数据结构.pdf"))
                                             .url(String.format(Locale.ENGLISH, "%sUploadServlet", Constants.HOST))
                                             .body(body)
@@ -353,7 +353,7 @@ public class P06_Upload extends LazyFragment {
                                                     adapter.setContents(contents);
                                                     adapter.notifyDataSetChanged();
                                                 }
-                                            }));
+                                            }).build();
                                     new UploaderAsyncTask(request).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                                 } catch (Exception e) {
                                     e.printStackTrace();
@@ -366,7 +366,7 @@ public class P06_Upload extends LazyFragment {
                                 try {
                                     Map<String, String> body = new HashMap<>();
                                     body.put("ADID", "KNOWN");
-                                    UploadRequest request = new UploadRequest(new UploadRequest.Builder()
+                                    UploadRequest request = new UploadRequest.Builder()
                                             .file(new File(MyApplication.INSTANCE.getDataCacheDir() + "/邓俊辉_数据结构.pdf"))
                                             .url(String.format(Locale.ENGLISH, "%sUploadServlet", Constants.HOST))
                                             .body(body)
@@ -394,7 +394,7 @@ public class P06_Upload extends LazyFragment {
                                                     adapter.setContents(contents);
                                                     adapter.notifyDataSetChanged();
                                                 }
-                                            }));
+                                            }).build();
                                     new UploaderAsyncTask(request).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                                 } catch (Exception e) {
                                     e.printStackTrace();

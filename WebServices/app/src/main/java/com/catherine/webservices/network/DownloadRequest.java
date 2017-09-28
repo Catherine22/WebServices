@@ -15,7 +15,7 @@ public final class DownloadRequest {
     private int THREAD_NUM = 1;
     private DownloaderListener listener;
 
-    public DownloadRequest(Builder builder) {
+    private DownloadRequest(Builder builder) {
         this.url = builder.url;
         this.headers = builder.headers;
         this.body = builder.body;
