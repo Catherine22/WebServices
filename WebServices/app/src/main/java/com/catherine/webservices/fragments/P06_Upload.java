@@ -232,6 +232,7 @@ public class P06_Upload extends LazyFragment {
                                 }
                             }
                         });
+                        adid_asyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                         break;
 
                     case 1:
@@ -256,7 +257,7 @@ public class P06_Upload extends LazyFragment {
                                                 }
 
                                                 @Override
-                                                public void connectFailure(@NotNull HttpResponse response, @org.jetbrains.annotations.Nullable Exception e) {
+                                                public void connectFailure(@NotNull HttpResponse response, Exception e) {
                                                     StringBuilder sb = new StringBuilder();
                                                     sb.append(String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getErrorMessage()));
                                                     CLog.Companion.e(TAG, sb.toString());
@@ -297,7 +298,7 @@ public class P06_Upload extends LazyFragment {
                                                 }
 
                                                 @Override
-                                                public void connectFailure(@NotNull HttpResponse response, @org.jetbrains.annotations.Nullable Exception e) {
+                                                public void connectFailure(@NotNull HttpResponse response, Exception e) {
                                                     StringBuilder sb = new StringBuilder();
                                                     sb.append(String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getErrorMessage()));
                                                     CLog.Companion.e(TAG, sb.toString());
@@ -317,6 +318,7 @@ public class P06_Upload extends LazyFragment {
                                 }
                             }
                         });
+                        adid_asyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                         break;
                     case 2:
                         adid_asyncTask = new ADID_AsyncTask(new ADID_AsyncTask.ADID_Callback() {
@@ -340,7 +342,7 @@ public class P06_Upload extends LazyFragment {
                                                 }
 
                                                 @Override
-                                                public void connectFailure(@NotNull HttpResponse response, @org.jetbrains.annotations.Nullable Exception e) {
+                                                public void connectFailure(@NotNull HttpResponse response, Exception e) {
                                                     StringBuilder sb = new StringBuilder();
                                                     sb.append(String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getErrorMessage()));
                                                     CLog.Companion.e(TAG, sb.toString());

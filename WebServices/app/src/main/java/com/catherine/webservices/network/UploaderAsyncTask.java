@@ -3,6 +3,7 @@ package com.catherine.webservices.network;
 import android.os.AsyncTask;
 import android.text.TextUtils;
 
+import com.catherine.webservices.toolkits.CLog;
 import com.catherine.webservices.toolkits.StreamUtils;
 
 import java.io.DataOutputStream;
@@ -117,7 +118,6 @@ public class UploaderAsyncTask extends AsyncTask<String, Void, Void> {
 
             code = conn.getResponseCode();
             msg = conn.getResponseMessage();
-
             if (code == 200) {
                 InputStream is = conn.getInputStream();
                 if (is != null) {
