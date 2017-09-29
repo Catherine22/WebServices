@@ -39,13 +39,11 @@ public class DownloaderAsyncTask extends AsyncTask<String, Void, Void> {
     private DownloadRequest request;
     private int THREAD_NUM;
     private boolean stop;
-    private StreamUtils su;
 //    private boolean[] downloadCompleted;
     private HandlerThread[] threadPool;
 
     public DownloaderAsyncTask(DownloadRequest request) {
         this.request = request;
-        su = new StreamUtils();
         THREAD_NUM = (request.getTHREAD_NUM() > 0) ? request.getTHREAD_NUM() : 1;
 //        downloadCompleted = new boolean[THREAD_NUM];
         threadPool = new HandlerThread[THREAD_NUM];
@@ -88,7 +86,7 @@ public class DownloaderAsyncTask extends AsyncTask<String, Void, Void> {
             LENGTH = conn.getContentLength();
             InputStream is = conn.getErrorStream();
             if (is != null) {
-                error = su.getString(is);
+                error = StreamUtils.getString(is);
                 is.close();
             }
 
@@ -204,7 +202,7 @@ public class DownloaderAsyncTask extends AsyncTask<String, Void, Void> {
                 File positionFile = new File(MyApplication.INSTANCE.getDiskCacheDir() + "/" + fileName + threadId + ".dat");
                 if (positionFile.exists()) {
                     FileInputStream fis = new FileInputStream(positionFile);
-                    byte[] result = su.getBytes(fis);
+                    byte[] result = StreamUtils.getBytes(fis);
 
                     String str = new String(result);
                     if (!"".equals(str)) {
@@ -229,7 +227,7 @@ public class DownloaderAsyncTask extends AsyncTask<String, Void, Void> {
                 msg = conn.getResponseMessage();
                 InputStream is = conn.getErrorStream();
                 if (is != null) {
-                    error = su.getString(is);
+                    error = StreamUtils.getString(is);
                     is.close();
                 }
 

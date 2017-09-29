@@ -35,23 +35,22 @@ public class Main {
 	public final static int PORT2 = 11345;
 
 	public static void main(String[] args) throws IOException {
-		// tcpSocketReceiver();
+		 tcpSocketReceiver();
 
-		InetAddress address = InetAddress.getLocalHost();
-		Runnable runnable = new Runnable() {
-			@Override
-			public void run() {
-				try {
-					new Main(address.getHostAddress(), PORT2).startServer();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-		};
-		new Thread(runnable, "Thread-1").start();
-		
-		
-		// asyncTcpSocketReceiver();
+//		InetAddress address = InetAddress.getLocalHost();
+//		Runnable runnable = new Runnable() {
+//			@Override
+//			public void run() {
+//				try {
+//					new Main(address.getHostAddress(), PORT2).startServer();
+//				} catch (IOException e) {
+//					e.printStackTrace();
+//				}
+//			}
+//		};
+//		new Thread(runnable, "Thread-1").start();
+
+//		udpSocket();
 
 	}
 
@@ -99,6 +98,7 @@ public class Main {
 					sockets.remove(socket);
 					socket.shutdownInput();// 关闭输入流
 					socket.close();
+					break;
 				} else {
 					sendMessage("I am server: " + info);
 				}
@@ -115,6 +115,8 @@ public class Main {
 					pw = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF-8")));
 					pw.write(content + "\n");
 					pw.flush();
+				}else{
+					sockets.remove(socket);
 				}
 			}
 		} catch (UnsupportedEncodingException e) {
@@ -219,32 +221,43 @@ public class Main {
 	}
 
 	private static void udpSocket() throws IOException {
-		/*
-		 * 接收客户端发送的数据
-		 */
+
 		// 1.创建服务器端DatagramSocket，指定端口
-		DatagramSocket socket = new DatagramSocket(12345);
+		DatagramSocket socket = new DatagramSocket(12435);
 		// 2.创建数据报，用于接收客户端发送的数据
 		byte[] data = new byte[1024];// 创建字节数组，指定接收的数据包的大小
 		DatagramPacket packet = new DatagramPacket(data, data.length);
 		// 3.接收客户端发送的数据
-		System.out.println("****服务器端已经启动，等待客户端发送数据");
-		socket.receive(packet);// 此方法在接收到数据报之前会一直阻塞
-		// 4.读取数据
-		String info = new String(data, 0, packet.getLength());
-		System.out.println("我是服务器，客户端说：" + info);
+		System.out.println("Socket server is ready!");
+		boolean stop = false;
+		while (!stop) {
+			socket.receive(packet);// 此方法在接收到数据报之前会一直阻塞
 
-		/*
-		 * 向客户端响应数据
-		 */
-		// 1.定义客户端的地址、端口号、数据
-		InetAddress address = packet.getAddress();
-		int port = packet.getPort();
-		byte[] data2 = "欢迎您!".getBytes();
-		// 2.创建数据报，包含响应的数据信息
-		DatagramPacket packet2 = new DatagramPacket(data2, data2.length, address, port);
-		// 3.响应客户端
-		socket.send(packet2);
+			// 1.定义客户端的地址、端口号、数据
+			InetAddress address = packet.getAddress();
+			int port = packet.getPort();
+			
+			// 4.读取数据
+			String info = new String(data, 0, packet.getLength());
+			System.out.println("You got: " + info);
+
+			if ("*#DISCONNECT12435#*".equals(info)) {
+				System.out.println(socket.getInetAddress() + " disconnected.");
+				byte[] data2 = "*#DISCONNECT12435#*".getBytes();
+				// 2.创建数据报，包含响应的数据信息
+				DatagramPacket packet2 = new DatagramPacket(data2, data2.length, address, port);
+				// 3.响应客户端
+				socket.send(packet2);
+				stop = true;
+			} else {
+				byte[] data2 = String.format("Hi client, I am server. I've received your message : %s", info).getBytes();
+				// 2.创建数据报，包含响应的数据信息
+				DatagramPacket packet2 = new DatagramPacket(data2, data2.length, address, port);
+				// 3.响应客户端
+				socket.send(packet2);
+			}
+		}
+
 		// 4.关闭资源
 		socket.close();
 	}

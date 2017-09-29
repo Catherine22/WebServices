@@ -245,6 +245,11 @@ new Thread(runnable, "Thread-1").start();
 - Client : Run WebServices and open [P09_NIO_Socket] fragment on Android devices.
 
 ## UDP Sockets
+- Server : Run [MySocket] with eclipse
+```java
+udpSocket();
+```
+- Client : Run WebServices and open [P10_UDP_Socket] fragment on Android devices.
 
 
 
@@ -276,5 +281,6 @@ new Thread(runnable, "Thread-1").start();
 [Socket tutorial]:<http://blog.csdn.net/coder_pig/article/details/48519629>
 [P08_Blocking_Socket]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/P08_Blocking_Socket.java>
 [P09_NIO_Socket]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/P09_NIO_Socket.java>
+[P10_UDP_Socket]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/P10_UDP_Socket.java>
 [MySocket]:<https://github.com/Catherine22/WebServices/blob/master/JavaSocketServer/MySocket/src/Main.java>
 [What are examples of TCP and UDP in real life scenario ?]:<https://learningnetwork.cisco.com/thread/87103>

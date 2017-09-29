@@ -3,7 +3,6 @@ package com.catherine.webservices.network;
 import android.os.AsyncTask;
 import android.text.TextUtils;
 
-import com.catherine.webservices.toolkits.CLog;
 import com.catherine.webservices.toolkits.StreamUtils;
 
 import java.io.DataOutputStream;
@@ -25,7 +24,6 @@ public class UploaderAsyncTask extends AsyncTask<String, Void, Void> {
     private final static int CONNECT_TIMEOUT = 10000;
     private boolean responseOnUIThread;
     private UploadRequest request;
-    private StreamUtils su;
 
     //response
     private int code;
@@ -40,7 +38,6 @@ public class UploaderAsyncTask extends AsyncTask<String, Void, Void> {
 
     public UploaderAsyncTask(UploadRequest request, boolean responseOnUIThread) {
         this.request = request;
-        su = new StreamUtils();
         this.responseOnUIThread = responseOnUIThread;
     }
 
@@ -121,13 +118,13 @@ public class UploaderAsyncTask extends AsyncTask<String, Void, Void> {
             if (code == 200) {
                 InputStream is = conn.getInputStream();
                 if (is != null) {
-                    response = su.getString(is);
+                    response = StreamUtils.getString(is);
                     is.close();
                 }
             } else {
                 InputStream is = conn.getErrorStream();
                 if (is != null) {
-                    error = su.getString(is);
+                    error = StreamUtils.getString(is);
                     is.close();
                 }
             }

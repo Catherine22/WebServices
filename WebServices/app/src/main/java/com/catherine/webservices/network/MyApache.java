@@ -70,10 +70,9 @@ public class MyApache {
             //读取响应
             code = r.getStatusLine().getStatusCode();
             msg = r.getStatusLine().getReasonPhrase();
-            StreamUtils su = new StreamUtils();
             InputStream is = r.getEntity().getContent();
             if (is != null) {
-                response = su.getString(is);
+                response = StreamUtils.getString(is);
                 is.close();
             }
         } catch (Exception ex) {
@@ -117,10 +116,9 @@ public class MyApache {
             //读取响应
             code = r.getStatusLine().getStatusCode();
             msg = r.getStatusLine().getReasonPhrase();
-            StreamUtils su = new StreamUtils();
             InputStream is = r.getEntity().getContent();
             if (is != null) {
-                response = su.getString(is);
+                response = StreamUtils.getString(is);
                 is.close();
             }
         } catch (Exception ex) {

@@ -9,7 +9,6 @@ import catherine.messagecenter.CustomReceiver
 import catherine.messagecenter.Result
 import com.catherine.webservices.MyApplication
 import com.catherine.webservices.services.NetworkHealthService
-import com.catherine.webservices.toolkits.CLog
 import java.net.InetAddress
 import java.net.UnknownHostException
 import java.util.*
