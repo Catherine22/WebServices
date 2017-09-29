@@ -229,18 +229,7 @@ tcpSocketReceiver();
 **Non-blocking socket (NIO Socket)**
 - Server : Run [MySocket] with eclipse
 ```java
-InetAddress address = InetAddress.getLocalHost();
-Runnable runnable = new Runnable() {
-	@Override
-	public void run() {
-		try {
-			new Main(address.getHostAddress(), 11345).startServer();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-};
-new Thread(runnable, "Thread-1").start();
+startNIOSocket();
 ```
 - Client : Run WebServices and open [P09_NIO_Socket] fragment on Android devices.
 
