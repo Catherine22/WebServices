@@ -15,8 +15,6 @@ import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Queue;
 
 /**
@@ -26,8 +24,8 @@ import java.util.Queue;
  */
 
 public class MyTCPSocket {
-    private final static int SENT_SUCCESSFULLY = 0;
-    private final static int FAILED_TO_SEND = 1;
+    private final static int SUCCEED = 0;
+    private final static int FAILURE = 1;
     private SocketListener initListener, inputListener, outputListener;
     private Exception e;
     private Handler handler;
@@ -35,7 +33,6 @@ public class MyTCPSocket {
     private int port;
     private Socket socket;
     private Queue<String> msgQueue;
-    private List<Socket> sockets;
     private InputStream is;
     private OutputStream os;
 
@@ -45,18 +42,17 @@ public class MyTCPSocket {
         this.initListener = builder.initListener;
         this.host = builder.host;
         this.port = builder.port;
-        sockets = new ArrayList<>();
         msgQueue = new ArrayDeque<>();
         handler = new Handler(Looper.getMainLooper()) {
             @Override
             public void handleMessage(final Message msg) {
-                if (msg.what == SENT_SUCCESSFULLY) {
+                if (msg.what == SUCCEED) {
                     Bundle bundle = msg.getData();
                     String message = bundle.getString("msg");
                     if (initListener != null)
                         initListener.connectSuccess(message);
 
-                } else if (msg.what == FAILED_TO_SEND) {
+                } else if (msg.what == FAILURE) {
                     if (initListener != null)
                         initListener.connectFailure(e);
                 }
@@ -79,8 +75,6 @@ public class MyTCPSocket {
             try {
                 //1.创建客户端Socket，指定服务器地址和端口
                 socket = new Socket(host, port);
-                sockets.add(socket);
-
                 final String state = (socket.isConnected()) ? "Connected" : "Failed to connect";
                 // 获取客户端的IP地址
                 InetAddress address = InetAddress.getLocalHost();
@@ -88,13 +82,31 @@ public class MyTCPSocket {
                 Bundle bundle = new Bundle();
                 bundle.putString("msg", String.format("%s (Client): %s", ip, state));
                 Message msg = new Message();
-                msg.what = SENT_SUCCESSFULLY;
+                msg.what = SUCCEED;
                 msg.setData(bundle);
                 handler.sendMessage(msg);
 
                 //2.获取输出流，向服务器端发送信息
-                is = socket.getInputStream(); //获取输入流
                 os = socket.getOutputStream();//字节输出流
+
+                //注册输入流，等待服务器发送的信息
+                Handler h = new Handler(Looper.getMainLooper()) {
+                    @Override
+                    public void handleMessage(final Message msg) {
+                        if (msg.what == SUCCEED) {
+                            Bundle bundle = msg.getData();
+                            String message = bundle.getString("msg");
+                            if (inputListener != null)
+                                inputListener.connectSuccess(message);
+
+                        } else if (msg.what == FAILURE) {
+                            if (inputListener != null)
+                                inputListener.connectFailure(e);
+                        }
+                    }
+
+                };
+                new InputTask(h).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
                 while (msgQueue.size() > 0) {
                     send(msgQueue.poll());
@@ -104,7 +116,7 @@ public class MyTCPSocket {
                 e.printStackTrace();
                 MyTCPSocket.this.e = e;
                 Message msg = new Message();
-                msg.what = FAILED_TO_SEND;
+                msg.what = FAILURE;
                 handler.sendMessage(msg);
             }
             return null;
@@ -146,37 +158,37 @@ public class MyTCPSocket {
     }
 
     private class InputTask extends AsyncTask<String, Void, Void> {
-        private SocketListener listener;
         private String info;
-        private InputStream socketInputStream;
+        private Handler handler;
 
-        private InputTask(InputStream socketInputStream, SocketListener listener) {
-            this.socketInputStream = socketInputStream;
-            this.listener = listener;
+        private InputTask(Handler handler) {
+            this.handler = handler;
         }
 
         @Override
         protected Void doInBackground(String... strings) {
             try {
-                //2. 获取输入流，读取服务器端发送的信息
-                InputStreamReader isr = new InputStreamReader(socketInputStream, "UTF-8");
-                BufferedReader br = new BufferedReader(isr);
-                while ((info = br.readLine()) != null) {
-                    return null;
+                while (true) {
+                    is = socket.getInputStream(); //获取输入流
+                    //2. 获取输入流，读取服务器端发送的信息
+                    InputStreamReader isr = new InputStreamReader(is, "UTF-8");
+                    BufferedReader br = new BufferedReader(isr);
+                    while ((info = br.readLine()) != null) {
+                        Bundle bundle = new Bundle();
+                        bundle.putString("msg", info);
+                        Message msg = new Message();
+                        msg.what = SUCCEED;
+                        msg.setData(bundle);
+                        handler.sendMessage(msg);
+                    }
                 }
             } catch (Exception e) {
                 MyTCPSocket.this.e = e;
+                Message msg = new Message();
+                msg.what = FAILURE;
+                handler.sendMessage(msg);
             }
             return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-            if (e == null)
-                listener.connectSuccess(info);
-            else
-                listener.connectFailure(e);
         }
 
     }
@@ -223,7 +235,7 @@ public class MyTCPSocket {
 
         if (socket == null) {
             Message msg = new Message();
-            msg.what = FAILED_TO_SEND;
+            msg.what = FAILURE;
             MyTCPSocket.this.e = new NullPointerException("Server error");
             handler.sendMessage(msg);
             return;
@@ -235,26 +247,22 @@ public class MyTCPSocket {
             new InitAsyncTask(handler).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         } else {
             new OutputTask(os, content, outputListener).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-            new InputTask(is, inputListener).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
     }
 
     public void release() {
-        for (Socket s : sockets) {
-            sockets.remove(s);
-            try {
-                if (os != null)
-                    os.close();
-                if (is != null)
-                    is.close();// 关闭输入流
-                if (s != null)
-                    s.close();
+        try {
+            if (os != null)
+                os.close();
+            if (is != null)
+                is.close();// 关闭输入流
+            if (socket != null)
+                socket.close();
 
-                os = null;
-                is = null;
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            os = null;
+            is = null;
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

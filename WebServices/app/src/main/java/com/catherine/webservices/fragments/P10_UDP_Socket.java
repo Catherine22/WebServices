@@ -17,7 +17,6 @@ import com.catherine.webservices.Constants;
 import com.catherine.webservices.R;
 import com.catherine.webservices.interfaces.MainInterface;
 import com.catherine.webservices.interfaces.OnRequestPermissionsListener;
-import com.catherine.webservices.network.MyTCPSocket;
 import com.catherine.webservices.network.MyUDPSocket;
 import com.catherine.webservices.network.NetworkHelper;
 import com.catherine.webservices.network.SocketListener;

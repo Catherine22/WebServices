@@ -11,20 +11,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4f67b335-9767-425f-98ef-848df357af36" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P10_UDP_Socket.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/network/MyUDPSocket.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/network/MySocket.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/network/MyTCPSocket.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../JavaSocketServer/MySocket/src/Main.java" afterPath="$PROJECT_DIR$/../JavaSocketServer/MySocket/src/Main.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../README.md" afterPath="$PROJECT_DIR$/../README.md" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/Constants.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/Constants.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P07_Socket.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P07_Socket.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P08_Blocking_Socket.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P08_Blocking_Socket.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P09_NIO_Socket.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P09_NIO_Socket.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/network/DownloaderAsyncTask.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/network/DownloaderAsyncTask.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/network/MyApache.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/network/MyApache.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/network/MyHttpURLConnection.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/network/MyHttpURLConnection.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P10_UDP_Socket.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P10_UDP_Socket.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/network/MyNIOSocket.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/network/MyNIOSocket.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/network/UploaderAsyncTask.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/network/UploaderAsyncTask.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/toolkits/StreamUtils.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/toolkits/StreamUtils.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/network/MyTCPSocket.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/network/MyTCPSocket.java" />
     </list>
     <ignored path="WebServices.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -129,24 +121,41 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="P10_UDP_Socket.java" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P10_UDP_Socket.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="192">
-              <caret line="144" column="56" lean-forward="false" selection-start-line="144" selection-start-column="56" selection-end-line="144" selection-end-column="56" />
-              <folding>
-                <element signature="e#7167#7209#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="P02_HttpURLConnection.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P02_HttpURLConnection.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="279">
               <caret line="120" column="69" lean-forward="false" selection-start-line="120" selection-start-column="69" selection-end-line="120" selection-end-column="69" />
               <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="MyTCPSocket.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/network/MyTCPSocket.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-37">
+              <caret line="159" column="0" lean-forward="false" selection-start-line="159" selection-start-column="0" selection-end-line="159" selection-end-column="0" />
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="e#2130#2131#0" expanded="true" />
+                <element signature="e#2176#2177#0" expanded="true" />
+                <element signature="e#5489#5490#0" expanded="true" />
+                <element signature="e#5535#5536#0" expanded="true" />
+                <element signature="class#Builder#0;class#MyTCPSocket#0" expanded="false" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="P10_UDP_Socket.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P10_UDP_Socket.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="170">
+              <caret line="32" column="27" lean-forward="false" selection-start-line="32" selection-start-column="13" selection-end-line="32" selection-end-column="27" />
+              <folding>
+                <element signature="imports" expanded="false" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -167,9 +176,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>IDLE</find>
-      <find>@org.jetbrains.annotations.Nullable</find>
-      <find>responseOnUIThread</find>
       <find>UploaderAsyncTask</find>
       <find>helper</find>
       <find>connectSuccess</find>
@@ -183,7 +189,6 @@
       <find>&quot;AAAAA&quot;</find>
       <find>myTCPSocket</find>
       <find>StreamUtils</find>
-      <find>InputTask</find>
       <find>MyTCPSocket</find>
       <find>outputListener</find>
       <find>MyNIOSocket</find>
@@ -197,6 +202,10 @@
       <find>myUDPSocket</find>
       <find>OutputTask</find>
       <find>DISCONNECT12435</find>
+      <find>InputTask</find>
+      <find>InitAsyncTask</find>
+      <find>sockets</find>
+      <find>socket.</find>
     </findStrings>
     <replaceStrings>
       <replace>CLog</replace>
@@ -5199,13 +5208,13 @@
         <option value="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/network/DownloaderAsyncTask.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/network/UploaderAsyncTask.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P08_Blocking_Socket.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/network/MyTCPSocket.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/network/MyNIOSocket.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P09_NIO_Socket.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/Constants.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P07_Socket.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/network/MyUDPSocket.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P10_UDP_Socket.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/network/MyNIOSocket.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/network/MyTCPSocket.java" />
       </list>
     </option>
   </component>
@@ -5330,50 +5339,6 @@
               <option name="myItemType" value="com.android.tools.idea.navigator.nodes.android.AndroidPsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="WebServices" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="app" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.android.AndroidModuleNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="java" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.android.AndroidSourceTypeNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="webservices" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.android.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="network" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="WebServices" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="app" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.android.AndroidModuleNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="java" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.android.AndroidSourceTypeNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="webservices" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.android.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="fragments" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
         </subPane>
       </pane>
       <pane id="Scratches" />
@@ -5413,7 +5378,7 @@
     <property name="settings.editor.selected.configurable" value="project.propVCSSupport.Mappings" />
     <property name="android.sdk.path" value="$USER_HOME$/Documents/dev/android-sdk-macosx" />
     <property name="device.picker.selection" value="IPhone_6_API_23" />
-    <property name="SearchEverywhereHistoryKey" value="download&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/network/DownloaderAsyncTask.java&#10;Stream&#9;PSI&#9;JAVA://com.catherine.webservices.toolkits.StreamUtils&#10;p07&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/fragments/P07_Socket.java&#10;08&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/fragments/P08_Blocking_Socket.java&#10;09&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/fragments/P09_NIO_Socket.java&#10;MainA&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/MainActivity.kt&#10;02&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/fragments/P02_HttpURLConnection.java&#10;07&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/fragments/P07_Socket.java&#10;Main&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/MainActivity.kt&#10;f&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/res/layout/f_08_blocking_socket.xml&#10;activit&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/res/layout/activity_main.xml&#10;MyA&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/MyApplication.java&#10;MainAc&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/MainActivity.kt&#10;Net&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/network/NetworkHelper.kt&#10;05&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/fragments/P05_Gallery.java&#10;06&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/fragments/P06_Upload.java&#10;soc&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/fragments/P07_Socket.java&#10;lazy&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/app/src/main/res/layout/f_lazy_fragment.xml&#10;MyHttpURLConnection&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/app/src/main/java/com/catherine/webservices/network/MyHttpURLConnection.java&#10;main&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/app/src/main/res/layout/activity_main.xml&#10;04&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/app/src/main/java/com/catherine/webservices/fragments/P04_Cache.java&#10;P05&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/app/src/main/java/com/catherine/webservices/fragments/P05_Gallery.java&#10;p04&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/app/src/main/java/com/catherine/webservices/fragments/P04_Cache.java&#10;P0&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/app/src/main/java/com/catherine/webservices/fragments/P06_Upload.java&#10;P&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/app/src/main/java/com/catherine/webservices/fragments/P01_Apache.java&#10;proguard-android-optimize&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/proguard-android-optimize.txt&#10;proguard-an&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/proguard-android-optimize.txt&#10;proguard-android&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/proguard-android-optimize.txt&#10;CLog&#9;null&#9;null&#10;Do&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/app/src/main/java/com/catherine/webservices/network/DownloaderAsyncTask.java&#10;FileU&#9;null&#9;null&#10;Cons&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/app/src/main/java/com/catherine/webservices/Constants.java&#10;MyApa&#9;PSI&#9;JAVA://com.catherine.webservices.network.MyApache&#10;P04&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/app/src/main/java/com/catherine/webservices/fragments/P04_Gallery.java&#10;Ser&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/app/src/main/java/com/catherine/webservices/services/NetworkHealthService.kt&#10;My&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/app/src/main/java/com/catherine/webservices/MyApplication.java&#10;READ&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/README.md&#10;Utils&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/app/src/main/java/com/catherine/webservices/toolkits/Utils.kt&#10;Ma&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/app/src/main/java/com/catherine/webservices/MainActivity.kt&#10;rv_card&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/app/src/main/res/layout/rv_card.xml&#10;CL&#9;null&#9;null&#10;MyAppli&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/app/src/main/java/com/catherine/webservices/MyApplication.java&#10;01&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/app/src/main/java/com/catherine/webservices/fragments/P01_Apache.java&#10;f_&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/app/src/main/res/layout/f_01_apache.xml&#10;MyApp&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/app/src/main/java/com/catherine/webservices/MyApplication.java&#10;Intrinsics&#9;PSI&#9;JAVA://kotlin.jvm.internal.Intrinsics&#10;closeQuietly&#9;PSI&#9;JAVA://com.catherine.okhttp3.internal.Util#closeQuietly" />
+    <property name="SearchEverywhereHistoryKey" value="10&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/fragments/P10_UDP_Socket.java&#10;NIO&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/network/MyNIOSocket.java&#10;download&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/network/DownloaderAsyncTask.java&#10;Stream&#9;PSI&#9;JAVA://com.catherine.webservices.toolkits.StreamUtils&#10;p07&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/fragments/P07_Socket.java&#10;08&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/fragments/P08_Blocking_Socket.java&#10;09&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/fragments/P09_NIO_Socket.java&#10;MainA&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/MainActivity.kt&#10;02&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/fragments/P02_HttpURLConnection.java&#10;07&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/fragments/P07_Socket.java&#10;Main&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/MainActivity.kt&#10;f&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/res/layout/f_08_blocking_socket.xml&#10;activit&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/res/layout/activity_main.xml&#10;MyA&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/MyApplication.java&#10;MainAc&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/MainActivity.kt&#10;Net&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/network/NetworkHelper.kt&#10;05&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/fragments/P05_Gallery.java&#10;06&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/fragments/P06_Upload.java&#10;soc&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/fragments/P07_Socket.java&#10;lazy&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/app/src/main/res/layout/f_lazy_fragment.xml&#10;MyHttpURLConnection&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/app/src/main/java/com/catherine/webservices/network/MyHttpURLConnection.java&#10;main&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/app/src/main/res/layout/activity_main.xml&#10;04&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/app/src/main/java/com/catherine/webservices/fragments/P04_Cache.java&#10;P05&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/app/src/main/java/com/catherine/webservices/fragments/P05_Gallery.java&#10;p04&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/app/src/main/java/com/catherine/webservices/fragments/P04_Cache.java&#10;P0&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/app/src/main/java/com/catherine/webservices/fragments/P06_Upload.java&#10;P&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/app/src/main/java/com/catherine/webservices/fragments/P01_Apache.java&#10;proguard-android-optimize&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/proguard-android-optimize.txt&#10;proguard-an&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/proguard-android-optimize.txt&#10;proguard-android&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/proguard-android-optimize.txt&#10;CLog&#9;null&#9;null&#10;Do&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/app/src/main/java/com/catherine/webservices/network/DownloaderAsyncTask.java&#10;FileU&#9;null&#9;null&#10;Cons&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/app/src/main/java/com/catherine/webservices/Constants.java&#10;MyApa&#9;PSI&#9;JAVA://com.catherine.webservices.network.MyApache&#10;P04&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/app/src/main/java/com/catherine/webservices/fragments/P04_Gallery.java&#10;Ser&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/app/src/main/java/com/catherine/webservices/services/NetworkHealthService.kt&#10;My&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/app/src/main/java/com/catherine/webservices/MyApplication.java&#10;READ&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/README.md&#10;Utils&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/app/src/main/java/com/catherine/webservices/toolkits/Utils.kt&#10;Ma&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/app/src/main/java/com/catherine/webservices/MainActivity.kt&#10;rv_card&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/app/src/main/res/layout/rv_card.xml&#10;CL&#9;null&#9;null&#10;MyAppli&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/app/src/main/java/com/catherine/webservices/MyApplication.java&#10;01&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/app/src/main/java/com/catherine/webservices/fragments/P01_Apache.java&#10;f_&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/app/src/main/res/layout/f_01_apache.xml&#10;MyApp&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/app/src/main/java/com/catherine/webservices/MyApplication.java&#10;Intrinsics&#9;PSI&#9;JAVA://kotlin.jvm.internal.Intrinsics&#10;closeQuietly&#9;PSI&#9;JAVA://com.catherine.okhttp3.internal.Util#closeQuietly" />
     <property name="android.project.structure.last.selected" value="SDK Location" />
     <property name="android.project.structure.proportion" value="0.15" />
     <property name="android.profiler.active" value="true" />
@@ -5665,7 +5630,7 @@
       <option name="DEEP_LINK" value="" />
       <option name="ACTIVITY_CLASS" value="" />
       <method>
-        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="false" clearCache="false" clearProvisionedDevices="false" myTimestamp="1506675194166" />
+        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="false" clearCache="false" clearProvisionedDevices="false" myTimestamp="1506677308545" />
       </method>
     </configuration>
     <configuration default="true" type="AndroidTestRunConfigurationType" factoryName="Android Instrumented Tests">
@@ -5712,7 +5677,7 @@
         <option name="ADVANCED_PROFILING_ENABLED" value="false" />
       </Profilers>
       <method>
-        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="false" clearCache="false" clearProvisionedDevices="false" myTimestamp="1506675194166" />
+        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="false" clearCache="false" clearProvisionedDevices="false" myTimestamp="1506677308545" />
       </method>
     </configuration>
     <configuration default="true" type="Application" factoryName="Application">
@@ -5894,7 +5859,7 @@
       <option name="DEEP_LINK" value="" />
       <option name="ACTIVITY_CLASS" value="" />
       <method>
-        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="true" clearCache="false" clearProvisionedDevices="false" myTimestamp="1506675194167" />
+        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="true" clearCache="false" clearProvisionedDevices="false" myTimestamp="1506677308545" />
       </method>
     </configuration>
     <list size="6">
@@ -6112,7 +6077,7 @@
       <breakpoints-dialog>
         <breakpoints-dialog />
       </breakpoints-dialog>
-      <option name="time" value="28" />
+      <option name="time" value="29" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -6459,36 +6424,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/network/DownloaderAsyncTask.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2850">
-          <caret line="229" column="39" lean-forward="false" selection-start-line="229" selection-start-column="39" selection-end-line="229" selection-end-column="39" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/network/MyNIOSocket.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="198">
-          <caret line="20" column="24" lean-forward="false" selection-start-line="20" selection-start-column="13" selection-end-line="20" selection-end-column="24" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="method#release#0;class#MyNIOSocket#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/network/MyTCPSocket.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="218">
-          <caret line="241" column="26" lean-forward="true" selection-start-line="241" selection-start-column="26" selection-end-line="241" selection-end-column="26" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="class#Builder#0;class#MyTCPSocket#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P02_HttpURLConnection.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="279">
@@ -6528,12 +6463,48 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/network/DownloaderAsyncTask.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2850">
+          <caret line="229" column="39" lean-forward="false" selection-start-line="229" selection-start-column="39" selection-end-line="229" selection-end-column="39" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/network/MyNIOSocket.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="184">
+          <caret line="145" column="34" lean-forward="false" selection-start-line="145" selection-start-column="34" selection-end-line="145" selection-end-column="34" />
+          <folding>
+            <element signature="imports" expanded="false" />
+            <element signature="method#release#0;class#MyNIOSocket#0" expanded="false" />
+            <element signature="class#Builder#0;class#MyNIOSocket#0" expanded="false" />
+            <element signature="class#OutputTask#0;class#MyNIOSocket#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P10_UDP_Socket.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="192">
-          <caret line="144" column="56" lean-forward="false" selection-start-line="144" selection-start-column="56" selection-end-line="144" selection-end-column="56" />
+        <state relative-caret-position="170">
+          <caret line="32" column="27" lean-forward="false" selection-start-line="32" selection-start-column="13" selection-end-line="32" selection-end-column="27" />
           <folding>
-            <element signature="e#7167#7209#0" expanded="true" />
+            <element signature="imports" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/network/MyTCPSocket.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-37">
+          <caret line="159" column="0" lean-forward="false" selection-start-line="159" selection-start-column="0" selection-end-line="159" selection-end-column="0" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#2130#2131#0" expanded="true" />
+            <element signature="e#2176#2177#0" expanded="true" />
+            <element signature="e#5489#5490#0" expanded="true" />
+            <element signature="e#5535#5536#0" expanded="true" />
+            <element signature="class#Builder#0;class#MyTCPSocket#0" expanded="false" />
           </folding>
         </state>
       </provider>
