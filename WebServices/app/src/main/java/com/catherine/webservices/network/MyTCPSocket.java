@@ -7,8 +7,6 @@ import android.os.Looper;
 import android.os.Message;
 import android.text.TextUtils;
 
-import com.catherine.webservices.toolkits.CLog;
-
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -27,7 +25,7 @@ import java.util.Queue;
  * catherine919@soft-world.com.tw
  */
 
-public class MySocket {
+public class MyTCPSocket {
     private final static int SENT_SUCCESSFULLY = 0;
     private final static int FAILED_TO_SEND = 1;
     private SocketListener initListener, inputListener, outputListener;
@@ -41,7 +39,7 @@ public class MySocket {
     private InputStream is;
     private OutputStream os;
 
-    private MySocket(Builder builder) {
+    private MyTCPSocket(Builder builder) {
         this.inputListener = builder.inputListener;
         this.outputListener = builder.outputListener;
         this.initListener = builder.initListener;
@@ -104,7 +102,7 @@ public class MySocket {
 
             } catch (Exception e) {
                 e.printStackTrace();
-                MySocket.this.e = e;
+                MyTCPSocket.this.e = e;
                 Message msg = new Message();
                 msg.what = FAILED_TO_SEND;
                 handler.sendMessage(msg);
@@ -113,13 +111,12 @@ public class MySocket {
         }
     }
 
-    private class SocketInputAsyncTask extends AsyncTask<String, Void, Void> {
+    private class OutputTask extends AsyncTask<String, Void, Void> {
         private SocketListener listener;
         private String content;
         private OutputStream socketOutputStream;
-        private Exception e = null;
 
-        private SocketInputAsyncTask(OutputStream socketOutputStream, String content, SocketListener listener) {
+        private OutputTask(OutputStream socketOutputStream, String content, SocketListener listener) {
             this.socketOutputStream = socketOutputStream;
             this.content = content;
             this.listener = listener;
@@ -132,7 +129,7 @@ public class MySocket {
                 pw.write(content + "\n");
                 pw.flush();
             } catch (Exception e) {
-                this.e = e;
+                MyTCPSocket.this.e = e;
             }
             return null;
         }
@@ -148,13 +145,12 @@ public class MySocket {
 
     }
 
-    private class SocketOutputAsyncTask extends AsyncTask<String, Void, Void> {
+    private class InputTask extends AsyncTask<String, Void, Void> {
         private SocketListener listener;
         private String info;
         private InputStream socketInputStream;
-        private Exception e = null;
 
-        private SocketOutputAsyncTask(InputStream socketInputStream, SocketListener listener) {
+        private InputTask(InputStream socketInputStream, SocketListener listener) {
             this.socketInputStream = socketInputStream;
             this.listener = listener;
         }
@@ -169,7 +165,7 @@ public class MySocket {
                     return null;
                 }
             } catch (Exception e) {
-                this.e = e;
+                MyTCPSocket.this.e = e;
             }
             return null;
         }
@@ -216,8 +212,8 @@ public class MySocket {
             return this;
         }
 
-        public MySocket build() {
-            return new MySocket(this);
+        public MyTCPSocket build() {
+            return new MyTCPSocket(this);
         }
     }
 
@@ -228,7 +224,7 @@ public class MySocket {
         if (socket == null) {
             Message msg = new Message();
             msg.what = FAILED_TO_SEND;
-            MySocket.this.e = new NullPointerException("Server error");
+            MyTCPSocket.this.e = new NullPointerException("Server error");
             handler.sendMessage(msg);
             return;
         }
@@ -238,8 +234,8 @@ public class MySocket {
             //Connecting...
             new InitAsyncTask(handler).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         } else {
-            new SocketInputAsyncTask(os, content, inputListener).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-            new SocketOutputAsyncTask(is, outputListener).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            new OutputTask(os, content, outputListener).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            new InputTask(is, inputListener).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
     }
 

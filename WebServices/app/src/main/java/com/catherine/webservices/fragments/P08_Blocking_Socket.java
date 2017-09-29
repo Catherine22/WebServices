@@ -17,7 +17,7 @@ import com.catherine.webservices.Constants;
 import com.catherine.webservices.R;
 import com.catherine.webservices.interfaces.MainInterface;
 import com.catherine.webservices.interfaces.OnRequestPermissionsListener;
-import com.catherine.webservices.network.MySocket;
+import com.catherine.webservices.network.MyTCPSocket;
 import com.catherine.webservices.network.NetworkHelper;
 import com.catherine.webservices.network.SocketListener;
 
@@ -39,7 +39,7 @@ public class P08_Blocking_Socket extends LazyFragment {
     private FloatingActionButton fab_disconnect, fab_settings;
     private boolean isFABOpen;
     private NetworkHelper helper;
-    private MySocket mySocket;
+    private MyTCPSocket myTCPSocket;
 
     public static P08_Blocking_Socket newInstance(boolean isLazyLoad) {
         Bundle args = new Bundle();
@@ -114,9 +114,9 @@ public class P08_Blocking_Socket extends LazyFragment {
 
 
     private void initSocket() {
-        mySocket = new MySocket.Builder()
+        myTCPSocket = new MyTCPSocket.Builder()
                 .host(Constants.SOCKET_HOST)
-                .port(Constants.SOCKET_PORT)
+                .port(Constants.TCP_SOCKET_PORT)
                 .initListener(new InitListener())
                 .inputListener(new InputListener())
                 .outputListener(new OutputListener())
@@ -136,15 +136,15 @@ public class P08_Blocking_Socket extends LazyFragment {
         bt_send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mySocket.send(et_input.getText().toString());
+                myTCPSocket.send(et_input.getText().toString());
             }
         });
 
         fab_disconnect.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                mySocket.send("*#DISCONNECT11223#*");
+                myTCPSocket.send("*#DISCONNECT11223#*");
                 tv_state.setText(Constants.SOCKET_HOST + " disconnected.");
-                mySocket.release();
+                myTCPSocket.release();
             }
         });
 
@@ -182,10 +182,7 @@ public class P08_Blocking_Socket extends LazyFragment {
         }
     }
 
-    /**
-     * 写入
-     */
-    private class InputListener implements SocketListener {
+    private class OutputListener implements SocketListener {
 
         @Override
         public void connectSuccess(String message) {
@@ -199,13 +196,13 @@ public class P08_Blocking_Socket extends LazyFragment {
         }
     }
 
-    private class OutputListener implements SocketListener {
+    private class InputListener implements SocketListener {
 
         @Override
         public void connectSuccess(String message) {
             if ("*#DISCONNECT11223#*".equals(message)) {
                 tv_state.setText(Constants.SOCKET_HOST + " disconnected.");
-                mySocket.release();
+                myTCPSocket.release();
             } else {
                 // 读取socket输入流的内容并打印
                 tv_history.setText(String.format("%s\nYou got: %s", tv_history.getText(), message));

@@ -11,7 +11,7 @@ import java.io.InputStream;
  */
 
 public class StreamUtils {
-    public String getString(InputStream inputStream) throws IOException {
+    public static String getString(InputStream inputStream) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         byte[] buffer = new byte[1024];
         int length = -1;
@@ -25,7 +25,7 @@ public class StreamUtils {
         return result;
     }
 
-    public byte[] getBytes(InputStream is) throws Exception {
+    public static byte[] getBytes(InputStream is) throws Exception {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         byte[] buffer = new byte[1024];
         int len = -1;

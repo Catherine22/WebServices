@@ -8,7 +8,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -18,12 +17,12 @@ import com.catherine.webservices.Constants;
 import com.catherine.webservices.R;
 import com.catherine.webservices.interfaces.MainInterface;
 import com.catherine.webservices.interfaces.OnRequestPermissionsListener;
-import com.catherine.webservices.network.MyNIOSocket;
+import com.catherine.webservices.network.MyTCPSocket;
+import com.catherine.webservices.network.MyUDPSocket;
 import com.catherine.webservices.network.NetworkHelper;
 import com.catherine.webservices.network.SocketListener;
 
 import java.net.ConnectException;
-import java.net.SocketException;
 import java.util.List;
 
 /**
@@ -32,8 +31,8 @@ import java.util.List;
  * catherine919@soft-world.com.tw
  */
 
-public class P09_NIO_Socket extends LazyFragment {
-    public final static String TAG = "P09_NIO_Socket";
+public class P10_UDP_Socket extends LazyFragment {
+    public final static String TAG = "P10_UDP_Socket";
     private MainInterface mainInterface;
     private TextView tv_history, tv_state;
     private EditText et_input;
@@ -41,12 +40,12 @@ public class P09_NIO_Socket extends LazyFragment {
     private FloatingActionButton fab_disconnect, fab_settings;
     private boolean isFABOpen;
     private NetworkHelper helper;
-    private MyNIOSocket nioSocket;
+    private MyUDPSocket myUDPSocket;
 
-    public static P09_NIO_Socket newInstance(boolean isLazyLoad) {
+    public static P10_UDP_Socket newInstance(boolean isLazyLoad) {
         Bundle args = new Bundle();
         args.putBoolean(LazyFragment.INTENT_BOOLEAN_LAZYLOAD, isLazyLoad);
-        P09_NIO_Socket fragment = new P09_NIO_Socket();
+        P10_UDP_Socket fragment = new P10_UDP_Socket();
         fragment.setArguments(args);
         return fragment;
     }
@@ -114,12 +113,13 @@ public class P09_NIO_Socket extends LazyFragment {
         super.onViewCreated(view, savedInstanceState);
     }
 
+
     private void initSocket() {
-        nioSocket = new MyNIOSocket.Builder()
+        myUDPSocket = new MyUDPSocket.Builder()
                 .host(Constants.SOCKET_HOST)
-                .port(Constants.NIO_SOCKET_PORT)
-                .inputListener(new Input())
-                .outputListener(new Output())
+                .port(Constants.UDP_SOCKET_PORT)
+                .inputListener(new InputListener())
+                .outputListener(new OutputListener())
                 .build();
     }
 
@@ -136,14 +136,15 @@ public class P09_NIO_Socket extends LazyFragment {
         bt_send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                send(et_input.getText().toString());
+                myUDPSocket.send(et_input.getText().toString());
             }
         });
 
         fab_disconnect.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                tv_state.setText("Stop");
-                release();
+                myUDPSocket.send("*#DISCONNECT12435#*");
+                tv_state.setText(Constants.SOCKET_HOST + " disconnected.");
+                myUDPSocket.release();
             }
         });
 
@@ -160,7 +161,38 @@ public class P09_NIO_Socket extends LazyFragment {
         });
     }
 
-    class Output implements SocketListener {
+    private class InputListener implements SocketListener {
+
+        @Override
+        public void connectSuccess(String message) {
+            if ("*#DISCONNECT12435#*".equals(message)) {
+                tv_state.setText(Constants.SOCKET_HOST + " disconnected.");
+                myUDPSocket.release();
+            } else {
+                // 读取socket输入流的内容并打印
+                tv_history.setText(String.format("%s\nYou got: %s", tv_history.getText(), message));
+            }
+        }
+
+        @Override
+        public void connectFailure(Exception e) {
+            e.printStackTrace();
+            if (e instanceof ConnectException) {
+                if (!helper.isNetworkHealth()) {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            tv_state.setText(getResources().getString(R.string.offline));
+                        }
+                    });
+                }
+            }
+        }
+    }
+
+    private class OutputListener implements SocketListener {
+
+
         @Override
         public void connectSuccess(String message) {
             et_input.setText("");
@@ -170,47 +202,8 @@ public class P09_NIO_Socket extends LazyFragment {
         @Override
         public void connectFailure(Exception e) {
             e.printStackTrace();
-            if (e instanceof ConnectException) {
-                if (!helper.isNetworkHealth()) {
-                    tv_state.setText(getResources().getString(R.string.offline));
-                }
-            } else if (e instanceof SocketException) {
-                tv_state.setText("Server error");
-            }
-
-            et_input.setText("");
-            tv_history.setText(String.format("%s\n%s", tv_history.getText(), "Failed to send."));
-        }
-    }
-
-    class Input implements SocketListener {
-        @Override
-        public void connectSuccess(String message) {
-            tv_history.setText(String.format("%s\nYou got: %s", tv_history.getText(), message));
-
-        }
-
-        @Override
-        public void connectFailure(Exception e) {
-            e.printStackTrace();
-            if (e instanceof ConnectException) {
-                if (!helper.isNetworkHealth()) {
-                    tv_state.setText(getResources().getString(R.string.offline));
-                }
-            } else if (e instanceof SocketException) {
-                tv_state.setText("Server error");
-            }
         }
     }
 
 
-    private void send(final String message) {
-        if (TextUtils.isEmpty(message))
-            return;
-        nioSocket.write(message);
-    }
-
-    private void release() {
-        nioSocket.release();
-    }
 }

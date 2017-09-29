@@ -21,8 +21,9 @@ public class Constants {
     public final static String AUTHORIZATION = "5fb638b4df37d8175138dfe0d072458a105ea572cff7ecd04c5e8f056c6dbad5";
 
     public final static String SOCKET_HOST = "192.168.3.131";
-    public final static int SOCKET_PORT = 11223;
+    public final static int TCP_SOCKET_PORT = 11223;
     public final static int NIO_SOCKET_PORT = 11345;
+    public final static int UDP_SOCKET_PORT = 12435;
 
     public final static String ROOT_PATH = Environment.getExternalStorageDirectory().getAbsolutePath() + "/WebServices/";
     public final static String EXT_PATH = ROOT_PATH + "data/";
@@ -32,5 +33,6 @@ public class Constants {
     public final static int P05_Gallery = 5;
     public final static int P08_BLOCKING_SOCKET = 8;
     public final static int P09_NIO_SOCKET = 9;
+    public final static int P10_UDP_SOCKET = 10;
 
 }

@@ -41,21 +41,21 @@ public class MyNIOSocket {
                 if (msg.what == SENT_SUCCESSFULLY) {
                     Bundle bundle = msg.getData();
                     String message = bundle.getString("msg");
-                    if (outputListener != null)
-                        outputListener.connectSuccess(message);
+                    if (inputListener != null)
+                        inputListener.connectSuccess(message);
 
                 } else if (msg.what == FAILED_TO_SEND) {
-                    if (outputListener != null)
-                        outputListener.connectFailure(e);
+                    if (inputListener != null)
+                        inputListener.connectFailure(e);
                 }
             }
         };
 
-        new NIOSocketOutputAsyncTask(handler).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        new InputTask(handler).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     public void write(String content) {
-        new NIOSocketInputAsyncTask(socketChannel, content, inputListener).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        new OutputTask(socketChannel, content, outputListener).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     public void release() {
@@ -97,10 +97,10 @@ public class MyNIOSocket {
         }
     }
 
-    private class NIOSocketOutputAsyncTask extends AsyncTask<String, Void, Void> {
+    private class InputTask extends AsyncTask<String, Void, Void> {
         private Handler handler;
 
-        NIOSocketOutputAsyncTask(Handler handler) {
+        InputTask(Handler handler) {
             this.handler = handler;
         }
 
@@ -148,12 +148,12 @@ public class MyNIOSocket {
         }
     }
 
-    private class NIOSocketInputAsyncTask extends AsyncTask<String, Void, Void> {
+    private class OutputTask extends AsyncTask<String, Void, Void> {
         private SocketListener listener;
         private SocketChannel socketChannel;
         private String content;
 
-        NIOSocketInputAsyncTask(SocketChannel socketChannel, String content, SocketListener listener) {
+        OutputTask(SocketChannel socketChannel, String content, SocketListener listener) {
             this.content = content;
             this.listener = listener;
             this.socketChannel = socketChannel;
