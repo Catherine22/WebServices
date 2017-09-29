@@ -6,7 +6,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 
-import com.catherine.webservices.Constants;
 import java.net.InetSocketAddress;
 import java.net.SocketException;
 import java.nio.ByteBuffer;
@@ -28,10 +27,14 @@ public class MyNIOSocket {
     private int readBytes;
     private Exception e;
     private Handler handler;
+    private String host;
+    private int port;
 
     private MyNIOSocket(Builder builder) {
         this.inputListener = builder.inputListener;
         this.outputListener = builder.outputListener;
+        this.host = builder.host;
+        this.port = builder.port;
         handler = new Handler(Looper.getMainLooper()) {
             @Override
             public void handleMessage(final Message msg) {
@@ -66,6 +69,18 @@ public class MyNIOSocket {
 
     public static class Builder {
         private SocketListener inputListener, outputListener;
+        private String host;
+        private int port;
+
+        public Builder host(String host) {
+            this.host = host;
+            return this;
+        }
+
+        public Builder port(int port) {
+            this.port = port;
+            return this;
+        }
 
         public Builder inputListener(SocketListener inputListener) {
             this.inputListener = inputListener;
@@ -93,7 +108,7 @@ public class MyNIOSocket {
         protected Void doInBackground(String... strings) {
             try {
                 //打开SocketChannel
-                socketChannel = SocketChannel.open(new InetSocketAddress(Constants.SOCKET_HOST, Constants.NIO_SOCKET_PORT));
+                socketChannel = SocketChannel.open(new InetSocketAddress(host, port));
                 //设置为非阻塞
                 socketChannel.configureBlocking(false);
 

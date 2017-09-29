@@ -117,6 +117,8 @@ public class P09_NIO_Socket extends LazyFragment {
 
     private void initSocket() {
         nioSocket = new MyNIOSocket.Builder()
+                .host(Constants.SOCKET_HOST)
+                .port(Constants.NIO_SOCKET_PORT)
                 .inputListener(new Input())
                 .outputListener(new Output())
                 .build();
