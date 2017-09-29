@@ -80,8 +80,6 @@ public class MySocket {
         protected Void doInBackground(String... strings) {
             try {
                 //1.创建客户端Socket，指定服务器地址和端口
-                CLog.Companion.i("AAAAA",host);
-                CLog.Companion.i("AAAAA",port+"");
                 socket = new Socket(host, port);
                 sockets.add(socket);
 

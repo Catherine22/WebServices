@@ -117,12 +117,10 @@ public class P07_Socket extends LazyFragment {
         features = new ArrayList<>();
         features.add("Simple Socket");
         features.add("NIO Socket");
-        features.add("Http");
 
         descriptions = new ArrayList<>();
         descriptions.add("TCP socket transmission on blocking thread.");
         descriptions.add("TCP socket transmission on blocking thread (channel).");
-        descriptions.add("Http communication based on TCP socket");
     }
 
     private void initComponent() {
@@ -148,9 +146,6 @@ public class P07_Socket extends LazyFragment {
                         break;
                     case 1:
                         callFragment(Constants.P09_NIO_SOCKET);
-                        break;
-                    case 2:
-                        callFragment(Constants.P10_HTTP_BY_SOCKET);
                         break;
                 }
             }
@@ -189,11 +184,6 @@ public class P07_Socket extends LazyFragment {
                 title = "P09_NIO_SOCKET";
                 fragment = P09_NIO_Socket.newInstance(true);
                 tag = "P09";
-                break;
-            case Constants.P10_HTTP_BY_SOCKET:
-                title = "P10_HTTP_BY_SOCKET";
-                fragment = P10_Http_By_Socket.newInstance(true);
-                tag = "P10";
                 break;
         }
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();

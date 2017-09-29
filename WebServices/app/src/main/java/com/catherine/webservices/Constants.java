@@ -20,7 +20,6 @@ public class Constants {
     public final static String HOST = "http://192.168.3.131:8080/WebApplication/servlet/";
     public final static String AUTHORIZATION = "5fb638b4df37d8175138dfe0d072458a105ea572cff7ecd04c5e8f056c6dbad5";
 
-
     public final static String SOCKET_HOST = "192.168.3.131";
     public final static int SOCKET_PORT = 11223;
     public final static int NIO_SOCKET_PORT = 11345;

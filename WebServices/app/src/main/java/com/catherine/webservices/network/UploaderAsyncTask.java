@@ -3,7 +3,6 @@ package com.catherine.webservices.network;
 import android.os.AsyncTask;
 import android.text.TextUtils;
 
-import com.catherine.webservices.toolkits.CLog;
 import com.catherine.webservices.toolkits.StreamUtils;
 
 import java.io.DataOutputStream;
