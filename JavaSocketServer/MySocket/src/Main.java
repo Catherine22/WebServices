@@ -35,22 +35,11 @@ public class Main {
 	public final static int PORT2 = 11345;
 
 	public static void main(String[] args) throws IOException {
-		 tcpSocketReceiver();
+		// tcpSocketReceiver();
 
-//		InetAddress address = InetAddress.getLocalHost();
-//		Runnable runnable = new Runnable() {
-//			@Override
-//			public void run() {
-//				try {
-//					new Main(address.getHostAddress(), PORT2).startServer();
-//				} catch (IOException e) {
-//					e.printStackTrace();
-//				}
-//			}
-//		};
-//		new Thread(runnable, "Thread-1").start();
+		// startNIOSocket();
 
-//		udpSocket();
+		// udpSocket();
 
 	}
 
@@ -115,7 +104,7 @@ public class Main {
 					pw = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF-8")));
 					pw.write(content + "\n");
 					pw.flush();
-				}else{
+				} else {
 					sockets.remove(socket);
 				}
 			}
@@ -126,33 +115,35 @@ public class Main {
 		}
 	}
 
-	private Selector selector;
-	private Map<SocketChannel, List> dataMapper;
-	private InetSocketAddress listenAddress;
+	private static Selector selector;
+	private static Map<SocketChannel, List> dataMapper;
+	private static InetSocketAddress listenAddress;
 
-	public Main(String address, int port) throws IOException {
-		listenAddress = new InetSocketAddress(address, port);
+	public static void startNIOSocket() throws IOException {
+		InetAddress address = InetAddress.getLocalHost();
+		listenAddress = new InetSocketAddress(address, PORT2);
 		dataMapper = new HashMap<SocketChannel, List>();
+		startServer();
 	}
 
 	// create server channel
-	private void startServer() throws IOException {
-		this.selector = Selector.open();
+	private static void startServer() throws IOException {
+		selector = Selector.open();
 		ServerSocketChannel serverChannel = ServerSocketChannel.open();
 		serverChannel.configureBlocking(false);
 
 		// retrieve server socket and bind to port
 		serverChannel.socket().bind(listenAddress);
-		serverChannel.register(this.selector, SelectionKey.OP_ACCEPT);
+		serverChannel.register(selector, SelectionKey.OP_ACCEPT);
 
 		System.out.println("Server started...");
 
 		while (true) {
 			// wait for events
-			this.selector.select();
+			selector.select();
 
 			// work on selected keys
-			Iterator keys = this.selector.selectedKeys().iterator();
+			Iterator keys = selector.selectedKeys().iterator();
 			while (keys.hasNext()) {
 				SelectionKey key = (SelectionKey) keys.next();
 
@@ -165,16 +156,16 @@ public class Main {
 				}
 
 				if (key.isAcceptable()) {
-					this.accept(key);
+					accept(key);
 				} else if (key.isReadable()) {
-					this.read(key);
+					read(key);
 				}
 			}
 		}
 	}
 
 	// accept a connection made to this channel's socket
-	private void accept(SelectionKey key) throws IOException {
+	private static void accept(SelectionKey key) throws IOException {
 		ServerSocketChannel serverChannel = (ServerSocketChannel) key.channel();
 		SocketChannel channel = serverChannel.accept();
 		channel.configureBlocking(false);
@@ -184,18 +175,18 @@ public class Main {
 
 		// register channel with selector for further IO
 		dataMapper.put(channel, new ArrayList());
-		channel.register(this.selector, SelectionKey.OP_READ);
+		channel.register(selector, SelectionKey.OP_READ);
 	}
 
 	// read from the socket channel
-	private void read(SelectionKey key) throws IOException {
+	private static void read(SelectionKey key) throws IOException {
 		SocketChannel channel = (SocketChannel) key.channel();
 		ByteBuffer buffer = ByteBuffer.allocate(1024);
 		int numRead = -1;
 		numRead = channel.read(buffer);
 
 		if (numRead == -1) {
-			this.dataMapper.remove(channel);
+			dataMapper.remove(channel);
 			Socket socket = channel.socket();
 			SocketAddress remoteAddr = socket.getRemoteSocketAddress();
 			System.out.println("Connection closed by client: " + remoteAddr);
@@ -236,7 +227,7 @@ public class Main {
 			// 1.定义客户端的地址、端口号、数据
 			InetAddress address = packet.getAddress();
 			int port = packet.getPort();
-			
+
 			// 4.读取数据
 			String info = new String(data, 0, packet.getLength());
 			System.out.println("You got: " + info);
@@ -250,7 +241,8 @@ public class Main {
 				socket.send(packet2);
 				stop = true;
 			} else {
-				byte[] data2 = String.format("Hi client, I am server. I've received your message : %s", info).getBytes();
+				byte[] data2 = String.format("Hi client, I am server. I've received your message : %s", info)
+						.getBytes();
 				// 2.创建数据报，包含响应的数据信息
 				DatagramPacket packet2 = new DatagramPacket(data2, data2.length, address, port);
 				// 3.响应客户端
