@@ -165,7 +165,7 @@ public class P01_Apache extends LazyFragment {
                             @Override
                             public void run() {
                                 setupApache(position);
-                                myApache.doGet("http://dictionary.cambridge.org/zhs/%E6%90%9C%E7%B4%A2/%E8%8B%B1%E8%AF%AD-%E6%B1%89%E8%AF%AD-%E7%AE%80%E4%BD%93/direct/?q=philosopher");
+                                myApache.doGet("http://dictionary.cambridge.org/dictionary/english-chinese-simplified/philosopher");
 
                             }
                         });

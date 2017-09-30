@@ -18,6 +18,7 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -90,20 +91,20 @@ public class MyHttpURLConnection {
                     conn.setRequestProperty(name, request.getHeaders().get(name));
                 }
             }
-
-            long currentTime = System.currentTimeMillis();
-            String cacheControl = conn.getHeaderField("Cache-Control");
-            long expires = conn.getHeaderFieldDate("Expires", currentTime);
-            String lastModified = conn.getHeaderField("Last-Modified");
-
-            CLog.Companion.i(TAG, "Cache-Control: " + cacheControl);
-            CLog.Companion.i(TAG, "Expires: " + expires);
-            CLog.Companion.i(TAG, "Last Modified: " + lastModified);
-
             conn.connect();
 
             code = conn.getResponseCode();
             msg = conn.getResponseMessage();
+
+            CLog.Companion.i(TAG, "------Header------");
+            for (Map.Entry<String, List<String>> entries : conn.getHeaderFields().entrySet()) {
+                String values = "";
+                for (String value : entries.getValue()) {
+                    values += value + ",";
+                }
+                CLog.Companion.i(TAG, entries.getKey() + " - " + values);
+            }
+            CLog.Companion.i(TAG, "------Header------");
 
             if (code == 200) {
                 InputStream is = conn.getInputStream();

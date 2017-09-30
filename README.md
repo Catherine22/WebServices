@@ -204,7 +204,41 @@ Cache-Control:no-cache, no-store
 
 - WebView cache
 
+## HTTPS
 
+[![HTTPS workflos](https://raw.githubusercontent.com/Catherine22/WebServices/master/https_workflow.png)](http://limboy.me/tech/2011/02/19/https-workflow.html)
+
+ 1. Client requests a https url
+ 2. There is a keypair in server.
+ 3. Server passes the public key to client.
+ 4. Client validates the public key and generate a key (I call it client key). If the public key is able to be truthed, client encrypts the client key with the public key.
+ 5. Client sends the encrypted client key to server.
+ 6. Server decrypts the client key with private key.
+ 7. Server sends messages encrypted with the client key to client.
+ 8. Client decrypts the messages with the client key.
+
+
+> In step 4, how does client know that public key is valid?		 
+> Let CA (Certificate Authority) tells client.
+> There are hundreds of CAs in the world, and which CA is truthed depends on a CAs list in client. (For example, your mobile phone had been saved a trusted CA list before you bought it.)
+
+### Android HTTPS
+
+As I was mentioning, you open a url ([https://kyfw.12306.cn/otn/regist/init]) with your Android device and you get an exception:
+
+``` html
+java.security.cert.CertPathValidatorException: Trust anchor for certification path not found.
+```
+Because the CA of kyfw.12306.cn is not in default trusted CA list of your devce.
+
+In this scenario, if you are sure this website is trusted and you've got to request it, you create your SSLTrustManager which implements X509TrustManager and do nothing in the override methods. It means you skip certificates verification. Hackers can send you a fake public key to connect to client because you don't validate the public key in step 4, your device finally connect to the hacker's server.
+
+There are two solutions, the second one is better.
+1. Get the certificate of kyfw.12306.cn and keep it in assets folder. You add this certificate to trusted CA list of client.
+*After the end of the validity period, the certificate is no longer considered an acceptable.*
+
+2. Get the certificate of CA which trusts kyfw.12306.cn and keep it in assets folder. You add this certificate to trusted CA list of client.
+Normally, CA has a longer validity period.
 
 ## Download and cache images
 
@@ -249,6 +283,7 @@ udpSocket();
 - [increasing-application-performance-with-http-cache-headers]
 - [Socket tutorial]
 - [What are examples of TCP and UDP in real life scenario ?]
+- [Android HTTPS]
 
 
 [MainActivity]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/MainActivity.kt>
@@ -273,3 +308,5 @@ udpSocket();
 [P10_UDP_Socket]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/P10_UDP_Socket.java>
 [MySocket]:<https://github.com/Catherine22/WebServices/blob/master/JavaSocketServer/MySocket/src/Main.java>
 [What are examples of TCP and UDP in real life scenario ?]:<https://learningnetwork.cisco.com/thread/87103>
+[Android HTTPS]:<http://blog.csdn.net/iispring/article/details/51615631>
+[https://kyfw.12306.cn/otn/regist/init]:<https://kyfw.12306.cn/otn/regist/init>

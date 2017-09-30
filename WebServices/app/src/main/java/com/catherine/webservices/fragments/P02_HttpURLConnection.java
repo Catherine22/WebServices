@@ -72,11 +72,13 @@ public class P02_HttpURLConnection extends LazyFragment {
         features.add("HttpPost in AsyncTask");
         features.add("HttpPost in AsyncTask");
         features.add("HttpGet in AsyncTask");
+        features.add("HttpGet (Https) in AsyncTask");
         descriptions.add("Connect to the server with user-defined headers");
         descriptions.add("Connect to the server with correct account");
         descriptions.add("Connect to the server with false Authorization");
         descriptions.add("Connect to the server with false account");
         descriptions.add("Connect to Cambridge dictionary server");
+        descriptions.add("Connect to GitHub api");
         for (int i = 0; i < features.size(); i++) {
             contents.add("");
         }
@@ -152,10 +154,17 @@ public class P02_HttpURLConnection extends LazyFragment {
                         break;
                     case 4:
                         HttpRequest r4 = new HttpRequest.Builder()
-                                .url("http://dictionary.cambridge.org/zhs/%E6%90%9C%E7%B4%A2/%E8%8B%B1%E8%AF%AD-%E6%B1%89%E8%AF%AD-%E7%AE%80%E4%BD%93/direct/?q=philosopher")
+                                .url("http://dictionary.cambridge.org/dictionary/english-chinese-simplified/philosopher")
                                 .listener(buildListener(position))
                                 .build();
                         new HttpAsyncTask(r4).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                        break;
+                    case 5:
+                        HttpRequest r5 = new HttpRequest.Builder()
+                                .url("https://api.github.com/repos/square/okhttp/contributors")
+                                .listener(buildListener(position))
+                                .build();
+                        new HttpAsyncTask(r5).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                         break;
                 }
             }
