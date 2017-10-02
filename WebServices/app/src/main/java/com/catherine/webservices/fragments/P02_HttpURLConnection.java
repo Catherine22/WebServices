@@ -20,6 +20,7 @@ import com.catherine.webservices.network.MyHttpURLConnection;
 import com.catherine.webservices.toolkits.CLog;
 
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -67,18 +68,20 @@ public class P02_HttpURLConnection extends LazyFragment {
         features = new ArrayList<>();
         contents = new ArrayList<>();
         descriptions = new ArrayList<>();
-        features.add("HttpGet in AsyncTask");
-        features.add("HttpPost in AsyncTask");
-        features.add("HttpPost in AsyncTask");
-        features.add("HttpPost in AsyncTask");
-        features.add("HttpGet in AsyncTask");
-        features.add("HttpGet (Https) in AsyncTask");
+        features.add("GET " + Constants.HOST);
+        features.add("POST " + Constants.HOST);
+        features.add("POST " + Constants.HOST);
+        features.add("POST " + Constants.HOST);
+        features.add("GET http://dictionary.cambridge.org/");
+        features.add("GET " + Constants.GITHUB_API_DOMAIN);
+        features.add("https://kyfw.12306.cn/otn/regist/init");
         descriptions.add("Connect to the server with user-defined headers");
         descriptions.add("Connect to the server with correct account");
         descriptions.add("Connect to the server with false Authorization");
         descriptions.add("Connect to the server with false account");
         descriptions.add("Connect to Cambridge dictionary server");
-        descriptions.add("Connect to GitHub api");
+        descriptions.add("Connect to GitHub api with gzip encoding");
+        descriptions.add("Connect to untrusted url with imported certificate");
         for (int i = 0; i < features.size(); i++) {
             contents.add("");
         }
@@ -169,39 +172,50 @@ public class P02_HttpURLConnection extends LazyFragment {
                         new HttpAsyncTask(r4).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                         break;
                     case 5:
-                        HttpRequest r5 = new HttpRequest.Builder()
-                                .url(Constants.GITHUB_API_DOMAIN)
-                                .listener(new HttpResponseListener() {
-                                    @Override
-                                    public void connectSuccess(@NotNull HttpResponse response) {
-                                        CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
-                                        contents.set(position, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
-                                        adapter.setContents(contents);
-                                        adapter.notifyDataSetChanged();
-                                    }
-
-                                    @Override
-                                    public void connectFailure(HttpResponse response, Exception e) {
-                                        StringBuilder sb = new StringBuilder();
-                                        sb.append(String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, error:%s, body:%s", response.getCode(), response.getCodeString(), response.getErrorMessage(), response.getBody()));
-                                        CLog.Companion.e(TAG, sb.toString());
-                                        if (e != null) {
-                                            sb.append("\n");
-                                            sb.append(e.getMessage());
-                                            CLog.Companion.e(TAG, e.getMessage());
+                        try {
+                            HttpRequest r5 = new HttpRequest.Builder()
+                                    .url(Constants.GITHUB_API_DOMAIN + "users/Catherine22/repos")
+                                    .listener(new HttpResponseListener() {
+                                        @Override
+                                        public void connectSuccess(@NotNull HttpResponse response) {
+                                            CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
+                                            contents.set(position, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
+                                            adapter.setContents(contents);
+                                            adapter.notifyDataSetChanged();
                                         }
-                                        contents.set(position, sb.toString());
-                                        adapter.setContents(contents);
-                                        getActivity().runOnUiThread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                adapter.notifyDataSetChanged();
+
+                                        @Override
+                                        public void connectFailure(HttpResponse response, Exception e) {
+                                            StringBuilder sb = new StringBuilder();
+                                            sb.append(String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, error:%s, body:%s", response.getCode(), response.getCodeString(), response.getErrorMessage(), response.getBody()));
+                                            CLog.Companion.e(TAG, sb.toString());
+                                            if (e != null) {
+                                                sb.append("\n");
+                                                sb.append(e.getMessage());
+                                                CLog.Companion.e(TAG, e.getMessage());
                                             }
-                                        });
-                                    }
-                                })
+                                            contents.set(position, sb.toString());
+                                            adapter.setContents(contents);
+                                            getActivity().runOnUiThread(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    adapter.notifyDataSetChanged();
+                                                }
+                                            });
+                                        }
+                                    })
+                                    .build();
+                            new HttpAsyncTask(r5).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        break;
+                    case 6:
+                        HttpRequest r6 = new HttpRequest.Builder()
+                                .url("https://kyfw.12306.cn/otn/regist/init")
+                                .listener(buildListener(position))
                                 .build();
-                        new HttpAsyncTask(r5).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                        new HttpAsyncTask(r6).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                         break;
                 }
             }

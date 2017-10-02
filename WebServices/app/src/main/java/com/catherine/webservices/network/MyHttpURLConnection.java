@@ -5,7 +5,6 @@ import android.net.http.HttpResponseCache;
 import android.os.Build;
 import android.text.TextUtils;
 
-import com.catherine.webservices.Constants;
 import com.catherine.webservices.MyApplication;
 import com.catherine.webservices.toolkits.CLog;
 import com.catherine.webservices.toolkits.StreamUtils;
@@ -97,12 +96,18 @@ public class MyHttpURLConnection {
             code = conn.getResponseCode();
             msg = conn.getResponseMessage();
 
+            String contentEncoding = "";
             CLog.Companion.i(TAG, "------Header------");
             for (Map.Entry<String, List<String>> entries : conn.getHeaderFields().entrySet()) {
                 StringBuilder values = new StringBuilder();
                 for (String value : entries.getValue()) {
                     values.append(value).append(",");
                 }
+
+                if ("Content-Encoding".equals(entries.getKey())) {
+                    contentEncoding = values.toString();
+                }
+
                 values.deleteCharAt(values.length() - 1);
                 responseHeaders.put(entries.getKey(), values.toString());
                 CLog.Companion.i(TAG, entries.getKey() + ": " + values);
@@ -111,7 +116,10 @@ public class MyHttpURLConnection {
 
             InputStream is = conn.getInputStream();
             if (is != null) {
-                response = StreamUtils.getString(is);
+                if (contentEncoding.toUpperCase().contains("GZIP"))
+                    response = StreamUtils.decompressGZIP(is);
+                else
+                    response = StreamUtils.getString(is);
                 is.close();
             }
 
@@ -178,12 +186,18 @@ public class MyHttpURLConnection {
             code = conn.getResponseCode();
             msg = conn.getResponseMessage();
 
+            String contentEncoding = "";
             CLog.Companion.i(TAG, "------Header------");
             for (Map.Entry<String, List<String>> entries : conn.getHeaderFields().entrySet()) {
                 StringBuilder values = new StringBuilder();
                 for (String value : entries.getValue()) {
                     values.append(value).append(",");
                 }
+
+                if ("Content-Encoding".equals(entries.getKey())) {
+                    contentEncoding = values.toString();
+                }
+
                 values.deleteCharAt(values.length() - 1);
                 responseHeaders.put(entries.getKey(), values.toString());
                 CLog.Companion.i(TAG, entries.getKey() + ": " + values);
@@ -192,7 +206,10 @@ public class MyHttpURLConnection {
 
             InputStream is = conn.getInputStream();
             if (is != null) {
-                response = StreamUtils.getString(is);
+                if (contentEncoding.toUpperCase().contains("GZIP"))
+                    response = StreamUtils.decompressGZIP(is);
+                else
+                    response = StreamUtils.getString(is);
                 is.close();
             }
 

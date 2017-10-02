@@ -46,6 +46,14 @@ public class MyApache {
         return headers;
     }
 
+    public void doGet(String url) {
+        doGet(url, getDefaultHeaders());
+    }
+
+    public void doPost(String url, List<NameValuePair> nameValuePairs) {
+        doPost(url, getDefaultHeaders(), nameValuePairs);
+    }
+
     public void doGet(String url, Map<String, String> headers) {
         int code = -1;
         String msg = "";
@@ -69,6 +77,7 @@ public class MyApache {
             code = r.getStatusLine().getStatusCode();
             msg = r.getStatusLine().getReasonPhrase();
 
+            String contentEncoding = "";
             CLog.Companion.i(TAG, "------Header------");
             for (Header header : r.getAllHeaders()) {
                 StringBuilder sb = new StringBuilder();
@@ -77,12 +86,20 @@ public class MyApache {
                 sb.append(header.getValue());
                 sb.append(",");
                 CLog.Companion.i(TAG, sb.toString());
+
+                if ("Content-Encoding".equals(header.getName())) {
+                    contentEncoding = header.getValue();
+
+                }
             }
             CLog.Companion.i(TAG, "------Header------");
 
             InputStream is = r.getEntity().getContent();
             if (is != null) {
-                response = StreamUtils.getString(is);
+                if (contentEncoding.toUpperCase().contains("GZIP"))
+                    response = StreamUtils.decompressGZIP(is);
+                else
+                    response = StreamUtils.getString(is);
                 is.close();
             }
         } catch (Exception ex) {
@@ -123,6 +140,8 @@ public class MyApache {
             code = r.getStatusLine().getStatusCode();
             msg = r.getStatusLine().getReasonPhrase();
 
+
+            String contentEncoding = "";
             CLog.Companion.i(TAG, "------Header------");
             for (Header header : r.getAllHeaders()) {
                 StringBuilder sb = new StringBuilder();
@@ -131,13 +150,20 @@ public class MyApache {
                 sb.append(header.getValue());
                 sb.append(",");
                 CLog.Companion.i(TAG, sb.toString());
+
+                if ("Content-Encoding".equals(header.getName())) {
+                    contentEncoding = header.getValue();
+
+                }
             }
             CLog.Companion.i(TAG, "------Header------");
 
             InputStream is = r.getEntity().getContent();
             if (is != null) {
-                response = StreamUtils.getString(is);
-                is.close();
+                if (contentEncoding.toUpperCase().contains("GZIP"))
+                    response = StreamUtils.decompressGZIP(is);
+                else
+                    response = StreamUtils.getString(is);
             }
         } catch (Exception ex) {
             ex.printStackTrace();
