@@ -7,6 +7,7 @@ import com.catherine.webservices.MyApplication;
 import com.catherine.webservices.toolkits.CLog;
 import com.catherine.webservices.toolkits.StreamUtils;
 
+import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -37,15 +38,12 @@ public class MyApache {
 
     public static Map<String, String> getDefaultHeaders() {
         Map<String, String> headers = new HashMap<>();
-        headers.put("Accept", "application/json");
-        headers.put("Authorization", Constants.AUTHORIZATION);
+        headers.put("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8");
         headers.put("Content-type", "application/x-www-form-urlencoded; charset=UTF-8");
         headers.put("Accept-Language", Locale.getDefault().toString());
+        headers.put("User-Agent", System.getProperty("http.agent"));
+        headers.put("Accept-Encoding", "gzip, deflate, br");
         return headers;
-    }
-
-    public void doGet(String url) {
-        doGet(url, getDefaultHeaders());
     }
 
     public void doGet(String url, Map<String, String> headers) {
@@ -70,6 +68,18 @@ public class MyApache {
             //读取响应
             code = r.getStatusLine().getStatusCode();
             msg = r.getStatusLine().getReasonPhrase();
+
+            CLog.Companion.i(TAG, "------Header------");
+            for (Header header : r.getAllHeaders()) {
+                StringBuilder sb = new StringBuilder();
+                sb.append(header.getName());
+                sb.append(": ");
+                sb.append(header.getValue());
+                sb.append(",");
+                CLog.Companion.i(TAG, sb.toString());
+            }
+            CLog.Companion.i(TAG, "------Header------");
+
             InputStream is = r.getEntity().getContent();
             if (is != null) {
                 response = StreamUtils.getString(is);
@@ -83,10 +93,6 @@ public class MyApache {
             listener.connectSuccess(new com.catherine.webservices.network.HttpResponse.Builder().code(code).codeString(msg).body(response).build());
         else
             listener.connectFailure(new com.catherine.webservices.network.HttpResponse.Builder().code(code).codeString(msg).errorMessage(error).build(), e);
-    }
-
-    public void doPost(String url, List<NameValuePair> nameValuePairs) {
-        doPost(url, getDefaultHeaders(), nameValuePairs);
     }
 
     public void doPost(String url, Map<String, String> headers, List<NameValuePair> nameValuePairs) {
@@ -116,6 +122,18 @@ public class MyApache {
             //读取响应
             code = r.getStatusLine().getStatusCode();
             msg = r.getStatusLine().getReasonPhrase();
+
+            CLog.Companion.i(TAG, "------Header------");
+            for (Header header : r.getAllHeaders()) {
+                StringBuilder sb = new StringBuilder();
+                sb.append(header.getName());
+                sb.append(": ");
+                sb.append(header.getValue());
+                sb.append(",");
+                CLog.Companion.i(TAG, sb.toString());
+            }
+            CLog.Companion.i(TAG, "------Header------");
+
             InputStream is = r.getEntity().getContent();
             if (is != null) {
                 response = StreamUtils.getString(is);

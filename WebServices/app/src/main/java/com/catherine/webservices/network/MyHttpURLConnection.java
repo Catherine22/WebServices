@@ -36,11 +36,11 @@ public class MyHttpURLConnection {
 
     public static Map<String, String> getDefaultHeaders() {
         Map<String, String> headers = new HashMap<>();
-        headers.put("Accept", "application/json");
-        headers.put("Authorization", Constants.AUTHORIZATION);
+        headers.put("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8");
         headers.put("Content-type", "application/x-www-form-urlencoded; charset=UTF-8");
         headers.put("Accept-Language", Locale.getDefault().toString());
-        headers.put("Connection", "keep-alive");
+        headers.put("User-Agent", System.getProperty("http.agent"));
+        headers.put("Accept-Encoding", "gzip, deflate, br");
         return headers;
     }
 
@@ -65,6 +65,7 @@ public class MyHttpURLConnection {
         String response = "";
         String error = "";
         Exception e = null;
+        Map<String, String> responseHeaders = new HashMap<>();
         try {
             boolean cacheable = isCacheable(request);
             if (cacheable) {
@@ -91,33 +92,33 @@ public class MyHttpURLConnection {
                     conn.setRequestProperty(name, request.getHeaders().get(name));
                 }
             }
-            conn.connect();
 
+            conn.connect();
             code = conn.getResponseCode();
             msg = conn.getResponseMessage();
 
             CLog.Companion.i(TAG, "------Header------");
             for (Map.Entry<String, List<String>> entries : conn.getHeaderFields().entrySet()) {
-                String values = "";
+                StringBuilder values = new StringBuilder();
                 for (String value : entries.getValue()) {
-                    values += value + ",";
+                    values.append(value).append(",");
                 }
-                CLog.Companion.i(TAG, entries.getKey() + " - " + values);
+                values.deleteCharAt(values.length() - 1);
+                responseHeaders.put(entries.getKey(), values.toString());
+                CLog.Companion.i(TAG, entries.getKey() + ": " + values);
             }
             CLog.Companion.i(TAG, "------Header------");
 
-            if (code == 200) {
-                InputStream is = conn.getInputStream();
-                if (is != null) {
-                    response = StreamUtils.getString(is);
-                    is.close();
-                }
-            } else {
-                InputStream is = conn.getErrorStream();
-                if (is != null) {
-                    error = StreamUtils.getString(is);
-                    is.close();
-                }
+            InputStream is = conn.getInputStream();
+            if (is != null) {
+                response = StreamUtils.getString(is);
+                is.close();
+            }
+
+            is = conn.getErrorStream();
+            if (is != null) {
+                error = StreamUtils.getString(is);
+                is.close();
             }
 
         } catch (Exception ex) {
@@ -142,6 +143,7 @@ public class MyHttpURLConnection {
         String response = "";
         String error = "";
         Exception e = null;
+        Map<String, String> responseHeaders = new HashMap<>();
         try {
             boolean cacheable = isCacheable(request);
             if (cacheable) {
@@ -172,18 +174,21 @@ public class MyHttpURLConnection {
             os.write(request.getBody().getBytes(HTTP.UTF_8));
             os.close();
 
-            long currentTime = System.currentTimeMillis();
-            String cacheControl = conn.getHeaderField("Cache-Control");
-            long expires = conn.getHeaderFieldDate("Expires", currentTime);
-            String lastModified = conn.getHeaderField("Last-Modified");
-            CLog.Companion.i(TAG, "Cache-Control: " + cacheControl);
-            CLog.Companion.i(TAG, "Expires: " + expires);
-            CLog.Companion.i(TAG, "Last Modified: " + lastModified);
-
             conn.connect();
-
             code = conn.getResponseCode();
             msg = conn.getResponseMessage();
+
+            CLog.Companion.i(TAG, "------Header------");
+            for (Map.Entry<String, List<String>> entries : conn.getHeaderFields().entrySet()) {
+                StringBuilder values = new StringBuilder();
+                for (String value : entries.getValue()) {
+                    values.append(value).append(",");
+                }
+                values.deleteCharAt(values.length() - 1);
+                responseHeaders.put(entries.getKey(), values.toString());
+                CLog.Companion.i(TAG, entries.getKey() + ": " + values);
+            }
+            CLog.Companion.i(TAG, "------Header------");
 
             InputStream is = conn.getInputStream();
             if (is != null) {
@@ -201,9 +206,9 @@ public class MyHttpURLConnection {
             e = ex;
         }
         if (e == null && TextUtils.isEmpty(error))
-            listener.connectSuccess(new HttpResponse.Builder().code(code).codeString(msg).body(response).build());
+            listener.connectSuccess(new HttpResponse.Builder().code(code).codeString(msg).headers(responseHeaders).body(response).build());
         else
-            listener.connectFailure(new HttpResponse.Builder().code(code).codeString(msg).errorMessage(response).build(), e);
+            listener.connectFailure(new HttpResponse.Builder().code(code).codeString(msg).headers(responseHeaders).errorMessage(response).build(), e);
 
         HttpResponseCache cache = HttpResponseCache.getInstalled();
         if (cache != null)

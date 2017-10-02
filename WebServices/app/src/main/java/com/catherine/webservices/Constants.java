@@ -25,6 +25,9 @@ public class Constants {
     public final static int NIO_SOCKET_PORT = 11345;
     public final static int UDP_SOCKET_PORT = 12435;
 
+
+    public final static String GITHUB_API_DOMAIN = "https://api.github.com/";
+
     public final static String ROOT_PATH = Environment.getExternalStorageDirectory().getAbsolutePath() + "/WebServices/";
     public final static String EXT_PATH = ROOT_PATH + "data/";
     protected final static String CACHE_PATH = ROOT_PATH + "cache/";

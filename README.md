@@ -229,16 +229,23 @@ As I was mentioning, you open a url ([https://kyfw.12306.cn/otn/regist/init]) wi
 ``` html
 java.security.cert.CertPathValidatorException: Trust anchor for certification path not found.
 ```
-Because the CA of kyfw.12306.cn is not in default trusted CA list of your devce.
+Because the CA of kyfw.12306.cn is not in default trusted CA list of your device.
 
 In this scenario, if you are sure this website is trusted and you've got to request it, you create your SSLTrustManager which implements X509TrustManager and do nothing in the override methods. It means you skip certificates verification. Hackers can send you a fake public key to connect to client because you don't validate the public key in step 4, your device finally connect to the hacker's server.
 
+----------
+
 There are two solutions, the second one is better.
-1. Get the certificate of kyfw.12306.cn and keep it in assets folder. You add this certificate to trusted CA list of client.
+1. Get the certificate of kyfw.12306.cn and keep it in assets folder. You add this certificate to trusted CA list of client.<br>
 *After the end of the validity period, the certificate is no longer considered an acceptable.*
 
-2. Get the certificate of CA which trusts kyfw.12306.cn and keep it in assets folder. You add this certificate to trusted CA list of client.
+2. Get the certificate of CA which trusts kyfw.12306.cn and keep it in assets folder. You add this certificate to trusted CA list of client.<br>
 Normally, CA has a longer validity period.
+
+**Android example**
+
+1. Take [GitHub api] for example, 
+2. 
 
 ## Download and cache images
 
@@ -310,3 +317,4 @@ udpSocket();
 [What are examples of TCP and UDP in real life scenario ?]:<https://learningnetwork.cisco.com/thread/87103>
 [Android HTTPS]:<http://blog.csdn.net/iispring/article/details/51615631>
 [https://kyfw.12306.cn/otn/regist/init]:<https://kyfw.12306.cn/otn/regist/init>
+[GitHub api]:<https://api.github.com/>

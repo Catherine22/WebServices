@@ -106,7 +106,7 @@ public class P01_Apache extends LazyFragment {
         rv_main_list.setLayoutManager(new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL));
         adapter = new TextCardRVAdapter(getActivity(), null, features, desc, new OnItemClickListener() {
             @Override
-            public void onItemClick(@NotNull View view, final int position) {
+            public void onItemClick(View view, final int position) {
                 switch (position) {
                     case 0:
                         networkTask.post(new Runnable() {
@@ -115,6 +115,7 @@ public class P01_Apache extends LazyFragment {
                                 Map<String, String> headers = MyApache.getDefaultHeaders();
                                 headers.put("h1", "Hi there!");
                                 headers.put("h2", "I am a mobile phone.");
+                                headers.put("Authorization", Constants.AUTHORIZATION);
                                 setupApache(position);
                                 myApache.doGet(Constants.HOST + "LoginServlet?name=zhangsan&password=123456", headers);
                             }
@@ -124,11 +125,14 @@ public class P01_Apache extends LazyFragment {
                         networkTask.post(new Runnable() {
                             @Override
                             public void run() {
+                                Map<String, String> headers = MyApache.getDefaultHeaders();
+                                headers.put("Authorization", Constants.AUTHORIZATION);
+
                                 List<NameValuePair> nameValuePairs = new ArrayList<>();
                                 nameValuePairs.add(new BasicNameValuePair("name", "zhangsan"));
                                 nameValuePairs.add(new BasicNameValuePair("password", "123456"));
                                 setupApache(position);
-                                myApache.doPost(Constants.HOST + "LoginServlet", nameValuePairs);
+                                myApache.doPost(Constants.HOST + "LoginServlet", headers, nameValuePairs);
                             }
                         });
                         break;
@@ -151,11 +155,14 @@ public class P01_Apache extends LazyFragment {
                         networkTaskB.post(new Runnable() {
                             @Override
                             public void run() {
+                                Map<String, String> headers = MyApache.getDefaultHeaders();
+                                headers.put("Authorization", Constants.AUTHORIZATION);
+
                                 List<NameValuePair> nameValuePairs = new ArrayList<>();
                                 nameValuePairs.add(new BasicNameValuePair("name", ""));
                                 nameValuePairs.add(new BasicNameValuePair("password", ""));
                                 setupApache(position);
-                                myApache.doPost(Constants.HOST + "LoginServlet", nameValuePairs);
+                                myApache.doPost(Constants.HOST + "LoginServlet", headers, nameValuePairs);
                             }
                         });
                         break;
@@ -165,7 +172,7 @@ public class P01_Apache extends LazyFragment {
                             @Override
                             public void run() {
                                 setupApache(position);
-                                myApache.doGet("http://dictionary.cambridge.org/dictionary/english-chinese-simplified/philosopher");
+                                myApache.doGet("http://dictionary.cambridge.org/dictionary/english-chinese-simplified/philosopher", null);
 
                             }
                         });

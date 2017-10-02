@@ -20,6 +20,8 @@ import java.io.OutputStream;
 import java.io.RandomAccessFile;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -39,7 +41,7 @@ public class DownloaderAsyncTask extends AsyncTask<String, Void, Void> {
     private DownloadRequest request;
     private int THREAD_NUM;
     private boolean stop;
-//    private boolean[] downloadCompleted;
+    //    private boolean[] downloadCompleted;
     private HandlerThread[] threadPool;
 
     public DownloaderAsyncTask(DownloadRequest request) {
@@ -56,7 +58,7 @@ public class DownloaderAsyncTask extends AsyncTask<String, Void, Void> {
         String msg = "";
         String error = "";
         Exception e = null;
-
+        Map<String, String> responseHeaders = new HashMap<>();
         try {
             HttpURLConnection conn = (HttpURLConnection) new URL(request.getUrl()).openConnection();
             //默认可读服务器读结果流，所以可略
@@ -66,10 +68,11 @@ public class DownloaderAsyncTask extends AsyncTask<String, Void, Void> {
             conn.setRequestProperty("Connection", "keep-Alive");
 
             //设置标头
-            Map<String, String> headers = (request.getHeaders() != null) ? request.getHeaders() : MyHttpURLConnection.getDefaultHeaders();
-            Set<String> set = headers.keySet();
-            for (String name : set) {
-                conn.setRequestProperty(name, headers.get(name));
+            if (request.getHeaders() != null) {
+                Set<String> set = request.getHeaders().keySet();
+                for (String name : set) {
+                    conn.setRequestProperty(name, request.getHeaders().get(name));
+                }
             }
 
             if (TextUtils.isEmpty(request.getBody())) {
@@ -84,6 +87,16 @@ public class DownloaderAsyncTask extends AsyncTask<String, Void, Void> {
             code = conn.getResponseCode();
             msg = conn.getResponseMessage();
             LENGTH = conn.getContentLength();
+
+            for (Map.Entry<String, List<String>> entries : conn.getHeaderFields().entrySet()) {
+                StringBuilder values = new StringBuilder();
+                for (String value : entries.getValue()) {
+                    values.append(value).append(",");
+                }
+                values.deleteCharAt(values.length() - 1);
+                responseHeaders.put(entries.getKey(), values.toString());
+            }
+
             InputStream is = conn.getErrorStream();
             if (is != null) {
                 error = StreamUtils.getString(is);
@@ -91,7 +104,7 @@ public class DownloaderAsyncTask extends AsyncTask<String, Void, Void> {
             }
 
             if (LENGTH == 0) {
-                request.getListener().connectFailure(new HttpResponse.Builder().code(code).codeString(msg).build(), new IOException("Content Length = 0"));
+                request.getListener().connectFailure(new HttpResponse.Builder().code(code).headers(responseHeaders).codeString(msg).build(), new IOException("Content Length = 0"));
                 return null;
             }
 
@@ -141,7 +154,7 @@ public class DownloaderAsyncTask extends AsyncTask<String, Void, Void> {
         }
 
         if (e != null || !TextUtils.isEmpty(error))
-            request.getListener().connectFailure(new HttpResponse.Builder().code(code).codeString(msg).errorMessage(error).build(), e);
+            request.getListener().connectFailure(new HttpResponse.Builder().code(code).codeString(msg).headers(responseHeaders).errorMessage(error).build(), e);
 
         return null;
     }
@@ -174,6 +187,7 @@ public class DownloaderAsyncTask extends AsyncTask<String, Void, Void> {
             String msg = "";
             String error = "";
             Exception e = null;
+            Map<String, String> responseHeaders = new HashMap<>();
             try {
                 HttpURLConnection conn = (HttpURLConnection) new URL(request.getUrl()).openConnection();
                 conn.setDoInput(true);
@@ -225,6 +239,16 @@ public class DownloaderAsyncTask extends AsyncTask<String, Void, Void> {
 
                 code = conn.getResponseCode();
                 msg = conn.getResponseMessage();
+
+                for (Map.Entry<String, List<String>> entries : conn.getHeaderFields().entrySet()) {
+                    StringBuilder values = new StringBuilder();
+                    for (String value : entries.getValue()) {
+                        values.append(value).append(",");
+                    }
+                    values.deleteCharAt(values.length() - 1);
+                    responseHeaders.put(entries.getKey(), values.toString());
+                }
+
                 InputStream is = conn.getErrorStream();
                 if (is != null) {
                     error = StreamUtils.getString(is);
@@ -269,7 +293,7 @@ public class DownloaderAsyncTask extends AsyncTask<String, Void, Void> {
                 ex.printStackTrace();
             }
             if (e != null || !TextUtils.isEmpty(error))
-                request.getListener().connectFailure(new HttpResponse.Builder().code(code).codeString(msg).errorMessage(error).build(), e);
+                request.getListener().connectFailure(new HttpResponse.Builder().code(code).codeString(msg).headers(responseHeaders).errorMessage(error).build(), e);
 
         }
     }

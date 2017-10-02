@@ -101,12 +101,13 @@ public class P02_HttpURLConnection extends LazyFragment {
         rv_main_list.setLayoutManager(new LinearLayoutManager(getActivity()));
         adapter = new TextCardRVAdapter(getActivity(), null, features, descriptions, new OnItemClickListener() {
             @Override
-            public void onItemClick(@NotNull View view, int position) {
+            public void onItemClick(View view, final int position) {
                 switch (position) {
                     case 0:
                         Map<String, String> h0 = MyHttpURLConnection.getDefaultHeaders();
                         h0.put("h1", "Hi there!");
                         h0.put("h2", "I am a mobile phone.");
+                        h0.put("Authorization", Constants.AUTHORIZATION);
                         HttpRequest request0 = new HttpRequest.Builder()
                                 .url(String.format(Locale.ENGLISH, "%sLoginServlet?name=zhangsan&password=123456", Constants.HOST))
                                 .headers(h0)
@@ -115,11 +116,15 @@ public class P02_HttpURLConnection extends LazyFragment {
                         new HttpAsyncTask(request0).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                         break;
                     case 1:
+                        Map<String, String> h1 = MyHttpURLConnection.getDefaultHeaders();
+                        h1.put("Authorization", Constants.AUTHORIZATION);
+
                         Map<String, String> body1 = new HashMap<>();
                         body1.put("name", "zhangsan");
                         body1.put("password", "123456");
                         HttpRequest r1 = new HttpRequest.Builder()
                                 .url(String.format(Locale.ENGLISH, "%sLoginServlet", Constants.HOST))
+                                .headers(h1)
                                 .body(MyHttpURLConnection.getSimpleStringBody(body1))
                                 .listener(buildListener(position))
                                 .build();
@@ -142,11 +147,15 @@ public class P02_HttpURLConnection extends LazyFragment {
 
                         break;
                     case 3:
+                        Map<String, String> h3 = MyHttpURLConnection.getDefaultHeaders();
+                        h3.put("Authorization", Constants.AUTHORIZATION);
+
                         Map<String, String> body3 = new HashMap<>();
                         body3.put("name", "");
                         body3.put("password", "");
                         HttpRequest r3 = new HttpRequest.Builder()
                                 .url(String.format(Locale.ENGLISH, "%sLoginServlet", Constants.HOST))
+                                .headers(h3)
                                 .body(MyHttpURLConnection.getSimpleStringBody(body3))
                                 .listener(buildListener(position))
                                 .build();
@@ -161,8 +170,36 @@ public class P02_HttpURLConnection extends LazyFragment {
                         break;
                     case 5:
                         HttpRequest r5 = new HttpRequest.Builder()
-                                .url("https://api.github.com/repos/square/okhttp/contributors")
-                                .listener(buildListener(position))
+                                .url(Constants.GITHUB_API_DOMAIN)
+                                .listener(new HttpResponseListener() {
+                                    @Override
+                                    public void connectSuccess(@NotNull HttpResponse response) {
+                                        CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
+                                        contents.set(position, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
+                                        adapter.setContents(contents);
+                                        adapter.notifyDataSetChanged();
+                                    }
+
+                                    @Override
+                                    public void connectFailure(HttpResponse response, Exception e) {
+                                        StringBuilder sb = new StringBuilder();
+                                        sb.append(String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, error:%s, body:%s", response.getCode(), response.getCodeString(), response.getErrorMessage(), response.getBody()));
+                                        CLog.Companion.e(TAG, sb.toString());
+                                        if (e != null) {
+                                            sb.append("\n");
+                                            sb.append(e.getMessage());
+                                            CLog.Companion.e(TAG, e.getMessage());
+                                        }
+                                        contents.set(position, sb.toString());
+                                        adapter.setContents(contents);
+                                        getActivity().runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                adapter.notifyDataSetChanged();
+                                            }
+                                        });
+                                    }
+                                })
                                 .build();
                         new HttpAsyncTask(r5).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                         break;
@@ -190,7 +227,7 @@ public class P02_HttpURLConnection extends LazyFragment {
             @Override
             public void connectFailure(HttpResponse response, Exception e) {
                 StringBuilder sb = new StringBuilder();
-                sb.append(String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getErrorMessage()));
+                sb.append(String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, error:%s, body:%s", response.getCode(), response.getCodeString(), response.getErrorMessage(), response.getBody()));
                 CLog.Companion.e(TAG, sb.toString());
                 if (e != null) {
                     sb.append("\n");
