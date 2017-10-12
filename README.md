@@ -8,23 +8,22 @@ Looper class keeps the thread alive, holds a message queue and pop works off a q
 Handler class helps put work at the head, the tail or even set a time-based delay.
 
 ## AsyncTask：
-- Helps get work on/off the UI thread.
+*Helps get work on/off the UI thread.*
 
 - Basically, all AsyncTasks are created in a same thread, it means them will execute in a serial fashion from a single message queue.
 - There is a way to force AsyncTask works in thread-pooled way : AsyncTask.executeOnExecutor
 
 ## HandlerThread
-- Dedicated thread for API callbacks.
+*Dedicated thread for API callbacks.*
 
 - HandlerThread is a nifty solution for the work that not deal with UI updates.
 - Don't forget to assign the priority because CPU can only execute a few parallel threads.
 
 ## ThreadPool
-- Running lots of parallel small works.
+*Running lots of parallel small works.*
 
 ## IntentService
-- It's ideal for background tasks.
-- Helps get intents off UI thread.
+*It's ideal for background tasks. It also helps get intents off UI thread.*
 
 *It's the easiest way to update UIs by running on AsyncTask, and HandlerThread is also a excellent solution for the work that not deal with UI updates.*
 
@@ -64,7 +63,7 @@ android {
 - HttpURLConnection settings:[MyHttpURLConnection]
 
 
-## OkHttp
+## OkHttp 
 
 
 ## Volley
@@ -224,6 +223,9 @@ Cache-Control:no-cache, no-store
 
 ### Android HTTPS
 
+***DO NOT IMPLEMENTS "X509TrustManager" TO SKIP VALIDATION***
+That means man-in-the-middle attacks are allowed.
+
 As I was mentioning, you open a url ([https://kyfw.12306.cn/otn/regist/init]) with your Android device and you get an exception:
 
 ``` html
@@ -244,11 +246,16 @@ Normally, CA has a longer validity period.
 
 **Android example**
 
-1. Take [GitHub api] for example, 
-2. 
+
+Take kyfw.12306.cn for example.
+1. Download the certificate of kyfw.12306.cn and add to assets file.
+2. Add this certificate to trustManager[] 
+3. Let "HttpsURLConnection" trusts  this certificate
+4. Go to [P02_HttpURLConnection] to see more.
 
 ## Download and cache images
 
+**ImageView + DiskLruCache**
 1. Download a url list.		
 2. Check internal or external storage of the device and if the image has had cache, skip step 3 and show it.
 3. Download each image from the list and try to cache them.		
@@ -256,6 +263,7 @@ Normally, CA has a longer validity period.
 
 Here is the example: [P05_Gallery], [ImageCardRVAdapter]
 
+**Fresco**
 
 ## TCP Sockets
 

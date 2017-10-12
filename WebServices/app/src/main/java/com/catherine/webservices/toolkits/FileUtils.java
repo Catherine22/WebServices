@@ -38,29 +38,33 @@ public class FileUtils {
         } catch (IOException e) {
             CLog.Companion.e(TAG, e.getMessage() + "\nFailed to get asset file list.");
         }
-        if (files != null) for (String filename : files) {
-            InputStream in = null;
-            OutputStream out = null;
-            try {
-                in = assetManager.open(filename);
-                File outFile = new File(MyApplication.INSTANCE.getDataCacheDir(), filename);
-                out = new FileOutputStream(outFile);
-                copyFile(in, out);
-            } catch (IOException e) {
-                CLog.Companion.e(TAG, e.getMessage() + "\nFailed to copy asset file: " + filename);
-            } finally {
-                if (in != null) {
+        if (files != null) {
+            for (String filename : files) {
+                if ("邓俊辉_数据结构.pdf".equals(filename) || "big_o_cheat_sheet_poster.jpg".equals(filename)) {
+                    InputStream in = null;
+                    OutputStream out = null;
                     try {
-                        in.close();
+                        in = assetManager.open(filename);
+                        File outFile = new File(MyApplication.INSTANCE.getDataCacheDir(), filename);
+                        out = new FileOutputStream(outFile);
+                        copyFile(in, out);
                     } catch (IOException e) {
-                        // NOOP
-                    }
-                }
-                if (out != null) {
-                    try {
-                        out.close();
-                    } catch (IOException e) {
-                        // NOOP
+                        CLog.Companion.e(TAG, e.getMessage() + "\nFailed to copy asset file: " + filename);
+                    } finally {
+                        if (in != null) {
+                            try {
+                                in.close();
+                            } catch (IOException e) {
+                                // NOOP
+                            }
+                        }
+                        if (out != null) {
+                            try {
+                                out.close();
+                            } catch (IOException e) {
+                                // NOOP
+                            }
+                        }
                     }
                 }
             }

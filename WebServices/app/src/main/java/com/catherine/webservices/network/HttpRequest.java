@@ -1,5 +1,6 @@
 package com.catherine.webservices.network;
 
+import java.security.cert.X509Certificate;
 import java.util.Map;
 
 /**
@@ -12,6 +13,7 @@ public final class HttpRequest {
     private String url;
     private Map<String, String> headers;
     private String body;
+    private X509Certificate certificate;
     private CacheControl cacheControl;
     private HttpResponseListener listener;
 
@@ -21,6 +23,7 @@ public final class HttpRequest {
         this.body = builder.body;
         this.cacheControl = builder.cacheControl;
         this.listener = builder.listener;
+        this.certificate = builder.certificate;
     }
 
     public static class Builder {
@@ -29,6 +32,7 @@ public final class HttpRequest {
         private String body;
         private CacheControl cacheControl;
         private HttpResponseListener listener;
+        private X509Certificate certificate;
 
         public Builder() {
             this.body = "";
@@ -61,6 +65,11 @@ public final class HttpRequest {
             return this;
         }
 
+        public Builder certificate(X509Certificate certificate) {
+            this.certificate = certificate;
+            return this;
+        }
+
         public HttpRequest build() {
             return new HttpRequest(this);
         }
@@ -80,6 +89,10 @@ public final class HttpRequest {
 
     public String getBody() {
         return body;
+    }
+
+    public X509Certificate getCertificate() {
+        return certificate;
     }
 
     public HttpResponseListener getListener() {

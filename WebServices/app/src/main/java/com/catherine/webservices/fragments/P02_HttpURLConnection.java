@@ -1,5 +1,7 @@
 package com.catherine.webservices.fragments;
 
+import android.content.res.AssetFileDescriptor;
+import android.content.res.AssetManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -9,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.catherine.webservices.Constants;
+import com.catherine.webservices.MyApplication;
 import com.catherine.webservices.R;
 import com.catherine.webservices.adapters.TextCardRVAdapter;
 import com.catherine.webservices.interfaces.OnItemClickListener;
@@ -17,11 +20,20 @@ import com.catherine.webservices.network.HttpRequest;
 import com.catherine.webservices.network.HttpResponse;
 import com.catherine.webservices.network.HttpResponseListener;
 import com.catherine.webservices.network.MyHttpURLConnection;
+import com.catherine.webservices.security.CertificatesManager;
 import com.catherine.webservices.toolkits.CLog;
+import com.catherine.webservices.toolkits.StreamUtils;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -211,11 +223,25 @@ public class P02_HttpURLConnection extends LazyFragment {
                         }
                         break;
                     case 6:
-                        HttpRequest r6 = new HttpRequest.Builder()
-                                .url("https://kyfw.12306.cn/otn/regist/init")
-                                .listener(buildListener(position))
-                                .build();
-                        new HttpAsyncTask(r6).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                        try {
+                            BufferedInputStream bis = new BufferedInputStream(getActivity().getAssets().open("srca.cer"));
+                            CertificateFactory cf = CertificateFactory.getInstance("X.509");
+                            X509Certificate cert = (X509Certificate) cf.generateCertificate(bis);
+                            bis.close();
+
+                            //show certificate info
+                            CertificatesManager.printCertificatesInfo(cert);
+                            HttpRequest r6 = new HttpRequest.Builder()
+                                    .url("https://kyfw.12306.cn/otn/regist/init")
+                                    .certificate(cert)
+                                    .listener(buildListener(position))
+                                    .build();
+                            new HttpAsyncTask(r6).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        } catch (CertificateException e) {
+                            e.printStackTrace();
+                        }
                         break;
                 }
             }

@@ -42,7 +42,7 @@ public class MyApache {
         headers.put("Content-type", "application/x-www-form-urlencoded; charset=UTF-8");
         headers.put("Accept-Language", Locale.getDefault().toString());
         headers.put("User-Agent", System.getProperty("http.agent"));
-        headers.put("Accept-Encoding", "gzip, deflate, br");
+        headers.put("Accept-Encoding", "gzip");//gzip, deflate, br
         return headers;
     }
 
