@@ -241,8 +241,8 @@ There are two solutions, the second one is better.
 1. Get the certificate of kyfw.12306.cn and keep it in assets folder. You add this certificate to trusted CA list of client.<br>
 *After the end of the validity period, the certificate is no longer considered an acceptable.*
 
-2. Get the certificate of CA which trusts kyfw.12306.cn and keep it in assets folder. You add this certificate to trusted CA list of client.<br>
-Normally, CA has a longer validity period.
+2. Get the certificate of kyfw.12306.cn and keep it in assets folder. You add this certificate to the trusted CA list of client.<br>
+Normally, the CA of the department which sponsors a certain domain has a longer validity period than that domain. That's why this solution is recommended.
 
 **Android example**
 
@@ -250,7 +250,7 @@ Normally, CA has a longer validity period.
 Take kyfw.12306.cn for example.
 1. Download the certificate of kyfw.12306.cn and add to assets file.
 2. Add this certificate to trustManager[] 
-3. Let "HttpsURLConnection" trusts  this certificate
+3. Let "HttpsURLConnection" trust this certificate
 4. Go to [P02_HttpURLConnection] to see more.
 
 ## Download and cache images
