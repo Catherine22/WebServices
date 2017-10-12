@@ -191,7 +191,7 @@ Cache-Control: max-age=(0)
 ```
 
 If your cache is not available, then you request ETag (with If-None-Match) or Last-Modified (with If-Modified-Since) to your server.
-Your server returns 304 when it's okay to use the cache you've stored or you might get 200 with new resources.
+Your server returns 304 when it's okay to use the cache has been stored or you might get 200 with new resources.
 
 - **No cache**
 
@@ -218,12 +218,12 @@ Cache-Control:no-cache, no-store
 
 
 > In step 4, how does client know that public key is valid?		 
-> Let CA (Certificate Authority) tells client.
-> There are hundreds of CAs in the world, and which CA is truthed depends on a CAs list in client. (For example, your mobile phone had been saved a trusted CA list before you bought it.)
+> Let CA (Certificate Authority) list tells client.
+> There are hundreds of CAs in the world. Which CA you can trust depends on a CAs list in client. (Normally, your mobile phone had been saved a list of trusted CAs before you bought it.)
 
 ### Android HTTPS
 
-***DO NOT IMPLEMENTS "X509TrustManager" TO SKIP VALIDATION***
+***DO NOT IMPLEMENT "X509TrustManager" TO SKIP VALIDATION***        
 That means man-in-the-middle attacks are allowed.
 
 As I was mentioning, you open a url ([https://kyfw.12306.cn/otn/regist/init]) with your Android device and you get an exception:
