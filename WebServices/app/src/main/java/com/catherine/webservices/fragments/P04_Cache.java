@@ -115,12 +115,16 @@ public class P04_Cache extends LazyFragment {
 
     private void fillInData() {
         features = new ArrayList<>();
-        features.add("Cache images");
-        features.add("Cache images");
+        features.add("ImageView + DiskLruCache");
+        features.add("ImageView + DiskLruCache");
+        features.add("(Fresco) SimpleDraweeView + Non-cached");
+        features.add("(Fresco) SimpleDraweeView + Cache");
 
         descriptions = new ArrayList<>();
-        descriptions.add("Download images from the internet and cache them.");
-        descriptions.add("Download images from the internet and cache them, or show cache when the network not works.");
+        descriptions.add("Download images from the Internet and cache them.");
+        descriptions.add("Download images from the Internet and cache them, or show cache when the network not works.");
+        descriptions.add("Show images from the Internet.");
+        descriptions.add("Download images from the Internet and cache them.");
     }
 
     private void initComponent() {
@@ -150,6 +154,16 @@ public class P04_Cache extends LazyFragment {
                         Bundle b1 = new Bundle();
                         b1.putBoolean("show_pic_offline", true);
                         callFragment(Constants.P05_Gallery, b1);
+                        break;
+                    case 2:
+                        Bundle b2 = new Bundle();
+                        b2.putBoolean("show_pic_offline", false);
+                        callFragment(Constants.P11_FRESCO, b2);
+                        break;
+                    case 3:
+                        Bundle b3 = new Bundle();
+                        b3.putBoolean("show_pic_offline", true);
+                        callFragment(Constants.P11_FRESCO, b3);
                         break;
                 }
             }
@@ -182,6 +196,12 @@ public class P04_Cache extends LazyFragment {
                 fragment = P05_Gallery.newInstance(true);
                 fragment.setArguments(bundle);
                 tag = "P05";
+                break;
+            case Constants.P11_FRESCO:
+                title = "P11_Fresco";
+                fragment = P11_Fresco.newInstance(true);
+                fragment.setArguments(bundle);
+                tag = "P11";
                 break;
 
         }

@@ -8,6 +8,7 @@ import android.os.HandlerThread;
 import android.text.TextUtils;
 
 import com.catherine.webservices.toolkits.FileUtils;
+import com.facebook.drawee.backends.pipeline.Fresco;
 
 import org.apache.http.HttpVersion;
 import org.apache.http.client.HttpClient;
@@ -49,6 +50,7 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         INSTANCE = this;
+        Fresco.initialize(INSTANCE);
         httpClient = getHttpClient();
         runningActivities = new ArrayList<>();
         localBroadCastReceivers = new Stack<>();

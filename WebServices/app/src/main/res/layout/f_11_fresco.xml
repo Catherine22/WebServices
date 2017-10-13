@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:app="http://schemas.android.com/apk/res-auto"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:background="@android:color/white"
+             android:clickable="true"
+             android:focusable="true">
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/srl_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_main_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:nestedScrollingEnabled="true"/>
+
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_delete"
+        android:layout_width="@dimen/fab_00"
+        android:layout_height="@dimen/fab_00"
+        android:layout_gravity="bottom|end"
+        android:layout_marginBottom="@dimen/fab_00_m_b"
+        android:layout_marginEnd="@dimen/fab_m"
+        android:layout_marginRight="@dimen/fab_m"
+        android:scaleType="centerInside"
+        android:src="@drawable/trash_bin"
+        app:backgroundTint="@android:color/white"
+        app:fabSize="normal"/>
+
+
+    <TextView
+        android:id="@+id/tv_offline"
+        android:background="@android:color/white"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/offline"
+        android:visibility="gone"/>
+
+    <ProgressBar
+        android:id="@+id/pb"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"/>
+</FrameLayout>

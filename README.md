@@ -226,7 +226,7 @@ Cache-Control:no-cache, no-store
 ***DO NOT IMPLEMENT "X509TrustManager" TO SKIP VALIDATION***        
 That means man-in-the-middle attacks are allowed.
 
-As I was mentioning, you open a url ([https://kyfw.12306.cn/otn/regist/init]) with your Android device and you get an exception:
+As I was mentioning, you open a url ([https://kyfw.12306.cn/otn/regist/init][1]) with your Android device and you get an exception:
 
 ``` html
 java.security.cert.CertPathValidatorException: Trust anchor for certification path not found.
@@ -246,12 +246,19 @@ Normally, the CA of the department which sponsors a certain domain has a longer 
 
 **Android example**
 
-
 Take kyfw.12306.cn for example.
 1. Download the certificate of kyfw.12306.cn and add to assets file.
 2. Add this certificate to trustManager[] 
 3. Let "HttpsURLConnection" trust this certificate
 4. Go to [P02_HttpURLConnection] to see more.
+
+Another example - request to [github APIs]
+1. Add the PEM formatted String of the certificate.
+2. Add this certificate to trustManager[] 
+3. Let "HttpsURLConnection" trust this certificate
+4. Go to [P02_HttpURLConnection] to see more.
+
+Check SSL certificates here : [https://www.ssllabs.com/ssltest/][2]
 
 ## Download and cache images
 
@@ -324,5 +331,8 @@ udpSocket();
 [MySocket]:<https://github.com/Catherine22/WebServices/blob/master/JavaSocketServer/MySocket/src/Main.java>
 [What are examples of TCP and UDP in real life scenario ?]:<https://learningnetwork.cisco.com/thread/87103>
 [Android HTTPS]:<http://blog.csdn.net/iispring/article/details/51615631>
-[https://kyfw.12306.cn/otn/regist/init]:<https://kyfw.12306.cn/otn/regist/init>
-[GitHub api]:<https://api.github.com/>
+[github APIs]:<https://api.github.com/>
+
+
+  [1]: https://kyfw.12306.cn/otn/regist/init
+  [2]: https://www.ssllabs.com/ssltest/

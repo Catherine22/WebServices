@@ -385,7 +385,7 @@ class MainActivity : FragmentActivity(), MainInterface {
         addBottomLayout(R.layout.bottom_main)
         fl_bottom.setOnClickListener {
             val intent = Intent()
-            intent.setClass(this, P00_DeviceInfo::class.java)
+            intent.setClass(this, DeviceInfoActivity::class.java)
             startActivity(intent)
         }
     }

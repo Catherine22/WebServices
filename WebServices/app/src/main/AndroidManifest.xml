@@ -32,7 +32,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".P00_DeviceInfo"/>
+        <activity android:name=".DeviceInfoActivity"/>
 
         <service android:name=".services.NetworkHealthService"/>
     </application>

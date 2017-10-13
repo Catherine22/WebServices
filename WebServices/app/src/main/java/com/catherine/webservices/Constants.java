@@ -72,5 +72,6 @@ public class Constants {
     public final static int P08_BLOCKING_SOCKET = 8;
     public final static int P09_NIO_SOCKET = 9;
     public final static int P10_UDP_SOCKET = 10;
+    public final static int P11_FRESCO = 11;
 
 }
