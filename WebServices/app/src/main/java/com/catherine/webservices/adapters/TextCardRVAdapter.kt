@@ -1,7 +1,10 @@
 package com.catherine.webservices.adapters
 
 import android.content.Context
+import android.os.Build
 import android.support.v7.widget.RecyclerView
+import android.text.Html
+import android.text.Spanned
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -20,6 +23,8 @@ class TextCardRVAdapter(private var ctx: Context, var contents: List<String>?, v
         val TAG = "TextCardRVAdapter"
     }
 
+    var fromHtml = false
+
     override fun onBindViewHolder(holder: MainRvHolder, position: Int) {
         val listener1 = View.OnClickListener { view ->
             when (view.id) {
@@ -37,7 +42,14 @@ class TextCardRVAdapter(private var ctx: Context, var contents: List<String>?, v
 
         if (contents != null && contents!!.size > position && !TextUtils.isEmpty(contents!![position])) {
             holder.itemView.tv_main.visibility = View.VISIBLE
-            holder.itemView.tv_main.text = contents!![position]
+            if (fromHtml) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    holder.itemView.tv_main.text = Html.fromHtml(contents!![position], Html.FROM_HTML_MODE_COMPACT)
+                } else {
+                    holder.itemView.tv_main.text = Html.fromHtml(contents!![position])
+                }
+            } else
+                holder.itemView.tv_main.text = contents!![position]
         } else
             holder.itemView.tv_main.visibility = View.GONE
 
@@ -54,7 +66,6 @@ class TextCardRVAdapter(private var ctx: Context, var contents: List<String>?, v
     override fun getItemCount(): Int {
         return titles.size
     }
-
 
     class MainRvHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 }
