@@ -92,9 +92,9 @@ public class MyHttpURLConnection {
             }
 
             HttpURLConnection conn;
-            //deal with "https://"
+            //处理 "https://"
             //设置证书 - 信任指定的CA证书
-            if (request.getCertificate() != null || request.getUrl().contains("https://")) {
+            if (request.getCertificate() != null && request.getUrl().contains("https://")) {
                 //生成包含当前CA证书的keystore
                 KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
                 keyStore.load(null, null);

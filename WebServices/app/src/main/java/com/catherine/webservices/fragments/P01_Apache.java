@@ -77,14 +77,12 @@ public class P01_Apache extends LazyFragment {
         features.add("POST " + Constants.HOST + " in looper B");
         features.add("GET http://dictionary.cambridge.org/ in looper C");
         features.add("GET " + Constants.GITHUB_API_DOMAIN + " in looper C");
-        features.add("GET https://kyfw.12306.cn/otn/regist/init in looper C");
         desc.add("Connect to the server with user-defined headers");
         desc.add("Connect to the server with correct account");
         desc.add("Connect to the server with false Authorization");
         desc.add("Connect to the server with false account");
         desc.add("Connect to Cambridge dictionary server");
         desc.add("Connect to GitHub api with gzip encoding");
-        desc.add("Connect to untrusted url with imported certificate");
         for (int i = 0; i < features.size(); i++) {
             contents.add("");
         }
@@ -218,21 +216,6 @@ public class P01_Apache extends LazyFragment {
                                 callback.setPosition(position);
                                 myApache.doGet(new HttpRequest.Builder()
                                         .url(Constants.GITHUB_API_DOMAIN + "users/Catherine22/repos")
-                                        .listener(callback)
-                                        .build());
-
-                            }
-                        });
-                        break;
-                    case 6:
-                        srl_container.setRefreshing(true);
-                        Handler networkTaskC3 = new Handler(handlerThreadC.getLooper());
-                        networkTaskC3.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                callback.setPosition(position);
-                                myApache.doGet(new HttpRequest.Builder()
-                                        .url("https://kyfw.12306.cn/otn/regist/init")
                                         .listener(callback)
                                         .build());
 
