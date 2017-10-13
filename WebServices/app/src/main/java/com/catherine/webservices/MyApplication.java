@@ -4,11 +4,17 @@ import android.app.Activity;
 import android.app.Application;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.HandlerThread;
 import android.text.TextUtils;
 
+import com.catherine.webservices.toolkits.CLog;
 import com.catherine.webservices.toolkits.FileUtils;
+import com.facebook.cache.common.CacheErrorLogger;
+import com.facebook.cache.disk.DiskCacheConfig;
+import com.facebook.common.util.ByteConstants;
 import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.imagepipeline.core.ImagePipelineConfig;
 
 import org.apache.http.HttpVersion;
 import org.apache.http.client.HttpClient;
@@ -30,6 +36,7 @@ import org.apache.http.protocol.HTTP;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Stack;
 
 import catherine.messagecenter.Client;
@@ -41,6 +48,7 @@ import catherine.messagecenter.Client;
  */
 
 public class MyApplication extends Application {
+    private final static String TAG = "MyApplication";
     public static MyApplication INSTANCE;
     public HandlerThread calHandlerThread, socketHandlerThread;
     public HttpClient httpClient;
@@ -50,10 +58,40 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         INSTANCE = this;
-        Fresco.initialize(INSTANCE);
         httpClient = getHttpClient();
         runningActivities = new ArrayList<>();
         localBroadCastReceivers = new Stack<>();
+
+        //Invoke the largest storage to save data.
+        Map<String, File> externalLocations = FileUtils.getAllStorageLocations();
+        File sdCard = externalLocations.get(FileUtils.SD_CARD);
+        File externalSdCard = externalLocations.get(FileUtils.EXTERNAL_SD_CARD);
+        long sdCardSize = 0;
+        long extSdCardSize = 0;
+        if (sdCard != null) {
+            sdCardSize = sdCard.getFreeSpace();
+            CLog.Companion.i(TAG, "free storage: (sd card) " + sdCard.getAbsolutePath());
+            CLog.Companion.i(TAG, "free storage: (sd card) " + sdCard.getFreeSpace() / ByteConstants.MB + " MB");
+        }
+        if (externalSdCard != null) {
+            extSdCardSize = externalSdCard.getFreeSpace();
+            CLog.Companion.i(TAG, "free storage: (external sd card) " + externalSdCard.getAbsolutePath());
+            CLog.Companion.i(TAG, "free storage: (external sd card) " + externalSdCard.getFreeSpace() / ByteConstants.MB + " MB");
+        }
+
+        try {
+            if (sdCardSize > extSdCardSize) {
+                Constants.ROOT_PATH = sdCard.getAbsolutePath() + "/WebServices/";
+                CLog.Companion.i(TAG, "Your data will save in " + Constants.ROOT_PATH);
+            } else {
+                Constants.ROOT_PATH = externalSdCard.getAbsolutePath() + "/WebServices/";
+                CLog.Companion.i(TAG, "Your data will save in " + Constants.ROOT_PATH);
+            }
+        } catch (NullPointerException e) {
+            Constants.ROOT_PATH = Environment.getExternalStorageDirectory().getAbsolutePath() + "/WebServices/";
+            CLog.Companion.i(TAG, "Your data will save in " + Constants.ROOT_PATH);
+        }
+
         init();
         registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
             @Override
@@ -114,6 +152,34 @@ public class MyApplication extends Application {
                 }
             }
         });
+
+        //fresco
+        File rootDir = new File(Constants.ROOT_PATH);
+        if (!rootDir.exists())
+            rootDir.mkdirs();
+
+        //check free memory (MB)
+        File externalStorageDir = Environment.getExternalStorageDirectory();
+        long temp = externalStorageDir.getFreeSpace();
+        long free = (temp > 10 * ByteConstants.MB) ? 20 * ByteConstants.MB : temp;
+        CLog.Companion.i(TAG, "free memory = " + temp / ByteConstants.MB + " MB, use " + free / (2 * ByteConstants.MB) + " MB to cache images.");
+        DiskCacheConfig diskCacheConfig = DiskCacheConfig.newBuilder(MyApplication.this)
+                .setCacheErrorLogger(new CacheErrorLogger() {
+                    @Override
+                    public void logError(CacheErrorCategory category, Class<?> clazz, String message, Throwable throwable) {
+                        CLog.Companion.e("Fresco CacheError", category + ":" + message);
+                    }
+                })
+                .setVersion(1)
+                .setMaxCacheSize(free / 2)
+                .setBaseDirectoryName(Constants.FRESCO_DIR)
+                .setBaseDirectoryPath(rootDir)
+                .build();
+        ImagePipelineConfig config = ImagePipelineConfig.newBuilder(MyApplication.this)
+                .setResizeAndRotateEnabledForNetwork(true)
+                .setMainDiskCacheConfig(diskCacheConfig)
+                .build();
+        Fresco.initialize(this, config);
         super.onCreate();
     }
 

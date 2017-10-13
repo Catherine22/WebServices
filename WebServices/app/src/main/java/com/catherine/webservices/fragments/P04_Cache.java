@@ -157,12 +157,12 @@ public class P04_Cache extends LazyFragment {
                         break;
                     case 2:
                         Bundle b2 = new Bundle();
-                        b2.putBoolean("show_pic_offline", false);
+                        b2.putBoolean("cacheable", false);
                         callFragment(Constants.P11_FRESCO, b2);
                         break;
                     case 3:
                         Bundle b3 = new Bundle();
-                        b3.putBoolean("show_pic_offline", true);
+                        b3.putBoolean("cacheable", true);
                         callFragment(Constants.P11_FRESCO, b3);
                         break;
                 }

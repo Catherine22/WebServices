@@ -1,7 +1,6 @@
 package com.catherine.webservices.fragments;
 
-import android.content.Context;
-import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -10,10 +9,10 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.catherine.webservices.Constants;
 import com.catherine.webservices.R;
@@ -28,12 +27,21 @@ import com.catherine.webservices.network.NetworkHealthListener;
 import com.catherine.webservices.network.NetworkHelper;
 import com.catherine.webservices.security.ADID_AsyncTask;
 import com.catherine.webservices.toolkits.CLog;
+import com.facebook.binaryresource.BinaryResource;
+import com.facebook.cache.common.CacheKey;
+import com.facebook.datasource.BaseDataSubscriber;
+import com.facebook.datasource.DataSource;
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.imagepipeline.cache.DefaultCacheKeyFactory;
+import com.facebook.imagepipeline.core.DefaultExecutorSupplier;
+import com.facebook.imagepipeline.core.ImagePipelineFactory;
+import com.facebook.imagepipeline.request.ImageRequest;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -53,8 +61,9 @@ public class P11_Fresco extends LazyFragment {
     private TextView tv_offline;
     private NetworkHelper helper;
     private boolean retry;
-    private boolean showPicOffline;
-    private SharedPreferences sp;
+    private boolean cacheable;
+    private PrefetchSubscriber subscriber;
+    private int succeed, failed;
 
     public static P11_Fresco newInstance(boolean isLazyLoad) {
         Bundle args = new Bundle();
@@ -70,11 +79,10 @@ public class P11_Fresco extends LazyFragment {
         setContentView(R.layout.f_11_fresco);
 
         if (getArguments() != null) {
-            showPicOffline = getArguments().getBoolean("show_pic_offline", false);
+            cacheable = getArguments().getBoolean("cacheable", false);
         }
 
         entities = new ArrayList<>();
-        sp = getActivity().getSharedPreferences(TAG, Context.MODE_PRIVATE);
         helper = new NetworkHelper(getActivity());
         helper.listenToNetworkState(new NetworkHealthListener() {
             @Override
@@ -86,10 +94,8 @@ public class P11_Fresco extends LazyFragment {
 
             @Override
             public void networkDisable() {
-                if (!showPicOffline) {
-                    tv_offline.setText(getString(R.string.offline));
-                    tv_offline.setVisibility(View.VISIBLE);
-                }
+                tv_offline.setText(getString(R.string.offline));
+                tv_offline.setVisibility(View.VISIBLE);
             }
         });
         initComponent();
@@ -102,10 +108,11 @@ public class P11_Fresco extends LazyFragment {
     }
 
     private void fillInData() {
-        retry = false;
         tv_offline.setVisibility(View.GONE);
+        retry = false;
         entities.clear();
-
+        adapter.updateData(entities);
+        adapter.notifyDataSetChanged();
         ADID_AsyncTask adid_asyncTask = new ADID_AsyncTask(
                 new ADID_AsyncTask.ADID_Callback() {
                     @Override
@@ -130,16 +137,48 @@ public class P11_Fresco extends LazyFragment {
                     @Override
                     public void connectSuccess(@NonNull HttpResponse response) {
                         pb.setVisibility(View.INVISIBLE);
-                        CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
+                        CLog.Companion.i(TAG, "connectSuccess");
+//                        CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
                         try {
                             JSONObject jo = new JSONObject(response.getBody());
-                            SharedPreferences.Editor editor = sp.edit();
-                            editor.putString("pic_list", jo.toString());
-                            editor.apply();
-                            loadResponse(jo, false);
+                            JSONArray pics = jo.getJSONArray("pics");
+                            for (int i = 0; i < pics.length(); i++) {
+                                ImageCard ic = new ImageCard();
+                                ic.image = pics.getString(i);
+                                ic.title = NetworkHelper.Companion.getFileNameFromUrl(pics.getString(i));
+                                ic.subtitle = "fresh";//not cache
+                                entities.add(ic);
+                            }
+                            adapter.updateData(entities);
+                            adapter.notifyDataSetChanged();
+
                         } catch (Exception e) {
-                            CLog.Companion.e(TAG, "Json error:" + e.getMessage());
+                            pb.setVisibility(View.INVISIBLE);
+                            e.printStackTrace();
+                            return;
                         }
+                        //cache
+                        if (cacheable) {
+                            try {
+                                for (int i = 0; i < entities.size(); i++) {
+//                                    File file = new File(Constants.ROOT_PATH + Constants.FRESCO_DIR + "/");
+                                    String url = entities.get(i).image;
+                                    ImageRequest imageRequest = ImageRequest.fromUri(url);
+                                    CacheKey cacheKey = DefaultCacheKeyFactory.getInstance().getEncodedCacheKey(imageRequest, null);
+                                    BinaryResource resource = ImagePipelineFactory.getInstance().getMainFileCache().getResource(cacheKey);
+                                    if (resource == null || resource.size() == 0) {
+                                        DataSource<Void> ds = Fresco.getImagePipeline().prefetchToDiskCache(ImageRequest.fromUri(url), null);
+                                        ds.subscribe(subscriber, new DefaultExecutorSupplier(3).forBackgroundTasks());
+                                    }
+                                }
+                            } catch (Exception e) {
+                                pb.setVisibility(View.INVISIBLE);
+                                CLog.Companion.e(TAG, "Cache error:" + e.getMessage());
+                                tv_offline.setText(String.format(Locale.ENGLISH, "connectFailure JSON error:%s", e.getMessage()));
+                                tv_offline.setVisibility(View.VISIBLE);
+                            }
+                        }
+
                     }
 
                     @Override
@@ -160,42 +199,13 @@ public class P11_Fresco extends LazyFragment {
                             tv_offline.setVisibility(View.VISIBLE);
                         } else {
                             retry = true;
-                            if (showPicOffline) {
-                                String s = sp.getString("pic_list", "");
-                                if (TextUtils.isEmpty(s)) {
-                                    tv_offline.setText(getString(R.string.no_cache));
-                                    tv_offline.setVisibility(View.VISIBLE);
-                                } else {
-                                    try {
-                                        JSONObject jo = new JSONObject(s);
-                                        loadResponse(jo, true);
-                                    } catch (JSONException e1) {
-                                        e1.printStackTrace();
-                                        CLog.Companion.e(TAG, "Json error:" + e1.getMessage());
-                                    }
-                                }
-                            } else {
-                                tv_offline.setText(getString(R.string.offline));
-                                tv_offline.setVisibility(View.VISIBLE);
-                            }
+                            tv_offline.setText(getString(R.string.offline));
+                            tv_offline.setVisibility(View.VISIBLE);
                         }
                     }
                 })
                 .build();
         new HttpAsyncTask(r).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-    }
-
-    private void loadResponse(JSONObject jo, boolean shrinkList) throws JSONException {
-        JSONArray pics = jo.getJSONArray("pics");
-        for (int i = 0; i < pics.length(); i++) {
-            ImageCard ic = new ImageCard();
-            ic.image = pics.getString(i);
-            ic.title = NetworkHelper.Companion.getFileNameFromUrl(pics.getString(i));
-            ic.subtitle = "fresh";//not cache
-            entities.add(ic);
-        }
-        adapter.updateData(entities);
-        adapter.notifyDataSetChanged();
     }
 
 
@@ -205,8 +215,10 @@ public class P11_Fresco extends LazyFragment {
         srl_container.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                pb.setVisibility(View.VISIBLE);
                 CLog.Companion.d(TAG, "refresh");
+                pb.setVisibility(View.VISIBLE);
+                succeed = 0;
+                failed = 0;
                 fillInData();
                 srl_container.setRefreshing(false);
             }
@@ -214,10 +226,9 @@ public class P11_Fresco extends LazyFragment {
 
         RecyclerView rv_main_list = (RecyclerView) findViewById(R.id.rv_main_list);
         rv_main_list.setLayoutManager(new LinearLayoutManager(getActivity()));
-        adapter = new FrescoRVAdapter(getActivity(), entities, new OnItemClickListener() {
+        adapter = new FrescoRVAdapter(getActivity(), entities, false, new OnItemClickListener() {
             @Override
             public void onItemLongClick(@NotNull View view, int position) {
-
             }
 
             @Override
@@ -233,7 +244,35 @@ public class P11_Fresco extends LazyFragment {
         fab_delete.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 //delete cache
+                Fresco.getImagePipeline().clearDiskCaches();
             }
         });
+
+        if (cacheable) {
+            subscriber = new PrefetchSubscriber();
+        }
+    }
+
+    private class PrefetchSubscriber extends BaseDataSubscriber<Void> {
+
+        @Override
+        protected void onNewResultImpl(DataSource<Void> dataSource) {
+            ++succeed;
+            CLog.Companion.i(TAG, "observer, succeed:" + succeed);
+            if (entities.size() == succeed) {
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(getActivity(), "All the images are cached!", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        }
+
+        @Override
+        protected void onFailureImpl(DataSource<Void> dataSource) {
+            ++failed;
+            CLog.Companion.e(TAG, "observer, failed:" + failed);
+        }
     }
 }
