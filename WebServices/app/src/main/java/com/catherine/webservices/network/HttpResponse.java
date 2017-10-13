@@ -38,7 +38,6 @@ public final class HttpResponse {
 
         public Builder() {
             this.body = "";
-            this.headers = MyHttpURLConnection.getDefaultHeaders();
             this.code = -1;
             this.codeString = "Initialize object first.";
         }

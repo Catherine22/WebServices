@@ -8,23 +8,22 @@ Looper class keeps the thread alive, holds a message queue and pop works off a q
 Handler class helps put work at the head, the tail or even set a time-based delay.
 
 ## AsyncTask：
-- Helps get work on/off the UI thread.
+*Helps get work on/off the UI thread.*
 
 - Basically, all AsyncTasks are created in a same thread, it means them will execute in a serial fashion from a single message queue.
 - There is a way to force AsyncTask works in thread-pooled way : AsyncTask.executeOnExecutor
 
 ## HandlerThread
-- Dedicated thread for API callbacks.
+*Dedicated thread for API callbacks.*
 
 - HandlerThread is a nifty solution for the work that not deal with UI updates.
 - Don't forget to assign the priority because CPU can only execute a few parallel threads.
 
 ## ThreadPool
-- Running lots of parallel small works.
+*Running lots of parallel small works.*
 
 ## IntentService
-- It's ideal for background tasks.
-- Helps get intents off UI thread.
+*It's ideal for background tasks. It also helps get intents off UI thread.*
 
 *It's the easiest way to update UIs by running on AsyncTask, and HandlerThread is also a excellent solution for the work that not deal with UI updates.*
 
@@ -64,7 +63,7 @@ android {
 - HttpURLConnection settings:[MyHttpURLConnection]
 
 
-## OkHttp
+## OkHttp 
 
 
 ## Volley
@@ -192,7 +191,7 @@ Cache-Control: max-age=(0)
 ```
 
 If your cache is not available, then you request ETag (with If-None-Match) or Last-Modified (with If-Modified-Since) to your server.
-Your server returns 304 when it's okay to use the cache you've stored or you might get 200 with new resources.
+Your server returns 304 when it's okay to use the cache has been stored or you might get 200 with new resources.
 
 - **No cache**
 
@@ -204,10 +203,59 @@ Cache-Control:no-cache, no-store
 
 - WebView cache
 
+## HTTPS
 
+[![HTTPS workflos](https://raw.githubusercontent.com/Catherine22/WebServices/master/https_workflow.png)](http://limboy.me/tech/2011/02/19/https-workflow.html)
+
+ 1. Client requests a https url
+ 2. There is a keypair in server.
+ 3. Server passes the public key to client.
+ 4. Client validates the public key and generate a key (I call it client key). If the public key is able to be truthed, client encrypts the client key with the public key.
+ 5. Client sends the encrypted client key to server.
+ 6. Server decrypts the client key with private key.
+ 7. Server sends messages encrypted with the client key to client.
+ 8. Client decrypts the messages with the client key.
+
+
+> In step 4, how does client know that public key is valid?		 
+> Let CA (Certificate Authority) list tells client.
+> There are hundreds of CAs in the world. Which CA you can trust depends on a CAs list in client. (Normally, your mobile phone had been saved a list of trusted CAs before you bought it.)
+
+### Android HTTPS
+
+***DO NOT IMPLEMENT "X509TrustManager" TO SKIP VALIDATION***        
+That means man-in-the-middle attacks are allowed.
+
+As I was mentioning, you open a url ([https://kyfw.12306.cn/otn/regist/init]) with your Android device and you get an exception:
+
+``` html
+java.security.cert.CertPathValidatorException: Trust anchor for certification path not found.
+```
+Because the CA of kyfw.12306.cn is not in default trusted CA list of your device.
+
+In this scenario, if you are sure this website is trusted and you've got to request it, you create your SSLTrustManager which implements X509TrustManager and do nothing in the override methods. It means you skip certificates verification. Hackers can send you a fake public key to connect to client because you don't validate the public key in step 4, your device finally connect to the hacker's server.
+
+----------
+
+There are two solutions, the second one is better.
+1. Get the certificate of kyfw.12306.cn and keep it in assets folder. You add this certificate to trusted CA list of client.<br>
+*After the end of the validity period, the certificate is no longer considered an acceptable.*
+
+2. Get the certificate of kyfw.12306.cn and keep it in assets folder. You add this certificate to the trusted CA list of client.<br>
+Normally, the CA of the department which sponsors a certain domain has a longer validity period than that domain. That's why this solution is recommended.
+
+**Android example**
+
+
+Take kyfw.12306.cn for example.
+1. Download the certificate of kyfw.12306.cn and add to assets file.
+2. Add this certificate to trustManager[] 
+3. Let "HttpsURLConnection" trust this certificate
+4. Go to [P02_HttpURLConnection] to see more.
 
 ## Download and cache images
 
+**ImageView + DiskLruCache**
 1. Download a url list.		
 2. Check internal or external storage of the device and if the image has had cache, skip step 3 and show it.
 3. Download each image from the list and try to cache them.		
@@ -215,6 +263,7 @@ Cache-Control:no-cache, no-store
 
 Here is the example: [P05_Gallery], [ImageCardRVAdapter]
 
+**Fresco**
 
 ## TCP Sockets
 
@@ -249,6 +298,7 @@ udpSocket();
 - [increasing-application-performance-with-http-cache-headers]
 - [Socket tutorial]
 - [What are examples of TCP and UDP in real life scenario ?]
+- [Android HTTPS]
 
 
 [MainActivity]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/MainActivity.kt>
@@ -273,3 +323,6 @@ udpSocket();
 [P10_UDP_Socket]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/P10_UDP_Socket.java>
 [MySocket]:<https://github.com/Catherine22/WebServices/blob/master/JavaSocketServer/MySocket/src/Main.java>
 [What are examples of TCP and UDP in real life scenario ?]:<https://learningnetwork.cisco.com/thread/87103>
+[Android HTTPS]:<http://blog.csdn.net/iispring/article/details/51615631>
+[https://kyfw.12306.cn/otn/regist/init]:<https://kyfw.12306.cn/otn/regist/init>
+[GitHub api]:<https://api.github.com/>
