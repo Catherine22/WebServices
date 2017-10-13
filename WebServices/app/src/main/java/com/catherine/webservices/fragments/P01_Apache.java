@@ -14,6 +14,7 @@ import com.catherine.webservices.MyApplication;
 import com.catherine.webservices.R;
 import com.catherine.webservices.adapters.TextCardRVAdapter;
 import com.catherine.webservices.interfaces.OnItemClickListener;
+import com.catherine.webservices.network.HttpRequest;
 import com.catherine.webservices.network.HttpResponse;
 import com.catherine.webservices.network.HttpResponseListener;
 import com.catherine.webservices.network.MyApache;
@@ -40,6 +41,7 @@ public class P01_Apache extends LazyFragment {
     private SwipeRefreshLayout srl_container;
     private Handler networkTask;
     private MyApache myApache;
+    private Callback callback;
     private TextCardRVAdapter adapter;
     private HandlerThread handlerThreadB, handlerThreadC;
 
@@ -89,6 +91,8 @@ public class P01_Apache extends LazyFragment {
     }
 
     private void initComponent() {
+        myApache = new MyApache();
+        callback = new Callback();
         handlerThreadB = new HandlerThread("Looper B");
         handlerThreadB.start();
 
@@ -113,6 +117,7 @@ public class P01_Apache extends LazyFragment {
             public void onItemClick(View view, final int position) {
                 switch (position) {
                     case 0:
+                        srl_container.setRefreshing(true);
                         networkTask.post(new Runnable() {
                             @Override
                             public void run() {
@@ -120,12 +125,17 @@ public class P01_Apache extends LazyFragment {
                                 headers.put("h1", "Hi there!");
                                 headers.put("h2", "I am a mobile phone.");
                                 headers.put("Authorization", Constants.AUTHORIZATION);
-                                setupApache(position);
-                                myApache.doGet(Constants.HOST + "LoginServlet?name=zhangsan&password=123456", headers);
+                                callback.setPosition(position);
+                                myApache.doGet(new HttpRequest.Builder()
+                                        .url(Constants.HOST + "LoginServlet?name=zhangsan&password=123456")
+                                        .headers(headers)
+                                        .listener(callback)
+                                        .build());
                             }
                         });
                         break;
                     case 1:
+                        srl_container.setRefreshing(true);
                         networkTask.post(new Runnable() {
                             @Override
                             public void run() {
@@ -135,12 +145,17 @@ public class P01_Apache extends LazyFragment {
                                 List<NameValuePair> nameValuePairs = new ArrayList<>();
                                 nameValuePairs.add(new BasicNameValuePair("name", "zhangsan"));
                                 nameValuePairs.add(new BasicNameValuePair("password", "123456"));
-                                setupApache(position);
-                                myApache.doPost(Constants.HOST + "LoginServlet", headers, nameValuePairs);
+                                callback.setPosition(position);
+                                myApache.doPost(nameValuePairs, new HttpRequest.Builder()
+                                        .url(Constants.HOST + "LoginServlet")
+                                        .headers(headers)
+                                        .listener(callback)
+                                        .build());
                             }
                         });
                         break;
                     case 2:
+                        srl_container.setRefreshing(true);
                         networkTask.post(new Runnable() {
                             @Override
                             public void run() {
@@ -149,12 +164,17 @@ public class P01_Apache extends LazyFragment {
                                 List<NameValuePair> nameValuePairs = new ArrayList<>();
                                 nameValuePairs.add(new BasicNameValuePair("name", "zhangsan"));
                                 nameValuePairs.add(new BasicNameValuePair("password", "123456"));
-                                setupApache(position);
-                                myApache.doPost(Constants.HOST + "LoginServlet", headers, nameValuePairs);
+                                callback.setPosition(position);
+                                myApache.doPost(nameValuePairs, new HttpRequest.Builder()
+                                        .url(Constants.HOST + "LoginServlet")
+                                        .headers(headers)
+                                        .listener(callback)
+                                        .build());
                             }
                         });
                         break;
                     case 3:
+                        srl_container.setRefreshing(true);
                         Handler networkTaskB = new Handler(handlerThreadB.getLooper());
                         networkTaskB.post(new Runnable() {
                             @Override
@@ -165,40 +185,56 @@ public class P01_Apache extends LazyFragment {
                                 List<NameValuePair> nameValuePairs = new ArrayList<>();
                                 nameValuePairs.add(new BasicNameValuePair("name", ""));
                                 nameValuePairs.add(new BasicNameValuePair("password", ""));
-                                setupApache(position);
-                                myApache.doPost(Constants.HOST + "LoginServlet", headers, nameValuePairs);
+                                callback.setPosition(position);
+                                myApache.doPost(nameValuePairs, new HttpRequest.Builder()
+                                        .url(Constants.HOST + "LoginServlet")
+                                        .headers(headers)
+                                        .listener(callback)
+                                        .build());
                             }
                         });
                         break;
                     case 4:
+                        srl_container.setRefreshing(true);
                         Handler networkTaskC = new Handler(handlerThreadC.getLooper());
                         networkTaskC.post(new Runnable() {
                             @Override
                             public void run() {
-                                setupApache(position);
-                                myApache.doGet("http://dictionary.cambridge.org/dictionary/english-chinese-simplified/philosopher");
+                                callback.setPosition(position);
+                                myApache.doGet(new HttpRequest.Builder()
+                                        .url("http://dictionary.cambridge.org/dictionary/english-chinese-simplified/philosopher")
+                                        .listener(callback)
+                                        .build());
 
                             }
                         });
                         break;
                     case 5:
+                        srl_container.setRefreshing(true);
                         Handler networkTaskC2 = new Handler(handlerThreadC.getLooper());
                         networkTaskC2.post(new Runnable() {
                             @Override
                             public void run() {
-                                setupApache(position);
-                                myApache.doGet(Constants.GITHUB_API_DOMAIN + "users/Catherine22/repos");
+                                callback.setPosition(position);
+                                myApache.doGet(new HttpRequest.Builder()
+                                        .url(Constants.GITHUB_API_DOMAIN + "users/Catherine22/repos")
+                                        .listener(callback)
+                                        .build());
 
                             }
                         });
                         break;
                     case 6:
+                        srl_container.setRefreshing(true);
                         Handler networkTaskC3 = new Handler(handlerThreadC.getLooper());
                         networkTaskC3.post(new Runnable() {
                             @Override
                             public void run() {
-                                setupApache(position);
-                                myApache.doGet("https://kyfw.12306.cn/otn/regist/init");
+                                callback.setPosition(position);
+                                myApache.doGet(new HttpRequest.Builder()
+                                        .url("https://kyfw.12306.cn/otn/regist/init")
+                                        .listener(callback)
+                                        .build());
 
                             }
                         });
@@ -212,44 +248,51 @@ public class P01_Apache extends LazyFragment {
             }
         });
         rv_main_list.setAdapter(adapter);
+        adapter.setFromHtml(true);
     }
 
-    private void setupApache(final int position) {
-        myApache = new MyApache(new HttpResponseListener() {
-            @Override
-            public void connectSuccess(HttpResponse response) {
-                //Running in a non-UI thread right now.
-                CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
-                contents.set(position, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
-                adapter.setContents(contents);
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        adapter.notifyDataSetChanged();
-                    }
-                });
-            }
+    private class Callback implements HttpResponseListener {
+        private int position;
 
-            @Override
-            public void connectFailure(HttpResponse response, Exception e) {
-                //Running in a non-UI thread right now.
-                StringBuilder sb = new StringBuilder();
-                sb.append(String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getErrorMessage()));
-                CLog.Companion.e(TAG, sb.toString());
-                if (e != null) {
-                    sb.append("\n");
-                    sb.append(e.getMessage());
-                    CLog.Companion.e(TAG, e.getMessage());
+        void setPosition(int position) {
+            this.position = position;
+        }
+
+        @Override
+        public void connectSuccess(HttpResponse response) {
+            //Running in a non-UI thread right now.
+            CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
+            contents.set(position, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
+            adapter.setContents(contents);
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    srl_container.setRefreshing(false);
+                    adapter.notifyDataSetChanged();
                 }
-                contents.set(position, sb.toString());
-                adapter.setContents(contents);
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        adapter.notifyDataSetChanged();
-                    }
-                });
+            });
+        }
+
+        @Override
+        public void connectFailure(HttpResponse response, Exception e) {
+            //Running in a non-UI thread right now.
+            StringBuilder sb = new StringBuilder();
+            sb.append(String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getErrorMessage()));
+            CLog.Companion.e(TAG, sb.toString());
+            if (e != null) {
+                sb.append("\n");
+                sb.append(e.getMessage());
+                CLog.Companion.e(TAG, e.getMessage());
             }
-        });
+            contents.set(position, sb.toString());
+            adapter.setContents(contents);
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    srl_container.setRefreshing(false);
+                    adapter.notifyDataSetChanged();
+                }
+            });
+        }
     }
 }

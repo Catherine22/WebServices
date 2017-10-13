@@ -108,7 +108,11 @@ public class CertificatesManager {
     }
 
     /**
-     * 字串转X509证书
+     * PEM格式字串转X509证书
+     *
+     * -----BEGIN CERTIFICATE-----
+     * xxx
+     * -----END CERTIFICATE-----
      *
      * @param certificates
      * @return

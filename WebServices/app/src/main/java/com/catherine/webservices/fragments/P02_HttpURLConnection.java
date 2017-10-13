@@ -1,7 +1,5 @@
 package com.catherine.webservices.fragments;
 
-import android.content.res.AssetFileDescriptor;
-import android.content.res.AssetManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -11,7 +9,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.catherine.webservices.Constants;
-import com.catherine.webservices.MyApplication;
 import com.catherine.webservices.R;
 import com.catherine.webservices.adapters.TextCardRVAdapter;
 import com.catherine.webservices.interfaces.OnItemClickListener;
@@ -22,15 +19,11 @@ import com.catherine.webservices.network.HttpResponseListener;
 import com.catherine.webservices.network.MyHttpURLConnection;
 import com.catherine.webservices.security.CertificatesManager;
 import com.catherine.webservices.toolkits.CLog;
-import com.catherine.webservices.toolkits.StreamUtils;
 
 import org.jetbrains.annotations.NotNull;
-import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
@@ -91,7 +84,7 @@ public class P02_HttpURLConnection extends LazyFragment {
         descriptions.add("Connect to the server with correct account");
         descriptions.add("Connect to the server with false Authorization");
         descriptions.add("Connect to the server with false account");
-        descriptions.add("Connect to Cambridge dictionary server");
+        descriptions.add("Connect to Cambridge dictionary and return a html formatted response");
         descriptions.add("Connect to GitHub api with gzip encoding");
         descriptions.add("Connect to untrusted url with imported certificate");
         for (int i = 0; i < features.size(); i++) {
@@ -119,6 +112,7 @@ public class P02_HttpURLConnection extends LazyFragment {
             public void onItemClick(View view, final int position) {
                 switch (position) {
                     case 0:
+                        srl_container.setRefreshing(true);
                         Map<String, String> h0 = MyHttpURLConnection.getDefaultHeaders();
                         h0.put("h1", "Hi there!");
                         h0.put("h2", "I am a mobile phone.");
@@ -131,6 +125,7 @@ public class P02_HttpURLConnection extends LazyFragment {
                         new HttpAsyncTask(request0).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                         break;
                     case 1:
+                        srl_container.setRefreshing(true);
                         Map<String, String> h1 = MyHttpURLConnection.getDefaultHeaders();
                         h1.put("Authorization", Constants.AUTHORIZATION);
 
@@ -146,6 +141,7 @@ public class P02_HttpURLConnection extends LazyFragment {
                         new HttpAsyncTask(r1).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                         break;
                     case 2:
+                        srl_container.setRefreshing(true);
                         Map<String, String> h2 = MyHttpURLConnection.getDefaultHeaders();
                         h2.put("Authorization", "12345");
                         Map<String, String> body2 = new HashMap<>();
@@ -162,6 +158,7 @@ public class P02_HttpURLConnection extends LazyFragment {
 
                         break;
                     case 3:
+                        srl_container.setRefreshing(true);
                         Map<String, String> h3 = MyHttpURLConnection.getDefaultHeaders();
                         h3.put("Authorization", Constants.AUTHORIZATION);
 
@@ -177,6 +174,7 @@ public class P02_HttpURLConnection extends LazyFragment {
                         new HttpAsyncTask(r3).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                         break;
                     case 4:
+                        srl_container.setRefreshing(true);
                         HttpRequest r4 = new HttpRequest.Builder()
                                 .url("http://dictionary.cambridge.org/dictionary/english-chinese-simplified/philosopher")
                                 .listener(buildListener(position))
@@ -184,6 +182,7 @@ public class P02_HttpURLConnection extends LazyFragment {
                         new HttpAsyncTask(r4).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                         break;
                     case 5:
+                        srl_container.setRefreshing(true);
                         try {
                             HttpRequest r5 = new HttpRequest.Builder()
                                     .url(Constants.GITHUB_API_DOMAIN + "users/Catherine22/repos")
@@ -223,6 +222,7 @@ public class P02_HttpURLConnection extends LazyFragment {
                         }
                         break;
                     case 6:
+                        srl_container.setRefreshing(true);
                         try {
                             BufferedInputStream bis = new BufferedInputStream(getActivity().getAssets().open("srca.cer"));
                             CertificateFactory cf = CertificateFactory.getInstance("X.509");
@@ -252,20 +252,24 @@ public class P02_HttpURLConnection extends LazyFragment {
             }
         });
         rv_main_list.setAdapter(adapter);
+        adapter.setFromHtml(true);
     }
 
     private HttpResponseListener buildListener(final int position) {
         return new HttpResponseListener() {
             @Override
             public void connectSuccess(HttpResponse response) {
-                CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
-                contents.set(position, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
+                srl_container.setRefreshing(false);
+                String body = response.getBody();
+                CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), body));
+                contents.set(position, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), body));
                 adapter.setContents(contents);
                 adapter.notifyDataSetChanged();
             }
 
             @Override
             public void connectFailure(HttpResponse response, Exception e) {
+                srl_container.setRefreshing(false);
                 StringBuilder sb = new StringBuilder();
                 sb.append(String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, error:%s, body:%s", response.getCode(), response.getCodeString(), response.getErrorMessage(), response.getBody()));
                 CLog.Companion.e(TAG, sb.toString());
