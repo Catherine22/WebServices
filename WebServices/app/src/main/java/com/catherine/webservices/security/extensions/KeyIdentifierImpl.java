@@ -2,7 +2,6 @@ package com.catherine.webservices.security.extensions;
 
 import android.util.Base64;
 
-
 import com.catherine.webservices.security.extensions.interfaces.KeyIdentifier;
 
 import org.bouncycastle.asn1.x509.AuthorityKeyIdentifier;

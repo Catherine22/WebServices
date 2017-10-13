@@ -109,21 +109,21 @@ public class CertificatesManager {
 
     /**
      * PEM格式字串转X509证书
-     *
+     * <p>
      * -----BEGIN CERTIFICATE-----
      * xxx
      * -----END CERTIFICATE-----
      *
-     * @param certificates
+     * @param pem
      * @return
      * @throws CertificateException
      * @throws FileNotFoundException
      */
-    public static X509Certificate getX509Certificate(String certificates)
+    public static X509Certificate pemToX509Certificate(String pem)
             throws CertificateException, FileNotFoundException {
         CertificateFactory cf = CertificateFactory.getInstance("X.509");
-        return (X509Certificate) cf
-                .generateCertificate(new ByteArrayInputStream(Base64.decode(certificates, Base64.DEFAULT)));
+        String newString = pem.replaceAll("-----BEGIN CERTIFICATE-----", "").replaceAll("-----END CERTIFICATE-----", "");
+        return (X509Certificate) cf.generateCertificate(new ByteArrayInputStream(Base64.decode(newString, Base64.DEFAULT)));
     }
 
     /**
@@ -145,7 +145,11 @@ public class CertificatesManager {
         for (int i = 0; i < pairs.length; i++) {
             String pair = pairs[i];
             String[] keyValue = pair.split("=");
-            map.put(keyValue[0], keyValue[1]);
+            if (keyValue.length > 1) {
+                map.put(keyValue[0], keyValue[1]);
+            } else {
+                map.put(keyValue[0], "");
+            }
         }
         return map;
     }
