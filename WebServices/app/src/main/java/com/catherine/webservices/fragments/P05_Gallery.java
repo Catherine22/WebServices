@@ -77,7 +77,6 @@ public class P05_Gallery extends LazyFragment {
         }
 
         sp = getActivity().getSharedPreferences(TAG, Context.MODE_PRIVATE);
-        entities = new ArrayList<>();
         helper = new NetworkHelper(getActivity());
         helper.listenToNetworkState(new NetworkHealthListener() {
             @Override
@@ -107,7 +106,7 @@ public class P05_Gallery extends LazyFragment {
     private void fillInData() {
         retry = false;
         tv_offline.setVisibility(View.GONE);
-        entities.clear();
+        entities = new ArrayList<>();
         adapter.setImageCards(entities, false);
         adapter.notifyDataSetChanged();
         ADID_AsyncTask adid_asyncTask = new ADID_AsyncTask(

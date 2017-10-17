@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.catherine.webservices.R;
 import com.catherine.webservices.entities.ImageCard;
 import com.catherine.webservices.interfaces.OnItemClickListener;
+import com.catherine.webservices.toolkits.CLog;
 import com.facebook.binaryresource.BinaryResource;
 import com.facebook.binaryresource.FileBinaryResource;
 import com.facebook.cache.common.CacheKey;
@@ -125,9 +126,7 @@ public class FrescoRVAdapter extends RecyclerView.Adapter<FrescoRVAdapter.MainRv
             CacheKey cacheKey = DefaultCacheKeyFactory.getInstance().getEncodedCacheKey(imageRequest, null);
             BinaryResource resource = ImagePipelineFactory.getInstance().getMainFileCache().getResource(cacheKey);
             File file = ((FileBinaryResource) resource).getFile();
-            BitmapFactory.Options o = new BitmapFactory.Options();
-            o.inJustDecodeBounds = true;
-            bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(), o);
+            bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
         } catch (Exception e) {
             e.printStackTrace();
         }

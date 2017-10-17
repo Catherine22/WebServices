@@ -18,7 +18,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.catherine.webservices.Constants;
 import com.catherine.webservices.R;
@@ -216,7 +215,7 @@ public class P04_Cache extends LazyFragment {
                     double e = failed * 100.0 / len;
                     tv_pb_info.setText(String.format(Locale.ENGLISH, "Cached: %.2f%%, failed: %.2f%%", p, e));
                     if (imageCards.size() == succeed) {
-                        Toast.makeText(getActivity(), "All the images are cached!", Toast.LENGTH_SHORT).show();
+                        CLog.Companion.i(TAG, "All the images are cached!");
                     }
                 }
 
@@ -357,8 +356,7 @@ public class P04_Cache extends LazyFragment {
                                 String url = imageCards.get(i).image;
                                 ImageRequest imageRequest = ImageRequest.fromUri(url);
                                 CacheKey cacheKey = DefaultCacheKeyFactory.getInstance().getEncodedCacheKey(imageRequest, null);
-                                BinaryResource resource = ImagePipelineFactory.getInstance().getMainFileCache().getResource(cacheKey);
-                                if (resource == null || resource.size() == 0) {
+                                if (!ImagePipelineFactory.getInstance().getMainFileCache().hasKey(cacheKey)) {
                                     DataSource<Void> ds = Fresco.getImagePipeline().prefetchToDiskCache(ImageRequest.fromUri(url), null);
                                     ds.subscribe(subscriber, new DefaultExecutorSupplier(3).forBackgroundTasks());
                                 } else {
@@ -411,7 +409,7 @@ public class P04_Cache extends LazyFragment {
                     double e = failed * 100.0 / len;
                     tv_pb_info.setText(String.format(Locale.ENGLISH, "Cached: %.2f%%, failed: %.2f%%", p, e));
                     if (imageCards.size() == succeed) {
-                        Toast.makeText(getActivity(), "All the images are cached!", Toast.LENGTH_SHORT).show();
+                        CLog.Companion.i(TAG, "All the images are cached!");
                     }
                 }
             });

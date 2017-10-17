@@ -79,11 +79,9 @@ public class P11_Fresco extends LazyFragment {
         super.onCreateViewLazy(savedInstanceState);
         setContentView(R.layout.f_11_fresco);
 
-        if (getArguments() != null) {
+        if (getArguments() != null)
             cacheable = getArguments().getBoolean("cacheable", false);
-        }
 
-        entities = new ArrayList<>();
         helper = new NetworkHelper(getActivity());
         helper.listenToNetworkState(new NetworkHealthListener() {
             @Override
@@ -111,8 +109,8 @@ public class P11_Fresco extends LazyFragment {
     private void fillInData() {
         tv_offline.setVisibility(View.GONE);
         retry = false;
-        entities.clear();
-        if (getArguments() != null)
+        entities = new ArrayList<>();
+        if (getArguments() != null && getArguments().getParcelableArrayList("imageCards") != null)
             entities = getArguments().getParcelableArrayList("imageCards");
         adapter.updateData(entities);
         adapter.notifyDataSetChanged();
@@ -238,7 +236,7 @@ public class P11_Fresco extends LazyFragment {
 
         RecyclerView rv_main_list = (RecyclerView) findViewById(R.id.rv_main_list);
         rv_main_list.setLayoutManager(new LinearLayoutManager(getActivity()));
-        adapter = new FrescoRVAdapter(getActivity(), entities, false, new OnItemClickListener() {
+        adapter = new FrescoRVAdapter(getActivity(), entities, cacheable, new OnItemClickListener() {
             @Override
             public void onItemLongClick(@NotNull View view, int position) {
             }
