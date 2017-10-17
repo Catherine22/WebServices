@@ -2,7 +2,6 @@ package com.catherine.webservices.fragments;
 
 import android.Manifest;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -16,7 +15,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -24,7 +22,6 @@ import android.widget.Toast;
 
 import com.catherine.webservices.Constants;
 import com.catherine.webservices.R;
-import com.catherine.webservices.adapters.ProgressCardRVAdapter;
 import com.catherine.webservices.adapters.TextCardRVAdapter;
 import com.catherine.webservices.entities.ImageCard;
 import com.catherine.webservices.interfaces.BackKeyListener;
@@ -35,6 +32,7 @@ import com.catherine.webservices.network.HttpAsyncTask;
 import com.catherine.webservices.network.HttpRequest;
 import com.catherine.webservices.network.HttpResponse;
 import com.catherine.webservices.network.HttpResponseListener;
+import com.catherine.webservices.network.MyHttpURLConnection;
 import com.catherine.webservices.network.NetworkHelper;
 import com.catherine.webservices.security.ADID_AsyncTask;
 import com.catherine.webservices.toolkits.CLog;
@@ -53,8 +51,10 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * Created by Catherine on 2017/9/15.
@@ -212,10 +212,10 @@ public class P04_Cache extends LazyFragment {
                     pb.setMax(len);
                     pb.setProgress(succeed);
                     pb.setSecondaryProgress(failed + succeed);
-                    double p = succeed * 1.0 / pb.getMax();
-                    double e = failed * 1.0 / pb.getMax();
+                    double p = succeed * 100.0 / len;
+                    double e = failed * 100.0 / len;
                     tv_pb_info.setText(String.format(Locale.ENGLISH, "Cached: %.2f%%, failed: %.2f%%", p, e));
-                    if (images.size() == succeed) {
+                    if (imageCards.size() == succeed) {
                         Toast.makeText(getActivity(), "All the images are cached!", Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -260,6 +260,7 @@ public class P04_Cache extends LazyFragment {
                     case 4:
                         Bundle b4 = new Bundle();
                         b4.putBoolean("cacheable", true);
+                        b4.putParcelableArrayList("imageCards", (ArrayList<ImageCard>) imageCards);
                         callFragment(Constants.P11_FRESCO, b4);
                         break;
                 }
@@ -310,7 +311,7 @@ public class P04_Cache extends LazyFragment {
     }
 
 
-    private List<String> images;
+    private List<ImageCard> imageCards;
     private PrefetchSubscriber subscriber;
     private int succeed, failed;
     private int len;
@@ -321,10 +322,16 @@ public class P04_Cache extends LazyFragment {
         failed = 0;
         pb.setProgress(0);
         tv_pb_info.setText("Wait to download...");
-        images = new ArrayList<>();
+        imageCards = new ArrayList<>();
         subscriber = new PrefetchSubscriber();
+
+        Map<String, String> body = new HashMap<>();
+        body.put("from", "10");
+        body.put("to", "20");
+        body.put("ADID", ADID);
         HttpRequest r = new HttpRequest.Builder()
-                .url(NetworkHelper.Companion.encodeURL(String.format(Locale.ENGLISH, "%sResourceServlet?ADID={%s}&IDFA={}", Constants.HOST, ADID)))
+                .body(MyHttpURLConnection.getSimpleStringBody(body))
+                .url(NetworkHelper.Companion.encodeURL(String.format(Locale.ENGLISH, "%sResourceServlet", Constants.HOST)))
                 .listener(new HttpResponseListener() {
                     @Override
                     public void connectSuccess(@NonNull HttpResponse response) {
@@ -336,7 +343,9 @@ public class P04_Cache extends LazyFragment {
                             len = pics.length();
                             pb.setMax(len);
                             for (int i = 0; i < pics.length(); i++) {
-                                images.add(pics.getString(i));
+                                String url = pics.getString(i);
+                                ImageCard ic = new ImageCard(NetworkHelper.Companion.getFileNameFromUrl(url), "fresh", url);
+                                imageCards.add(ic);
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -344,15 +353,25 @@ public class P04_Cache extends LazyFragment {
                         }
                         //cache
                         try {
-                            for (int i = 0; i < images.size(); i++) {
-                                String url = images.get(i);
+                            for (int i = 0; i < imageCards.size(); i++) {
+                                String url = imageCards.get(i).image;
                                 ImageRequest imageRequest = ImageRequest.fromUri(url);
                                 CacheKey cacheKey = DefaultCacheKeyFactory.getInstance().getEncodedCacheKey(imageRequest, null);
                                 BinaryResource resource = ImagePipelineFactory.getInstance().getMainFileCache().getResource(cacheKey);
                                 if (resource == null || resource.size() == 0) {
                                     DataSource<Void> ds = Fresco.getImagePipeline().prefetchToDiskCache(ImageRequest.fromUri(url), null);
                                     ds.subscribe(subscriber, new DefaultExecutorSupplier(3).forBackgroundTasks());
+                                } else {
+                                    succeed++;
                                 }
+                            }
+
+                            if (succeed == imageCards.size()) {
+                                double p = succeed * 100.0 / len;
+                                double e = failed * 100.0 / len;
+                                pb.setProgress(succeed);
+                                pb.setSecondaryProgress(failed + succeed);
+                                tv_pb_info.setText(String.format(Locale.ENGLISH, "Cached: %.2f%%, failed: %.2f%%", p, e));
                             }
                         } catch (Exception e) {
                             CLog.Companion.e(TAG, "Cache error:" + e.getMessage());
@@ -388,10 +407,10 @@ public class P04_Cache extends LazyFragment {
                 public void run() {
                     pb.setProgress(succeed);
                     pb.setSecondaryProgress(failed + succeed);
-                    double p = succeed * 1.0 / pb.getMax();
-                    double e = failed * 1.0 / pb.getMax();
+                    double p = succeed * 100.0 / len;
+                    double e = failed * 100.0 / len;
                     tv_pb_info.setText(String.format(Locale.ENGLISH, "Cached: %.2f%%, failed: %.2f%%", p, e));
-                    if (images.size() == succeed) {
+                    if (imageCards.size() == succeed) {
                         Toast.makeText(getActivity(), "All the images are cached!", Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -406,8 +425,9 @@ public class P04_Cache extends LazyFragment {
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    double p = succeed * 1.0 / pb.getMax();
-                    double e = failed * 1.0 / pb.getMax();
+                    double p = succeed * 100.0 / len;
+                    double e = failed * 100.0 / len;
+                    pb.setProgress(succeed);
                     pb.setSecondaryProgress(failed + succeed);
                     tv_pb_info.setText(String.format(Locale.ENGLISH, "Cached: %.2f%%, failed: %.2f%%", p, e));
                 }

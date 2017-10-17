@@ -24,6 +24,7 @@ import com.catherine.webservices.network.HttpAsyncTask;
 import com.catherine.webservices.network.HttpRequest;
 import com.catherine.webservices.network.HttpResponse;
 import com.catherine.webservices.network.HttpResponseListener;
+import com.catherine.webservices.network.MyHttpURLConnection;
 import com.catherine.webservices.network.NetworkHealthListener;
 import com.catherine.webservices.network.NetworkHelper;
 import com.catherine.webservices.security.ADID_AsyncTask;
@@ -35,8 +36,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * Created by Catherine on 2017/9/12.
@@ -125,8 +128,13 @@ public class P05_Gallery extends LazyFragment {
     }
 
     private void getPicList(String ADID) {
+        Map<String, String> body = new HashMap<>();
+        body.put("from", "30");
+        body.put("to", "70");
+        body.put("ADID", ADID);
         HttpRequest r = new HttpRequest.Builder()
-                .url(NetworkHelper.Companion.encodeURL(String.format(Locale.ENGLISH, "%sResourceServlet?ADID={%s}&IDFA={}", Constants.HOST, ADID)))
+                .body(MyHttpURLConnection.getSimpleStringBody(body))
+                .url(NetworkHelper.Companion.encodeURL(String.format(Locale.ENGLISH, "%sResourceServlet", Constants.HOST)))
                 .listener(new HttpResponseListener() {
                     @Override
                     public void connectSuccess(@NonNull HttpResponse response) {

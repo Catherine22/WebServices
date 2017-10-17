@@ -1,6 +1,5 @@
 package com.catherine.webservices.fragments;
 
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -23,6 +22,7 @@ import com.catherine.webservices.network.HttpAsyncTask;
 import com.catherine.webservices.network.HttpRequest;
 import com.catherine.webservices.network.HttpResponse;
 import com.catherine.webservices.network.HttpResponseListener;
+import com.catherine.webservices.network.MyHttpURLConnection;
 import com.catherine.webservices.network.NetworkHealthListener;
 import com.catherine.webservices.network.NetworkHelper;
 import com.catherine.webservices.security.ADID_AsyncTask;
@@ -41,10 +41,11 @@ import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * Created by Catherine on 2017/10/13.
@@ -111,28 +112,39 @@ public class P11_Fresco extends LazyFragment {
         tv_offline.setVisibility(View.GONE);
         retry = false;
         entities.clear();
+        if (getArguments() != null)
+            entities = getArguments().getParcelableArrayList("imageCards");
         adapter.updateData(entities);
         adapter.notifyDataSetChanged();
-        ADID_AsyncTask adid_asyncTask = new ADID_AsyncTask(
-                new ADID_AsyncTask.ADID_Callback() {
-                    @Override
-                    public void onResponse(@NonNull String ADID) {
-                        getPicList(ADID);
-                    }
+        if (entities.size() == 0) {
+            ADID_AsyncTask adid_asyncTask = new ADID_AsyncTask(
+                    new ADID_AsyncTask.ADID_Callback() {
+                        @Override
+                        public void onResponse(@NonNull String ADID) {
+                            getPicList(ADID);
+                        }
 
-                    @Override
-                    public void onError(@NonNull Exception e) {
-                        CLog.Companion.e(TAG, "Failed to get ADID: " + e.toString());
-                        getPicList("FAKE-ADID");
+                        @Override
+                        public void onError(@NonNull Exception e) {
+                            CLog.Companion.e(TAG, "Failed to get ADID: " + e.toString());
+                            getPicList("FAKE-ADID");
 
-                    }
-                });
-        adid_asyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                        }
+                    });
+            adid_asyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        } else {
+            pb.setVisibility(View.INVISIBLE);
+        }
     }
 
     private void getPicList(String ADID) {
+        Map<String, String> body = new HashMap<>();
+        body.put("from", "0");
+        body.put("to", "10");
+        body.put("ADID", ADID);
         HttpRequest r = new HttpRequest.Builder()
-                .url(NetworkHelper.Companion.encodeURL(String.format(Locale.ENGLISH, "%sResourceServlet?ADID={%s}&IDFA={}", Constants.HOST, ADID)))
+                .body(MyHttpURLConnection.getSimpleStringBody(body))
+                .url(NetworkHelper.Companion.encodeURL(String.format(Locale.ENGLISH, "%sResourceServlet", Constants.HOST)))
                 .listener(new HttpResponseListener() {
                     @Override
                     public void connectSuccess(@NonNull HttpResponse response) {
