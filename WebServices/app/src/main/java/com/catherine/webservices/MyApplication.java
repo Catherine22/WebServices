@@ -92,7 +92,6 @@ public class MyApplication extends Application {
             CLog.Companion.i(TAG, "Your data will save in " + Constants.ROOT_PATH);
         }
 
-        init();
         registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
             @Override
             public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
@@ -152,12 +151,29 @@ public class MyApplication extends Application {
                 }
             }
         });
+        super.onCreate();
+    }
 
-        //fresco
+    public void stopLooper(HandlerThread handlerThread) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            if (handlerThread != null && handlerThread.isAlive())
+                handlerThread.quitSafely();
+            else
+                handlerThread.quit();
+        }
+    }
+
+    /**
+     * 获取权限后重新初始化
+     */
+    public void init() {
         File rootDir = new File(Constants.ROOT_PATH);
         if (!rootDir.exists())
             rootDir.mkdirs();
+        FileUtils.copyAssets();
 
+
+        //fresco
         //check free memory (MB)
         File externalStorageDir = Environment.getExternalStorageDirectory();
         long temp = externalStorageDir.getFreeSpace();
@@ -180,26 +196,6 @@ public class MyApplication extends Application {
                 .setMainDiskCacheConfig(diskCacheConfig)
                 .build();
         Fresco.initialize(this, config);
-        super.onCreate();
-    }
-
-    public void stopLooper(HandlerThread handlerThread) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            if (handlerThread != null && handlerThread.isAlive())
-                handlerThread.quitSafely();
-            else
-                handlerThread.quit();
-        }
-    }
-
-    /**
-     * 获取权限后重新初始化
-     */
-    public void init() {
-        File rootDir = new File(Constants.ROOT_PATH);
-        if (!rootDir.exists())
-            rootDir.mkdirs();
-        FileUtils.copyAssets();
     }
 
     /**

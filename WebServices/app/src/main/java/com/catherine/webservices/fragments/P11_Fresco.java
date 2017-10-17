@@ -244,7 +244,11 @@ public class P11_Fresco extends LazyFragment {
         fab_delete.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 //delete cache
-                Fresco.getImagePipeline().clearDiskCaches();
+//                Fresco.getImagePipeline().clearMemoryCaches();
+//                Fresco.getImagePipeline().clearDiskCaches();
+
+                //combines above two lines
+                Fresco.getImagePipeline().clearCaches();
             }
         });
 

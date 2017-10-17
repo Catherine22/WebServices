@@ -12,6 +12,7 @@ import android.support.design.widget.TabLayout
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
+import android.support.v7.app.AlertDialog
 import android.view.KeyEvent
 import android.view.View
 import com.catherine.webservices.adapters.MainViewPagerAdapter
@@ -50,27 +51,64 @@ class MainActivity : FragmentActivity(), MainInterface {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        setView()
+        init()
+    }
 
-        val checkStateWork = Handler(MyApplication.INSTANCE.calHandlerThread.looper)
-        checkStateWork.post {
-            val networkHelper = NetworkHelper(this)
-            CLog.d(TAG, "isNetworkHealth:${networkHelper.isNetworkHealth()}")
-            CLog.d(TAG, "isWifi:${networkHelper.isWifi()}")
-            networkHelper.listenToNetworkState(object : NetworkHealthListener {
-                override fun networkConnected(type: String) {
-                    CLog.i(TAG, "network connected, type:$type")
-                }
+    private fun init() {
+        getPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_NETWORK_STATE), object : OnRequestPermissionsListener {
+            override fun onGranted() {
+                setView()
+                MyApplication.INSTANCE.init()
 
-                override fun networkDisable() {
-                    CLog.e(TAG, "network disable")
+                val checkStateWork = Handler(MyApplication.INSTANCE.calHandlerThread.looper)
+                checkStateWork.post {
+                    val networkHelper = NetworkHelper(this@MainActivity)
+                    CLog.d(TAG, "isNetworkHealth:${networkHelper.isNetworkHealth()}")
+                    CLog.d(TAG, "isWifi:${networkHelper.isWifi()}")
+                    networkHelper.listenToNetworkState(object : NetworkHealthListener {
+                        override fun networkConnected(type: String) {
+                            CLog.i(TAG, "network connected, type:$type")
+                        }
+
+                        override fun networkDisable() {
+                            CLog.e(TAG, "network disable")
+                        }
+                    })
                 }
-            })
-        }
 
 
 //        testKotlin()
 //        testXML()
+            }
+
+            override fun onDenied(deniedPermissions: List<String>?) {
+                val context = StringBuilder()
+                deniedPermissions?.map {
+                    if (Manifest.permission.WRITE_EXTERNAL_STORAGE == it) {
+                        context.append("存储、")
+                    }
+                }
+
+                context.deleteCharAt(context.length - 1)
+
+                val myAlertDialog = AlertDialog.Builder(this@MainActivity)
+                myAlertDialog.setIcon(android.R.drawable.ic_dialog_alert)
+                        .setCancelable(false)
+                        .setTitle("注意")
+                        .setMessage(String.format("您目前未授权%s存取权限，未授权将造成程式无法执行，是否开启权限？", context.toString()))
+                        .setNegativeButton("继续关闭") { _, _ -> this@MainActivity.finish() }
+                        .setPositiveButton("确定开启") { _, _ ->
+                            val intent = Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                                    Uri.fromParts("package", this@MainActivity.packageName, null))
+                            startActivityForResult(intent, Constants.OPEN_SETTINGS)
+                        }
+                myAlertDialog.show()
+            }
+
+            override fun onRetry() {
+                init()
+            }
+        })
     }
 
     //constants
@@ -84,7 +122,7 @@ class MainActivity : FragmentActivity(), MainInterface {
     private var requestSpec = 0x0000           //需要的特殊权限
     private var grantedSpec = 0x0000           //已取得的特殊权限
     private var confirmedSpec = 0x0000         //已询问的特殊权限
-    private var deniedPermissionsList: MutableList<String> = LinkedList<String>() //被拒绝的权限
+    private var deniedPermissionsList: MutableList<String> = LinkedList() //被拒绝的权限
 
     /**
      * 要求用户打开权限,仅限android 6.0 以上
@@ -129,7 +167,6 @@ class MainActivity : FragmentActivity(), MainInterface {
                 }
                 ActivityCompat.requestPermissions(this, deniedPermissions, ACCESS_PERMISSION)
             } else {
-                MyApplication.INSTANCE.init()
                 listener.onGranted()
 
                 requestSpec = 0x0000
@@ -217,7 +254,6 @@ class MainActivity : FragmentActivity(), MainInterface {
                         if (deniedResults.size > 0)
                             listener?.onDenied(deniedResults)
                         else {
-                            MyApplication.INSTANCE.init()
                             listener?.onGranted()
                         }
 
@@ -320,7 +356,7 @@ class MainActivity : FragmentActivity(), MainInterface {
     }
 
     override fun addBottomLayout(id: Int) {
-        val view = layoutInflater.inflate(id, null, false)
+        val view = layoutInflater.inflate(id, null)
         fl_bottom.addView(view)
     }
 
