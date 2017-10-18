@@ -69,12 +69,24 @@ public class Constants {
     public final static String FRESCO_DIR = "fresco";
     protected final static String CACHE_PATH = ROOT_PATH + "cache/";
 
-    //Fragments
-    public final static int P05_Gallery = 5;
+    //Fragments - sort by ViewPager
+    public final static int P01_APACHE = 0;
+    public final static int P02_HTTP_URL_CONNECTION = 1;
+    public final static int P03_DOWNLOADER = 2;
+    public final static int P04_CACHE = 3;
+    public final static int P06_UPLOAD = 4;
+    public final static int P07_SOCKET = 5;
+    public final static int P12_WEBVIEW = 6;
+    public final static String[] MAIN_TABS = new String[]{
+            "HttpClient", "HttpURLConnection", "Downloader", "Cache", "Upload", "Socket", "WebView"};
+
+    //Other fragments
+    public final static int P05_Gallery = 7;
     public final static int P08_BLOCKING_SOCKET = 8;
     public final static int P09_NIO_SOCKET = 9;
     public final static int P10_UDP_SOCKET = 10;
     public final static int P11_FRESCO = 11;
-    public final static int P13_WEBVIEW_DETAIL = 13;
+    public final static int P13_NESTED_WEBVIEW = 13;
+    public final static int P14_FULL_WEBVIEW = 14;
 
 }

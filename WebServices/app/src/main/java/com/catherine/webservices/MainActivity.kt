@@ -19,6 +19,8 @@ import catherine.messagecenter.AsyncResponse
 import catherine.messagecenter.Server
 import com.catherine.webservices.adapters.MainViewPagerAdapter
 import com.catherine.webservices.fragments.P05_Gallery
+import com.catherine.webservices.fragments.P13_Nested_WebView
+import com.catherine.webservices.fragments.P14_Full_WebView
 import com.catherine.webservices.interfaces.BackKeyListener
 import com.catherine.webservices.interfaces.MainInterface
 import com.catherine.webservices.interfaces.OnRequestPermissionsListener
@@ -322,20 +324,55 @@ class MainActivity : FragmentActivity(), MainInterface {
     /**
      * 跳页至某Fragment
      *
+     * @param position position of tabLayout
+     */
+    override fun switchTab(position: Int) {
+        if (position < Constants.MAIN_TABS.size) {
+            vp_content.currentItem = position
+        }
+    }
+
+    /**
+     * 跳页至某Fragment
+     *
      * @param id Tag of the Fragment
      */
     override fun callFragment(id: Int) {
-        CLog.d(TAG, "call " + id)
+        callFragment(id, null)
+    }
+
+    /**
+     * 跳页至某Fragment
+     *
+     * @param id Tag of the Fragment
+     * @param bundle argument of the Fragment
+     */
+    override fun callFragment(id: Int, bundle: Bundle?) {
+        CLog.d(TAG, "call $id ,has bundle? ${bundle == null}")
+        fl_container.visibility = View.VISIBLE
         var fragment: Fragment? = null
         var tag: String? = null
         var title = ""
         when (id) {
+
+        //null bundle
             Constants.P05_Gallery -> {
                 title = "P05_Gallery"
                 fragment = P05_Gallery.newInstance(true)
                 tag = "P05"
             }
+
+        //has bundle
+            Constants.P14_FULL_WEBVIEW -> {
+                title = "P14_Full_WebView"
+                fragment = P14_Full_WebView.newInstance(true)
+                tag = "P14"
+            }
         }
+
+        if (bundle != null)
+            fragment?.arguments = bundle
+
         val transaction = fm.beginTransaction()
         transaction.add(R.id.fl_container, fragment, tag)
         transaction.addToBackStack(title)
@@ -349,6 +386,7 @@ class MainActivity : FragmentActivity(), MainInterface {
     override fun clearAllFragments() {
         for (i in 0 until fm.backStackEntryCount) {
             fm.popBackStack()
+            fl_container.visibility = View.GONE
         }
     }
 
@@ -357,8 +395,9 @@ class MainActivity : FragmentActivity(), MainInterface {
      */
     override fun backToPreviousPage() {
         if (fm.backStackEntryCount > 0) {
+            if (fm.backStackEntryCount == 1)
+                fl_container.visibility = View.GONE
             fm.popBackStack()
-
         } else
             onBackPressed()
     }
@@ -399,18 +438,18 @@ class MainActivity : FragmentActivity(), MainInterface {
             override fun onTabSelected(tab: TabLayout.Tab) {
                 restoreBottomLayout()
                 when (tab) {
-                    tabLayout.getTabAt(0) -> vp_content.currentItem = 0
-                    tabLayout.getTabAt(1) -> vp_content.currentItem = 1
-                    tabLayout.getTabAt(2) -> vp_content.currentItem = 2
-                    tabLayout.getTabAt(3) -> {
+                    tabLayout.getTabAt(Constants.P01_APACHE) -> vp_content.currentItem = Constants.P01_APACHE
+                    tabLayout.getTabAt(Constants.P02_HTTP_URL_CONNECTION) -> vp_content.currentItem = Constants.P02_HTTP_URL_CONNECTION
+                    tabLayout.getTabAt(Constants.P03_DOWNLOADER) -> vp_content.currentItem = Constants.P03_DOWNLOADER
+                    tabLayout.getTabAt(Constants.P04_CACHE) -> {
                         //Push broadcast before initialize so the broadcast won't be captured at first time.
                         //So I update view twice - first one would be done while initializing, another would be done after catch broadcast.
                         sv?.pushBoolean(Commands.UPDATE_P04, true)
-                        vp_content.currentItem = 3
+                        vp_content.currentItem = Constants.P04_CACHE
                     }
-                    tabLayout.getTabAt(4) -> vp_content.currentItem = 4
-                    tabLayout.getTabAt(5) -> vp_content.currentItem = 5
-                    tabLayout.getTabAt(6) -> vp_content.currentItem = 6
+                    tabLayout.getTabAt(Constants.P06_UPLOAD) -> vp_content.currentItem = Constants.P06_UPLOAD
+                    tabLayout.getTabAt(Constants.P07_SOCKET) -> vp_content.currentItem = Constants.P07_SOCKET
+                    tabLayout.getTabAt(Constants.P12_WEBVIEW) -> vp_content.currentItem = Constants.P12_WEBVIEW
                 }
             }
 
@@ -438,6 +477,13 @@ class MainActivity : FragmentActivity(), MainInterface {
             val intent = Intent()
             intent.setClass(this, DeviceInfoActivity::class.java)
             startActivity(intent)
+        }
+
+        iv_github.setOnClickListener {
+            callFragment(Constants.P14_FULL_WEBVIEW)
+        }
+        tv_github.setOnClickListener {
+            callFragment(Constants.P14_FULL_WEBVIEW)
         }
     }
 

@@ -15,7 +15,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import com.catherine.webservices.Commands;
 import com.catherine.webservices.Constants;
 import com.catherine.webservices.R;
 import com.catherine.webservices.adapters.TextCardRVAdapter;
@@ -143,7 +142,7 @@ public class P12_WebView extends LazyFragment {
                     case 0:
                         Bundle b0 = new Bundle();
                         b0.putInt("type", 1);
-                        callFragment(Constants.P13_WEBVIEW_DETAIL, b0);
+                        callFragment(Constants.P13_NESTED_WEBVIEW, b0);
                         break;
                 }
             }
@@ -184,9 +183,9 @@ public class P12_WebView extends LazyFragment {
         String tag = "";
         String title = "";
         switch (id) {
-            case Constants.P13_WEBVIEW_DETAIL:
-                title = "P13_WEBVIEW_DETAIL";
-                fragment = P13_WebView_Detail.newInstance(true);
+            case Constants.P13_NESTED_WEBVIEW:
+                title = "P13_Nested_WebView";
+                fragment = P13_Nested_WebView.newInstance(true);
                 fragment.setArguments(bundle);
                 tag = "P13";
                 break;

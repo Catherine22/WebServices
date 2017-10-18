@@ -7,13 +7,18 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.view.KeyEvent;
 import android.view.View;
-import android.webkit.WebView;
+import android.view.inputmethod.EditorInfo;
+import android.webkit.WebSettings;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import com.catherine.webservices.Constants;
 import com.catherine.webservices.R;
 import com.catherine.webservices.interfaces.MainInterface;
 import com.catherine.webservices.interfaces.OnRequestPermissionsListener;
+import com.catherine.webservices.views.NestedWebView;
 
 import java.util.List;
 
@@ -23,15 +28,16 @@ import java.util.List;
  * catherine919@soft-world.com.tw
  */
 
-public class P13_WebView_Detail extends LazyFragment {
-    public final static String TAG = "P12_WebView_Detail";
+public class P13_Nested_WebView extends LazyFragment {
+    public final static String TAG = "P13_Nested_WebView";
     private MainInterface mainInterface;
-    private WebView wv;
+    private NestedWebView wv;
+    private EditText et_url;
 
-    public static P13_WebView_Detail newInstance(boolean isLazyLoad) {
+    public static P13_Nested_WebView newInstance(boolean isLazyLoad) {
         Bundle args = new Bundle();
         args.putBoolean(LazyFragment.INTENT_BOOLEAN_LAZYLOAD, isLazyLoad);
-        P13_WebView_Detail fragment = new P13_WebView_Detail();
+        P13_Nested_WebView fragment = new P13_Nested_WebView();
         fragment.setArguments(args);
         return fragment;
     }
@@ -39,7 +45,7 @@ public class P13_WebView_Detail extends LazyFragment {
     @Override
     public void onCreateViewLazy(Bundle savedInstanceState) {
         super.onCreateViewLazy(savedInstanceState);
-        setContentView(R.layout.f_13_webview_detail);
+        setContentView(R.layout.f_13_nested_webview);
         mainInterface = (MainInterface) getActivity();
         init();
     }
@@ -104,9 +110,36 @@ public class P13_WebView_Detail extends LazyFragment {
     }
 
     private void initComponent() {
-        wv = (WebView) findViewById(R.id.wv);
-        wv.loadUrl(Constants.MY_GITHUB);
+        et_url = (EditText) findViewById(R.id.et_url);
+        et_url.setText(Constants.MY_GITHUB);
+        //handle "enter" event
+        et_url.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
+                if (actionId == EditorInfo.IME_NULL && keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
+                    wv.loadUrl(formattedUrl(et_url.getText().toString()));
+                    return true;
+                } else
+                    return false;
+            }
+        });
+        wv = (NestedWebView) findViewById(R.id.wv);
+        //可滑动
+        wv.setVerticalScrollBarEnabled(true);
+        //可滑动
+        wv.setHorizontalScrollBarEnabled(true);
+
+        WebSettings settings = wv.getSettings();
 
 
+        wv.loadUrl(formattedUrl(Constants.MY_GITHUB));
+    }
+
+    private String formattedUrl(String url) {
+        String tmp = url;
+        if (!url.contains("http://") && !url.contains("https://")) {
+            tmp = "http://" + url;
+        }
+        return tmp;
     }
 }
