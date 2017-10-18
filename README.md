@@ -8,19 +8,19 @@ Looper class keeps the thread alive, holds a message queue and pop works off a q
 Handler class helps put work at the head, the tail or even set a time-based delay.
 
 ## AsyncTask：
-*Helps get work on/off the UI thread.*
+*Help get work on/off the UI thread.*
 
-- Basically, all AsyncTasks are created in a same thread, it means them will execute in a serial fashion from a single message queue.
+- Basically, all AsyncTasks are created in a same thread. That means them will execute in a serial fashion from a single message queue.
 - There is a way to force AsyncTask works in thread-pooled way : AsyncTask.executeOnExecutor
 
 ## HandlerThread
-*Dedicated thread for API callbacks.*
+*Dedicate thread for API callbacks.*
 
 - HandlerThread is a nifty solution for the work that not deal with UI updates.
 - Don't forget to assign the priority because CPU can only execute a few parallel threads.
 
 ## ThreadPool
-*Running lots of parallel small works.*
+*Run a lot of parallel small works.*
 
 ## IntentService
 *It's ideal for background tasks. It also helps get intents off UI thread.*

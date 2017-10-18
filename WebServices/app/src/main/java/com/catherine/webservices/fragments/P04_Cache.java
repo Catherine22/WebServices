@@ -19,6 +19,7 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.catherine.webservices.Commands;
 import com.catherine.webservices.Constants;
 import com.catherine.webservices.R;
 import com.catherine.webservices.adapters.TextCardRVAdapter;
@@ -54,6 +55,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import catherine.messagecenter.Client;
+import catherine.messagecenter.CustomReceiver;
+import catherine.messagecenter.Result;
+
 /**
  * Created by Catherine on 2017/9/15.
  * Soft-World Inc.
@@ -69,6 +74,7 @@ public class P04_Cache extends LazyFragment {
     private TextCardRVAdapter adapter;
     private ProgressBar pb;
     private TextView tv_pb_info;
+    private Client client;
 
     public static P04_Cache newInstance(boolean isLazyLoad) {
         Bundle args = new Bundle();
@@ -82,11 +88,11 @@ public class P04_Cache extends LazyFragment {
     public void onCreateViewLazy(Bundle savedInstanceState) {
         super.onCreateViewLazy(savedInstanceState);
         setContentView(R.layout.f_04_cache);
-        mainInterface = (MainInterface) getActivity();
         init();
     }
 
     private void init() {
+        mainInterface = (MainInterface) getActivity();
         mainInterface.getPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, new OnRequestPermissionsListener() {
             @Override
             public void onGranted() {
@@ -155,23 +161,6 @@ public class P04_Cache extends LazyFragment {
         descriptions.add("Show images from the Internet.");
         descriptions.add("Download images from the Internet and cache them.");
         descriptions.add("Download and cache images then show caches.");
-
-        //Prefetch the images. It works by clicking the final item
-        ADID_AsyncTask adid_asyncTask = new ADID_AsyncTask(
-                new ADID_AsyncTask.ADID_Callback() {
-                    @Override
-                    public void onResponse(@NonNull String ADID) {
-                        prefetchToDiskCache(ADID);
-                    }
-
-                    @Override
-                    public void onError(@NonNull Exception e) {
-                        CLog.Companion.e(TAG, "Failed to get ADID: " + e.toString());
-                        prefetchToDiskCache("FAKE-ADID");
-
-                    }
-                });
-        adid_asyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     private void initComponent() {
@@ -185,6 +174,16 @@ public class P04_Cache extends LazyFragment {
             }
         });
 
+        client = new Client(getActivity(), new CustomReceiver() {
+            @Override
+            public void onBroadcastReceive(@NotNull Result result) {
+                if (result.getMBoolean() != null && result.getMBoolean()) {
+                    updateView();
+                }
+            }
+        });
+        client.gotMessages(Commands.UPDATE_P04);
+
         mainInterface.setBackKeyListener(new BackKeyListener() {
             @Override
             public void OnKeyDown() {
@@ -195,37 +194,6 @@ public class P04_Cache extends LazyFragment {
                     mainInterface.backToPreviousPage();
             }
         });
-
-        //restore bottom layout when back to this page.
-        getChildFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
-            @Override
-            public void onBackStackChanged() {
-                if (getChildFragmentManager().getBackStackEntryCount() == 0) {
-                    mainInterface.restoreBottomLayout();
-                    mainInterface.addBottomLayout(R.layout.bottom_progressbar);
-                    View bottom = mainInterface.getBottomLayout();
-                    pb = bottom.findViewById(R.id.pb);
-                    tv_pb_info = bottom.findViewById(R.id.tv_pb_info);
-
-                    pb.setMax(len);
-                    pb.setProgress(succeed);
-                    pb.setSecondaryProgress(failed + succeed);
-                    double p = succeed * 100.0 / len;
-                    double e = failed * 100.0 / len;
-                    tv_pb_info.setText(String.format(Locale.ENGLISH, "Cached: %.2f%%, failed: %.2f%%", p, e));
-                    if (imageCards.size() == succeed) {
-                        CLog.Companion.i(TAG, "All the images are cached!");
-                    }
-                }
-
-            }
-        });
-
-        mainInterface.restoreBottomLayout();
-        mainInterface.addBottomLayout(R.layout.bottom_progressbar);
-        View bottom = mainInterface.getBottomLayout();
-        pb = bottom.findViewById(R.id.pb);
-        tv_pb_info = bottom.findViewById(R.id.tv_pb_info);
 
         RecyclerView rv_main_list = (RecyclerView) findViewById(R.id.rv_main_list);
 //        rv_main_list.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.Companion.getVERTICAL_LIST()));
@@ -270,15 +238,57 @@ public class P04_Cache extends LazyFragment {
             }
         });
         rv_main_list.setAdapter(adapter);
-        mainInterface.setBackKeyListener(new BackKeyListener() {
+        updateView();
+    }
+
+    private void updateView() {
+        mainInterface.restoreBottomLayout();
+        mainInterface.addBottomLayout(R.layout.bottom_progressbar);
+        View bottom = mainInterface.getBottomLayout();
+        pb = bottom.findViewById(R.id.pb);
+        tv_pb_info = bottom.findViewById(R.id.tv_pb_info);
+
+        //restore bottom layout when back to this page.
+        getChildFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
             @Override
-            public void OnKeyDown() {
-                if (getChildFragmentManager().getBackStackEntryCount() > 0) {
-                    getChildFragmentManager().popBackStack();
-                } else
-                    mainInterface.backToPreviousPage();
+            public void onBackStackChanged() {
+                if (getChildFragmentManager().getBackStackEntryCount() == 0) {
+                    mainInterface.restoreBottomLayout();
+                    mainInterface.addBottomLayout(R.layout.bottom_progressbar);
+                    View bottom = mainInterface.getBottomLayout();
+                    pb = bottom.findViewById(R.id.pb);
+                    tv_pb_info = bottom.findViewById(R.id.tv_pb_info);
+
+                    pb.setMax(len);
+                    pb.setProgress(succeed);
+                    pb.setSecondaryProgress(failed + succeed);
+                    double p = succeed * 100.0 / len;
+                    double e = failed * 100.0 / len;
+                    tv_pb_info.setText(String.format(Locale.ENGLISH, "Cached: %.2f%%, failed: %.2f%%", p, e));
+                    if (imageCards.size() == succeed) {
+                        CLog.Companion.i(TAG, "All the images are cached!");
+                    }
+                }
+
             }
         });
+
+        //Prefetch the images. It works by clicking the final item
+        ADID_AsyncTask adid_asyncTask = new ADID_AsyncTask(
+                new ADID_AsyncTask.ADID_Callback() {
+                    @Override
+                    public void onResponse(@NonNull String ADID) {
+                        prefetchToDiskCache(ADID);
+                    }
+
+                    @Override
+                    public void onError(@NonNull Exception e) {
+                        CLog.Companion.e(TAG, "Failed to get ADID: " + e.toString());
+                        prefetchToDiskCache("FAKE-ADID");
+
+                    }
+                });
+        adid_asyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
 
@@ -381,12 +391,13 @@ public class P04_Cache extends LazyFragment {
                     public void connectFailure(@NonNull HttpResponse response, Exception e) {
                         StringBuilder sb = new StringBuilder();
                         sb.append(String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, error:%s", response.getCode(), response.getCodeString(), response.getErrorMessage()));
-                        CLog.Companion.e(TAG, sb.toString());
+                        tv_pb_info.setText(sb.toString());
                         if (e != null) {
                             sb.append("\n");
-                            sb.append(e.getMessage());
-                            CLog.Companion.e(TAG, e.getMessage());
+                            sb.append(e.toString());
+                            tv_pb_info.setText(sb.toString());
                         }
+                        CLog.Companion.e(TAG, sb.toString());
                     }
                 })
                 .build();

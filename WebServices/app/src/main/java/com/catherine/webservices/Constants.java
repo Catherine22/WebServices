@@ -62,6 +62,7 @@ public class Constants {
 
 
     public final static String GITHUB_API_DOMAIN = "https://api.github.com/";
+    public final static String MY_GITHUB = "https://github.com/Catherine22";
 
     public static String ROOT_PATH = Environment.getExternalStorageDirectory().getAbsolutePath() + "/WebServices/";
     public final static String EXT_PATH = ROOT_PATH + "data/";
@@ -74,5 +75,6 @@ public class Constants {
     public final static int P09_NIO_SOCKET = 9;
     public final static int P10_UDP_SOCKET = 10;
     public final static int P11_FRESCO = 11;
+    public final static int P13_WEBVIEW_DETAIL = 13;
 
 }

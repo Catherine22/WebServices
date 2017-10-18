@@ -15,6 +15,8 @@ import android.support.v4.app.FragmentActivity
 import android.support.v7.app.AlertDialog
 import android.view.KeyEvent
 import android.view.View
+import catherine.messagecenter.AsyncResponse
+import catherine.messagecenter.Server
 import com.catherine.webservices.adapters.MainViewPagerAdapter
 import com.catherine.webservices.fragments.P05_Gallery
 import com.catherine.webservices.interfaces.BackKeyListener
@@ -47,6 +49,7 @@ class MainActivity : FragmentActivity(), MainInterface {
     }
 
     private var listener: OnRequestPermissionsListener? = null
+    private var sv: Server? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,6 +62,11 @@ class MainActivity : FragmentActivity(), MainInterface {
             override fun onGranted() {
                 setView()
                 MyApplication.INSTANCE.init()
+                sv = Server(this@MainActivity, object : AsyncResponse {
+                    override fun onFailure(errorCode: Int) {
+                        CLog.e(TAG, "errorCode:$errorCode")
+                    }
+                })
 
                 val checkStateWork = Handler(MyApplication.INSTANCE.calHandlerThread.looper)
                 checkStateWork.post {
@@ -389,13 +397,20 @@ class MainActivity : FragmentActivity(), MainInterface {
         tabLayout.setupWithViewPager(vp_content)
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
+                restoreBottomLayout()
                 when (tab) {
                     tabLayout.getTabAt(0) -> vp_content.currentItem = 0
                     tabLayout.getTabAt(1) -> vp_content.currentItem = 1
                     tabLayout.getTabAt(2) -> vp_content.currentItem = 2
-                    tabLayout.getTabAt(3) -> vp_content.currentItem = 3
+                    tabLayout.getTabAt(3) -> {
+                        //Push broadcast before initialize so the broadcast won't be captured at first time.
+                        //So I update view twice - first one would be done while initializing, another would be done after catch broadcast.
+                        sv?.pushBoolean(Commands.UPDATE_P04, true)
+                        vp_content.currentItem = 3
+                    }
                     tabLayout.getTabAt(4) -> vp_content.currentItem = 4
                     tabLayout.getTabAt(5) -> vp_content.currentItem = 5
+                    tabLayout.getTabAt(6) -> vp_content.currentItem = 6
                 }
             }
 
@@ -413,7 +428,7 @@ class MainActivity : FragmentActivity(), MainInterface {
 //        vp_content.currentItem = vp_content.adapter.count
 
 
-        backKeyEventListener = ArrayList<BackKeyListener?>()
+        backKeyEventListener = ArrayList()
         for (i in 0 until tabLayout.tabCount) {
             backKeyEventListener?.add(null)
         }

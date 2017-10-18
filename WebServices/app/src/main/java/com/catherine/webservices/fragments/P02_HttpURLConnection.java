@@ -253,8 +253,8 @@ public class P02_HttpURLConnection extends LazyFragment {
                 CLog.Companion.e(TAG, sb.toString());
                 if (e != null) {
                     sb.append("\n");
-                    sb.append(e.getMessage());
-                    CLog.Companion.e(TAG, e.getMessage());
+                    sb.append(e.toString());
+                    CLog.Companion.e(TAG, e.toString());
                 }
                 contents.set(position, sb.toString());
                 adapter.setContents(contents);
