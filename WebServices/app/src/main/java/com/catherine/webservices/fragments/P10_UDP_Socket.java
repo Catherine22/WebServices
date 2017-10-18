@@ -128,6 +128,7 @@ public class P10_UDP_Socket extends LazyFragment {
         tv_state = (TextView) findViewById(R.id.tv_state);
         tv_history = (TextView) findViewById(R.id.tv_history);
 
+        mainInterface.restoreBottomLayout();
         mainInterface.addBottomLayout(R.layout.bottom_socket);
         View bottom = mainInterface.getBottomLayout();
         et_input = bottom.findViewById(R.id.et_input);

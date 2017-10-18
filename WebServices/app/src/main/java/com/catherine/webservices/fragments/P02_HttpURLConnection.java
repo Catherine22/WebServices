@@ -23,8 +23,6 @@ import com.catherine.webservices.toolkits.CLog;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
@@ -120,7 +118,7 @@ public class P02_HttpURLConnection extends LazyFragment {
                         HttpRequest request0 = new HttpRequest.Builder()
                                 .url(String.format(Locale.ENGLISH, "%sLoginServlet?name=zhangsan&password=123456", Constants.HOST))
                                 .headers(h0)
-                                .listener(buildListener(position))
+                                .listener(listener(position))
                                 .build();
                         new HttpAsyncTask(request0).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                         break;
@@ -136,7 +134,7 @@ public class P02_HttpURLConnection extends LazyFragment {
                                 .url(String.format(Locale.ENGLISH, "%sLoginServlet", Constants.HOST))
                                 .headers(h1)
                                 .body(MyHttpURLConnection.getSimpleStringBody(body1))
-                                .listener(buildListener(position))
+                                .listener(listener(position))
                                 .build();
                         new HttpAsyncTask(r1).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                         break;
@@ -152,10 +150,9 @@ public class P02_HttpURLConnection extends LazyFragment {
                                 .url(String.format(Locale.ENGLISH, "%sLoginServlet", Constants.HOST))
                                 .headers(h2)
                                 .body(MyHttpURLConnection.getSimpleStringBody(body2))
-                                .listener(buildListener(position))
+                                .listener(listener(position))
                                 .build();
                         new HttpAsyncTask(r2, true).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-
                         break;
                     case 3:
                         srl_container.setRefreshing(true);
@@ -169,7 +166,7 @@ public class P02_HttpURLConnection extends LazyFragment {
                                 .url(String.format(Locale.ENGLISH, "%sLoginServlet", Constants.HOST))
                                 .headers(h3)
                                 .body(MyHttpURLConnection.getSimpleStringBody(body3))
-                                .listener(buildListener(position))
+                                .listener(listener(position))
                                 .build();
                         new HttpAsyncTask(r3).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                         break;
@@ -177,48 +174,27 @@ public class P02_HttpURLConnection extends LazyFragment {
                         srl_container.setRefreshing(true);
                         HttpRequest r4 = new HttpRequest.Builder()
                                 .url("http://dictionary.cambridge.org/dictionary/english-chinese-simplified/philosopher")
-                                .listener(buildListener(position))
+                                .listener(listener(position))
                                 .build();
                         new HttpAsyncTask(r4).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                         break;
                     case 5:
                         srl_container.setRefreshing(true);
                         try {
+                            X509Certificate cert = CertificatesManager.pemToX509Certificate(Constants.GITHUB_CERT);
+                            CertificatesManager.printCertificatesInfo(cert);
                             HttpRequest r5 = new HttpRequest.Builder()
                                     .url(Constants.GITHUB_API_DOMAIN + "users/Catherine22/repos")
-                                    .listener(new HttpResponseListener() {
-                                        @Override
-                                        public void connectSuccess(@NotNull HttpResponse response) {
-                                            CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
-                                            contents.set(position, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
-                                            adapter.setContents(contents);
-                                            adapter.notifyDataSetChanged();
-                                        }
-
-                                        @Override
-                                        public void connectFailure(HttpResponse response, Exception e) {
-                                            StringBuilder sb = new StringBuilder();
-                                            sb.append(String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, error:%s, body:%s", response.getCode(), response.getCodeString(), response.getErrorMessage(), response.getBody()));
-                                            CLog.Companion.e(TAG, sb.toString());
-                                            if (e != null) {
-                                                sb.append("\n");
-                                                sb.append(e.getMessage());
-                                                CLog.Companion.e(TAG, e.getMessage());
-                                            }
-                                            contents.set(position, sb.toString());
-                                            adapter.setContents(contents);
-                                            getActivity().runOnUiThread(new Runnable() {
-                                                @Override
-                                                public void run() {
-                                                    adapter.notifyDataSetChanged();
-                                                }
-                                            });
-                                        }
-                                    })
+                                    .certificate(cert)
+                                    .listener(listener(position))
                                     .build();
                             new HttpAsyncTask(r5).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                         } catch (Exception e) {
                             e.printStackTrace();
+                            srl_container.setRefreshing(false);
+                            contents.set(position, String.format(Locale.ENGLISH, "connectFailure Exception:%s", e.toString()));
+                            adapter.setContents(contents);
+                            adapter.notifyDataSetChanged();
                         }
                         break;
                     case 6:
@@ -234,13 +210,15 @@ public class P02_HttpURLConnection extends LazyFragment {
                             HttpRequest r6 = new HttpRequest.Builder()
                                     .url("https://kyfw.12306.cn/otn/regist/init")
                                     .certificate(cert)
-                                    .listener(buildListener(position))
+                                    .listener(listener(position))
                                     .build();
                             new HttpAsyncTask(r6).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-                        } catch (IOException e) {
+                        } catch (Exception e) {
                             e.printStackTrace();
-                        } catch (CertificateException e) {
-                            e.printStackTrace();
+                            srl_container.setRefreshing(false);
+                            contents.set(position, String.format(Locale.ENGLISH, "connectFailure Exception:%s", e.toString()));
+                            adapter.setContents(contents);
+                            adapter.notifyDataSetChanged();
                         }
                         break;
                 }
@@ -255,7 +233,7 @@ public class P02_HttpURLConnection extends LazyFragment {
         adapter.setFromHtml(true);
     }
 
-    private HttpResponseListener buildListener(final int position) {
+    private HttpResponseListener listener(final int position) {
         return new HttpResponseListener() {
             @Override
             public void connectSuccess(HttpResponse response) {
@@ -280,12 +258,7 @@ public class P02_HttpURLConnection extends LazyFragment {
                 }
                 contents.set(position, sb.toString());
                 adapter.setContents(contents);
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        adapter.notifyDataSetChanged();
-                    }
-                });
+                adapter.notifyDataSetChanged();
             }
         };
     }

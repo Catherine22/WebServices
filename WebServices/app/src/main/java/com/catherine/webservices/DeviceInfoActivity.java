@@ -52,7 +52,7 @@ import java.util.UUID;
  * catherine919@soft-world.com.tw
  */
 
-public class P00_DeviceInfo extends FragmentActivity {
+public class DeviceInfoActivity extends FragmentActivity {
     public final static String TAG = "P00_DeviceInfo";
     private List<String> features, contents, desc;
     private TextCardRVAdapter adapter;
@@ -94,7 +94,7 @@ public class P00_DeviceInfo extends FragmentActivity {
 
                 context.deleteCharAt(context.length() - 1);
 
-                AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(P00_DeviceInfo.this);
+                AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(DeviceInfoActivity.this);
                 myAlertDialog.setIcon(android.R.drawable.ic_dialog_alert)
                         .setCancelable(false)
                         .setTitle("注意")

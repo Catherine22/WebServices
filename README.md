@@ -226,7 +226,7 @@ Cache-Control:no-cache, no-store
 ***DO NOT IMPLEMENT "X509TrustManager" TO SKIP VALIDATION***        
 That means man-in-the-middle attacks are allowed.
 
-As I was mentioning, you open a url ([https://kyfw.12306.cn/otn/regist/init]) with your Android device and you get an exception:
+As I was mentioning, you open a url ([https://kyfw.12306.cn/otn/regist/init][1]) with your Android device and you get an exception:
 
 ``` html
 java.security.cert.CertPathValidatorException: Trust anchor for certification path not found.
@@ -246,12 +246,19 @@ Normally, the CA of the department which sponsors a certain domain has a longer 
 
 **Android example**
 
-
 Take kyfw.12306.cn for example.
 1. Download the certificate of kyfw.12306.cn and add to assets file.
 2. Add this certificate to trustManager[] 
 3. Let "HttpsURLConnection" trust this certificate
 4. Go to [P02_HttpURLConnection] to see more.
+
+Another example - request to [github APIs]
+1. Add the PEM formatted String of the certificate.
+2. Add this certificate to trustManager[] 
+3. Let "HttpsURLConnection" trust this certificate
+4. Go to [P02_HttpURLConnection] to see more.
+
+Check SSL certificates here : [https://www.ssllabs.com/ssltest/][2]
 
 ## Download and cache images
 
@@ -263,7 +270,14 @@ Take kyfw.12306.cn for example.
 
 Here is the example: [P05_Gallery], [ImageCardRVAdapter]
 
-**Fresco**
+**Fresco - SimpleDraweeView**
+
+Three ways to deal with images:
+- Show images directly by calling setImageURI (String url).
+- Prefetch images and show them.
+- Prefetch images before show them.
+
+Here is the example: [P11_Fresco], [FrescoRVAdapter]
 
 ## TCP Sockets
 
@@ -310,6 +324,7 @@ udpSocket();
 [P03_Downloader]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/P03_Downloader.java>
 [P05_Gallery]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/P05_Gallery.java>
 [P06_Upload]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/P06_Upload.java>
+[P11_Fresco]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/P11_Fresco.java>
 [HttpAsyncTask]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/network/HttpAsyncTask.java>
 [DownloaderAsyncTask]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/network/DownloaderAsyncTask.java>
 [Tencent bugly]:<https://mp.weixin.qq.com/s/qOMO0LIdA47j3RjhbCWUEQ>
@@ -317,6 +332,7 @@ udpSocket();
 [Google Web Fundamentals]:<https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/http-caching>
 [increasing-application-performance-with-http-cache-headers]:<https://devcenter.heroku.com/articles/increasing-application-performance-with-http-cache-headers>
 [ImageCardRVAdapter]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/adapters/ImageCardRVAdapter.java>
+[FrescoRVAdapter]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/adapters/FrescoRVAdapter.java>
 [Socket tutorial]:<http://blog.csdn.net/coder_pig/article/details/48519629>
 [P08_Blocking_Socket]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/P08_Blocking_Socket.java>
 [P09_NIO_Socket]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/P09_NIO_Socket.java>
@@ -324,5 +340,8 @@ udpSocket();
 [MySocket]:<https://github.com/Catherine22/WebServices/blob/master/JavaSocketServer/MySocket/src/Main.java>
 [What are examples of TCP and UDP in real life scenario ?]:<https://learningnetwork.cisco.com/thread/87103>
 [Android HTTPS]:<http://blog.csdn.net/iispring/article/details/51615631>
-[https://kyfw.12306.cn/otn/regist/init]:<https://kyfw.12306.cn/otn/regist/init>
-[GitHub api]:<https://api.github.com/>
+[github APIs]:<https://api.github.com/>
+
+
+  [1]: https://kyfw.12306.cn/otn/regist/init
+  [2]: https://www.ssllabs.com/ssltest/
