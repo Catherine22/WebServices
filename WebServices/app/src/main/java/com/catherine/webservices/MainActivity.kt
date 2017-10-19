@@ -132,7 +132,7 @@ class MainActivity : FragmentActivity(), MainInterface {
     private var requestSpec = 0x0000           //需要的特殊权限
     private var grantedSpec = 0x0000           //已取得的特殊权限
     private var confirmedSpec = 0x0000         //已询问的特殊权限
-    private var deniedPermissionsList: MutableList<String> = LinkedList() //被拒绝的权限
+    private var deniedPermissionsList: MutableList<String> = LinkedList<String>() //被拒绝的权限
 
     /**
      * 要求用户打开权限,仅限android 6.0 以上

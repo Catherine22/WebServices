@@ -13,6 +13,7 @@ import android.view.inputmethod.EditorInfo;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.catherine.webservices.Constants;
@@ -33,6 +34,7 @@ public class P14_Full_WebView extends LazyFragment {
     private MainInterface mainInterface;
     private WebView wv;
     private EditText et_url;
+    private ImageView iv_settings;
 
     public static P14_Full_WebView newInstance(boolean isLazyLoad) {
         Bundle args = new Bundle();
@@ -123,6 +125,14 @@ public class P14_Full_WebView extends LazyFragment {
                     return false;
             }
         });
+        iv_settings = (ImageView) findViewById(R.id.iv_settings);
+        iv_settings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
 
         //在UI线程处理WebView
         wv = (WebView) findViewById(R.id.wv);
@@ -132,7 +142,7 @@ public class P14_Full_WebView extends LazyFragment {
         wv.setHorizontalScrollBarEnabled(true);
 
         WebSettings settings = wv.getSettings();
-
+        settings.setDefaultTextEncodingName("UTF-8");
 
         wv.loadUrl(formattedUrl(Constants.MY_GITHUB));
     }
