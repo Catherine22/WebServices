@@ -14,6 +14,7 @@ interface MainInterface {
     fun switchTab(position: Int)
     fun callFragment(id: Int)
     fun callFragment(id: Int, bundle: Bundle?)
+    fun hideKeyboard()
     fun backToPreviousPage()
     fun clearAllFragments()
     fun setBackKeyListener(listener: BackKeyListener)

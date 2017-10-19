@@ -354,7 +354,6 @@ class MainActivity : FragmentActivity(), MainInterface {
      * @param bundle argument of the Fragment
      */
     override fun callFragment(id: Int, bundle: Bundle?) {
-        CLog.d(TAG, "call $id ,has bundle? ${bundle == null}")
         fl_main_container.visibility = View.VISIBLE
         var fragment: Fragment? = null
         var tag: String? = null
@@ -376,9 +375,15 @@ class MainActivity : FragmentActivity(), MainInterface {
             }
         }
 
+        //Avoid to launch duplicated fragments
+        if (fm.backStackEntryCount > 0 && fm.fragments[fm.fragments.size].tag == tag) {
+            return
+        }
+
         if (bundle != null)
             fragment?.arguments = bundle
 
+        CLog.d(TAG, "call $id ,has bundle? ${bundle == null}")
         val transaction = fm.beginTransaction()
         transaction.add(R.id.fl_main_container, fragment, tag)
         transaction.addToBackStack(title)
@@ -425,6 +430,10 @@ class MainActivity : FragmentActivity(), MainInterface {
     private var backKeyEventListener: MutableList<BackKeyListener?>? = null
     override fun setBackKeyListener(listener: BackKeyListener) {
         backKeyEventListener?.set(vp_content.currentItem, listener)
+    }
+
+    override fun hideKeyboard(){
+        onBackPressed()
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
