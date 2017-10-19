@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:id="@+id/fl_container"
-              xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="@android:color/white"
-              android:clickable="true"
-              android:descendantFocusability="blocksDescendants"
-              android:focusable="true"
-              android:orientation="vertical">
+<RelativeLayout android:id="@+id/fl_container"
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/white"
+                android:clickable="true"
+                android:descendantFocusability="blocksDescendants"
+                android:focusable="true">
 
     <RelativeLayout
+        android:id="@+id/rl"
         android:layout_width="match_parent"
-        android:background="@color/colorPrimary"
-        android:layout_height="50dp">
+        android:layout_height="50dp"
+        android:background="@color/colorPrimary">
 
         <EditText
             android:id="@+id/et_url"
@@ -20,12 +20,24 @@
             android:layout_height="match_parent"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
+            android:layout_toLeftOf="@+id/iv_settings"
             android:hint="Type a url"
             android:textColor="@android:color/white"/>
+
+        <ImageView
+            android:id="@+id/iv_settings"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="5dp"
+            android:src="@drawable/sidebar_button_selector"/>
     </RelativeLayout>
 
     <WebView
         android:id="@+id/wv"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
-</LinearLayout>
+        android:layout_height="match_parent"
+        android:layout_below="@+id/rl"/>
+</RelativeLayout>

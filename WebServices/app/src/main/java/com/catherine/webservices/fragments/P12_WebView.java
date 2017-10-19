@@ -115,9 +115,11 @@ public class P12_WebView extends LazyFragment {
 
     private void fillInData() {
         features = new ArrayList<>();
-        features.add("Basic model");
+        features.add("Nested webView");
+        features.add("Full screen webView");
 
         descriptions = new ArrayList<>();
+        descriptions.add("Load a url");
         descriptions.add("Load a url");
     }
 
@@ -140,9 +142,16 @@ public class P12_WebView extends LazyFragment {
             public void onItemClick(@NotNull View view, int position) {
                 switch (position) {
                     case 0:
-                        Bundle b0 = new Bundle();
-                        b0.putInt("type", 1);
-                        callFragment(Constants.P13_NESTED_WEBVIEW, b0);
+                        Fragment fragment = P13_Nested_WebView.newInstance(true);
+                        String tag = "P13";
+                        String title = "P13_Nested_WebView";
+                        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+                        transaction.add(R.id.fl_container, fragment, tag);
+                        transaction.addToBackStack(title);
+                        transaction.commitAllowingStateLoss();
+                        break;
+                    case 1:
+                        mainInterface.callFragment(Constants.P14_FULL_WEBVIEW);
                         break;
                 }
             }
@@ -176,24 +185,4 @@ public class P12_WebView extends LazyFragment {
             }
         });
     }
-
-    private void callFragment(int id, Bundle bundle) {
-        CLog.Companion.d(TAG, "call " + id);
-        Fragment fragment = null;
-        String tag = "";
-        String title = "";
-        switch (id) {
-            case Constants.P13_NESTED_WEBVIEW:
-                title = "P13_Nested_WebView";
-                fragment = P13_Nested_WebView.newInstance(true);
-                fragment.setArguments(bundle);
-                tag = "P13";
-                break;
-        }
-        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-        transaction.add(R.id.fl_container, fragment, tag);
-        transaction.addToBackStack(title);
-        transaction.commitAllowingStateLoss();
-    }
-
 }

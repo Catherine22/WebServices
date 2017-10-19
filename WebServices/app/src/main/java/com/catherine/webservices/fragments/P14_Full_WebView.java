@@ -123,6 +123,8 @@ public class P14_Full_WebView extends LazyFragment {
                     return false;
             }
         });
+
+        //在UI线程处理WebView
         wv = (WebView) findViewById(R.id.wv);
         //可滑动
         wv.setVerticalScrollBarEnabled(true);

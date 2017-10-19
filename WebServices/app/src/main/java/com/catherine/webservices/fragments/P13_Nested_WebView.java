@@ -7,12 +7,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.view.KeyEvent;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
-import android.webkit.WebSettings;
-import android.widget.EditText;
-import android.widget.TextView;
 
 import com.catherine.webservices.Constants;
 import com.catherine.webservices.R;
@@ -32,7 +27,6 @@ public class P13_Nested_WebView extends LazyFragment {
     public final static String TAG = "P13_Nested_WebView";
     private MainInterface mainInterface;
     private NestedWebView wv;
-    private EditText et_url;
 
     public static P13_Nested_WebView newInstance(boolean isLazyLoad) {
         Bundle args = new Bundle();
@@ -110,28 +104,12 @@ public class P13_Nested_WebView extends LazyFragment {
     }
 
     private void initComponent() {
-        et_url = (EditText) findViewById(R.id.et_url);
-        et_url.setText(Constants.MY_GITHUB);
-        //handle "enter" event
-        et_url.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
-                if (actionId == EditorInfo.IME_NULL && keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
-                    wv.loadUrl(formattedUrl(et_url.getText().toString()));
-                    return true;
-                } else
-                    return false;
-            }
-        });
+        //在UI线程处理WebView
         wv = (NestedWebView) findViewById(R.id.wv);
         //可滑动
         wv.setVerticalScrollBarEnabled(true);
         //可滑动
         wv.setHorizontalScrollBarEnabled(true);
-
-        WebSettings settings = wv.getSettings();
-
-
         wv.loadUrl(formattedUrl(Constants.MY_GITHUB));
     }
 

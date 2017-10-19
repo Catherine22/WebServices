@@ -349,7 +349,7 @@ class MainActivity : FragmentActivity(), MainInterface {
      */
     override fun callFragment(id: Int, bundle: Bundle?) {
         CLog.d(TAG, "call $id ,has bundle? ${bundle == null}")
-        fl_container.visibility = View.VISIBLE
+        fl_main_container.visibility = View.VISIBLE
         var fragment: Fragment? = null
         var tag: String? = null
         var title = ""
@@ -374,7 +374,7 @@ class MainActivity : FragmentActivity(), MainInterface {
             fragment?.arguments = bundle
 
         val transaction = fm.beginTransaction()
-        transaction.add(R.id.fl_container, fragment, tag)
+        transaction.add(R.id.fl_main_container, fragment, tag)
         transaction.addToBackStack(title)
         transaction.commitAllowingStateLoss()
     }
@@ -386,7 +386,7 @@ class MainActivity : FragmentActivity(), MainInterface {
     override fun clearAllFragments() {
         for (i in 0 until fm.backStackEntryCount) {
             fm.popBackStack()
-            fl_container.visibility = View.GONE
+            fl_main_container.visibility = View.GONE
         }
     }
 
@@ -396,7 +396,7 @@ class MainActivity : FragmentActivity(), MainInterface {
     override fun backToPreviousPage() {
         if (fm.backStackEntryCount > 0) {
             if (fm.backStackEntryCount == 1)
-                fl_container.visibility = View.GONE
+                fl_main_container.visibility = View.GONE
             fm.popBackStack()
         } else
             onBackPressed()
