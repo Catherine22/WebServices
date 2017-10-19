@@ -13,15 +13,6 @@
         android:layout_height="50dp"
         android:background="@color/colorPrimary">
 
-        <ImageView
-            android:id="@+id/iv_settings"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="5dp"
-            android:src="@drawable/sidebar_button_selector"/>
 
         <EditText
             android:id="@+id/et_url"
@@ -29,7 +20,6 @@
             android:layout_height="match_parent"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
-            android:layout_toRightOf="@+id/iv_settings"
             android:hint="Type a url"
             android:inputType="text"
             android:selectAllOnFocus="true"

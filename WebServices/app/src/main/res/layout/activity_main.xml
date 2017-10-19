@@ -1,94 +1,128 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<RelativeLayout
+<android.support.v4.widget.DrawerLayout
+    android:id="@+id/drawer_layout"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.design.widget.CoordinatorLayout
-        android:id="@+id/coordinatorLayout"
+    <!-- The main content view -->
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/fl_bottom">
+        android:layout_height="match_parent">
 
-        <android.support.design.widget.AppBarLayout
-            android:id="@+id/appBarLayout"
+        <android.support.design.widget.CoordinatorLayout
+            android:id="@+id/coordinatorLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/tv_submit">
+            android:layout_height="match_parent"
+            android:layout_above="@+id/fl_bottom">
 
-            <RelativeLayout
+            <android.support.design.widget.AppBarLayout
+                android:id="@+id/appBarLayout"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed">
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/tv_submit">
 
-                <ImageView
-                    android:id="@+id/iv_github"
-                    android:layout_width="50dp"
+                <RelativeLayout
+                    android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true"
-                    android:layout_centerVertical="true"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/github_icon"/>
-
-                <TextView
-                    android:id="@+id/tv_github"
-                    android:layout_width="wrap_content"
-                    android:layout_height="30dp"
-                    android:layout_centerVertical="true"
-                    android:layout_toEndOf="@+id/iv_github"
-                    android:layout_toRightOf="@+id/iv_github"
-                    android:text="\@Catherine22"
-                    android:textColor="@android:color/white"
-                    android:textSize="25sp"/>
-
-            </RelativeLayout>
-
-            <android.support.design.widget.TabLayout
-                android:id="@+id/tabLayout"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                app:tabIndicatorColor="@android:color/white"
-                app:tabIndicatorHeight="6dp"
-                app:tabMode="scrollable"
-                app:tabSelectedTextColor="@android:color/white"
-                app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"
-                app:tabTextColor="@android:color/white"/>
-
-        </android.support.design.widget.AppBarLayout>
-
-        <android.support.v4.widget.NestedScrollView
-            android:id="@+id/nsv"
-            android:layout_width="match_parent" android:layout_height="match_parent"
-            android:background="@color/background_tab_pressed"
-            android:fillViewport="true"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-            <android.support.v4.view.ViewPager
-                android:id="@+id/vp_content"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:focusableInTouchMode="true"/>
-
-        </android.support.v4.widget.NestedScrollView>
+                    app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed">
 
 
-    </android.support.design.widget.CoordinatorLayout>
+                    <ImageView
+                        android:id="@+id/iv_menu"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/sidebar_button_selector"/>
+
+                    <ImageView
+                        android:id="@+id/iv_github"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_centerVertical="true"
+                        android:layout_toEndOf="@+id/iv_menu"
+                        android:layout_toRightOf="@+id/iv_menu"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/github_icon"/>
+
+                    <TextView
+                        android:id="@+id/tv_github"
+                        android:layout_width="wrap_content"
+                        android:layout_height="30dp"
+                        android:layout_centerVertical="true"
+                        android:layout_toEndOf="@+id/iv_github"
+                        android:layout_toRightOf="@+id/iv_github"
+                        android:text="\@Catherine22"
+                        android:textColor="@android:color/white"
+                        android:textSize="25sp"/>
+
+                </RelativeLayout>
+
+                <android.support.design.widget.TabLayout
+                    android:id="@+id/tabLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    app:tabIndicatorColor="@android:color/white"
+                    app:tabIndicatorHeight="6dp"
+                    app:tabMode="scrollable"
+                    app:tabSelectedTextColor="@android:color/white"
+                    app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"
+                    app:tabTextColor="@android:color/white"/>
+
+            </android.support.design.widget.AppBarLayout>
+
+            <android.support.v4.widget.NestedScrollView
+                android:id="@+id/nsv"
+                android:layout_width="match_parent" android:layout_height="match_parent"
+                android:background="@color/background_tab_pressed"
+                android:fillViewport="true"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+                <android.support.v4.view.ViewPager
+                    android:id="@+id/vp_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:focusableInTouchMode="true"/>
+
+            </android.support.v4.widget.NestedScrollView>
+
+
+        </android.support.design.widget.CoordinatorLayout>
+
+        <FrameLayout
+            android:id="@+id/fl_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_alignParentBottom="true">
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/fl_main_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/transparent"
+            android:visibility="gone">
+        </FrameLayout>
+    </RelativeLayout>
 
     <FrameLayout
-        android:id="@+id/fl_bottom"
+        android:id="@+id/content_frame"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_alignParentBottom="true">
-    </FrameLayout>
+        android:layout_height="match_parent"/>
 
-    <FrameLayout
-        android:id="@+id/fl_main_container"
-        android:layout_width="match_parent"
+    <!-- The navigation drawer -->
+
+    <ListView
+        android:id="@+id/left_drawer"
+        android:layout_width="240dp"
         android:layout_height="match_parent"
-        android:background="@color/transparent"
-        android:visibility="gone">
-    </FrameLayout>
-</RelativeLayout>
+        android:layout_gravity="start"
+        android:background="#eee"
+        android:choiceMode="singleChoice"
+        android:dividerHeight="1sp"/>
+
+</android.support.v4.widget.DrawerLayout>

@@ -12,9 +12,14 @@ import android.support.design.widget.TabLayout
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
+import android.support.v4.view.GravityCompat
 import android.support.v7.app.AlertDialog
 import android.view.KeyEvent
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import catherine.messagecenter.AsyncResponse
 import catherine.messagecenter.Server
 import com.catherine.webservices.adapters.MainViewPagerAdapter
@@ -23,6 +28,7 @@ import com.catherine.webservices.fragments.P13_Nested_WebView
 import com.catherine.webservices.fragments.P14_Full_WebView
 import com.catherine.webservices.interfaces.BackKeyListener
 import com.catherine.webservices.interfaces.MainInterface
+import com.catherine.webservices.interfaces.OnItemClickListener
 import com.catherine.webservices.interfaces.OnRequestPermissionsListener
 import com.catherine.webservices.kotlin_sample.KotlinTemplate
 import com.catherine.webservices.kotlin_sample.player.Player
@@ -423,15 +429,34 @@ class MainActivity : FragmentActivity(), MainInterface {
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if (backKeyEventListener?.get(vp_content.currentItem) != null) {
-                backKeyEventListener?.get(vp_content.currentItem)?.OnKeyDown()
+            if (drawer_layout.isDrawerOpen(left_drawer)) {
+                drawer_layout.closeDrawer(left_drawer)
                 return true
+            } else {
+                if (backKeyEventListener?.get(vp_content.currentItem) != null) {
+                    backKeyEventListener?.get(vp_content.currentItem)?.OnKeyDown()
+                    return true
+                }
             }
         }
         return super.onKeyDown(keyCode, event)
     }
 
     private fun setView() {
+        val menu = resources.getStringArray(R.array.drawer_array)
+        left_drawer.adapter = ArrayAdapter<String>(this, R.layout.drawer_list_item, menu)
+        // Sets the drawer shadow
+        drawer_layout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START)
+        left_drawer.onItemClickListener = AdapterView.OnItemClickListener { p0, p1, pos, p3 ->
+            when (pos) {
+                0 -> {
+                    callFragment(Constants.P14_FULL_WEBVIEW)
+                }
+            }
+            //            left_drawer.setItemChecked(pos, true)
+            drawer_layout.closeDrawer(left_drawer)
+        }
+
         vp_content.adapter = MainViewPagerAdapter(supportFragmentManager)
         tabLayout.setupWithViewPager(vp_content)
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
@@ -484,6 +509,9 @@ class MainActivity : FragmentActivity(), MainInterface {
         }
         tv_github.setOnClickListener {
             callFragment(Constants.P14_FULL_WEBVIEW)
+        }
+        iv_menu.setOnClickListener {
+            drawer_layout.openDrawer(left_drawer)
         }
     }
 
@@ -583,3 +611,4 @@ class MainActivity : FragmentActivity(), MainInterface {
         }
     }
 }
+

@@ -34,7 +34,6 @@ public class P14_Full_WebView extends LazyFragment {
     private MainInterface mainInterface;
     private WebView wv;
     private EditText et_url;
-    private ImageView iv_settings;
 
     public static P14_Full_WebView newInstance(boolean isLazyLoad) {
         Bundle args = new Bundle();
@@ -123,13 +122,6 @@ public class P14_Full_WebView extends LazyFragment {
                     return true;
                 } else
                     return false;
-            }
-        });
-        iv_settings = (ImageView) findViewById(R.id.iv_settings);
-        iv_settings.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
             }
         });
 
