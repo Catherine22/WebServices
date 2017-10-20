@@ -218,6 +218,7 @@ public class P15_WebView_Settings extends LazyFragment {
         }, new OnMultiItemSelectListener() {
             @Override
             public void onItemSelect(String title, int position, boolean isSelect) {
+                CLog.Companion.i(TAG, title + "[" + position + "], isSelect:" + isSelect);
                 if (titles[0].equals(title)) {
                     Bundle b = new Bundle();
                     switch (position) {

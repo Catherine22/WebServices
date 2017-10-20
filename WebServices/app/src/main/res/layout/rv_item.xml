@@ -19,14 +19,14 @@
             style="@style/item_title"
             android:layout_alignParentLeft="true"
             android:gravity="center_vertical"
-            android:textColor="@android:color/white"/>
+            android:textSize="20sp"/>
 
         <TextView
             android:id="@+id/tv_subtitle"
             style="@style/item_subtitle"
             android:layout_alignParentLeft="true"
             android:gravity="center_vertical"
-            android:textColor="@android:color/white"/>
+            android:textSize="16sp"/>
     </LinearLayout>
 
     <CheckBox
