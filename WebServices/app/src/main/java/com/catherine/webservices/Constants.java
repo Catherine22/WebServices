@@ -88,5 +88,6 @@ public class Constants {
     public final static int P11_FRESCO = 11;
     public final static int P13_NESTED_WEBVIEW = 13;
     public final static int P14_FULL_WEBVIEW = 14;
+    public final static int P15_WEBVIEW_SETTINGS = 15;
 
 }

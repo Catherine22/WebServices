@@ -8,6 +8,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.os.StrictMode
 import android.support.design.widget.TabLayout
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
@@ -26,6 +27,7 @@ import com.catherine.webservices.adapters.MainViewPagerAdapter
 import com.catherine.webservices.fragments.P05_Gallery
 import com.catherine.webservices.fragments.P13_Nested_WebView
 import com.catherine.webservices.fragments.P14_Full_WebView
+import com.catherine.webservices.fragments.P15_WebView_Settings
 import com.catherine.webservices.interfaces.BackKeyListener
 import com.catherine.webservices.interfaces.MainInterface
 import com.catherine.webservices.interfaces.OnItemClickListener
@@ -60,6 +62,25 @@ class MainActivity : FragmentActivity(), MainInterface {
     private var sv: Server? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        //StrictMode
+//        if (BuildConfig.SHOW_LOG) {
+//            StrictMode.setThreadPolicy(StrictMode.ThreadPolicy.Builder()
+//                    .detectDiskReads()
+//                    .detectDiskWrites()
+//                    .detectCustomSlowCalls()
+//                    .detectNetwork()   // or .detectAll() for all detectable problems
+//                    .penaltyLog()
+//                    .penaltyDialog()
+//                    .build())
+//            StrictMode.setVmPolicy(StrictMode.VmPolicy.Builder()
+//                    .detectLeakedSqlLiteObjects()
+//                    .detectLeakedClosableObjects()
+//                    .detectActivityLeaks()
+//                    .detectLeakedSqlLiteObjects()
+//                    .penaltyLog()
+//                    .penaltyDeath()
+//                    .build())
+//        }
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         init()
@@ -367,6 +388,12 @@ class MainActivity : FragmentActivity(), MainInterface {
                 tag = "P05"
             }
 
+            Constants.P15_WEBVIEW_SETTINGS -> {
+                title = "P15_WebView_Settings"
+                fragment = P15_WebView_Settings.newInstance(true)
+                tag = "P15"
+            }
+
         //has bundle
             Constants.P14_FULL_WEBVIEW -> {
                 title = "P14_Full_WebView"
@@ -432,7 +459,7 @@ class MainActivity : FragmentActivity(), MainInterface {
         backKeyEventListener?.set(vp_content.currentItem, listener)
     }
 
-    override fun hideKeyboard(){
+    override fun hideKeyboard() {
         onBackPressed()
     }
 
@@ -451,6 +478,10 @@ class MainActivity : FragmentActivity(), MainInterface {
         return super.onKeyDown(keyCode, event)
     }
 
+    override fun openSlideMenu() {
+        drawer_layout.openDrawer(left_drawer)
+    }
+
     private fun setView() {
         val menu = resources.getStringArray(R.array.drawer_array)
         left_drawer.adapter = ArrayAdapter<String>(this, R.layout.drawer_list_item, menu)
@@ -460,6 +491,9 @@ class MainActivity : FragmentActivity(), MainInterface {
             when (pos) {
                 0 -> {
                     callFragment(Constants.P14_FULL_WEBVIEW)
+                }
+                1 -> {
+                    callFragment(Constants.P15_WEBVIEW_SETTINGS)
                 }
             }
             //            left_drawer.setItemChecked(pos, true)
@@ -520,7 +554,7 @@ class MainActivity : FragmentActivity(), MainInterface {
             callFragment(Constants.P14_FULL_WEBVIEW)
         }
         iv_menu.setOnClickListener {
-            drawer_layout.openDrawer(left_drawer)
+            openSlideMenu()
         }
     }
 

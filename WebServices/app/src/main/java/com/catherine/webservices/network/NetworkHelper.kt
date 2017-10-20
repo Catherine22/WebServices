@@ -7,6 +7,7 @@ import android.net.Uri
 import catherine.messagecenter.Client
 import catherine.messagecenter.CustomReceiver
 import catherine.messagecenter.Result
+import com.catherine.webservices.Commands
 import com.catherine.webservices.MyApplication
 import com.catherine.webservices.services.NetworkHealthService
 import java.net.InetAddress
@@ -65,7 +66,7 @@ class NetworkHelper(private val ctx: Context) {
                 }
             }
         })
-        client?.gotMessages("C_NETWORK_STATE")
+        client?.gotMessages(Commands.C_NETWORK_STATE)
         MyApplication.INSTANCE.registerLocalBroadCastReceiver(client)
         val nhs = Intent(ctx, NetworkHealthService::class.java)
         ctx.startService(nhs)

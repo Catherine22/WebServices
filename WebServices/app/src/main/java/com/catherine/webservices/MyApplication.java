@@ -5,6 +5,7 @@ import android.app.Application;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.os.HandlerThread;
 import android.text.TextUtils;
 
@@ -167,35 +168,41 @@ public class MyApplication extends Application {
      * 获取权限后重新初始化
      */
     public void init() {
-        File rootDir = new File(Constants.ROOT_PATH);
-        if (!rootDir.exists())
-            rootDir.mkdirs();
-        FileUtils.copyAssets();
+        Handler h = new Handler(calHandlerThread.getLooper());
+        h.post(new Runnable() {
+            @Override
+            public void run() {
+                File rootDir = new File(Constants.ROOT_PATH);
+                if (!rootDir.exists())
+                    rootDir.mkdirs();
+                FileUtils.copyAssets();
 
 
-        //fresco
-        //check free memory (MB)
-        File externalStorageDir = Environment.getExternalStorageDirectory();
-        long temp = externalStorageDir.getFreeSpace();
-        long free = (temp > 10 * ByteConstants.MB) ? 20 * ByteConstants.MB : temp;
-        CLog.Companion.i(TAG, "free memory = " + temp / ByteConstants.MB + " MB, use " + free / (2 * ByteConstants.MB) + " MB to cache images.");
-        DiskCacheConfig diskCacheConfig = DiskCacheConfig.newBuilder(MyApplication.this)
-                .setCacheErrorLogger(new CacheErrorLogger() {
-                    @Override
-                    public void logError(CacheErrorCategory category, Class<?> clazz, String message, Throwable throwable) {
-                        CLog.Companion.e("Fresco CacheError", category + ":" + message);
-                    }
-                })
-                .setVersion(1)
-                .setMaxCacheSize(free / 2)
-                .setBaseDirectoryName(Constants.FRESCO_DIR)
-                .setBaseDirectoryPath(rootDir)
-                .build();
-        ImagePipelineConfig config = ImagePipelineConfig.newBuilder(MyApplication.this)
-                .setResizeAndRotateEnabledForNetwork(true)
-                .setMainDiskCacheConfig(diskCacheConfig)
-                .build();
-        Fresco.initialize(this, config);
+                //fresco
+                //check free memory (MB)
+                File externalStorageDir = Environment.getExternalStorageDirectory();
+                long temp = externalStorageDir.getFreeSpace();
+                long free = (temp > 10 * ByteConstants.MB) ? 20 * ByteConstants.MB : temp;
+                CLog.Companion.i(TAG, "free memory = " + temp / ByteConstants.MB + " MB, use " + free / (2 * ByteConstants.MB) + " MB to cache images.");
+                DiskCacheConfig diskCacheConfig = DiskCacheConfig.newBuilder(MyApplication.this)
+                        .setCacheErrorLogger(new CacheErrorLogger() {
+                            @Override
+                            public void logError(CacheErrorCategory category, Class<?> clazz, String message, Throwable throwable) {
+                                CLog.Companion.e("Fresco CacheError", category + ":" + message);
+                            }
+                        })
+                        .setVersion(1)
+                        .setMaxCacheSize(free / 2)
+                        .setBaseDirectoryName(Constants.FRESCO_DIR)
+                        .setBaseDirectoryPath(rootDir)
+                        .build();
+                ImagePipelineConfig config = ImagePipelineConfig.newBuilder(MyApplication.this)
+                        .setResizeAndRotateEnabledForNetwork(true)
+                        .setMainDiskCacheConfig(diskCacheConfig)
+                        .build();
+                Fresco.initialize(INSTANCE, config);
+            }
+        });
     }
 
     /**

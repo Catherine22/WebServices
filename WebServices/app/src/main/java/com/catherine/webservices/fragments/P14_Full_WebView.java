@@ -5,10 +5,12 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.view.KeyEvent;
@@ -23,7 +25,6 @@ import android.webkit.PermissionRequest;
 import android.webkit.RenderProcessGoneDetail;
 import android.webkit.SslErrorHandler;
 import android.webkit.ValueCallback;
-import android.webkit.WebBackForwardList;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
@@ -36,14 +37,22 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
+import com.catherine.webservices.Commands;
 import com.catherine.webservices.Constants;
+import com.catherine.webservices.MyApplication;
 import com.catherine.webservices.R;
 import com.catherine.webservices.interfaces.BackKeyListener;
 import com.catherine.webservices.interfaces.MainInterface;
 import com.catherine.webservices.interfaces.OnRequestPermissionsListener;
 import com.catherine.webservices.toolkits.CLog;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
+
+import catherine.messagecenter.Client;
+import catherine.messagecenter.CustomReceiver;
+import catherine.messagecenter.Result;
 
 /**
  * Created by Catherine on 2017/9/19.
@@ -59,6 +68,8 @@ public class P14_Full_WebView extends LazyFragment {
     private EditText et_url;
     private ProgressBar pb;
     private String currentUrl = Constants.MY_GITHUB;
+    private SharedPreferences sp;
+    private Client client;
     //test js -> https://www.javascript.com/
 
     public static P14_Full_WebView newInstance(boolean isLazyLoad) {
@@ -130,7 +141,39 @@ public class P14_Full_WebView extends LazyFragment {
         super.onViewCreated(view, savedInstanceState);
     }
 
+    private boolean setVerticalScrollBarEnabled = true;
+    private boolean setHorizontalScrollBarEnabled = true;
+    private boolean setUseWideViewPort = true;
+    private boolean setLoadWithOverviewMode = true;
+    private boolean setZoom = true;
+    private boolean setDisplayZoomControls = false;
+
     private void initComponent() {
+        sp = getActivity().getSharedPreferences("wv_settings", Context.MODE_PRIVATE);
+        client = new Client(getActivity(), new CustomReceiver() {
+            @Override
+            public void onBroadcastReceive(@NotNull Result result) {
+                Bundle b = result.getMBundle();
+                setVerticalScrollBarEnabled = b.getBoolean("setVerticalScrollBarEnabled", true);
+                setHorizontalScrollBarEnabled = b.getBoolean("setHorizontalScrollBarEnabled", true);
+                setUseWideViewPort = b.getBoolean("setUseWideViewPort", true);
+                setLoadWithOverviewMode = b.getBoolean("setLoadWithOverviewMode", true);
+                setZoom = b.getBoolean("setZoom", true);
+                setDisplayZoomControls = b.getBoolean("setDisplayZoomControls", false);
+
+                SharedPreferences.Editor editor = sp.edit();
+                editor.putBoolean("setVerticalScrollBarEnabled", setVerticalScrollBarEnabled);
+                editor.putBoolean("setHorizontalScrollBarEnabled", setHorizontalScrollBarEnabled);
+                editor.putBoolean("setUseWideViewPort", setUseWideViewPort);
+                editor.putBoolean("setLoadWithOverviewMode", setLoadWithOverviewMode);
+                editor.putBoolean("setZoom", setZoom);
+                editor.putBoolean("setDisplayZoomControls", setDisplayZoomControls);
+                editor.apply();
+
+                refresh();
+            }
+        });
+        client.gotMessages(Commands.WV_SETTINGS);
         mainInterface.setBackKeyListener(new BackKeyListener() {
             @Override
             public void OnKeyDown() {
@@ -147,10 +190,14 @@ public class P14_Full_WebView extends LazyFragment {
                 }
             }
         });
-        wv = (WebView) findViewById(R.id.wv);
-        et_url = (EditText) findViewById(R.id.et_url);
-        pb = (ProgressBar) findViewById(R.id.pb);
         iv_icon = (ImageView) findViewById(R.id.iv_icon);
+        iv_icon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mainInterface.openSlideMenu();
+            }
+        });
+        et_url = (EditText) findViewById(R.id.et_url);
         et_url.setFocusableInTouchMode(true);
         et_url.requestFocus();
         et_url.setText(currentUrl);
@@ -170,12 +217,17 @@ public class P14_Full_WebView extends LazyFragment {
                 return false;
             }
         });
+        pb = (ProgressBar) findViewById(R.id.pb);
         pb.setMax(100);
+        wv = (WebView) findViewById(R.id.wv);
+        refresh();
+    }
 
+    private void refresh() {
         //可滑动，默认为true
-        wv.setVerticalScrollBarEnabled(true);
+        wv.setVerticalScrollBarEnabled(setVerticalScrollBarEnabled);
         //可滑动，默认为true
-        wv.setHorizontalScrollBarEnabled(true);
+        wv.setHorizontalScrollBarEnabled(setHorizontalScrollBarEnabled);
         wv.setWebChromeClient(new WebChromeClient() {
             @Override
             public void onProgressChanged(WebView view, int newProgress) {
@@ -194,7 +246,6 @@ public class P14_Full_WebView extends LazyFragment {
             @Override
             public void onReceivedIcon(WebView view, Bitmap icon) {
                 CLog.Companion.i(TAG, "onReceivedIcon");
-                iv_icon.setVisibility(View.VISIBLE);
                 iv_icon.setImageBitmap(icon);
                 super.onReceivedIcon(view, icon);
             }
@@ -349,7 +400,7 @@ public class P14_Full_WebView extends LazyFragment {
                     @Override
                     public boolean shouldOverrideUrlLoading(WebView view, String url) {
                         CLog.Companion.i(TAG, "shouldOverrideUrlLoading:" + url);
-                        iv_icon.setVisibility(View.GONE);
+                        iv_icon.setImageResource(R.mipmap.ic_launcher_round);
                         et_url.setText(url);
                         currentUrl = url;
                         view.loadUrl(url);
@@ -490,19 +541,17 @@ public class P14_Full_WebView extends LazyFragment {
 
         WebSettings settings = wv.getSettings();
         //将图片调整到适合WebView的大小
-        settings.setUseWideViewPort(true);
+        settings.setUseWideViewPort(setUseWideViewPort);
         //缩放至屏幕的大小
-        settings.setLoadWithOverviewMode(true);
+        settings.setLoadWithOverviewMode(setLoadWithOverviewMode);
         //支持缩放，默认为true。是下面那个的前提。
-        settings.setSupportZoom(true);
+        settings.setSupportZoom(setZoom);
         //设置内置的缩放控件。
-        settings.setBuiltInZoomControls(true);
+        settings.setBuiltInZoomControls(setZoom);
         //设置文本的缩放倍数，默认为 100，若上面是false，则该WebView不可缩放，这个不管设置什么都不能缩放。
         settings.setTextZoom(100);
         //隐藏原生的缩放控件
-        settings.setDisplayZoomControls(false);
-        //隐藏原生的缩放控件
-        settings.setDisplayZoomControls(false);
+        settings.setDisplayZoomControls(setDisplayZoomControls);
 
         //支持内容重新布局
         settings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
@@ -540,5 +589,11 @@ public class P14_Full_WebView extends LazyFragment {
             tmp = "http://" + url;
         }
         return tmp;
+    }
+
+    @Override
+    public void onDestroy() {
+        client.release();
+        super.onDestroy();
     }
 }

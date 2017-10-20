@@ -14,6 +14,7 @@ import android.os.IBinder
 import android.widget.Toast
 import catherine.messagecenter.AsyncResponse
 import catherine.messagecenter.Server
+import com.catherine.webservices.Commands
 import com.catherine.webservices.toolkits.CLog
 
 /**
@@ -60,13 +61,13 @@ class NetworkHealthService : Service() {
                             val b = Bundle()
                             b.putBoolean("isConnectedOrConnecting", true)
                             b.putString("typeName", ni.typeName)
-                            sv?.pushBundle("C_NETWORK_STATE", b)
+                            sv?.pushBundle(Commands.C_NETWORK_STATE, b)
                             Toast.makeText(this@NetworkHealthService, ni.typeName + " network connected", Toast.LENGTH_LONG).show()
                         } else {
                             //NetworkInfo对象为空 则代表没有网络
                             val b = Bundle()
                             b.putBoolean("isConnectedOrConnecting", false)
-                            sv?.pushBundle("C_NETWORK_STATE", b)
+                            sv?.pushBundle(Commands.C_NETWORK_STATE, b)
                             CLog.e(TAG, "Network disabled")
                             Toast.makeText(this@NetworkHealthService, "Network disabled", Toast.LENGTH_LONG).show()
                         }

@@ -15,6 +15,7 @@ interface MainInterface {
     fun callFragment(id: Int)
     fun callFragment(id: Int, bundle: Bundle?)
     fun hideKeyboard()
+    fun openSlideMenu()
     fun backToPreviousPage()
     fun clearAllFragments()
     fun setBackKeyListener(listener: BackKeyListener)
