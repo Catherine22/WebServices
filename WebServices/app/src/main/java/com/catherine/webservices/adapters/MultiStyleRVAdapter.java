@@ -16,6 +16,7 @@ import com.catherine.webservices.R;
 import com.catherine.webservices.entities.MultiStyleItem;
 import com.catherine.webservices.interfaces.OnMultiItemClickListener;
 import com.catherine.webservices.interfaces.OnMultiItemSelectListener;
+import com.catherine.webservices.toolkits.CLog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,7 +79,7 @@ public class MultiStyleRVAdapter extends RecyclerView.Adapter<MultiStyleRVAdapte
         String title = items.get(position).getTitle();
         String subtitle = items.get(position).getSubtitle();
         int style = items.get(position).getStyle();
-        boolean isSelect = items.get(position).isSelect();
+        int select = items.get(position).getSelect();
 
         //This is a title not an item
         if ((style & PLAIN_TEXT) == PLAIN_TEXT) {
@@ -116,30 +117,47 @@ public class MultiStyleRVAdapter extends RecyclerView.Adapter<MultiStyleRVAdapte
 
             if ((style & CHECK_BOX) == CHECK_BOX) {
                 mainRvHolder.cb.setVisibility(View.VISIBLE);
-                mainRvHolder.cb.setChecked(isSelect);
-                mainRvHolder.cb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(CompoundButton compoundButton, boolean isCheck) {
-                        items.get(position).setSelect(isCheck);
-                        selector.onItemSelect(getTitle(position), getPosInSet(position), isCheck);
-                    }
-                });
+                if (select == -1) {
+                    mainRvHolder.cb.setChecked(false);
+                    mainRvHolder.cb.setEnabled(false);
+                    mainRvHolder.tv_title.setTextColor(ctx.getResources().getColor(R.color.checker_board_dark));
+                    mainRvHolder.tv_subtitle.setTextColor(ctx.getResources().getColor(R.color.checker_board_dark));
+                } else {
+                    boolean statue = (select == 1);
+                    mainRvHolder.cb.setEnabled(true);
+                    mainRvHolder.cb.setChecked(statue);
+                    mainRvHolder.cb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                        @Override
+                        public void onCheckedChanged(CompoundButton compoundButton, boolean isCheck) {
+                            selector.onItemSelect(getTitle(position), getPosInSet(position), isCheck);
+                        }
+                    });
+                }
+
             } else {
                 mainRvHolder.cb.setVisibility(View.GONE);
             }
 
             if ((style & SWITCH) == SWITCH) {
                 mainRvHolder.s.setVisibility(View.VISIBLE);
-                mainRvHolder.s.setChecked(isSelect);
-                mainRvHolder.s.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(CompoundButton compoundButton, boolean isCheck) {
-                        items.get(position).setSelect(isCheck);
-                        selector.onItemSelect(getTitle(position), getPosInSet(position), isCheck);
-                    }
-                });
-                //Disable checkBox
-                mainRvHolder.cb.setVisibility(View.GONE);
+                if (select == -1) {
+                    mainRvHolder.s.setChecked(false);
+                    mainRvHolder.s.setEnabled(false);
+                    mainRvHolder.tv_title.setTextColor(ctx.getResources().getColor(R.color.checker_board_dark));
+                    mainRvHolder.tv_subtitle.setTextColor(ctx.getResources().getColor(R.color.checker_board_dark));
+                } else {
+                    boolean statue = (select == 1);
+                    mainRvHolder.s.setEnabled(true);
+                    mainRvHolder.s.setChecked(statue);
+                    mainRvHolder.s.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                        @Override
+                        public void onCheckedChanged(CompoundButton compoundButton, boolean isCheck) {
+                            selector.onItemSelect(getTitle(position), getPosInSet(position), isCheck);
+                        }
+                    });
+                    //Disable checkBox
+                    mainRvHolder.cb.setVisibility(View.GONE);
+                }
             } else {
                 mainRvHolder.s.setVisibility(View.GONE);
             }
@@ -206,6 +224,10 @@ public class MultiStyleRVAdapter extends RecyclerView.Adapter<MultiStyleRVAdapte
         return title;
     }
 
+    public void clearAll() {
+        items.clear();
+    }
+
     public void mergeList(String title, List<MultiStyleItem> list) {
 //        CLog.Companion.w(TAG, "CHECK_BOX:" + CHECK_BOX);
 //        CLog.Companion.w(TAG, "SWITCH:" + SWITCH);
@@ -246,14 +268,14 @@ public class MultiStyleRVAdapter extends RecyclerView.Adapter<MultiStyleRVAdapte
                 }
             }
 
-//            //Debug
+////            //Debug
 //            for (int i = 0; i < items.size(); i++) {
 //                MultiStyleItem item = items.get(i);
 //                CLog.Companion.i(TAG, item.getTitle() + ":" + item.getStyle());
 //            }
-            notifyDataSetChanged();
         }
     }
+
 
     class MainRvHolder extends RecyclerView.ViewHolder {
         LinearLayout ll_background;

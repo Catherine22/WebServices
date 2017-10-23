@@ -12,7 +12,7 @@ import android.os.Parcelable;
 public class MultiStyleItem implements Parcelable {
     private int style;
     private String title, subtitle;
-    private boolean select;
+    private int select;//-1:disable, 0:not select, 1:selected
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
         public MultiStyleItem createFromParcel(Parcel in) {
@@ -28,18 +28,18 @@ public class MultiStyleItem implements Parcelable {
 
     }
 
-    public MultiStyleItem(int style, String title, String subtitle, boolean select) {
+    public MultiStyleItem(int style, String title, String subtitle, int select) {
         this.style = style;
         this.title = title;
         this.subtitle = subtitle;
         this.select = select;
     }
 
-    public boolean isSelect() {
+    public int getSelect() {
         return select;
     }
 
-    public void setSelect(boolean select) {
+    public void setSelect(int select) {
         this.select = select;
     }
 
@@ -73,6 +73,7 @@ public class MultiStyleItem implements Parcelable {
         this.style = in.readInt();
         this.title = in.readString();
         this.subtitle = in.readString();
+        this.select = in.readInt();
     }
 
     @Override
@@ -85,6 +86,7 @@ public class MultiStyleItem implements Parcelable {
         dest.writeInt(this.style);
         dest.writeString(this.title);
         dest.writeString(this.subtitle);
+        dest.writeInt(this.select);
     }
 
     @Override
@@ -93,7 +95,7 @@ public class MultiStyleItem implements Parcelable {
                 "style='" + style + '\'' +
                 "title='" + title + '\'' +
                 ", subtitle='" + subtitle + '\'' +
-                ", isSelect='" + select + '\'' +
+                ", select='" + select + '\'' +
                 '}';
     }
 }

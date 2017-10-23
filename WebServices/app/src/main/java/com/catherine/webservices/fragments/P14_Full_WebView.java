@@ -41,6 +41,7 @@ import com.catherine.webservices.Commands;
 import com.catherine.webservices.Constants;
 import com.catherine.webservices.MyApplication;
 import com.catherine.webservices.R;
+import com.catherine.webservices.entities.WebViewAttr;
 import com.catherine.webservices.interfaces.BackKeyListener;
 import com.catherine.webservices.interfaces.MainInterface;
 import com.catherine.webservices.interfaces.OnRequestPermissionsListener;
@@ -68,7 +69,6 @@ public class P14_Full_WebView extends LazyFragment {
     private EditText et_url;
     private ProgressBar pb;
     private String currentUrl = Constants.MY_GITHUB;
-    private SharedPreferences sp;
     private Client client;
     //test js -> https://www.javascript.com/
 
@@ -141,58 +141,12 @@ public class P14_Full_WebView extends LazyFragment {
         super.onViewCreated(view, savedInstanceState);
     }
 
-    private boolean setVerticalScrollBarEnabled = true;
-    private boolean setHorizontalScrollBarEnabled = true;
-    private boolean setUseWideViewPort = true;
-    private boolean setLoadWithOverviewMode = true;
-    private boolean setZoom = true;
-    private boolean setDisplayZoomControls = false;
-    private boolean setAllowFileAccess = true;
-    private boolean setNeedInitialFocus = true;
-    private boolean setJavaScriptEnabled = false;
-    private boolean setJavaScriptCanOpenWindowsAutomatically = false;
-    private boolean setLoadsImagesAutomatically = true;
+    private WebViewAttr attr;
 
     private void initComponent() {
-        sp = getActivity().getSharedPreferences("wv_settings", Context.MODE_PRIVATE);
-        setVerticalScrollBarEnabled = sp.getBoolean("setVerticalScrollBarEnabled", true);
-        setHorizontalScrollBarEnabled = sp.getBoolean("setHorizontalScrollBarEnabled", true);
-        setUseWideViewPort = sp.getBoolean("setUseWideViewPort", true);
-        setLoadWithOverviewMode = sp.getBoolean("setLoadWithOverviewMode", true);
-        setZoom = sp.getBoolean("setZoom", true);
-        setDisplayZoomControls = sp.getBoolean("setDisplayZoomControls", false);
-        setAllowFileAccess = sp.getBoolean("setAllowFileAccess", true);
-        setNeedInitialFocus = sp.getBoolean("setNeedInitialFocus", true);
-        setJavaScriptEnabled = sp.getBoolean("setJavaScriptEnabled", false);
-        setJavaScriptCanOpenWindowsAutomatically = sp.getBoolean("setJavaScriptCanOpenWindowsAutomatically", false);
-        setLoadsImagesAutomatically = sp.getBoolean("setLoadsImagesAutomatically", true);
-
         client = new Client(getActivity(), new CustomReceiver() {
             @Override
             public void onBroadcastReceive(@NotNull Result result) {
-                Bundle b = result.getMBundle();
-                if (b.containsKey("setVerticalScrollBarEnabled"))
-                    setVerticalScrollBarEnabled = b.getBoolean("setVerticalScrollBarEnabled");
-                else if (b.containsKey("setHorizontalScrollBarEnabled"))
-                    setHorizontalScrollBarEnabled = b.getBoolean("setHorizontalScrollBarEnabled");
-                else if (b.containsKey("setUseWideViewPort"))
-                    setUseWideViewPort = b.getBoolean("setUseWideViewPort");
-                else if (b.containsKey("setLoadWithOverviewMode"))
-                    setLoadWithOverviewMode = b.getBoolean("setLoadWithOverviewMode");
-                else if (b.containsKey("setZoom"))
-                    setZoom = b.getBoolean("setZoom");
-                else if (b.containsKey("setDisplayZoomControls"))
-                    setDisplayZoomControls = b.getBoolean("setDisplayZoomControls");
-                else if (b.containsKey("setAllowFileAccess"))
-                    setAllowFileAccess = b.getBoolean("setAllowFileAccess");
-                else if (b.containsKey("setNeedInitialFocus"))
-                    setNeedInitialFocus = b.getBoolean("setNeedInitialFocus");
-                else if (b.containsKey("setJavaScriptEnabled"))
-                    setJavaScriptEnabled = b.getBoolean("setJavaScriptEnabled");
-                else if (b.containsKey("setJavaScriptCanOpenWindowsAutomatically"))
-                    setJavaScriptCanOpenWindowsAutomatically = b.getBoolean("setJavaScriptCanOpenWindowsAutomatically");
-                else if (b.containsKey("setLoadsImagesAutomatically"))
-                    setLoadsImagesAutomatically = b.getBoolean("setLoadsImagesAutomatically");
                 refresh();
             }
         });
@@ -247,10 +201,11 @@ public class P14_Full_WebView extends LazyFragment {
     }
 
     private void refresh() {
+        attr = new WebViewAttr(getActivity());
         //可滑动，默认为true
-        wv.setVerticalScrollBarEnabled(setVerticalScrollBarEnabled);
+        wv.setVerticalScrollBarEnabled(attr.isVerticalScrollBarEnabled());
         //可滑动，默认为true
-        wv.setHorizontalScrollBarEnabled(setHorizontalScrollBarEnabled);
+        wv.setHorizontalScrollBarEnabled(attr.isHorizontalScrollBarEnabled());
         wv.setWebChromeClient(new WebChromeClient() {
             @Override
             public void onProgressChanged(WebView view, int newProgress) {
@@ -566,17 +521,17 @@ public class P14_Full_WebView extends LazyFragment {
 
         WebSettings settings = wv.getSettings();
         //将图片调整到适合WebView的大小
-        settings.setUseWideViewPort(setUseWideViewPort);
+        settings.setUseWideViewPort(attr.isUseWideViewPort());
         //缩放至屏幕的大小
-        settings.setLoadWithOverviewMode(setLoadWithOverviewMode);
+        settings.setLoadWithOverviewMode(attr.isLoadWithOverviewMode());
         //支持缩放，默认为true。是下面那个的前提。
-        settings.setSupportZoom(setZoom);
+        settings.setSupportZoom(attr.isSupportZoom());
         //设置内置的缩放控件。
-        settings.setBuiltInZoomControls(setZoom);
+        settings.setBuiltInZoomControls(attr.isBuiltInZoomControls());
         //设置文本的缩放倍数，默认为 100，若上面是false，则该WebView不可缩放，这个不管设置什么都不能缩放。
         settings.setTextZoom(100);
         //隐藏原生的缩放控件
-        settings.setDisplayZoomControls(setDisplayZoomControls);
+        settings.setDisplayZoomControls(attr.isDisplayZoomControls());
 
         //支持内容重新布局
         settings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
@@ -585,15 +540,15 @@ public class P14_Full_WebView extends LazyFragment {
         //关闭WebView中缓存
         settings.setCacheMode(WebSettings.LOAD_NO_CACHE);
         //设置可以访问文件
-        settings.setAllowFileAccess(setAllowFileAccess);
+        settings.setAllowFileAccess(attr.isAllowFileAccess());
         //当WebView调用requestFocus时为WebView设置节点
-        settings.setNeedInitialFocus(setNeedInitialFocus);
+        settings.setNeedInitialFocus(attr.isNeedInitialFocus());
         //支持JS
-        settings.setJavaScriptEnabled(setJavaScriptEnabled);
+        settings.setJavaScriptEnabled(attr.isJavaScriptEnabled());
         //支持通过JS打开新窗口
-        settings.setJavaScriptCanOpenWindowsAutomatically(setJavaScriptCanOpenWindowsAutomatically);
+        settings.setJavaScriptCanOpenWindowsAutomatically(attr.isJavaScriptCanOpenWindowsAutomatically());
         //支持自动加载图片
-        settings.setLoadsImagesAutomatically(setLoadsImagesAutomatically);
+        settings.setLoadsImagesAutomatically(attr.isLoadsImagesAutomatically());
         //设置编码格式
         settings.setDefaultTextEncodingName("utf-8");
         //设置WebView的字体，默认字体为 "sans-serif"

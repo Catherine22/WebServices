@@ -405,14 +405,14 @@ class MainActivity : FragmentActivity(), MainInterface {
         }
 
         //Avoid to launch duplicated fragments
-        if (fm.backStackEntryCount > 0 && fm.fragments[fm.fragments.size].tag == tag) {
+        if (fm.backStackEntryCount > 0 && fm.fragments[fm.fragments.size - 1].tag == tag) {
             return
         }
 
         if (bundle != null)
             fragment?.arguments = bundle
 
-        CLog.d(TAG, "call $id ,has bundle? ${bundle == null}")
+        CLog.d(TAG, "call $id ,has bundle? ${bundle != null}")
         val transaction = fm.beginTransaction()
         transaction.add(R.id.fl_main_container, fragment, tag)
         transaction.addToBackStack(title)

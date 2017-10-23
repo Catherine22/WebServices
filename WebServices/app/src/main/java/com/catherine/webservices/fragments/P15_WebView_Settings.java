@@ -28,6 +28,7 @@ import com.catherine.webservices.adapters.MultiStyleRVAdapter;
 import com.catherine.webservices.adapters.TextCardRVAdapter;
 import com.catherine.webservices.entities.ImageCard;
 import com.catherine.webservices.entities.MultiStyleItem;
+import com.catherine.webservices.entities.WebViewAttr;
 import com.catherine.webservices.interfaces.BackKeyListener;
 import com.catherine.webservices.interfaces.MainInterface;
 import com.catherine.webservices.interfaces.OnItemClickListener;
@@ -80,7 +81,6 @@ public class P15_WebView_Settings extends LazyFragment {
     private SwipeRefreshLayout srl_container;
     private MainInterface mainInterface;
     private MultiStyleRVAdapter adapter;
-    private SharedPreferences sp;
     private Server sv;
 
     public static P15_WebView_Settings newInstance(boolean isLazyLoad) {
@@ -103,6 +103,7 @@ public class P15_WebView_Settings extends LazyFragment {
         mainInterface.getPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, new OnRequestPermissionsListener() {
             @Override
             public void onGranted() {
+                titles = new String[]{"WebView Attribute", "WebSettings"};
                 fillInData();
                 initComponent();
             }
@@ -153,52 +154,29 @@ public class P15_WebView_Settings extends LazyFragment {
         super.onViewCreated(view, savedInstanceState);
     }
 
-    //WebView Attribute
-    private boolean setVerticalScrollBarEnabled = true;
-    private boolean setHorizontalScrollBarEnabled = true;
-
-    //WebSettings
-    private boolean setUseWideViewPort = true;
-    private boolean setLoadWithOverviewMode = true;
-    private boolean setZoom = true;
-    private boolean setDisplayZoomControls = false;
-    private boolean setAllowFileAccess = true;
-    private boolean setNeedInitialFocus = true;
-    private boolean setJavaScriptEnabled = false;
-    private boolean setJavaScriptCanOpenWindowsAutomatically = false;
-    private boolean setLoadsImagesAutomatically = true;
+    private WebViewAttr attr;
 
     private void fillInData() {
-        titles = new String[]{"WebView Attribute", "WebSettings"};
-        sp = getActivity().getSharedPreferences("wv_settings", Context.MODE_PRIVATE);
-        setVerticalScrollBarEnabled = sp.getBoolean("setVerticalScrollBarEnabled", true);
-        setHorizontalScrollBarEnabled = sp.getBoolean("setHorizontalScrollBarEnabled", true);
-        setUseWideViewPort = sp.getBoolean("setUseWideViewPort", true);
-        setLoadWithOverviewMode = sp.getBoolean("setLoadWithOverviewMode", true);
-        setZoom = sp.getBoolean("setZoom", true);
-        setDisplayZoomControls = sp.getBoolean("setDisplayZoomControls", false);
-        setAllowFileAccess = sp.getBoolean("setAllowFileAccess", true);
-        setNeedInitialFocus = sp.getBoolean("setNeedInitialFocus", true);
-        setJavaScriptEnabled = sp.getBoolean("setJavaScriptEnabled", false);
-        setJavaScriptCanOpenWindowsAutomatically = sp.getBoolean("setJavaScriptCanOpenWindowsAutomatically", false);
-        setLoadsImagesAutomatically = sp.getBoolean("setLoadsImagesAutomatically", true);
-
+        attr = new WebViewAttr(getActivity());
         wvAttr = new ArrayList<>();
-        wvAttr.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "可垂直滑动", "setVerticalScrollBarEnabled()", setVerticalScrollBarEnabled));
-        wvAttr.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "可水平滑动", "setHorizontalScrollBarEnabled()", setHorizontalScrollBarEnabled));
+        wvAttr.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "可垂直滑动", "setVerticalScrollBarEnabled()", attr.isVerticalScrollBarEnabled() ? 1 : 0));
+        wvAttr.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "可水平滑动", "setHorizontalScrollBarEnabled()", attr.isHorizontalScrollBarEnabled() ? 1 : 0));
 
         wvSettings = new ArrayList<>();
-        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "将图片调整到适合WebView的大小", "setUseWideViewPort()", setUseWideViewPort));
-        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "缩放至屏幕的大小", "setLoadWithOverviewMode()", setLoadWithOverviewMode));
-        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "支持缩放", "setSupportZoom() + setBuiltInZoomControls()", setZoom));
+        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "将图片调整到适合WebView的大小", "setUseWideViewPort()", attr.isUseWideViewPort() ? 1 : 0));
+        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "缩放至屏幕的大小", "setLoadWithOverviewMode()", attr.isLoadWithOverviewMode() ? 1 : 0));
+        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "设置内置的缩放控件", "setBuiltInZoomControls()", attr.isBuiltInZoomControls() ? 1 : 0));
+        if (!attr.isBuiltInZoomControls())
+            wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "支持缩放", "setSupportZoom()", -1));//depend on the above
+        else
+            wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "支持缩放", "setSupportZoom()", attr.isSupportZoom() ? 1 : 0));//depend on the above
 //        items.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "设置文本的缩放倍数", "setTextZoom()"));
-        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "隐藏原生的缩放控件", "setDisplayZoomControls()", setDisplayZoomControls));
-        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "设置可以访问文件", "setAllowFileAccess()", setAllowFileAccess));
-        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "当WebView调用requestFocus时为WebView设置节点", "setNeedInitialFocus()", setNeedInitialFocus));
-        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "支持JS", "setJavaScriptEnabled()", setJavaScriptEnabled));
-        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "支持通过JS打开新窗口", "setJavaScriptCanOpenWindowsAutomatically()", setJavaScriptCanOpenWindowsAutomatically));
-        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "支持自动加载图片", "setLoadsImagesAutomatically()", setLoadsImagesAutomatically));
-
+        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "隐藏原生的缩放控件", "setDisplayZoomControls()", attr.isDisplayZoomControls() ? 1 : 0));
+        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "设置可以访问文件", "setAllowFileAccess()", attr.isAllowFileAccess() ? 1 : 0));
+        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "当WebView调用requestFocus时为WebView设置节点", "setNeedInitialFocus()", attr.isNeedInitialFocus() ? 1 : 0));
+        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "支持JS", "setJavaScriptEnabled()", attr.isJavaScriptEnabled() ? 1 : 0));
+        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "支持通过JS打开新窗口", "setJavaScriptCanOpenWindowsAutomatically()", attr.isJavaScriptCanOpenWindowsAutomatically() ? 1 : 0));
+        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "支持自动加载图片", "setLoadsImagesAutomatically()", attr.isLoadsImagesAutomatically() ? 1 : 0));
     }
 
     private void initComponent() {
@@ -235,86 +213,71 @@ public class P15_WebView_Settings extends LazyFragment {
             @Override
             public void onItemSelect(String title, int position, boolean isSelect) {
                 CLog.Companion.i(TAG, title + "[" + position + "], isSelect:" + isSelect);
-                SharedPreferences.Editor editor = sp.edit();
                 if (titles[0].equals(title)) {
-                    Bundle b = new Bundle();
                     switch (position) {
                         case 0:
-                            editor.putBoolean("setUseWideViewPort", isSelect);
-                            editor.commit();
-                            b.putBoolean("setUseWideViewPort", isSelect);
-                            sv.pushBundle(Commands.WV_SETTINGS, b);
+                            attr.setUseWideViewPort(isSelect);
                             break;
                         case 1:
-                            editor.putBoolean("setLoadWithOverviewMode", isSelect);
-                            editor.commit();
-                            b.putBoolean("setLoadWithOverviewMode", isSelect);
-                            sv.pushBundle(Commands.WV_SETTINGS, b);
+                            attr.setLoadWithOverviewMode(isSelect);
                             break;
                     }
                 } else if (titles[1].equals(title)) {
-                    Bundle b = new Bundle();
                     switch (position) {
                         case 0:
-                            editor.putBoolean("setUseWideViewPort", isSelect);
-                            editor.commit();
-                            b.putBoolean("setUseWideViewPort", isSelect);
-                            sv.pushBundle(Commands.WV_SETTINGS, b);
+                            attr.setUseWideViewPort(isSelect);
                             break;
                         case 1:
-                            editor.putBoolean("setLoadWithOverviewMode", isSelect);
-                            editor.commit();
-                            b.putBoolean("setLoadWithOverviewMode", isSelect);
-                            sv.pushBundle(Commands.WV_SETTINGS, b);
+                            attr.setLoadWithOverviewMode(isSelect);
                             break;
                         case 2:
-                            editor.putBoolean("setZoom", isSelect);
-                            editor.commit();
-                            b.putBoolean("setZoom", isSelect);
-                            sv.pushBundle(Commands.WV_SETTINGS, b);
+                            attr.setBuiltInZoomControls(isSelect);
+                            wvSettings.set(2, new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "设置内置的缩放控件", "setBuiltInZoomControls()", attr.isBuiltInZoomControls() ? 1 : 0));
+                            if (isSelect) {
+                                attr.setSupportZoom(true);
+                                wvSettings.set(3, new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "支持缩放", "setSupportZoom()", 1));//depend on the above
+                                notifyDataSetChanged();
+                            } else {
+                                attr.setSupportZoom(false);
+                                wvSettings.set(3, new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "支持缩放", "setSupportZoom()", -1));//depend on the above
+                                notifyDataSetChanged();
+                            }
                             break;
                         case 3:
-                            editor.putBoolean("setDisplayZoomControls", isSelect);
-                            editor.commit();
-                            b.putBoolean("setDisplayZoomControls", isSelect);
-                            sv.pushBundle(Commands.WV_SETTINGS, b);
+                            attr.setSupportZoom(isSelect);
                             break;
                         case 4:
-                            editor.putBoolean("setAllowFileAccess", isSelect);
-                            editor.commit();
-                            b.putBoolean("setAllowFileAccess", isSelect);
-                            sv.pushBundle(Commands.WV_SETTINGS, b);
+                            attr.setDisplayZoomControls(isSelect);
                             break;
                         case 5:
-                            editor.putBoolean("setNeedInitialFocus", isSelect);
-                            editor.commit();
-                            b.putBoolean("setNeedInitialFocus", isSelect);
-                            sv.pushBundle(Commands.WV_SETTINGS, b);
+                            attr.setAllowFileAccess(isSelect);
                             break;
                         case 6:
-                            editor.putBoolean("setJavaScriptEnabled", isSelect);
-                            editor.commit();
-                            b.putBoolean("setJavaScriptEnabled", isSelect);
-                            sv.pushBundle(Commands.WV_SETTINGS, b);
+                            attr.setNeedInitialFocus(isSelect);
                             break;
                         case 7:
-                            editor.putBoolean("setJavaScriptCanOpenWindowsAutomatically", isSelect);
-                            editor.commit();
-                            b.putBoolean("setJavaScriptCanOpenWindowsAutomatically", isSelect);
-                            sv.pushBundle(Commands.WV_SETTINGS, b);
+                            attr.setJavaScriptEnabled(isSelect);
                             break;
                         case 8:
-                            editor.putBoolean("setLoadsImagesAutomatically", isSelect);
-                            editor.commit();
-                            b.putBoolean("setLoadsImagesAutomatically", isSelect);
-                            sv.pushBundle(Commands.WV_SETTINGS, b);
+                            attr.setJavaScriptCanOpenWindowsAutomatically(isSelect);
+                            break;
+                        case 9:
+                            attr.setLoadsImagesAutomatically(isSelect);
                             break;
                     }
                 }
+                sv.pushBoolean(Commands.WV_SETTINGS, true);
             }
         });
         adapter.mergeList(titles[0], wvAttr);
         adapter.mergeList(titles[1], wvSettings);
         rv_main_list.setAdapter(adapter);
+    }
+
+    private void notifyDataSetChanged() {
+        adapter.clearAll();
+        adapter.mergeList(titles[0], wvAttr);
+        adapter.mergeList(titles[1], wvSettings);
+        adapter.notifyDataSetChanged();
     }
 }
