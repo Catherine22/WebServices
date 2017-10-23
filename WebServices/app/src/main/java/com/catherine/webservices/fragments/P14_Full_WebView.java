@@ -147,29 +147,52 @@ public class P14_Full_WebView extends LazyFragment {
     private boolean setLoadWithOverviewMode = true;
     private boolean setZoom = true;
     private boolean setDisplayZoomControls = false;
+    private boolean setAllowFileAccess = true;
+    private boolean setNeedInitialFocus = true;
+    private boolean setJavaScriptEnabled = false;
+    private boolean setJavaScriptCanOpenWindowsAutomatically = false;
+    private boolean setLoadsImagesAutomatically = true;
 
     private void initComponent() {
         sp = getActivity().getSharedPreferences("wv_settings", Context.MODE_PRIVATE);
+        setVerticalScrollBarEnabled = sp.getBoolean("setVerticalScrollBarEnabled", true);
+        setHorizontalScrollBarEnabled = sp.getBoolean("setHorizontalScrollBarEnabled", true);
+        setUseWideViewPort = sp.getBoolean("setUseWideViewPort", true);
+        setLoadWithOverviewMode = sp.getBoolean("setLoadWithOverviewMode", true);
+        setZoom = sp.getBoolean("setZoom", true);
+        setDisplayZoomControls = sp.getBoolean("setDisplayZoomControls", false);
+        setAllowFileAccess = sp.getBoolean("setAllowFileAccess", true);
+        setNeedInitialFocus = sp.getBoolean("setNeedInitialFocus", true);
+        setJavaScriptEnabled = sp.getBoolean("setJavaScriptEnabled", false);
+        setJavaScriptCanOpenWindowsAutomatically = sp.getBoolean("setJavaScriptCanOpenWindowsAutomatically", false);
+        setLoadsImagesAutomatically = sp.getBoolean("setLoadsImagesAutomatically", true);
+
         client = new Client(getActivity(), new CustomReceiver() {
             @Override
             public void onBroadcastReceive(@NotNull Result result) {
                 Bundle b = result.getMBundle();
-                setVerticalScrollBarEnabled = b.getBoolean("setVerticalScrollBarEnabled", true);
-                setHorizontalScrollBarEnabled = b.getBoolean("setHorizontalScrollBarEnabled", true);
-                setUseWideViewPort = b.getBoolean("setUseWideViewPort", true);
-                setLoadWithOverviewMode = b.getBoolean("setLoadWithOverviewMode", true);
-                setZoom = b.getBoolean("setZoom", true);
-                setDisplayZoomControls = b.getBoolean("setDisplayZoomControls", false);
-
-                SharedPreferences.Editor editor = sp.edit();
-                editor.putBoolean("setVerticalScrollBarEnabled", setVerticalScrollBarEnabled);
-                editor.putBoolean("setHorizontalScrollBarEnabled", setHorizontalScrollBarEnabled);
-                editor.putBoolean("setUseWideViewPort", setUseWideViewPort);
-                editor.putBoolean("setLoadWithOverviewMode", setLoadWithOverviewMode);
-                editor.putBoolean("setZoom", setZoom);
-                editor.putBoolean("setDisplayZoomControls", setDisplayZoomControls);
-                editor.apply();
-
+                if (b.containsKey("setVerticalScrollBarEnabled"))
+                    setVerticalScrollBarEnabled = b.getBoolean("setVerticalScrollBarEnabled");
+                else if (b.containsKey("setHorizontalScrollBarEnabled"))
+                    setHorizontalScrollBarEnabled = b.getBoolean("setHorizontalScrollBarEnabled");
+                else if (b.containsKey("setUseWideViewPort"))
+                    setUseWideViewPort = b.getBoolean("setUseWideViewPort");
+                else if (b.containsKey("setLoadWithOverviewMode"))
+                    setLoadWithOverviewMode = b.getBoolean("setLoadWithOverviewMode");
+                else if (b.containsKey("setZoom"))
+                    setZoom = b.getBoolean("setZoom");
+                else if (b.containsKey("setDisplayZoomControls"))
+                    setDisplayZoomControls = b.getBoolean("setDisplayZoomControls");
+                else if (b.containsKey("setAllowFileAccess"))
+                    setAllowFileAccess = b.getBoolean("setAllowFileAccess");
+                else if (b.containsKey("setNeedInitialFocus"))
+                    setNeedInitialFocus = b.getBoolean("setNeedInitialFocus");
+                else if (b.containsKey("setJavaScriptEnabled"))
+                    setJavaScriptEnabled = b.getBoolean("setJavaScriptEnabled");
+                else if (b.containsKey("setJavaScriptCanOpenWindowsAutomatically"))
+                    setJavaScriptCanOpenWindowsAutomatically = b.getBoolean("setJavaScriptCanOpenWindowsAutomatically");
+                else if (b.containsKey("setLoadsImagesAutomatically"))
+                    setLoadsImagesAutomatically = b.getBoolean("setLoadsImagesAutomatically");
                 refresh();
             }
         });
@@ -246,6 +269,7 @@ public class P14_Full_WebView extends LazyFragment {
             @Override
             public void onReceivedIcon(WebView view, Bitmap icon) {
                 CLog.Companion.i(TAG, "onReceivedIcon");
+                iv_icon.setVisibility(View.VISIBLE);
                 iv_icon.setImageBitmap(icon);
                 super.onReceivedIcon(view, icon);
             }
@@ -400,7 +424,8 @@ public class P14_Full_WebView extends LazyFragment {
                     @Override
                     public boolean shouldOverrideUrlLoading(WebView view, String url) {
                         CLog.Companion.i(TAG, "shouldOverrideUrlLoading:" + url);
-                        iv_icon.setImageResource(R.mipmap.ic_launcher_round);
+//                        iv_icon.setVisibility(View.GONE);
+//                        iv_icon.setImageResource(R.mipmap.ic_launcher_round);
                         et_url.setText(url);
                         currentUrl = url;
                         view.loadUrl(url);
@@ -560,15 +585,15 @@ public class P14_Full_WebView extends LazyFragment {
         //关闭WebView中缓存
         settings.setCacheMode(WebSettings.LOAD_NO_CACHE);
         //设置可以访问文件
-        settings.setAllowFileAccess(true);
+        settings.setAllowFileAccess(setAllowFileAccess);
         //当WebView调用requestFocus时为WebView设置节点
-        settings.setNeedInitialFocus(true);
+        settings.setNeedInitialFocus(setNeedInitialFocus);
         //支持JS
-        settings.setJavaScriptEnabled(true);
+        settings.setJavaScriptEnabled(setJavaScriptEnabled);
         //支持通过JS打开新窗口
-        settings.setJavaScriptCanOpenWindowsAutomatically(true);
+        settings.setJavaScriptCanOpenWindowsAutomatically(setJavaScriptCanOpenWindowsAutomatically);
         //支持自动加载图片
-        settings.setLoadsImagesAutomatically(true);
+        settings.setLoadsImagesAutomatically(setLoadsImagesAutomatically);
         //设置编码格式
         settings.setDefaultTextEncodingName("utf-8");
         //设置WebView的字体，默认字体为 "sans-serif"

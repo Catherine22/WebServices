@@ -2,6 +2,7 @@ package com.catherine.webservices
 
 import android.Manifest
 import android.annotation.TargetApi
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -19,6 +20,7 @@ import android.view.KeyEvent
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import catherine.messagecenter.AsyncResponse
@@ -460,7 +462,8 @@ class MainActivity : FragmentActivity(), MainInterface {
     }
 
     override fun hideKeyboard() {
-        onBackPressed()
+        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS)
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {

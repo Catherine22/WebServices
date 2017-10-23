@@ -120,7 +120,8 @@ public class MultiStyleRVAdapter extends RecyclerView.Adapter<MultiStyleRVAdapte
                 mainRvHolder.cb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(CompoundButton compoundButton, boolean isCheck) {
-                        selector.onItemSelect(getTitle(position), position, isCheck);
+                        items.get(position).setSelect(isCheck);
+                        selector.onItemSelect(getTitle(position), getPosInSet(position), isCheck);
                     }
                 });
             } else {
@@ -133,7 +134,8 @@ public class MultiStyleRVAdapter extends RecyclerView.Adapter<MultiStyleRVAdapte
                 mainRvHolder.s.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(CompoundButton compoundButton, boolean isCheck) {
-                        selector.onItemSelect(getTitle(position), position, isCheck);
+                        items.get(position).setSelect(isCheck);
+                        selector.onItemSelect(getTitle(position), getPosInSet(position), isCheck);
                     }
                 });
                 //Disable checkBox
@@ -171,6 +173,17 @@ public class MultiStyleRVAdapter extends RecyclerView.Adapter<MultiStyleRVAdapte
         }
 
         return temp;
+    }
+
+    private int getPosInSet(int position) {
+        int pos = -1;
+        for (int i = position; i >= 0; i--) {
+            if (items.get(i).getStyle() != PLAIN_TEXT)
+                pos++;
+            else
+                break;
+        }
+        return pos;
     }
 
     public int getRealItemCount() {
