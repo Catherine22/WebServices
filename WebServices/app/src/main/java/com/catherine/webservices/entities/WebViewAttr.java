@@ -30,6 +30,8 @@ public class WebViewAttr {
     private boolean LoadsImagesAutomatically = true;
     private int DefaultFontSize = 16;
     private int MinimumFontSize = 8;
+    private String DefaultTextEncodingName = "utf-8";
+    private String StandardFontFamily = "sans-serif";
 
 
     public WebViewAttr(Context ctx) {
@@ -49,6 +51,8 @@ public class WebViewAttr {
         LoadsImagesAutomatically = sp.getBoolean("LoadsImagesAutomatically", true);
         DefaultFontSize = sp.getInt("DefaultFontSize", 16);
         MinimumFontSize = sp.getInt("MinimumFontSize", 8);
+        DefaultTextEncodingName = sp.getString("DefaultTextEncodingName", "utf-8");
+        StandardFontFamily = sp.getString("StandardFontFamily", "sans-serif");
     }
 
     public boolean isVerticalScrollBarEnabled() {
@@ -109,6 +113,14 @@ public class WebViewAttr {
 
     public int getMinimumFontSize() {
         return MinimumFontSize;
+    }
+
+    public String getDefaultTextEncodingName() {
+        return DefaultTextEncodingName;
+    }
+
+    public String getStandardFontFamily() {
+        return StandardFontFamily;
     }
 
     public void setVerticalScrollBarEnabled(boolean VerticalScrollBarEnabled) {
@@ -186,6 +198,16 @@ public class WebViewAttr {
         sp.edit().putInt("MinimumFontSize", MinimumFontSize).apply();
     }
 
+    public void setDefaultTextEncodingName(String DefaultTextEncodingName) {
+        this.DefaultTextEncodingName = DefaultTextEncodingName;
+        sp.edit().putString("DefaultTextEncodingName", DefaultTextEncodingName).apply();
+    }
+
+    public void setStandardFontFamily(String StandardFontFamily) {
+        this.StandardFontFamily = StandardFontFamily;
+        sp.edit().putString("StandardFontFamily", StandardFontFamily).apply();
+    }
+
     @Override
     public String toString() {
         return "WebViewAttr{" +
@@ -205,6 +227,8 @@ public class WebViewAttr {
                 ", LoadsImagesAutomatically=" + LoadsImagesAutomatically +
                 ", DefaultFontSize=" + DefaultFontSize +
                 ", MinimumFontSize=" + MinimumFontSize +
+                ", DefaultTextEncodingName=" + DefaultTextEncodingName +
+                ", StandardFontFamily=" + StandardFontFamily +
                 '}';
     }
 }

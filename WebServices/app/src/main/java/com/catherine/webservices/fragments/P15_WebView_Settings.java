@@ -2,10 +2,13 @@ package com.catherine.webservices.fragments;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -18,7 +21,10 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.Window;
+import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.catherine.webservices.Commands;
@@ -103,7 +109,6 @@ public class P15_WebView_Settings extends LazyFragment {
         mainInterface.getPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, new OnRequestPermissionsListener() {
             @Override
             public void onGranted() {
-                titles = new String[]{"WebView Attribute", "WebSettings"};
                 fillInData();
                 initComponent();
             }
@@ -157,6 +162,7 @@ public class P15_WebView_Settings extends LazyFragment {
     private WebViewAttr attr;
 
     private void fillInData() {
+        titles = new String[]{"WebView Attribute", "WebSettings"};
         attr = new WebViewAttr(getActivity());
         wvAttr = new ArrayList<>();
         wvAttr.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "可垂直滑动", "setVerticalScrollBarEnabled()", attr.isVerticalScrollBarEnabled() ? 1 : 0, null));
@@ -183,8 +189,11 @@ public class P15_WebView_Settings extends LazyFragment {
         else
             wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "支持通过JS打开新窗口", "setJavaScriptCanOpenWindowsAutomatically()", attr.isJavaScriptCanOpenWindowsAutomatically() ? 1 : 0, null));
         wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "支持自动加载图片", "setLoadsImagesAutomatically()", attr.isLoadsImagesAutomatically() ? 1 : 0, null));
-        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.EDITTEXT, "设置WebView字体的大小，默认大小为 16", "setDefaultFontSize()", 0, String.valueOf(attr.getDefaultFontSize())));
-        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.EDITTEXT, "设置WebView支持的最小字体大小，默认为 8", "setMinimumFontSize()", 0, String.valueOf(attr.getMinimumFontSize())));
+        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.EDITTEXT, "设置WebView字体的大小", "setDefaultFontSize()", 0, String.valueOf(attr.getDefaultFontSize())));
+        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.EDITTEXT, "设置WebView支持的最小字体大小", "setMinimumFontSize()", 0, String.valueOf(attr.getMinimumFontSize())));
+        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.TEXTVIEW, "设置编码格式", "setDefaultTextEncodingName()", 0, attr.getDefaultTextEncodingName()));
+        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.TEXTVIEW, "设置WebView的字体", "setStandardFontFamily()", 0, attr.getStandardFontFamily()));
+
     }
 
     private void initComponent() {
@@ -203,7 +212,7 @@ public class P15_WebView_Settings extends LazyFragment {
                 srl_container.setRefreshing(false);
             }
         });
-
+        srl_container.setRefreshing(true);
         RecyclerView rv_main_list = (RecyclerView) findViewById(R.id.rv_main_list);
 //        rv_main_list.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.Companion.getVERTICAL_LIST()));
         rv_main_list.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -245,12 +254,12 @@ public class P15_WebView_Settings extends LazyFragment {
                                 attr.setSupportZoom(true);
                                 wvSettings.set(3, new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "支持缩放", "setSupportZoom()", 1, null));//depend on the above
                                 wvSettings.set(4, new MultiStyleItem(MultiStyleRVAdapter.EDITTEXT, "设置文本的缩放倍数", "setTextZoom()", 0, String.valueOf(attr.getTextZoom())));
-                                notifyDataSetChanged();
+                                init();
                             } else {
                                 attr.setSupportZoom(false);
                                 wvSettings.set(3, new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "支持缩放", "setSupportZoom()", -1, null));//depend on the above
                                 wvSettings.set(4, new MultiStyleItem(MultiStyleRVAdapter.EDITTEXT, "设置文本的缩放倍数", "setTextZoom()", -1, String.valueOf(attr.getTextZoom())));
-                                notifyDataSetChanged();
+                                init();
                             }
                             break;
                         case 3:
@@ -258,10 +267,10 @@ public class P15_WebView_Settings extends LazyFragment {
                             wvSettings.set(3, new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "支持缩放", "setSupportZoom()", attr.isSupportZoom() ? 1 : 0, null));//depend on the above                            if (isSelect) {
                             if (isSelect) {
                                 wvSettings.set(4, new MultiStyleItem(MultiStyleRVAdapter.EDITTEXT, "设置文本的缩放倍数", "setTextZoom()", 0, String.valueOf(attr.getTextZoom())));
-                                notifyDataSetChanged();
+                                init();
                             } else {
                                 wvSettings.set(4, new MultiStyleItem(MultiStyleRVAdapter.EDITTEXT, "设置文本的缩放倍数", "setTextZoom()", -1, String.valueOf(attr.getTextZoom())));
-                                notifyDataSetChanged();
+                                init();
                             }
                             break;
                         case 4:
@@ -299,10 +308,10 @@ public class P15_WebView_Settings extends LazyFragment {
                             wvSettings.set(9, new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "支持JS", "setJavaScriptEnabled()", attr.isJavaScriptEnabled() ? 1 : 0, null));
                             if (isSelect) {
                                 wvSettings.set(9, new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "支持通过JS打开新窗口", "setJavaScriptCanOpenWindowsAutomatically()", attr.isJavaScriptCanOpenWindowsAutomatically() ? 1 : 0, null));
-                                notifyDataSetChanged();
+                                init();
                             } else {
                                 wvSettings.set(9, new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "支持通过JS打开新窗口", "setJavaScriptCanOpenWindowsAutomatically()", -1, null));
-                                notifyDataSetChanged();
+                                init();
                             }
                             break;
                         case 9:
@@ -353,6 +362,18 @@ public class P15_WebView_Settings extends LazyFragment {
                                 myAlertDialog.show();
                             }
                             break;
+
+                        case 13:
+                            //show selector
+                            showPwdDialog();
+                            attr.setDefaultTextEncodingName(data);
+                            break;
+                        case 14:
+                            //show selector
+                            showPwdDialog();
+                            attr.setStandardFontFamily(data);
+                            break;
+
                     }
                 }
                 sv.pushBoolean(Commands.WV_SETTINGS, true);
@@ -361,12 +382,21 @@ public class P15_WebView_Settings extends LazyFragment {
         adapter.mergeList(titles[0], wvAttr);
         adapter.mergeList(titles[1], wvSettings);
         rv_main_list.setAdapter(adapter);
+        srl_container.setRefreshing(false);
     }
 
-    private void notifyDataSetChanged() {
-        adapter.clearAll();
-        adapter.mergeList(titles[0], wvAttr);
-        adapter.mergeList(titles[1], wvSettings);
-        adapter.notifyDataSetChanged();
+    private Dialog alertDialog;
+
+    private void showPwdDialog() {
+        alertDialog = new Dialog(getActivity());
+        alertDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        alertDialog.setContentView(R.layout.dialog_selector);
+        //设置dialog背景透明
+        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        alertDialog.show();
+
+        rb = (RadioButton) alertDialog.findViewById(R.id.rb);
+        bt_ok = (Button) alertDialog.findViewById(R.id.bt);
+        bt_ok.setOnClickListener(this);
     }
 }

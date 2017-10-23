@@ -42,13 +42,14 @@ public class MultiStyleRVAdapter extends RecyclerView.Adapter<MultiStyleRVAdapte
     public final static int CHECK_BOX = 0x000001;
     public final static int SWITCH = 0x000010;
     public final static int EDITTEXT = 0x000100;
+    public final static int TEXTVIEW = 0x001000;
 
     //background
-    private final int TOP = 0x001000;
-    private final int BOTTOM = 0x010000;
+    private final int TOP = 0x0010000;
+    private final int BOTTOM = 0x0100000;
 
     //style
-    private final int PLAIN_TEXT = 0x100000;
+    private final int PLAIN_TEXT = 0x1000000;
 
     public MultiStyleRVAdapter(Context ctx, String title, List<MultiStyleItem> items, OnMultiItemClickListener listener, OnMultiItemSelectListener selector) {
         this.items = new ArrayList<>();
@@ -93,6 +94,8 @@ public class MultiStyleRVAdapter extends RecyclerView.Adapter<MultiStyleRVAdapte
             mainRvHolder.tv_subtitle.setVisibility(View.GONE);
             mainRvHolder.cb.setVisibility(View.GONE);
             mainRvHolder.s.setVisibility(View.GONE);
+            mainRvHolder.et.setVisibility(View.GONE);
+            mainRvHolder.tv.setVisibility(View.GONE);
         } else {
             //Item
             if ((style & (TOP | BOTTOM)) == (TOP | BOTTOM))
@@ -105,6 +108,7 @@ public class MultiStyleRVAdapter extends RecyclerView.Adapter<MultiStyleRVAdapte
                 mainRvHolder.ll_background.setBackgroundResource(R.drawable.rectangle);
             }
 
+            mainRvHolder.tv_title.setVisibility(View.VISIBLE);
             mainRvHolder.tv_title.setTextColor(ctx.getResources().getColor(R.color.grey700));
             if (!TextUtils.isEmpty(title))
                 mainRvHolder.tv_title.setText(title);
@@ -112,11 +116,12 @@ public class MultiStyleRVAdapter extends RecyclerView.Adapter<MultiStyleRVAdapte
                 mainRvHolder.tv_title.setText("NULL");
             }
 
+            mainRvHolder.tv_subtitle.setVisibility(View.VISIBLE);
             mainRvHolder.tv_subtitle.setTextColor(ctx.getResources().getColor(R.color.checker_board_dark));
             if (!TextUtils.isEmpty(subtitle))
                 mainRvHolder.tv_subtitle.setText(subtitle);
             else {
-                mainRvHolder.tv_title.setText("NULL");
+                mainRvHolder.tv_subtitle.setText("NULL");
             }
 
             if ((style & CHECK_BOX) == CHECK_BOX) {
@@ -125,7 +130,6 @@ public class MultiStyleRVAdapter extends RecyclerView.Adapter<MultiStyleRVAdapte
                     mainRvHolder.cb.setChecked(false);
                     mainRvHolder.cb.setEnabled(false);
                     mainRvHolder.tv_title.setTextColor(ctx.getResources().getColor(R.color.checker_board_dark));
-                    mainRvHolder.tv_subtitle.setTextColor(ctx.getResources().getColor(R.color.checker_board_dark));
                 } else {
                     boolean statue = (select == 1);
                     mainRvHolder.cb.setEnabled(true);
@@ -148,7 +152,6 @@ public class MultiStyleRVAdapter extends RecyclerView.Adapter<MultiStyleRVAdapte
                     mainRvHolder.s.setChecked(false);
                     mainRvHolder.s.setEnabled(false);
                     mainRvHolder.tv_title.setTextColor(ctx.getResources().getColor(R.color.checker_board_dark));
-                    mainRvHolder.tv_subtitle.setTextColor(ctx.getResources().getColor(R.color.checker_board_dark));
                 } else {
                     boolean statue = (select == 1);
                     mainRvHolder.s.setEnabled(true);
@@ -175,7 +178,6 @@ public class MultiStyleRVAdapter extends RecyclerView.Adapter<MultiStyleRVAdapte
                     mainRvHolder.et.setFocusable(false);
                     mainRvHolder.et.setClickable(false);
                     mainRvHolder.tv_title.setTextColor(ctx.getResources().getColor(R.color.checker_board_dark));
-                    mainRvHolder.tv_subtitle.setTextColor(ctx.getResources().getColor(R.color.checker_board_dark));
                 } else {
                     mainRvHolder.et.setEnabled(true);
                     mainRvHolder.et.setEnabled(true);
@@ -200,8 +202,30 @@ public class MultiStyleRVAdapter extends RecyclerView.Adapter<MultiStyleRVAdapte
                         }
                     });
                 }
+
+                //Disable checkBox & switch
+                mainRvHolder.cb.setVisibility(View.GONE);
+                mainRvHolder.s.setVisibility(View.GONE);
             } else {
                 mainRvHolder.et.setVisibility(View.GONE);
+            }
+
+            if ((style & TEXTVIEW) == TEXTVIEW) {
+                mainRvHolder.tv.setVisibility(View.VISIBLE);
+                mainRvHolder.tv.setText(data);
+                mainRvHolder.tv.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        selector.onItemSelect(getTitle(position), getPosInSet(position), false, mainRvHolder.tv.getText().toString());
+                    }
+                });
+
+                //Disable checkBox & switch & editText
+                mainRvHolder.cb.setVisibility(View.GONE);
+                mainRvHolder.s.setVisibility(View.GONE);
+                mainRvHolder.et.setVisibility(View.GONE);
+            } else {
+                mainRvHolder.tv.setVisibility(View.GONE);
             }
         }
 
@@ -310,7 +334,7 @@ public class MultiStyleRVAdapter extends RecyclerView.Adapter<MultiStyleRVAdapte
                 }
             }
 
-////            //Debug
+//            //Debug
 //            for (int i = 0; i < items.size(); i++) {
 //                MultiStyleItem item = items.get(i);
 //                CLog.Companion.i(TAG, item.getTitle() + ":" + item.getStyle());
@@ -323,6 +347,7 @@ public class MultiStyleRVAdapter extends RecyclerView.Adapter<MultiStyleRVAdapte
         LinearLayout ll_background;
         TextView tv_title;
         TextView tv_subtitle;
+        TextView tv;
         EditText et;
         CheckBox cb;
         Switch s;
@@ -332,6 +357,7 @@ public class MultiStyleRVAdapter extends RecyclerView.Adapter<MultiStyleRVAdapte
             ll_background = itemView.findViewById(R.id.ll_background);
             tv_title = itemView.findViewById(R.id.tv_title);
             tv_subtitle = itemView.findViewById(R.id.tv_subtitle);
+            tv = itemView.findViewById(R.id.tv);
             et = itemView.findViewById(R.id.et);
             cb = itemView.findViewById(R.id.cb);
             s = itemView.findViewById(R.id.s);

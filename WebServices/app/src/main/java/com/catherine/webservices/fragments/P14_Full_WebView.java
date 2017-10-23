@@ -550,13 +550,13 @@ public class P14_Full_WebView extends LazyFragment {
         //支持自动加载图片
         settings.setLoadsImagesAutomatically(attr.isLoadsImagesAutomatically());
         //设置编码格式
-        settings.setDefaultTextEncodingName("utf-8");
+        settings.setDefaultTextEncodingName(attr.getDefaultTextEncodingName());
         //设置WebView的字体，默认字体为 "sans-serif"
-        settings.setStandardFontFamily("sans-serif");
+        settings.setStandardFontFamily(attr.getStandardFontFamily());
         //设置WebView字体的大小，默认大小为 16
-        settings.setDefaultFontSize(16);
+        settings.setDefaultFontSize(attr.getDefaultFontSize());
         //设置WebView支持的最小字体大小，默认为 8
-        settings.setMinimumFontSize(8);
+        settings.setMinimumFontSize(attr.getMinimumFontSize());
         String ua = settings.getUserAgentString();
         CLog.Companion.i(TAG, "user agent:" + ua);
 
