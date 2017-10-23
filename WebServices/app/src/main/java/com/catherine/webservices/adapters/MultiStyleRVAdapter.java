@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.RelativeLayout;
+import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -16,7 +16,6 @@ import com.catherine.webservices.R;
 import com.catherine.webservices.entities.MultiStyleItem;
 import com.catherine.webservices.interfaces.OnMultiItemClickListener;
 import com.catherine.webservices.interfaces.OnMultiItemSelectListener;
-import com.catherine.webservices.toolkits.CLog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +34,7 @@ public class MultiStyleRVAdapter extends RecyclerView.Adapter<MultiStyleRVAdapte
     private OnMultiItemClickListener listener;
     private OnMultiItemSelectListener selector;
 
+    //Hexadecimal - online decimal to hex converter tool: http://www.binaryhexconverter.com/decimal-to-hex-converter
     //selector
     public final static int CHECK_BOX = 0x00001;
     public final static int SWITCH = 0x00010;
@@ -80,11 +80,9 @@ public class MultiStyleRVAdapter extends RecyclerView.Adapter<MultiStyleRVAdapte
         int style = items.get(position).getStyle();
         boolean isSelect = items.get(position).isSelect();
 
-        CLog.Companion.d(TAG, "style:" + style);
-
         //This is a title not an item
         if ((style & PLAIN_TEXT) == PLAIN_TEXT) {
-            mainRvHolder.rl_background.setBackgroundResource(R.color.checker_board_light);
+            mainRvHolder.ll_background.setBackgroundResource(R.color.checker_board_light);
             mainRvHolder.tv_title.setText(title);
             mainRvHolder.tv_title.setTextColor(ctx.getResources().getColor(R.color.colorAccentDark));
             mainRvHolder.tv_subtitle.setVisibility(View.GONE);
@@ -92,14 +90,14 @@ public class MultiStyleRVAdapter extends RecyclerView.Adapter<MultiStyleRVAdapte
             mainRvHolder.s.setVisibility(View.GONE);
         } else {
             //Item
-            if ((style & TOP & BOTTOM) == (TOP & BOTTOM))
-                mainRvHolder.rl_background.setBackgroundResource(R.drawable.round_rectangle);
+            if ((style & (TOP | BOTTOM)) == (TOP | BOTTOM))
+                mainRvHolder.ll_background.setBackgroundResource(R.drawable.round_rectangle);
             else if ((style & TOP) == TOP) {
-                mainRvHolder.rl_background.setBackgroundResource(R.drawable.top_round_rectangle);
+                mainRvHolder.ll_background.setBackgroundResource(R.drawable.top_round_rectangle);
             } else if ((style & BOTTOM) == BOTTOM) {
-                mainRvHolder.rl_background.setBackgroundResource(R.drawable.bottom_round_rectangle);
+                mainRvHolder.ll_background.setBackgroundResource(R.drawable.bottom_round_rectangle);
             } else {
-                mainRvHolder.rl_background.setBackgroundResource(R.drawable.rectangle);
+                mainRvHolder.ll_background.setBackgroundResource(R.drawable.rectangle);
             }
 
             mainRvHolder.tv_title.setTextColor(ctx.getResources().getColor(R.color.grey700));
@@ -175,9 +173,13 @@ public class MultiStyleRVAdapter extends RecyclerView.Adapter<MultiStyleRVAdapte
         return temp;
     }
 
+    public int getRealItemCount() {
+        return items.size() - titles;
+    }
+
     @Override
     public int getItemCount() {
-        return items.size() - titles;
+        return items.size();
     }
 
     public String getTitle(int position) {
@@ -192,6 +194,11 @@ public class MultiStyleRVAdapter extends RecyclerView.Adapter<MultiStyleRVAdapte
     }
 
     public void mergeList(String title, List<MultiStyleItem> list) {
+//        CLog.Companion.w(TAG, "CHECK_BOX:" + CHECK_BOX);
+//        CLog.Companion.w(TAG, "SWITCH:" + SWITCH);
+//        CLog.Companion.w(TAG, "TOP:" + TOP);
+//        CLog.Companion.w(TAG, "BOTTOM:" + BOTTOM);
+//        CLog.Companion.w(TAG, "PLAIN_TEXT:" + PLAIN_TEXT);
         if (list != null && list.size() > 0) {
             if (!TextUtils.isEmpty(title)) {
                 titles++;
@@ -203,43 +210,40 @@ public class MultiStyleRVAdapter extends RecyclerView.Adapter<MultiStyleRVAdapte
             items.addAll(list);
 
             //adjust background
+            MultiStyleItem temp = items.get(0);
+            if (temp.getStyle() != PLAIN_TEXT)
+                temp.setStyle(temp.getStyle() | TOP);
+
+            temp = items.get(items.size() - 1);
+            if (temp.getStyle() != PLAIN_TEXT)
+                temp.setStyle(temp.getStyle() | BOTTOM);
 
             for (int i = 1; i < items.size() - 1; i++) {
-                MultiStyleItem n = items.get(i);
-                n.setStyle(n.getStyle() ^ TOP ^ BOTTOM);
+                MultiStyleItem item = items.get(i);
+                if (item.getStyle() == PLAIN_TEXT) {
+                    //skip
+                } else {
+                    if (items.get(i + 1).getStyle() == PLAIN_TEXT) {
+                        item.setStyle(item.getStyle() | BOTTOM);
+                    }
 
-                if ((items.get(i).getStyle() & PLAIN_TEXT) == PLAIN_TEXT) {
-                    MultiStyleItem b = items.get(i - 1);
-                    b.setStyle(b.getStyle() | BOTTOM);
-
-                    MultiStyleItem t = items.get(i + 1);
-                    t.setStyle(t.getStyle() | TOP);
+                    if (items.get(i - 1).getStyle() == PLAIN_TEXT) {
+                        item.setStyle(item.getStyle() | TOP);
+                    }
                 }
             }
 
-            if ((items.get(0).getStyle() & PLAIN_TEXT) == PLAIN_TEXT) {
-                MultiStyleItem itemS = items.get(0);
-                itemS.setStyle(itemS.getStyle() ^ TOP ^ BOTTOM);
-
-                MultiStyleItem item1 = items.get(1);
-                item1.setStyle(item1.getStyle() | TOP);
-            } else {
-                MultiStyleItem itemS = items.get(0);
-                itemS.setStyle(itemS.getStyle() | TOP);
-            }
-
-            if ((items.get(items.size() - 1).getStyle() & PLAIN_TEXT) != PLAIN_TEXT) {
-                MultiStyleItem itemE = items.get(items.size() - 1);
-                itemE.setStyle(itemE.getStyle() | BOTTOM);
-            } else {
-                MultiStyleItem itemE = items.get(items.size() - 1);
-                itemE.setStyle(itemE.getStyle() ^ TOP ^ BOTTOM);
-            }
+//            //Debug
+//            for (int i = 0; i < items.size(); i++) {
+//                MultiStyleItem item = items.get(i);
+//                CLog.Companion.i(TAG, item.getTitle() + ":" + item.getStyle());
+//            }
+            notifyDataSetChanged();
         }
     }
 
     class MainRvHolder extends RecyclerView.ViewHolder {
-        RelativeLayout rl_background;
+        LinearLayout ll_background;
         TextView tv_title;
         TextView tv_subtitle;
         CheckBox cb;
@@ -247,7 +251,7 @@ public class MultiStyleRVAdapter extends RecyclerView.Adapter<MultiStyleRVAdapte
 
         MainRvHolder(View itemView) {
             super(itemView);
-            rl_background = itemView.findViewById(R.id.rl_background);
+            ll_background = itemView.findViewById(R.id.ll_background);
             tv_title = itemView.findViewById(R.id.tv_title);
             tv_subtitle = itemView.findViewById(R.id.tv_subtitle);
             cb = itemView.findViewById(R.id.cb);
