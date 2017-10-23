@@ -159,24 +159,32 @@ public class P15_WebView_Settings extends LazyFragment {
     private void fillInData() {
         attr = new WebViewAttr(getActivity());
         wvAttr = new ArrayList<>();
-        wvAttr.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "可垂直滑动", "setVerticalScrollBarEnabled()", attr.isVerticalScrollBarEnabled() ? 1 : 0));
-        wvAttr.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "可水平滑动", "setHorizontalScrollBarEnabled()", attr.isHorizontalScrollBarEnabled() ? 1 : 0));
+        wvAttr.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "可垂直滑动", "setVerticalScrollBarEnabled()", attr.isVerticalScrollBarEnabled() ? 1 : 0, null));
+        wvAttr.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "可水平滑动", "setHorizontalScrollBarEnabled()", attr.isHorizontalScrollBarEnabled() ? 1 : 0, null));
 
         wvSettings = new ArrayList<>();
-        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "将图片调整到适合WebView的大小", "setUseWideViewPort()", attr.isUseWideViewPort() ? 1 : 0));
-        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "缩放至屏幕的大小", "setLoadWithOverviewMode()", attr.isLoadWithOverviewMode() ? 1 : 0));
-        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "设置内置的缩放控件", "setBuiltInZoomControls()", attr.isBuiltInZoomControls() ? 1 : 0));
+        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "将图片调整到适合WebView的大小", "setUseWideViewPort()", attr.isUseWideViewPort() ? 1 : 0, null));
+        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "缩放至屏幕的大小", "setLoadWithOverviewMode()", attr.isLoadWithOverviewMode() ? 1 : 0, null));
+        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "设置内置的缩放控件", "setBuiltInZoomControls()", attr.isBuiltInZoomControls() ? 1 : 0, null));
         if (!attr.isBuiltInZoomControls())
-            wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "支持缩放", "setSupportZoom()", -1));//depend on the above
+            wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "支持缩放", "setSupportZoom()", -1, null));//depend on the above (BuiltInZoomControls)
         else
-            wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "支持缩放", "setSupportZoom()", attr.isSupportZoom() ? 1 : 0));//depend on the above
-//        items.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "设置文本的缩放倍数", "setTextZoom()"));
-        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "隐藏原生的缩放控件", "setDisplayZoomControls()", attr.isDisplayZoomControls() ? 1 : 0));
-        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "设置可以访问文件", "setAllowFileAccess()", attr.isAllowFileAccess() ? 1 : 0));
-        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "当WebView调用requestFocus时为WebView设置节点", "setNeedInitialFocus()", attr.isNeedInitialFocus() ? 1 : 0));
-        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "支持JS", "setJavaScriptEnabled()", attr.isJavaScriptEnabled() ? 1 : 0));
-        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "支持通过JS打开新窗口", "setJavaScriptCanOpenWindowsAutomatically()", attr.isJavaScriptCanOpenWindowsAutomatically() ? 1 : 0));
-        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "支持自动加载图片", "setLoadsImagesAutomatically()", attr.isLoadsImagesAutomatically() ? 1 : 0));
+            wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "支持缩放", "setSupportZoom()", attr.isSupportZoom() ? 1 : 0, null));//depend on the above (BuiltInZoomControls)
+        if (!attr.isSupportZoom() || !attr.isBuiltInZoomControls())
+            wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.EDITTEXT, "设置文本的缩放倍数", "setTextZoom()", -1, String.valueOf(attr.getTextZoom())));//depend on the above (BuiltInZoomControls)
+        else
+            wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.EDITTEXT, "设置文本的缩放倍数", "setTextZoom()", 0, String.valueOf(attr.getTextZoom())));//depend on the above (BuiltInZoomControls)
+        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "隐藏原生的缩放控件", "setDisplayZoomControls()", attr.isDisplayZoomControls() ? 1 : 0, null));
+        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "设置可以访问文件", "setAllowFileAccess()", attr.isAllowFileAccess() ? 1 : 0, null));
+        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "当WebView调用requestFocus时为WebView设置节点", "setNeedInitialFocus()", attr.isNeedInitialFocus() ? 1 : 0, null));
+        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "支持JS", "setJavaScriptEnabled()", attr.isJavaScriptEnabled() ? 1 : 0, null));
+        if (!attr.isJavaScriptEnabled())
+            wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "支持通过JS打开新窗口", "setJavaScriptCanOpenWindowsAutomatically()", -1, null));
+        else
+            wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "支持通过JS打开新窗口", "setJavaScriptCanOpenWindowsAutomatically()", attr.isJavaScriptCanOpenWindowsAutomatically() ? 1 : 0, null));
+        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "支持自动加载图片", "setLoadsImagesAutomatically()", attr.isLoadsImagesAutomatically() ? 1 : 0, null));
+        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.EDITTEXT, "设置WebView字体的大小，默认大小为 16", "setDefaultFontSize()", 0, String.valueOf(attr.getDefaultFontSize())));
+        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.EDITTEXT, "设置WebView支持的最小字体大小，默认为 8", "setMinimumFontSize()", 0, String.valueOf(attr.getMinimumFontSize())));
     }
 
     private void initComponent() {
@@ -211,8 +219,8 @@ public class P15_WebView_Settings extends LazyFragment {
             }
         }, new OnMultiItemSelectListener() {
             @Override
-            public void onItemSelect(String title, int position, boolean isSelect) {
-                CLog.Companion.i(TAG, title + "[" + position + "], isSelect:" + isSelect);
+            public void onItemSelect(String title, int position, boolean isSelect, String data) {
+                CLog.Companion.i(TAG, title + "[" + position + "], isSelect:" + isSelect + "data: " + data);
                 if (titles[0].equals(title)) {
                     switch (position) {
                         case 0:
@@ -232,37 +240,118 @@ public class P15_WebView_Settings extends LazyFragment {
                             break;
                         case 2:
                             attr.setBuiltInZoomControls(isSelect);
-                            wvSettings.set(2, new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "设置内置的缩放控件", "setBuiltInZoomControls()", attr.isBuiltInZoomControls() ? 1 : 0));
+                            wvSettings.set(2, new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "设置内置的缩放控件", "setBuiltInZoomControls()", attr.isBuiltInZoomControls() ? 1 : 0, null));
                             if (isSelect) {
                                 attr.setSupportZoom(true);
-                                wvSettings.set(3, new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "支持缩放", "setSupportZoom()", 1));//depend on the above
+                                wvSettings.set(3, new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "支持缩放", "setSupportZoom()", 1, null));//depend on the above
+                                wvSettings.set(4, new MultiStyleItem(MultiStyleRVAdapter.EDITTEXT, "设置文本的缩放倍数", "setTextZoom()", 0, String.valueOf(attr.getTextZoom())));
                                 notifyDataSetChanged();
                             } else {
                                 attr.setSupportZoom(false);
-                                wvSettings.set(3, new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "支持缩放", "setSupportZoom()", -1));//depend on the above
+                                wvSettings.set(3, new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "支持缩放", "setSupportZoom()", -1, null));//depend on the above
+                                wvSettings.set(4, new MultiStyleItem(MultiStyleRVAdapter.EDITTEXT, "设置文本的缩放倍数", "setTextZoom()", -1, String.valueOf(attr.getTextZoom())));
                                 notifyDataSetChanged();
                             }
                             break;
                         case 3:
                             attr.setSupportZoom(isSelect);
+                            wvSettings.set(3, new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "支持缩放", "setSupportZoom()", attr.isSupportZoom() ? 1 : 0, null));//depend on the above                            if (isSelect) {
+                            if (isSelect) {
+                                wvSettings.set(4, new MultiStyleItem(MultiStyleRVAdapter.EDITTEXT, "设置文本的缩放倍数", "setTextZoom()", 0, String.valueOf(attr.getTextZoom())));
+                                notifyDataSetChanged();
+                            } else {
+                                wvSettings.set(4, new MultiStyleItem(MultiStyleRVAdapter.EDITTEXT, "设置文本的缩放倍数", "setTextZoom()", -1, String.valueOf(attr.getTextZoom())));
+                                notifyDataSetChanged();
+                            }
                             break;
                         case 4:
-                            attr.setDisplayZoomControls(isSelect);
+                            try {
+                                //hide soft keyboard
+                                mainInterface.hideKeyboard();
+                                int n = Integer.parseInt(data);
+                                attr.setTextZoom(n);
+                            } catch (NumberFormatException e) {
+                                e.printStackTrace();
+                                final AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(getActivity());
+                                myAlertDialog.setIcon(android.R.drawable.ic_dialog_alert)
+                                        .setCancelable(false)
+                                        .setTitle("Alert!")
+                                        .setMessage(data + " is not allowed, try to type an number!")
+                                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                            }
+                                        });
+                                myAlertDialog.show();
+                            }
                             break;
                         case 5:
-                            attr.setAllowFileAccess(isSelect);
+                            attr.setDisplayZoomControls(isSelect);
                             break;
                         case 6:
-                            attr.setNeedInitialFocus(isSelect);
+                            attr.setAllowFileAccess(isSelect);
                             break;
                         case 7:
-                            attr.setJavaScriptEnabled(isSelect);
+                            attr.setNeedInitialFocus(isSelect);
                             break;
                         case 8:
-                            attr.setJavaScriptCanOpenWindowsAutomatically(isSelect);
+                            attr.setJavaScriptEnabled(isSelect);
+                            wvSettings.set(9, new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "支持JS", "setJavaScriptEnabled()", attr.isJavaScriptEnabled() ? 1 : 0, null));
+                            if (isSelect) {
+                                wvSettings.set(9, new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "支持通过JS打开新窗口", "setJavaScriptCanOpenWindowsAutomatically()", attr.isJavaScriptCanOpenWindowsAutomatically() ? 1 : 0, null));
+                                notifyDataSetChanged();
+                            } else {
+                                wvSettings.set(9, new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "支持通过JS打开新窗口", "setJavaScriptCanOpenWindowsAutomatically()", -1, null));
+                                notifyDataSetChanged();
+                            }
                             break;
                         case 9:
+                            attr.setJavaScriptCanOpenWindowsAutomatically(isSelect);
+                            break;
+                        case 10:
                             attr.setLoadsImagesAutomatically(isSelect);
+                            break;
+                        case 11:
+                            try {
+                                //hide soft keyboard
+                                mainInterface.hideKeyboard();
+                                int n = Integer.parseInt(data);
+                                attr.setDefaultFontSize(n);
+                            } catch (NumberFormatException e) {
+                                e.printStackTrace();
+                                final AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(getActivity());
+                                myAlertDialog.setIcon(android.R.drawable.ic_dialog_alert)
+                                        .setCancelable(false)
+                                        .setTitle("Alert!")
+                                        .setMessage(data + " is not allowed, try to type an number!")
+                                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                            }
+                                        });
+                                myAlertDialog.show();
+                            }
+                            break;
+                        case 12:
+                            try {
+                                //hide soft keyboard
+                                mainInterface.hideKeyboard();
+                                int n = Integer.parseInt(data);
+                                attr.setMinimumFontSize(n);
+                            } catch (NumberFormatException e) {
+                                e.printStackTrace();
+                                final AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(getActivity());
+                                myAlertDialog.setIcon(android.R.drawable.ic_dialog_alert)
+                                        .setCancelable(false)
+                                        .setTitle("Alert!")
+                                        .setMessage(data + " is not allowed, try to type an number!")
+                                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                            }
+                                        });
+                                myAlertDialog.show();
+                            }
                             break;
                     }
                 }

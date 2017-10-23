@@ -3,11 +3,13 @@ package com.catherine.webservices.adapters;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -37,15 +39,16 @@ public class MultiStyleRVAdapter extends RecyclerView.Adapter<MultiStyleRVAdapte
 
     //Hexadecimal - online decimal to hex converter tool: http://www.binaryhexconverter.com/decimal-to-hex-converter
     //selector
-    public final static int CHECK_BOX = 0x00001;
-    public final static int SWITCH = 0x00010;
+    public final static int CHECK_BOX = 0x000001;
+    public final static int SWITCH = 0x000010;
+    public final static int EDITTEXT = 0x000100;
 
     //background
-    private final int TOP = 0x00100;
-    private final int BOTTOM = 0x01000;
+    private final int TOP = 0x001000;
+    private final int BOTTOM = 0x010000;
 
     //style
-    private final int PLAIN_TEXT = 0x10000;
+    private final int PLAIN_TEXT = 0x100000;
 
     public MultiStyleRVAdapter(Context ctx, String title, List<MultiStyleItem> items, OnMultiItemClickListener listener, OnMultiItemSelectListener selector) {
         this.items = new ArrayList<>();
@@ -80,6 +83,7 @@ public class MultiStyleRVAdapter extends RecyclerView.Adapter<MultiStyleRVAdapte
         String subtitle = items.get(position).getSubtitle();
         int style = items.get(position).getStyle();
         int select = items.get(position).getSelect();
+        String data = items.get(position).getData();
 
         //This is a title not an item
         if ((style & PLAIN_TEXT) == PLAIN_TEXT) {
@@ -129,7 +133,7 @@ public class MultiStyleRVAdapter extends RecyclerView.Adapter<MultiStyleRVAdapte
                     mainRvHolder.cb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                         @Override
                         public void onCheckedChanged(CompoundButton compoundButton, boolean isCheck) {
-                            selector.onItemSelect(getTitle(position), getPosInSet(position), isCheck);
+                            selector.onItemSelect(getTitle(position), getPosInSet(position), isCheck, null);
                         }
                     });
                 }
@@ -152,7 +156,7 @@ public class MultiStyleRVAdapter extends RecyclerView.Adapter<MultiStyleRVAdapte
                     mainRvHolder.s.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                         @Override
                         public void onCheckedChanged(CompoundButton compoundButton, boolean isCheck) {
-                            selector.onItemSelect(getTitle(position), getPosInSet(position), isCheck);
+                            selector.onItemSelect(getTitle(position), getPosInSet(position), isCheck, null);
                         }
                     });
                     //Disable checkBox
@@ -160,6 +164,44 @@ public class MultiStyleRVAdapter extends RecyclerView.Adapter<MultiStyleRVAdapte
                 }
             } else {
                 mainRvHolder.s.setVisibility(View.GONE);
+            }
+
+            if ((style & EDITTEXT) == EDITTEXT) {
+                mainRvHolder.et.setVisibility(View.VISIBLE);
+                mainRvHolder.et.setText(data);
+                if (select == -1) {
+                    mainRvHolder.et.setEnabled(false);
+                    mainRvHolder.et.setFocusableInTouchMode(false);
+                    mainRvHolder.et.setFocusable(false);
+                    mainRvHolder.et.setClickable(false);
+                    mainRvHolder.tv_title.setTextColor(ctx.getResources().getColor(R.color.checker_board_dark));
+                    mainRvHolder.tv_subtitle.setTextColor(ctx.getResources().getColor(R.color.checker_board_dark));
+                } else {
+                    mainRvHolder.et.setEnabled(true);
+                    mainRvHolder.et.setEnabled(true);
+                    mainRvHolder.et.setFocusableInTouchMode(true);
+                    mainRvHolder.et.setFocusable(true);
+                    mainRvHolder.et.setClickable(true);
+                    mainRvHolder.et.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            //Do nothing because the purpose of this listener is used to prevent from IllegalStateException:focus search returned a view that wasn't able to take focus!
+                        }
+                    });
+                    mainRvHolder.et.setOnKeyListener(new View.OnKeyListener() {
+                        public boolean onKey(View v, int keyCode, KeyEvent event) {
+                            // If the event is a key-down event on the "enter" button
+                            if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
+                                    (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                                selector.onItemSelect(getTitle(position), getPosInSet(position), false, mainRvHolder.et.getText().toString());
+                                return true;
+                            }
+                            return false;
+                        }
+                    });
+                }
+            } else {
+                mainRvHolder.et.setVisibility(View.GONE);
             }
         }
 
@@ -281,6 +323,7 @@ public class MultiStyleRVAdapter extends RecyclerView.Adapter<MultiStyleRVAdapte
         LinearLayout ll_background;
         TextView tv_title;
         TextView tv_subtitle;
+        EditText et;
         CheckBox cb;
         Switch s;
 
@@ -289,6 +332,7 @@ public class MultiStyleRVAdapter extends RecyclerView.Adapter<MultiStyleRVAdapte
             ll_background = itemView.findViewById(R.id.ll_background);
             tv_title = itemView.findViewById(R.id.tv_title);
             tv_subtitle = itemView.findViewById(R.id.tv_subtitle);
+            et = itemView.findViewById(R.id.et);
             cb = itemView.findViewById(R.id.cb);
             s = itemView.findViewById(R.id.s);
         }

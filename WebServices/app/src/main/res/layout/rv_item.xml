@@ -56,8 +56,9 @@
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
         android:layout_weight="1"
+        android:background="@android:color/white"
         android:inputType="number"
         android:selectAllOnFocus="true"
-        android:textColor="@android:color/white"
+        android:textColor="@color/checker_board_dark"
         android:visibility="gone"/>
 </LinearLayout>

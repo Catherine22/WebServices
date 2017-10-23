@@ -529,7 +529,7 @@ public class P14_Full_WebView extends LazyFragment {
         //设置内置的缩放控件。
         settings.setBuiltInZoomControls(attr.isBuiltInZoomControls());
         //设置文本的缩放倍数，默认为 100，若上面是false，则该WebView不可缩放，这个不管设置什么都不能缩放。
-        settings.setTextZoom(100);
+        settings.setTextZoom(attr.getTextZoom());
         //隐藏原生的缩放控件
         settings.setDisplayZoomControls(attr.isDisplayZoomControls());
 
@@ -556,7 +556,7 @@ public class P14_Full_WebView extends LazyFragment {
         //设置WebView字体的大小，默认大小为 16
         settings.setDefaultFontSize(16);
         //设置WebView支持的最小字体大小，默认为 8
-        settings.setMinimumFontSize(12);
+        settings.setMinimumFontSize(8);
         String ua = settings.getUserAgentString();
         CLog.Companion.i(TAG, "user agent:" + ua);
 

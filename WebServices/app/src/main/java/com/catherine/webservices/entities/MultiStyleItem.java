@@ -13,6 +13,7 @@ public class MultiStyleItem implements Parcelable {
     private int style;
     private String title, subtitle;
     private int select;//-1:disable, 0:not select, 1:selected
+    private String data;
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
         public MultiStyleItem createFromParcel(Parcel in) {
@@ -28,11 +29,12 @@ public class MultiStyleItem implements Parcelable {
 
     }
 
-    public MultiStyleItem(int style, String title, String subtitle, int select) {
+    public MultiStyleItem(int style, String title, String subtitle, int select, String data) {
         this.style = style;
         this.title = title;
         this.subtitle = subtitle;
         this.select = select;
+        this.data = data;
     }
 
     public int getSelect() {
@@ -67,6 +69,13 @@ public class MultiStyleItem implements Parcelable {
         this.subtitle = subtitle;
     }
 
+    public String getData() {
+        return data;
+    }
+
+    public void setData(String data) {
+        this.data = data;
+    }
 
     // Parcelling part
     public MultiStyleItem(Parcel in) {
@@ -74,6 +83,7 @@ public class MultiStyleItem implements Parcelable {
         this.title = in.readString();
         this.subtitle = in.readString();
         this.select = in.readInt();
+        this.data = in.readString();
     }
 
     @Override
@@ -87,15 +97,17 @@ public class MultiStyleItem implements Parcelable {
         dest.writeString(this.title);
         dest.writeString(this.subtitle);
         dest.writeInt(this.select);
+        dest.writeString(this.data);
     }
 
     @Override
     public String toString() {
-        return "Item{" +
-                "style='" + style + '\'' +
-                "title='" + title + '\'' +
+        return "MultiStyleItem{" +
+                "style=" + style +
+                ", title='" + title + '\'' +
                 ", subtitle='" + subtitle + '\'' +
-                ", select='" + select + '\'' +
+                ", select=" + select +
+                ", data='" + data + '\'' +
                 '}';
     }
 }

@@ -21,12 +21,15 @@ public class WebViewAttr {
     private boolean LoadWithOverviewMode = true;
     private boolean BuiltInZoomControls = true;
     private boolean SupportZoom = true;
+    private int TextZoom = 100;
     private boolean DisplayZoomControls = false;
     private boolean AllowFileAccess = true;
     private boolean NeedInitialFocus = true;
     private boolean JavaScriptEnabled = false;
     private boolean JavaScriptCanOpenWindowsAutomatically = false;
     private boolean LoadsImagesAutomatically = true;
+    private int DefaultFontSize = 16;
+    private int MinimumFontSize = 8;
 
 
     public WebViewAttr(Context ctx) {
@@ -36,6 +39,7 @@ public class WebViewAttr {
         UseWideViewPort = sp.getBoolean("UseWideViewPort", true);
         LoadWithOverviewMode = sp.getBoolean("LoadWithOverviewMode", true);
         SupportZoom = sp.getBoolean("SupportZoom", true);
+        TextZoom = sp.getInt("TextZoom", 100);
         BuiltInZoomControls = sp.getBoolean("BuiltInZoomControls", true);
         DisplayZoomControls = sp.getBoolean("DisplayZoomControls", false);
         AllowFileAccess = sp.getBoolean("AllowFileAccess", true);
@@ -43,6 +47,8 @@ public class WebViewAttr {
         JavaScriptEnabled = sp.getBoolean("JavaScriptEnabled", false);
         JavaScriptCanOpenWindowsAutomatically = sp.getBoolean("JavaScriptCanOpenWindowsAutomatically", false);
         LoadsImagesAutomatically = sp.getBoolean("LoadsImagesAutomatically", true);
+        DefaultFontSize = sp.getInt("DefaultFontSize", 16);
+        MinimumFontSize = sp.getInt("MinimumFontSize", 8);
     }
 
     public boolean isVerticalScrollBarEnabled() {
@@ -93,64 +99,91 @@ public class WebViewAttr {
         return LoadsImagesAutomatically;
     }
 
-    public void setVerticalScrollBarEnabled(boolean verticalScrollBarEnabled) {
-        VerticalScrollBarEnabled = verticalScrollBarEnabled;
-        sp.edit().putBoolean("verticalScrollBarEnabled", verticalScrollBarEnabled).apply();
+    public int getTextZoom() {
+        return TextZoom;
     }
 
-    public void setHorizontalScrollBarEnabled(boolean horizontalScrollBarEnabled) {
-        HorizontalScrollBarEnabled = horizontalScrollBarEnabled;
-        sp.edit().putBoolean("horizontalScrollBarEnabled", horizontalScrollBarEnabled).apply();
+    public int getDefaultFontSize() {
+        return DefaultFontSize;
     }
 
-    public void setUseWideViewPort(boolean useWideViewPort) {
-        UseWideViewPort = useWideViewPort;
-        sp.edit().putBoolean("useWideViewPort", useWideViewPort).apply();
+    public int getMinimumFontSize() {
+        return MinimumFontSize;
     }
 
-    public void setLoadWithOverviewMode(boolean loadWithOverviewMode) {
-        LoadWithOverviewMode = loadWithOverviewMode;
-        sp.edit().putBoolean("loadWithOverviewMode", loadWithOverviewMode).apply();
+    public void setVerticalScrollBarEnabled(boolean VerticalScrollBarEnabled) {
+        this.VerticalScrollBarEnabled = VerticalScrollBarEnabled;
+        sp.edit().putBoolean("VerticalScrollBarEnabled", VerticalScrollBarEnabled).apply();
     }
 
-    public void setBuiltInZoomControls(boolean builtInZoomControls) {
-        BuiltInZoomControls = builtInZoomControls;
-        sp.edit().putBoolean("builtInZoomControls", builtInZoomControls).apply();
+    public void setHorizontalScrollBarEnabled(boolean HorizontalScrollBarEnabled) {
+        this.HorizontalScrollBarEnabled = HorizontalScrollBarEnabled;
+        sp.edit().putBoolean("HorizontalScrollBarEnabled", HorizontalScrollBarEnabled).apply();
     }
 
-    public void setSupportZoom(boolean supportZoom) {
-        SupportZoom = supportZoom;
-        sp.edit().putBoolean("supportZoom", supportZoom).apply();
+    public void setUseWideViewPort(boolean UseWideViewPort) {
+        this.UseWideViewPort = UseWideViewPort;
+        sp.edit().putBoolean("UseWideViewPort", UseWideViewPort).apply();
     }
 
-    public void setDisplayZoomControls(boolean displayZoomControls) {
-        DisplayZoomControls = displayZoomControls;
-        sp.edit().putBoolean("displayZoomControls", displayZoomControls).apply();
+    public void setLoadWithOverviewMode(boolean LoadWithOverviewMode) {
+        this.LoadWithOverviewMode = LoadWithOverviewMode;
+        sp.edit().putBoolean("LoadWithOverviewMode", LoadWithOverviewMode).apply();
     }
 
-    public void setAllowFileAccess(boolean allowFileAccess) {
-        AllowFileAccess = allowFileAccess;
-        sp.edit().putBoolean("allowFileAccess", allowFileAccess).apply();
+    public void setBuiltInZoomControls(boolean BuiltInZoomControls) {
+        this.BuiltInZoomControls = BuiltInZoomControls;
+        sp.edit().putBoolean("BuiltInZoomControls", BuiltInZoomControls).apply();
     }
 
-    public void setNeedInitialFocus(boolean needInitialFocus) {
-        NeedInitialFocus = needInitialFocus;
-        sp.edit().putBoolean("needInitialFocus", needInitialFocus).apply();
+    public void setSupportZoom(boolean SupportZoom) {
+        this.SupportZoom = SupportZoom;
+        sp.edit().putBoolean("SupportZoom", SupportZoom).apply();
     }
 
-    public void setJavaScriptEnabled(boolean javaScriptEnabled) {
-        JavaScriptEnabled = javaScriptEnabled;
-        sp.edit().putBoolean("javaScriptEnabled", javaScriptEnabled).apply();
+    public void setDisplayZoomControls(boolean DisplayZoomControls) {
+        this.DisplayZoomControls = DisplayZoomControls;
+        sp.edit().putBoolean("DisplayZoomControls", DisplayZoomControls).apply();
     }
 
-    public void setJavaScriptCanOpenWindowsAutomatically(boolean javaScriptCanOpenWindowsAutomatically) {
-        JavaScriptCanOpenWindowsAutomatically = javaScriptCanOpenWindowsAutomatically;
-        sp.edit().putBoolean("javaScriptCanOpenWindowsAutomatically", javaScriptCanOpenWindowsAutomatically).apply();
+    public void setAllowFileAccess(boolean AllowFileAccess) {
+        this.AllowFileAccess = AllowFileAccess;
+        sp.edit().putBoolean("AllowFileAccess", AllowFileAccess).apply();
     }
 
-    public void setLoadsImagesAutomatically(boolean loadsImagesAutomatically) {
-        LoadsImagesAutomatically = loadsImagesAutomatically;
-        sp.edit().putBoolean("loadsImagesAutomatically", loadsImagesAutomatically).apply();
+    public void setNeedInitialFocus(boolean NeedInitialFocus) {
+        this.NeedInitialFocus = NeedInitialFocus;
+        sp.edit().putBoolean("NeedInitialFocus", NeedInitialFocus).apply();
+    }
+
+    public void setJavaScriptEnabled(boolean JavaScriptEnabled) {
+        this.JavaScriptEnabled = JavaScriptEnabled;
+        sp.edit().putBoolean("JavaScriptEnabled", JavaScriptEnabled).apply();
+    }
+
+    public void setJavaScriptCanOpenWindowsAutomatically(boolean JavaScriptCanOpenWindowsAutomatically) {
+        this.JavaScriptCanOpenWindowsAutomatically = JavaScriptCanOpenWindowsAutomatically;
+        sp.edit().putBoolean("JavaScriptCanOpenWindowsAutomatically", JavaScriptCanOpenWindowsAutomatically).apply();
+    }
+
+    public void setLoadsImagesAutomatically(boolean LoadsImagesAutomatically) {
+        this.LoadsImagesAutomatically = LoadsImagesAutomatically;
+        sp.edit().putBoolean("LoadsImagesAutomatically", LoadsImagesAutomatically).apply();
+    }
+
+    public void setTextZoom(int TextZoom) {
+        this.TextZoom = TextZoom;
+        sp.edit().putInt("TextZoom", TextZoom).apply();
+    }
+
+    public void setDefaultFontSize(int DefaultFontSize) {
+        this.DefaultFontSize = DefaultFontSize;
+        sp.edit().putInt("DefaultFontSize", DefaultFontSize).apply();
+    }
+
+    public void setMinimumFontSize(int MinimumFontSize) {
+        this.MinimumFontSize = MinimumFontSize;
+        sp.edit().putInt("MinimumFontSize", MinimumFontSize).apply();
     }
 
     @Override
@@ -163,12 +196,15 @@ public class WebViewAttr {
                 ", LoadWithOverviewMode=" + LoadWithOverviewMode +
                 ", BuiltInZoomControls=" + BuiltInZoomControls +
                 ", SupportZoom=" + SupportZoom +
+                ", TextZoom=" + TextZoom +
                 ", DisplayZoomControls=" + DisplayZoomControls +
                 ", AllowFileAccess=" + AllowFileAccess +
                 ", NeedInitialFocus=" + NeedInitialFocus +
                 ", JavaScriptEnabled=" + JavaScriptEnabled +
                 ", JavaScriptCanOpenWindowsAutomatically=" + JavaScriptCanOpenWindowsAutomatically +
                 ", LoadsImagesAutomatically=" + LoadsImagesAutomatically +
+                ", DefaultFontSize=" + DefaultFontSize +
+                ", MinimumFontSize=" + MinimumFontSize +
                 '}';
     }
 }

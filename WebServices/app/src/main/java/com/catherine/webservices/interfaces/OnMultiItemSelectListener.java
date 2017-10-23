@@ -1,6 +1,5 @@
 package com.catherine.webservices.interfaces;
 
-import android.view.View;
 
 /**
  * Created by Catherine on 2017/9/18.
@@ -9,5 +8,5 @@ import android.view.View;
  */
 
 public interface OnMultiItemSelectListener {
-    void onItemSelect(String title, int position, boolean isSelect);
+    void onItemSelect(String title, int position, boolean isSelect, String data);
 }
