@@ -4,11 +4,29 @@
 
     <string name="no_cache">No cache</string>
     <string name="drawer_open">Where to?</string>
+    <string name="ok">OK</string>
     <string name="drawer_close"/>
     <string-array name="drawer_array">
         <item>Author</item>
         <item>WebView settings</item>
         <item>Settings</item>
         <item>Theme</item>
+    </string-array>
+
+    <string-array name="font_array">
+        <item>sans-serif</item>
+        <item>monospace</item>
+        <item>serif</item>
+        <item>cursive</item>
+        <item>fantasy</item>
+    </string-array>
+
+    <string-array name="text_encode">
+        <item>UTF-8</item>
+        <item>US-ASCII</item>
+        <item>ISO-8859-1</item>
+        <item>UTF-16BE</item>
+        <item>UTF-16LE</item>
+        <item>UTF-16</item>
     </string-array>
 </resources>

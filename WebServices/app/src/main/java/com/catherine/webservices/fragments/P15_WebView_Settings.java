@@ -23,8 +23,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.catherine.webservices.Commands;
@@ -49,6 +51,7 @@ import com.catherine.webservices.network.MyHttpURLConnection;
 import com.catherine.webservices.network.NetworkHelper;
 import com.catherine.webservices.security.ADID_AsyncTask;
 import com.catherine.webservices.toolkits.CLog;
+import com.catherine.webservices.toolkits.MyDisplay;
 import com.facebook.cache.common.CacheKey;
 import com.facebook.datasource.BaseDataSubscriber;
 import com.facebook.datasource.DataSource;
@@ -193,7 +196,6 @@ public class P15_WebView_Settings extends LazyFragment {
         wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.EDITTEXT, "设置WebView支持的最小字体大小", "setMinimumFontSize()", 0, String.valueOf(attr.getMinimumFontSize())));
         wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.TEXTVIEW, "设置编码格式", "setDefaultTextEncodingName()", 0, attr.getDefaultTextEncodingName()));
         wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.TEXTVIEW, "设置WebView的字体", "setStandardFontFamily()", 0, attr.getStandardFontFamily()));
-
     }
 
     private void initComponent() {
@@ -229,7 +231,7 @@ public class P15_WebView_Settings extends LazyFragment {
         }, new OnMultiItemSelectListener() {
             @Override
             public void onItemSelect(String title, int position, boolean isSelect, String data) {
-                CLog.Companion.i(TAG, title + "[" + position + "], isSelect:" + isSelect + "data: " + data);
+                CLog.Companion.i(TAG, title + "[" + position + "], isSelect:" + isSelect + ", data: " + data);
                 if (titles[0].equals(title)) {
                     switch (position) {
                         case 0:
@@ -362,16 +364,43 @@ public class P15_WebView_Settings extends LazyFragment {
                                 myAlertDialog.show();
                             }
                             break;
-
                         case 13:
                             //show selector
-                            showPwdDialog();
-                            attr.setDefaultTextEncodingName(data);
+                            int p = 0;
+                            String[] texts = getActivity().getResources().getStringArray(R.array.text_encode);
+                            for (int i = 0; i < texts.length; i++) {
+                                if (texts[i].equals(attr.getStandardFontFamily())) {
+                                    p = i;
+                                    break;
+                                }
+                            }
+                            showRBDialog(texts, p, new DialogCallback() {
+                                @Override
+                                public void dismiss(String data) {
+                                    attr.setDefaultTextEncodingName(data);
+                                    wvSettings.set(13, new MultiStyleItem(MultiStyleRVAdapter.TEXTVIEW, "设置编码格式", "setDefaultTextEncodingName()", 0, attr.getDefaultTextEncodingName()));
+                                    init();
+                                }
+                            });
                             break;
                         case 14:
                             //show selector
-                            showPwdDialog();
-                            attr.setStandardFontFamily(data);
+                            int q = 0;
+                            String[] fonts = getActivity().getResources().getStringArray(R.array.font_array);
+                            for (int i = 0; i < fonts.length; i++) {
+                                if (fonts[i].equals(attr.getStandardFontFamily())) {
+                                    q = i;
+                                    break;
+                                }
+                            }
+                            showRBDialog(fonts, q, new DialogCallback() {
+                                @Override
+                                public void dismiss(String data) {
+                                    attr.setStandardFontFamily(data);
+                                    wvSettings.set(14, new MultiStyleItem(MultiStyleRVAdapter.TEXTVIEW, "设置WebView的字体", "setStandardFontFamily()", 0, attr.getStandardFontFamily()));
+                                    init();
+                                }
+                            });
                             break;
 
                     }
@@ -386,8 +415,16 @@ public class P15_WebView_Settings extends LazyFragment {
     }
 
     private Dialog alertDialog;
+    private int selected;
 
-    private void showPwdDialog() {
+    private interface DialogCallback {
+        void dismiss(String data);
+    }
+
+    private void showRBDialog(final String[] radioText, int defaultValue, final DialogCallback myCallback) {
+        if (alertDialog != null && alertDialog.isShowing())
+            return;
+
         alertDialog = new Dialog(getActivity());
         alertDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         alertDialog.setContentView(R.layout.dialog_selector);
@@ -395,8 +432,39 @@ public class P15_WebView_Settings extends LazyFragment {
         alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         alertDialog.show();
 
-        rb = (RadioButton) alertDialog.findViewById(R.id.rb);
-        bt_ok = (Button) alertDialog.findViewById(R.id.bt);
-        bt_ok.setOnClickListener(this);
+        final RadioGroup rg = alertDialog.findViewById(R.id.rg);
+        rg.setOrientation(RadioGroup.VERTICAL);
+
+        selected = defaultValue; //default
+        int grey = getResources().getColor(R.color.grey700);
+        RadioGroup.LayoutParams params = new RadioGroup.LayoutParams(RadioGroup.LayoutParams.MATCH_PARENT, RadioGroup.LayoutParams.WRAP_CONTENT);
+        for (int i = 0; i < radioText.length; i++) {
+            RadioButton rb = new RadioButton(getActivity());
+            rb.setId(i);
+            rb.setText(radioText[i]);
+            rb.setTextColor(grey);
+            rb.setTextSize(16);
+            rb.setLayoutParams(params);
+            rg.addView(rb);
+        }
+        CLog.Companion.d(TAG, "count:" + rg.getChildCount());
+        rg.check(rg.getChildAt(selected).getId());
+        rg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                CLog.Companion.d(TAG, "check:" + i);
+                selected = i;
+            }
+        });
+        final Button bt_ok = alertDialog.findViewById(R.id.bt);
+        bt_ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                myCallback.dismiss(radioText[selected]);
+
+                alertDialog.dismiss();
+                rg.removeAllViews();
+            }
+        });
     }
 }

@@ -30,7 +30,7 @@ public class WebViewAttr {
     private boolean LoadsImagesAutomatically = true;
     private int DefaultFontSize = 16;
     private int MinimumFontSize = 8;
-    private String DefaultTextEncodingName = "utf-8";
+    private String DefaultTextEncodingName = "UTF-8";
     private String StandardFontFamily = "sans-serif";
 
 
@@ -51,7 +51,7 @@ public class WebViewAttr {
         LoadsImagesAutomatically = sp.getBoolean("LoadsImagesAutomatically", true);
         DefaultFontSize = sp.getInt("DefaultFontSize", 16);
         MinimumFontSize = sp.getInt("MinimumFontSize", 8);
-        DefaultTextEncodingName = sp.getString("DefaultTextEncodingName", "utf-8");
+        DefaultTextEncodingName = sp.getString("DefaultTextEncodingName", "UTF-8");
         StandardFontFamily = sp.getString("StandardFontFamily", "sans-serif");
     }
 
