@@ -309,36 +309,7 @@ public class MultiStyleRVAdapter extends RecyclerView.Adapter<MultiStyleRVAdapte
                 items.add(item);
             }
             items.addAll(list);
-
-            //adjust background
-            MultiStyleItem temp = items.get(0);
-            if (temp.getStyle() != PLAIN_TEXT)
-                temp.setStyle(temp.getStyle() | TOP);
-
-            temp = items.get(items.size() - 1);
-            if (temp.getStyle() != PLAIN_TEXT)
-                temp.setStyle(temp.getStyle() | BOTTOM);
-
-            for (int i = 1; i < items.size() - 1; i++) {
-                MultiStyleItem item = items.get(i);
-                if (item.getStyle() == PLAIN_TEXT) {
-                    //skip
-                } else {
-                    if (items.get(i + 1).getStyle() == PLAIN_TEXT) {
-                        item.setStyle(item.getStyle() | BOTTOM);
-                    }
-
-                    if (items.get(i - 1).getStyle() == PLAIN_TEXT) {
-                        item.setStyle(item.getStyle() | TOP);
-                    }
-                }
-            }
-
-//            //Debug
-//            for (int i = 0; i < items.size(); i++) {
-//                MultiStyleItem item = items.get(i);
-//                CLog.Companion.i(TAG, item.getTitle() + ":" + item.getStyle());
-//            }
+            optimizeStyle();
         }
     }
 
@@ -356,9 +327,44 @@ public class MultiStyleRVAdapter extends RecyclerView.Adapter<MultiStyleRVAdapte
             if (tag == -1)
                 return;
 
-            CLog.Companion.d(TAG, "pos:" + (tag + position + 1));
             items.set((tag + position + 1), item);
+            optimizeStyle();
         }
+    }
+
+    /**
+     * adjust background
+     */
+    private void optimizeStyle() {
+        MultiStyleItem temp = items.get(0);
+        if (temp.getStyle() != PLAIN_TEXT)
+            temp.setStyle(temp.getStyle() | TOP);
+
+        temp = items.get(items.size() - 1);
+        if (temp.getStyle() != PLAIN_TEXT)
+            temp.setStyle(temp.getStyle() | BOTTOM);
+
+        for (int i = 0; i < items.size(); i++) {
+            MultiStyleItem item = items.get(i);
+            if (item.getStyle() == PLAIN_TEXT) {
+                //skip
+            } else {
+                if (i < (items.size() - 1) && items.get(i + 1).getStyle() == PLAIN_TEXT) {
+                    item.setStyle(item.getStyle() | BOTTOM);
+                }
+
+                if (i > 0 && items.get(i - 1).getStyle() == PLAIN_TEXT) {
+                    item.setStyle(item.getStyle() | TOP);
+                }
+            }
+        }
+
+        //Debug
+        for (int i = 0; i < items.size(); i++) {
+            MultiStyleItem item = items.get(i);
+            CLog.Companion.i(TAG, item.getTitle() + ":" + item.getStyle());
+        }
+
     }
 
     class MainRvHolder extends RecyclerView.ViewHolder {

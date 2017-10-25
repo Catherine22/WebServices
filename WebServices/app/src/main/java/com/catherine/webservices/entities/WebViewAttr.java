@@ -2,6 +2,7 @@ package com.catherine.webservices.entities;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.webkit.WebSettings;
 
 /**
  * Created by Catherine on 2017/10/23.
@@ -32,6 +33,7 @@ public class WebViewAttr {
     private int MinimumFontSize = 8;
     private String DefaultTextEncodingName = "UTF-8";
     private String StandardFontFamily = "sans-serif";
+    private int CacheMode = WebSettings.LOAD_DEFAULT;
 
 
     public WebViewAttr(Context ctx) {
@@ -53,6 +55,7 @@ public class WebViewAttr {
         MinimumFontSize = sp.getInt("MinimumFontSize", 8);
         DefaultTextEncodingName = sp.getString("DefaultTextEncodingName", "UTF-8");
         StandardFontFamily = sp.getString("StandardFontFamily", "sans-serif");
+        CacheMode = sp.getInt("CacheMode", WebSettings.LOAD_DEFAULT);
     }
 
     public boolean isVerticalScrollBarEnabled() {
@@ -121,6 +124,43 @@ public class WebViewAttr {
 
     public String getStandardFontFamily() {
         return StandardFontFamily;
+    }
+
+    public int getCacheMode() {
+        return CacheMode;
+    }
+
+    public int getCacheMode(String name) {
+        if ("LOAD_DEFAULT".equals(name))
+            return -1;
+        else if ("LOAD_NORMAL".equals(name))
+            return 0;
+        else if ("LOAD_CACHE_ELSE_NETWORK".equals(name))
+            return 1;
+        else if ("LOAD_NO_CACHE".equals(name))
+            return 2;
+        else if ("LOAD_CACHE_ONLY".equals(name))
+            return 3;
+        else
+            return Integer.MAX_VALUE;
+    }
+
+    //from WebSettings
+    public String getCacheModeName(int cacheMode) {
+        switch (cacheMode) {
+            case -1:
+                return "LOAD_DEFAULT";
+            case 0:
+                return "LOAD_NORMAL";
+            case 1:
+                return "LOAD_CACHE_ELSE_NETWORK";
+            case 2:
+                return "LOAD_NO_CACHE";
+            case 3:
+                return "LOAD_CACHE_ONLY";
+            default:
+                return "NULL";
+        }
     }
 
     public void setVerticalScrollBarEnabled(boolean VerticalScrollBarEnabled) {
@@ -208,6 +248,11 @@ public class WebViewAttr {
         sp.edit().putString("StandardFontFamily", StandardFontFamily).apply();
     }
 
+    public void setCacheMode(int CacheMode) {
+        this.CacheMode = CacheMode;
+        sp.edit().putInt("CacheMode", CacheMode).apply();
+    }
+
     @Override
     public String toString() {
         return "WebViewAttr{" +
@@ -229,6 +274,7 @@ public class WebViewAttr {
                 ", MinimumFontSize=" + MinimumFontSize +
                 ", DefaultTextEncodingName=" + DefaultTextEncodingName +
                 ", StandardFontFamily=" + StandardFontFamily +
+                ", CacheMode=" + CacheMode +
                 '}';
     }
 }

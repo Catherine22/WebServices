@@ -57,7 +57,7 @@
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
         android:layout_weight="1"
-        android:background="@android:color/white"
+        android:background="@android:color/transparent"
         android:textColor="@color/checker_board_dark"
         android:visibility="gone"/>
 
@@ -68,7 +68,7 @@
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
         android:layout_weight="1"
-        android:background="@android:color/white"
+        android:background="@android:color/transparent"
         android:inputType="number"
         android:selectAllOnFocus="true"
         android:textColor="@color/checker_board_dark"

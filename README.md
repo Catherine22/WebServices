@@ -306,9 +306,19 @@ udpSocket();
 ## WebView
 
 **[P14_Full_WebView]**
+On the page, you can...
+
 - Back to previous page
 - Show ProgressBar while loading resource
-- 
+- Handle JavaScript dialog
+
+Still not work...
+- Call Java function from JavaScript with WebView
+- Synchronize cookie
+- Save photos from the Internet
+- Visit a HTTPS website
+- Visit a HTML5 website
+- Visit a website offline if it's available to be cached
 
 
 **[P15_WebView_Settings]**

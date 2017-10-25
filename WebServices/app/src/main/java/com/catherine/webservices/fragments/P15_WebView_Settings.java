@@ -46,7 +46,7 @@ import catherine.messagecenter.Server;
 
 public class P15_WebView_Settings extends LazyFragment {
     public final static String TAG = "P15_WebView_Settings";
-    private List<MultiStyleItem> wvAttr, wvSettings;
+    private List<MultiStyleItem> wvAttr, wvSettings, caches;
     private String[] titles;
     private SwipeRefreshLayout srl_container;
     private MainInterface mainInterface;
@@ -126,7 +126,7 @@ public class P15_WebView_Settings extends LazyFragment {
     private WebViewAttr attr;
 
     private void fillInData() {
-        titles = new String[]{"WebView Attribute", "WebSettings"};
+        titles = new String[]{"WebView Attribute", "WebSettings", "Cache"};
         attr = new WebViewAttr(getActivity());
         wvAttr = new ArrayList<>();
         wvAttr.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "可垂直滑动", "setVerticalScrollBarEnabled()", attr.isVerticalScrollBarEnabled() ? 1 : 0, null));
@@ -157,6 +157,9 @@ public class P15_WebView_Settings extends LazyFragment {
         wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.EDITTEXT, "设置WebView支持的最小字体大小", "setMinimumFontSize()", 0, String.valueOf(attr.getMinimumFontSize())));
         wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.TEXTVIEW, "设置编码格式", "setDefaultTextEncodingName()", 0, attr.getDefaultTextEncodingName()));
         wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.TEXTVIEW, "设置WebView的字体", "setStandardFontFamily()", 0, attr.getStandardFontFamily()));
+
+        caches = new ArrayList<>();
+        caches.add(new MultiStyleItem(MultiStyleRVAdapter.TEXTVIEW, "设置WebView的缓存模式", "setCacheMode()", 0, attr.getCacheModeName(attr.getCacheMode())));
     }
 
     private void initComponent() {
@@ -387,12 +390,40 @@ public class P15_WebView_Settings extends LazyFragment {
                             break;
 
                     }
+                } else if (titles[2].equals(title)) {
+                    switch (position) {
+                        case 0:
+                            //show selector
+                            int r = 0;
+                            String[] modes = getActivity().getResources().getStringArray(R.array.cache_mode);
+                            for (int i = 0; i < modes.length; i++) {
+                                if (modes[i].equals(attr.getCacheModeName(attr.getCacheMode()))) {
+                                    r = i;
+                                    break;
+                                }
+                            }
+                            showRBDialog(modes, r, new DialogCallback() {
+                                @Override
+                                public void dismiss(String data) {
+                                    attr.setCacheMode(attr.getCacheMode(data));
+                                    adapter.updateItem(titles[2], 0, new MultiStyleItem(MultiStyleRVAdapter.TEXTVIEW, "设置WebView的缓存模式", "setCacheMode()", 0, data));
+                                    new Handler().post(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            adapter.notifyDataSetChanged();
+                                        }
+                                    });
+                                }
+                            });
+                            break;
+                    }
                 }
                 sv.pushBoolean(Commands.WV_SETTINGS, true);
             }
         });
         adapter.mergeList(titles[0], wvAttr);
         adapter.mergeList(titles[1], wvSettings);
+        adapter.mergeList(titles[2], caches);
         rv_main_list.setAdapter(adapter);
         srl_container.setRefreshing(false);
     }

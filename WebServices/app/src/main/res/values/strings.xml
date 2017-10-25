@@ -5,6 +5,8 @@
     <string name="no_cache">No cache</string>
     <string name="drawer_open">Where to?</string>
     <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="copy">Copy</string>
     <string name="drawer_close"/>
     <string-array name="drawer_array">
         <item>Author</item>
@@ -28,5 +30,12 @@
         <item>UTF-16BE</item>
         <item>UTF-16LE</item>
         <item>UTF-16</item>
+    </string-array>
+    <string-array name="cache_mode">
+        <item>LOAD_DEFAULT</item>
+        <item>LOAD_NORMAL</item>
+        <item>LOAD_CACHE_ELSE_NETWORK</item>
+        <item>LOAD_NO_CACHE</item>
+        <item>LOAD_CACHE_ONLY</item>
     </string-array>
 </resources>

@@ -2,16 +2,23 @@ package com.catherine.webservices.fragments;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Bundle;
 import android.os.Message;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.Window;
 import android.webkit.ClientCertRequest;
 import android.webkit.ConsoleMessage;
 import android.webkit.GeolocationPermissions;
@@ -30,9 +37,12 @@ import android.webkit.WebSettings;
 import android.webkit.WebStorage;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.catherine.webservices.Commands;
 import com.catherine.webservices.Constants;
@@ -52,6 +62,8 @@ import catherine.messagecenter.Client;
 import catherine.messagecenter.CustomReceiver;
 import catherine.messagecenter.Result;
 
+import static android.content.Context.CLIPBOARD_SERVICE;
+
 /**
  * Created by Catherine on 2017/9/19.
  * Soft-World Inc.
@@ -68,6 +80,7 @@ public class P14_Full_WebView extends LazyFragment {
     private String currentUrl = Constants.MY_GITHUB;
     private Client client;
     private WebViewAttr attr;
+    private Dialog jsDialog;
     //test js -> https://www.javascript.com/
 
     public static P14_Full_WebView newInstance(boolean isLazyLoad) {
@@ -269,9 +282,60 @@ public class P14_Full_WebView extends LazyFragment {
             }
 
             @Override
-            public boolean onJsAlert(WebView view, String url, String message, JsResult result) {
+            public boolean onJsAlert(WebView view, String url, String message, final JsResult result) {
                 CLog.Companion.i(TAG, "onJsAlert:" + message);
-                return super.onJsAlert(view, url, message, result);
+                //处理JS的弹窗，改成以自定义style实现
+                if (jsDialog != null && jsDialog.isShowing())
+                    result.cancel();
+                else {
+                    jsDialog = new Dialog(getActivity());
+                    jsDialog.requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
+                    jsDialog.setContentView(R.layout.dialog_text);
+                    //设置dialog背景透明
+                    jsDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                    jsDialog.show();
+
+                    final TextView tv_title = jsDialog.findViewById(R.id.tv_title);
+                    tv_title.setText("JS message from " + url);
+                    final TextView tv_message = jsDialog.findViewById(R.id.tv_message);
+                    if (!TextUtils.isEmpty(message))
+                        tv_message.setText(message);
+                    final Button bt_ok = jsDialog.findViewById(R.id.bt_ok);
+                    bt_ok.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            jsDialog.dismiss();
+                            result.confirm();
+                        }
+                    });
+                    final Button bt_cancel = jsDialog.findViewById(R.id.bt_cancel);
+                    bt_cancel.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            jsDialog.dismiss();
+                            result.cancel();
+                        }
+                    });
+
+                    final String temp1 = url;
+                    final String temp2 = message;
+                    final Button bt_copy = jsDialog.findViewById(R.id.bt_copy);
+                    bt_copy.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(CLIPBOARD_SERVICE);
+                            ClipData clip = ClipData.newPlainText(temp1, temp2);
+                            if (clipboard != null) {
+                                clipboard.setPrimaryClip(clip);
+                            } else {
+                                Toast.makeText(getActivity(), "Clipboard not works", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                }
+
+//                return super.onJsAlert(view, url, message, result);
+                return true;
             }
 
             @Override
@@ -534,8 +598,6 @@ public class P14_Full_WebView extends LazyFragment {
         settings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
         //多窗口
         settings.supportMultipleWindows();
-        //关闭WebView中缓存
-        settings.setCacheMode(WebSettings.LOAD_NO_CACHE);
         //设置可以访问文件
         settings.setAllowFileAccess(attr.isAllowFileAccess());
         //当WebView调用requestFocus时为WebView设置节点
@@ -557,7 +619,12 @@ public class P14_Full_WebView extends LazyFragment {
         String ua = settings.getUserAgentString();
         CLog.Companion.i(TAG, "user agent:" + ua);
 
-        wv.loadUrl(formattedUrl(Constants.MY_GITHUB));
+        //cache
+        settings.setAppCachePath(MyApplication.INSTANCE.getDiskCacheDir("webview").getAbsolutePath());
+        //设置WebView中的缓存模式
+        settings.setCacheMode(WebSettings.LOAD_DEFAULT);
+
+        wv.loadUrl(formattedUrl(currentUrl));
     }
 
     private String formattedUrl(String url) {
@@ -572,4 +639,5 @@ public class P14_Full_WebView extends LazyFragment {
     public void onDestroy() {
         super.onDestroy();
     }
+
 }
