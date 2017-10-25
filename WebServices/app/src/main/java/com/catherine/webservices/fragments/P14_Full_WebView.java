@@ -15,6 +15,7 @@ import android.net.http.SslError;
 import android.os.Bundle;
 import android.os.Message;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
@@ -77,6 +78,7 @@ public class P14_Full_WebView extends LazyFragment {
     private ImageView iv_icon;
     private EditText et_url;
     private ProgressBar pb;
+    private FloatingActionButton fab_features;
     private String currentUrl = Constants.MY_GITHUB;
     private Client client;
     private WebViewAttr attr;
@@ -206,12 +208,26 @@ public class P14_Full_WebView extends LazyFragment {
         });
         pb = (ProgressBar) findViewById(R.id.pb);
         pb.setMax(100);
+
+        fab_features = (FloatingActionButton) findViewById(R.id.fab_features);
+        fab_features.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+            }
+        });
+
         wv = (WebView) findViewById(R.id.wv);
         refresh();
     }
 
     private void refresh() {
         attr = new WebViewAttr(getActivity());
+        if (attr.isShowFAB()) {
+            fab_features.setVisibility(View.VISIBLE);
+        } else {
+            fab_features.setVisibility(View.INVISIBLE);
+        }
+
+
         //可滑动，默认为true
         wv.setVerticalScrollBarEnabled(attr.isVerticalScrollBarEnabled());
         //可滑动，默认为true
@@ -281,9 +297,11 @@ public class P14_Full_WebView extends LazyFragment {
                 super.onCloseWindow(window);
             }
 
+            //处理alert弹出框，html弹框的一种方式
             @Override
             public boolean onJsAlert(WebView view, String url, String message, final JsResult result) {
                 CLog.Companion.i(TAG, "onJsAlert:" + message);
+
                 //处理JS的弹窗，改成以自定义style实现
                 if (jsDialog != null && jsDialog.isShowing())
                     result.cancel();
@@ -296,7 +314,7 @@ public class P14_Full_WebView extends LazyFragment {
                     jsDialog.show();
 
                     final TextView tv_title = jsDialog.findViewById(R.id.tv_title);
-                    tv_title.setText("JS message from " + url);
+                    tv_title.setText("JS alert from " + url);
                     final TextView tv_message = jsDialog.findViewById(R.id.tv_message);
                     if (!TextUtils.isEmpty(message))
                         tv_message.setText(message);
@@ -338,6 +356,7 @@ public class P14_Full_WebView extends LazyFragment {
                 return true;
             }
 
+            //处理confirm弹出框
             @Override
             public boolean onJsConfirm(WebView view, String url, String message, JsResult result) {
                 CLog.Companion.i(TAG, "onJsConfirm:" + message);
