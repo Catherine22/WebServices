@@ -264,18 +264,18 @@ Check SSL certificates here : [https://www.ssllabs.com/ssltest/][2]
 
 **ImageView + DiskLruCache**
 1. Download a url list.		
-2. Check internal or external storage of the device and if the image has had cache, skip step 3 and show it.
+2. Check internal or external storage of the device. If the images have had been cached, skip step 3 and show them.
 3. Download each image from the list and try to cache them.		
-4. Show images whatever it has been cached.		
+4. Show images whatever they have been cached.		
 
 Here is the example: [P05_Gallery], [ImageCardRVAdapter]
 
 **Fresco - SimpleDraweeView**
 
 Three ways to deal with images:
-- Show images directly by calling setImageURI (String url).
-- Prefetch images and show them.
-- Prefetch images before show them.
+- Show images directly by calling setImageURI().
+- Prefetch images and show them at the same time.       
+- Prefetch images when the app launches and show caches if they're downloaded.
 
 Here is the example: [P11_Fresco], [FrescoRVAdapter]
 
@@ -306,11 +306,11 @@ udpSocket();
 ## WebView
 
 **[P14_Full_WebView]**
-On the page, you can...
+On the Fragment, you can...
 
-- Back to previous page
-- Show ProgressBar while loading resource
-- Handle JavaScript alert(), confirm() and prompt() dialog
+- Back to previous pages
+- Show ProgressBar while loading resources
+- Handle JavaScript alert(), confirm() and prompt() and display the message with a used-defined dialog.
 > Here are some urls to test JavaScript. You could type them in
 > [P14_Full_WebView] :
 >  - [https://www.javascript.com/][3]
@@ -321,15 +321,16 @@ On the page, you can...
 - Call Java function from JavaScript with WebView
 > Two tips:
 >  1. Don't forget to ignore your JavaScriptInterface with Android proguard
->  2. Add @JavascriptInterface Annotation
->  Go to [MyJavaScriptInterface] to see more
+>  2. Add @JavascriptInterface Annotation and you can go to [MyJavaScriptInterface] to see more
 
+In this project, every class that should not be obfuscated implements IgnoreProguard interface.
 In proguard-rules.pro
 ```gradle
 -keep public class com.catherine.webservices.toolkits.IgnoreProguard
 -keep public class * implements com.catherine.webservices.toolkits.IgnoreProguard
 -keepclassmembers class * implements com.catherine.webservices.toolkits.IgnoreProguard {
     <methods>;
+}
 ```
 
 Still not work...
