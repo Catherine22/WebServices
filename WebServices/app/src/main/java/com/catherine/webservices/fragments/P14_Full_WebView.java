@@ -67,6 +67,7 @@ public class P14_Full_WebView extends LazyFragment {
     private ProgressBar pb;
     private String currentUrl = Constants.MY_GITHUB;
     private Client client;
+    private WebViewAttr attr;
     //test js -> https://www.javascript.com/
 
     public static P14_Full_WebView newInstance(boolean isLazyLoad) {
@@ -137,8 +138,6 @@ public class P14_Full_WebView extends LazyFragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
     }
-
-    private WebViewAttr attr;
 
     private void initComponent() {
         client = new Client(getActivity(), new CustomReceiver() {
