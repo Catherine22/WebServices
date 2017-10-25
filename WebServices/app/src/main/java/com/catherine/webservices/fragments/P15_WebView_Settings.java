@@ -46,7 +46,7 @@ import catherine.messagecenter.Server;
 
 public class P15_WebView_Settings extends LazyFragment {
     public final static String TAG = "P15_WebView_Settings";
-    private List<MultiStyleItem> wvAttr, wvSettings, caches, debugs;
+    private List<MultiStyleItem> wvAttr, wvSettings, caches;
     private String[] titles;
     private SwipeRefreshLayout srl_container;
     private MainInterface mainInterface;
@@ -161,8 +161,6 @@ public class P15_WebView_Settings extends LazyFragment {
         caches = new ArrayList<>();
         caches.add(new MultiStyleItem(MultiStyleRVAdapter.TEXTVIEW, "设置WebView的缓存模式", "setCacheMode()", 0, attr.getCacheModeName(attr.getCacheMode())));
 
-        debugs = new ArrayList<>();
-        debugs.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "开启悬浮功能按键", "FloatingActionButton", attr.isShowFAB() ? 1 : 0, null));
     }
 
     private void initComponent() {
@@ -420,12 +418,6 @@ public class P15_WebView_Settings extends LazyFragment {
                             });
                             break;
                     }
-                } else if (titles[3].equals(title)) {
-                    switch (position) {
-                        case 0:
-                            attr.setShowFAB(isSelect);
-                            break;
-                    }
                 }
                 sv.pushBoolean(Commands.WV_SETTINGS, true);
             }
@@ -433,7 +425,6 @@ public class P15_WebView_Settings extends LazyFragment {
         adapter.mergeList(titles[0], wvAttr);
         adapter.mergeList(titles[1], wvSettings);
         adapter.mergeList(titles[2], caches);
-        adapter.mergeList(titles[3], debugs);
         rv_main_list.setAdapter(adapter);
         srl_container.setRefreshing(false);
     }

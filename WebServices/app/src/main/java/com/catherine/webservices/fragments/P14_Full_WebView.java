@@ -15,7 +15,6 @@ import android.net.http.SslError;
 import android.os.Bundle;
 import android.os.Message;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
@@ -38,6 +37,8 @@ import android.webkit.WebSettings;
 import android.webkit.WebStorage;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -57,6 +58,7 @@ import com.catherine.webservices.toolkits.CLog;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Arrays;
 import java.util.List;
 
 import catherine.messagecenter.Client;
@@ -76,9 +78,8 @@ public class P14_Full_WebView extends LazyFragment {
     private MainInterface mainInterface;
     private WebView wv;
     private ImageView iv_icon;
-    private EditText et_url;
+    private AutoCompleteTextView actv_url;
     private ProgressBar pb;
-    private FloatingActionButton fab_features;
     private String currentUrl = Constants.MY_GITHUB;
     private Client client;
     private WebViewAttr attr;
@@ -186,12 +187,12 @@ public class P14_Full_WebView extends LazyFragment {
                 mainInterface.openSlideMenu();
             }
         });
-        et_url = (EditText) findViewById(R.id.et_url);
-        et_url.setFocusableInTouchMode(true);
-        et_url.requestFocus();
-        et_url.setText(currentUrl);
+        actv_url = (AutoCompleteTextView) findViewById(R.id.actv_url);
+        actv_url.setFocusableInTouchMode(true);
+        actv_url.requestFocus();
+        actv_url.setText(formattedUrl(currentUrl));
         //handle "enter" event
-        et_url.setOnKeyListener(new View.OnKeyListener() {
+        actv_url.setOnKeyListener(new View.OnKeyListener() {
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 // If the event is a key-down event on the "enter" button
                 if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
@@ -200,33 +201,24 @@ public class P14_Full_WebView extends LazyFragment {
                     mainInterface.hideKeyboard();
 
                     // Perform action on key press
-                    wv.loadUrl(formattedUrl(et_url.getText().toString()));
+                    wv.loadUrl(formattedUrl(actv_url.getText().toString()));
                     return true;
                 }
                 return false;
             }
         });
+        String[] urls = getResources().getStringArray(R.array.url_suggestions);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_dropdown_item_1line, Arrays.asList(urls));
+        actv_url.setAdapter(adapter);
+
         pb = (ProgressBar) findViewById(R.id.pb);
         pb.setMax(100);
-
-        fab_features = (FloatingActionButton) findViewById(R.id.fab_features);
-        fab_features.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-            }
-        });
-
         wv = (WebView) findViewById(R.id.wv);
         refresh();
     }
 
     private void refresh() {
         attr = new WebViewAttr(getActivity());
-        if (attr.isShowFAB()) {
-            fab_features.setVisibility(View.VISIBLE);
-        } else {
-            fab_features.setVisibility(View.INVISIBLE);
-        }
-
         //可滑动，默认为true
         wv.setVerticalScrollBarEnabled(attr.isVerticalScrollBarEnabled());
         //可滑动，默认为true
@@ -298,7 +290,7 @@ public class P14_Full_WebView extends LazyFragment {
 
             //处理alert弹出框，html弹框的一种方式
             @Override
-            public boolean onJsAlert(WebView view, String url, String message, final JsResult result) {
+            public boolean onJsAlert(WebView view, final String url, final String message, final JsResult result) {
                 CLog.Companion.i(TAG, "onJsAlert:" + message);
 
                 //处理JS的弹窗，改成以自定义style实现
@@ -334,14 +326,12 @@ public class P14_Full_WebView extends LazyFragment {
                         }
                     });
 
-                    final String temp1 = url;
-                    final String temp2 = message;
                     final Button bt_copy = jsDialog.findViewById(R.id.bt_copy);
                     bt_copy.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(CLIPBOARD_SERVICE);
-                            ClipData clip = ClipData.newPlainText(temp1, temp2);
+                            ClipData clip = ClipData.newPlainText(url, message);
                             if (clipboard != null) {
                                 clipboard.setPrimaryClip(clip);
                             } else {
@@ -357,15 +347,120 @@ public class P14_Full_WebView extends LazyFragment {
 
             //处理confirm弹出框
             @Override
-            public boolean onJsConfirm(WebView view, String url, String message, JsResult result) {
+            public boolean onJsConfirm(WebView view, final String url, final String message, final JsResult result) {
                 CLog.Companion.i(TAG, "onJsConfirm:" + message);
-                return super.onJsConfirm(view, url, message, result);
+
+                //处理JS的弹窗，改成以自定义style实现
+                if (jsDialog != null && jsDialog.isShowing())
+                    result.cancel();
+                else {
+                    jsDialog = new Dialog(getActivity());
+                    jsDialog.requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
+                    jsDialog.setContentView(R.layout.dialog_text);
+                    //设置dialog背景透明
+                    jsDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                    jsDialog.show();
+
+                    final TextView tv_title = jsDialog.findViewById(R.id.tv_title);
+                    tv_title.setText("JS confirm from " + url);
+                    final TextView tv_message = jsDialog.findViewById(R.id.tv_message);
+                    if (!TextUtils.isEmpty(message))
+                        tv_message.setText(message);
+                    final Button bt_ok = jsDialog.findViewById(R.id.bt_ok);
+                    bt_ok.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            jsDialog.dismiss();
+                            result.confirm();
+                        }
+                    });
+                    final Button bt_cancel = jsDialog.findViewById(R.id.bt_cancel);
+                    bt_cancel.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            jsDialog.dismiss();
+                            result.cancel();
+                        }
+                    });
+
+                    final Button bt_copy = jsDialog.findViewById(R.id.bt_copy);
+                    bt_copy.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(CLIPBOARD_SERVICE);
+                            ClipData clip = ClipData.newPlainText(url, message);
+                            if (clipboard != null) {
+                                clipboard.setPrimaryClip(clip);
+                            } else {
+                                Toast.makeText(getActivity(), "Clipboard not works", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                }
+                return true;
+//                return super.onJsConfirm(view, url, message, result);
             }
 
             @Override
-            public boolean onJsPrompt(WebView view, String url, String message, String defaultValue, JsPromptResult result) {
+            public boolean onJsPrompt(WebView view, final String url, final String message, final String defaultValue, final JsPromptResult result) {
                 CLog.Companion.i(TAG, "onJsPrompt:" + message);
-                return super.onJsPrompt(view, url, message, defaultValue, result);
+
+                //处理JS的弹窗，改成以自定义style实现
+                if (jsDialog != null && jsDialog.isShowing())
+                    result.cancel();
+                else {
+                    jsDialog = new Dialog(getActivity());
+                    jsDialog.requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
+                    jsDialog.setContentView(R.layout.dialog_edittext);
+                    //设置dialog背景透明
+                    jsDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                    jsDialog.show();
+
+                    final TextView tv_title = jsDialog.findViewById(R.id.tv_title);
+                    tv_title.setText("JS prompt from " + url);
+                    final TextView tv_message = jsDialog.findViewById(R.id.tv_message);
+                    if (!TextUtils.isEmpty(message))
+                        tv_message.setText(message);
+                    final EditText et_input = jsDialog.findViewById(R.id.et_input);
+                    if (!TextUtils.isEmpty(defaultValue))
+                        et_input.setText(defaultValue);
+                    final Button bt_ok = jsDialog.findViewById(R.id.bt_ok);
+                    bt_ok.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (TextUtils.isEmpty(et_input.getText())) {
+                                et_input.setHint(getActivity().getString(R.string.et_hint));
+                            } else {
+                                jsDialog.dismiss();
+                                result.confirm(et_input.getText().toString());
+                            }
+                        }
+                    });
+                    final Button bt_cancel = jsDialog.findViewById(R.id.bt_cancel);
+                    bt_cancel.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            jsDialog.dismiss();
+                            result.cancel();
+                        }
+                    });
+
+                    final Button bt_copy = jsDialog.findViewById(R.id.bt_copy);
+                    bt_copy.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(CLIPBOARD_SERVICE);
+                            ClipData clip = ClipData.newPlainText(url, message);
+                            if (clipboard != null) {
+                                clipboard.setPrimaryClip(clip);
+                            } else {
+                                Toast.makeText(getActivity(), "Clipboard not works", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                }
+                return true;
+//                return super.onJsPrompt(view, url, message, defaultValue, result);
             }
 
             @Override
@@ -460,9 +555,9 @@ public class P14_Full_WebView extends LazyFragment {
                         CLog.Companion.i(TAG, "shouldOverrideUrlLoading:" + url);
 //                        iv_icon.setVisibility(View.GONE);
 //                        iv_icon.setImageResource(R.mipmap.ic_launcher_round);
-                        et_url.setText(url);
+                        actv_url.setText(url);
                         currentUrl = url;
-                        view.loadUrl(url);
+                        view.loadUrl(formattedUrl(currentUrl));
                         return true;
                     }
 
@@ -647,6 +742,9 @@ public class P14_Full_WebView extends LazyFragment {
 
     private String formattedUrl(String url) {
         String tmp = url;
+        if (url.contains("file:///") || url.contains("content://"))
+            return tmp;
+
         if (!url.contains("http://") && !url.contains("https://")) {
             tmp = "http://" + url;
         }

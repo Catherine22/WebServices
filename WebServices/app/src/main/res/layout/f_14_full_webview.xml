@@ -24,13 +24,13 @@
         />
 
 
-        <EditText
-            android:id="@+id/et_url"
+        <AutoCompleteTextView
+            android:id="@+id/actv_url"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
-            android:hint="Type a url"
+            android:hint="@string/et_hint"
             android:inputType="textUri"
             android:selectAllOnFocus="true"
             android:textColor="@android:color/white"/>
@@ -49,18 +49,4 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/pb"/>
-
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_features"
-        android:layout_width="@dimen/fab_00"
-        android:layout_height="@dimen/fab_00"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_margin="@dimen/fab_m"
-        android:scaleType="center"
-        android:visibility="invisible"
-        app:backgroundTint="@color/colorPrimary"
-        app:fabSize="normal"
-        app:srcCompat="@drawable/settings_selector"/>
 </RelativeLayout>

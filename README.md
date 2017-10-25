@@ -310,15 +310,25 @@ On the page, you can...
 
 - Back to previous page
 - Show ProgressBar while loading resource
-- Handle JavaScript dialog
+- Handle JavaScript alert(), confirm() and prompt() dialog
+
+``` markdown
+Here are some urls to test JavaScript. You could type them in [P14_Full_WebView] :
+ - [https://www.javascript.com/][3]
+ - file:///android_asset/js_alert.html
+ - file:///android_asset/js_confirm.html
+ - file:///android_asset/js_prompt.html
+```
 
 Still not work...
 - Call Java function from JavaScript with WebView
 - Synchronize cookie
-- Save photos from the Internet
-- Visit a HTTPS website
+- Save photos to your device from the Internet
+- Visit a HTTPS website with a certain certificate
 - Visit a HTML5 website
 - Visit a website offline if it's available to be cached
+
+
 
 
 **[P15_WebView_Settings]**
@@ -366,3 +376,4 @@ Set attributes of WebView that includes WebViewClient and WebSettings (setAllowF
 
   [1]: https://kyfw.12306.cn/otn/regist/init
   [2]: https://www.ssllabs.com/ssltest/
+  [3]: https://www.javascript.com/

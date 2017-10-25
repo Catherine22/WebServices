@@ -8,6 +8,7 @@
     <string name="cancel">Cancel</string>
     <string name="copy">Copy</string>
     <string name="drawer_close"/>
+    <string name="et_hint">Input something here!</string>
     <string-array name="drawer_array">
         <item>Author</item>
         <item>WebView settings</item>
@@ -37,5 +38,14 @@
         <item>LOAD_CACHE_ELSE_NETWORK</item>
         <item>LOAD_NO_CACHE</item>
         <item>LOAD_CACHE_ONLY</item>
+    </string-array>
+
+
+    <string-array name="url_suggestions">
+        <item>https://github.com/Catherine22</item>
+        <item>https://www.javascript.com/</item>
+        <item>file:///android_asset/js_alert.html</item>
+        <item>file:///android_asset/js_confirm.html</item>
+        <item>file:///android_asset/js_prompt.html</item>
     </string-array>
 </resources>

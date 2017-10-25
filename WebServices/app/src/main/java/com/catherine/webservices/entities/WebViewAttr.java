@@ -35,10 +35,6 @@ public class WebViewAttr {
     private String StandardFontFamily = "sans-serif";
     private int CacheMode = WebSettings.LOAD_DEFAULT;
 
-
-    private boolean ShowFAB = true;
-
-
     public WebViewAttr(Context ctx) {
         sp = ctx.getSharedPreferences("wv_settings", Context.MODE_PRIVATE);
         VerticalScrollBarEnabled = sp.getBoolean("VerticalScrollBarEnabled", true);
@@ -59,7 +55,6 @@ public class WebViewAttr {
         DefaultTextEncodingName = sp.getString("DefaultTextEncodingName", "UTF-8");
         StandardFontFamily = sp.getString("StandardFontFamily", "sans-serif");
         CacheMode = sp.getInt("CacheMode", WebSettings.LOAD_DEFAULT);
-        ShowFAB = sp.getBoolean("ShowFAB", true);
     }
 
     public boolean isVerticalScrollBarEnabled() {
@@ -167,10 +162,6 @@ public class WebViewAttr {
         }
     }
 
-    public boolean isShowFAB() {
-        return ShowFAB;
-    }
-
     public void setVerticalScrollBarEnabled(boolean VerticalScrollBarEnabled) {
         this.VerticalScrollBarEnabled = VerticalScrollBarEnabled;
         sp.edit().putBoolean("VerticalScrollBarEnabled", VerticalScrollBarEnabled).apply();
@@ -260,12 +251,6 @@ public class WebViewAttr {
         this.CacheMode = CacheMode;
         sp.edit().putInt("CacheMode", CacheMode).apply();
     }
-
-    public void setShowFAB(boolean ShowFAB) {
-        this.ShowFAB = ShowFAB;
-        sp.edit().putBoolean("ShowFAB", ShowFAB).apply();
-    }
-
     @Override
     public String toString() {
         return "WebViewAttr{" +
@@ -288,7 +273,6 @@ public class WebViewAttr {
                 ", DefaultTextEncodingName=" + DefaultTextEncodingName +
                 ", StandardFontFamily=" + StandardFontFamily +
                 ", CacheMode=" + CacheMode +
-                ", ShowFAB=" + ShowFAB +
                 '}';
     }
 }
