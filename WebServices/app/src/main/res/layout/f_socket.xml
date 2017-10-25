@@ -47,7 +47,7 @@
         android:scaleType="center"
         app:backgroundTint="@color/colorPrimary"
         app:fabSize="mini"
-        app:srcCompat="@drawable/cancel_selector"/>
+        app:srcCompat="@drawable/close_selector"/>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_settings"
