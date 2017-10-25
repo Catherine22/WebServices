@@ -2,15 +2,12 @@ package com.catherine.webservices.fragments;
 
 import android.Manifest;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.view.KeyEvent;
@@ -150,6 +147,7 @@ public class P14_Full_WebView extends LazyFragment {
                 refresh();
             }
         });
+        MyApplication.INSTANCE.registerLocalBroadCastReceiver(client);
         client.gotMessages(Commands.WV_SETTINGS);
         mainInterface.setBackKeyListener(new BackKeyListener() {
             @Override
@@ -573,7 +571,6 @@ public class P14_Full_WebView extends LazyFragment {
 
     @Override
     public void onDestroy() {
-        client.release();
         super.onDestroy();
     }
 }

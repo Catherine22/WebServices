@@ -3,78 +3,39 @@ package com.catherine.webservices.fragments;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+import android.os.Handler;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.TextView;
 
 import com.catherine.webservices.Commands;
 import com.catherine.webservices.Constants;
 import com.catherine.webservices.R;
 import com.catherine.webservices.adapters.MultiStyleRVAdapter;
-import com.catherine.webservices.adapters.TextCardRVAdapter;
-import com.catherine.webservices.entities.ImageCard;
 import com.catherine.webservices.entities.MultiStyleItem;
 import com.catherine.webservices.entities.WebViewAttr;
-import com.catherine.webservices.interfaces.BackKeyListener;
 import com.catherine.webservices.interfaces.MainInterface;
-import com.catherine.webservices.interfaces.OnItemClickListener;
 import com.catherine.webservices.interfaces.OnMultiItemClickListener;
 import com.catherine.webservices.interfaces.OnMultiItemSelectListener;
 import com.catherine.webservices.interfaces.OnRequestPermissionsListener;
-import com.catherine.webservices.network.HttpAsyncTask;
-import com.catherine.webservices.network.HttpRequest;
-import com.catherine.webservices.network.HttpResponse;
-import com.catherine.webservices.network.HttpResponseListener;
-import com.catherine.webservices.network.MyHttpURLConnection;
-import com.catherine.webservices.network.NetworkHelper;
-import com.catherine.webservices.security.ADID_AsyncTask;
 import com.catherine.webservices.toolkits.CLog;
-import com.catherine.webservices.toolkits.MyDisplay;
-import com.facebook.cache.common.CacheKey;
-import com.facebook.datasource.BaseDataSubscriber;
-import com.facebook.datasource.DataSource;
-import com.facebook.drawee.backends.pipeline.Fresco;
-import com.facebook.imagepipeline.cache.DefaultCacheKeyFactory;
-import com.facebook.imagepipeline.core.DefaultExecutorSupplier;
-import com.facebook.imagepipeline.core.ImagePipelineFactory;
-import com.facebook.imagepipeline.request.ImageRequest;
-
-import org.jetbrains.annotations.NotNull;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 
 import catherine.messagecenter.AsyncResponse;
-import catherine.messagecenter.Client;
-import catherine.messagecenter.CustomReceiver;
-import catherine.messagecenter.Result;
 import catherine.messagecenter.Server;
 
 /**
@@ -235,10 +196,10 @@ public class P15_WebView_Settings extends LazyFragment {
                 if (titles[0].equals(title)) {
                     switch (position) {
                         case 0:
-                            attr.setUseWideViewPort(isSelect);
+                            attr.setVerticalScrollBarEnabled(isSelect);
                             break;
                         case 1:
-                            attr.setLoadWithOverviewMode(isSelect);
+                            attr.setHorizontalScrollBarEnabled(isSelect);
                             break;
                     }
                 } else if (titles[1].equals(title)) {
@@ -251,29 +212,37 @@ public class P15_WebView_Settings extends LazyFragment {
                             break;
                         case 2:
                             attr.setBuiltInZoomControls(isSelect);
-                            wvSettings.set(2, new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "设置内置的缩放控件", "setBuiltInZoomControls()", attr.isBuiltInZoomControls() ? 1 : 0, null));
+                            adapter.updateItem(titles[1], 2, new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "设置内置的缩放控件", "setBuiltInZoomControls()", isSelect ? 1 : 0, null));
                             if (isSelect) {
                                 attr.setSupportZoom(true);
-                                wvSettings.set(3, new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "支持缩放", "setSupportZoom()", 1, null));//depend on the above
-                                wvSettings.set(4, new MultiStyleItem(MultiStyleRVAdapter.EDITTEXT, "设置文本的缩放倍数", "setTextZoom()", 0, String.valueOf(attr.getTextZoom())));
-                                init();
+                                adapter.updateItem(titles[1], 3, new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "支持缩放", "setSupportZoom()", 1, null));
+                                adapter.updateItem(titles[1], 4, new MultiStyleItem(MultiStyleRVAdapter.EDITTEXT, "设置文本的缩放倍数", "setTextZoom()", 0, String.valueOf(attr.getTextZoom())));
                             } else {
                                 attr.setSupportZoom(false);
-                                wvSettings.set(3, new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "支持缩放", "setSupportZoom()", -1, null));//depend on the above
-                                wvSettings.set(4, new MultiStyleItem(MultiStyleRVAdapter.EDITTEXT, "设置文本的缩放倍数", "setTextZoom()", -1, String.valueOf(attr.getTextZoom())));
-                                init();
+                                adapter.updateItem(titles[1], 3, new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "支持缩放", "setSupportZoom()", -1, null));
+                                adapter.updateItem(titles[1], 4, new MultiStyleItem(MultiStyleRVAdapter.EDITTEXT, "设置文本的缩放倍数", "setTextZoom()", -1, String.valueOf(attr.getTextZoom())));
                             }
+                            new Handler().post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    adapter.notifyDataSetChanged();
+                                }
+                            });
                             break;
                         case 3:
                             attr.setSupportZoom(isSelect);
-                            wvSettings.set(3, new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "支持缩放", "setSupportZoom()", attr.isSupportZoom() ? 1 : 0, null));//depend on the above                            if (isSelect) {
+                            adapter.updateItem(titles[1], 3, new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "支持缩放", "setSupportZoom()", isSelect ? 1 : 0, null));
                             if (isSelect) {
-                                wvSettings.set(4, new MultiStyleItem(MultiStyleRVAdapter.EDITTEXT, "设置文本的缩放倍数", "setTextZoom()", 0, String.valueOf(attr.getTextZoom())));
-                                init();
+                                adapter.updateItem(titles[1], 4, new MultiStyleItem(MultiStyleRVAdapter.EDITTEXT, "设置文本的缩放倍数", "setTextZoom()", 0, String.valueOf(attr.getTextZoom())));
                             } else {
-                                wvSettings.set(4, new MultiStyleItem(MultiStyleRVAdapter.EDITTEXT, "设置文本的缩放倍数", "setTextZoom()", -1, String.valueOf(attr.getTextZoom())));
-                                init();
+                                adapter.updateItem(titles[1], 4, new MultiStyleItem(MultiStyleRVAdapter.EDITTEXT, "设置文本的缩放倍数", "setTextZoom()", -1, String.valueOf(attr.getTextZoom())));
                             }
+                            new Handler().post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    adapter.notifyDataSetChanged();
+                                }
+                            });
                             break;
                         case 4:
                             try {
@@ -307,14 +276,18 @@ public class P15_WebView_Settings extends LazyFragment {
                             break;
                         case 8:
                             attr.setJavaScriptEnabled(isSelect);
-                            wvSettings.set(9, new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "支持JS", "setJavaScriptEnabled()", attr.isJavaScriptEnabled() ? 1 : 0, null));
+                            adapter.updateItem(titles[1], 8, new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "支持JS", "setJavaScriptEnabled()", isSelect ? 1 : 0, null));
                             if (isSelect) {
-                                wvSettings.set(9, new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "支持通过JS打开新窗口", "setJavaScriptCanOpenWindowsAutomatically()", attr.isJavaScriptCanOpenWindowsAutomatically() ? 1 : 0, null));
-                                init();
+                                adapter.updateItem(titles[1], 9, new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "支持通过JS打开新窗口", "setJavaScriptCanOpenWindowsAutomatically()", 1, null));
                             } else {
-                                wvSettings.set(9, new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "支持通过JS打开新窗口", "setJavaScriptCanOpenWindowsAutomatically()", -1, null));
-                                init();
+                                adapter.updateItem(titles[1], 9, new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "支持通过JS打开新窗口", "setJavaScriptCanOpenWindowsAutomatically()", -1, null));
                             }
+                            new Handler().post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    adapter.notifyDataSetChanged();
+                                }
+                            });
                             break;
                         case 9:
                             attr.setJavaScriptCanOpenWindowsAutomatically(isSelect);
@@ -369,7 +342,7 @@ public class P15_WebView_Settings extends LazyFragment {
                             int p = 0;
                             String[] texts = getActivity().getResources().getStringArray(R.array.text_encode);
                             for (int i = 0; i < texts.length; i++) {
-                                if (texts[i].equals(attr.getStandardFontFamily())) {
+                                if (texts[i].equals(attr.getDefaultTextEncodingName())) {
                                     p = i;
                                     break;
                                 }
@@ -378,8 +351,13 @@ public class P15_WebView_Settings extends LazyFragment {
                                 @Override
                                 public void dismiss(String data) {
                                     attr.setDefaultTextEncodingName(data);
-                                    wvSettings.set(13, new MultiStyleItem(MultiStyleRVAdapter.TEXTVIEW, "设置编码格式", "setDefaultTextEncodingName()", 0, attr.getDefaultTextEncodingName()));
-                                    init();
+                                    adapter.updateItem(titles[1], 13, new MultiStyleItem(MultiStyleRVAdapter.TEXTVIEW, "设置编码格式", "setDefaultTextEncodingName()", 0, data));
+                                    new Handler().post(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            adapter.notifyDataSetChanged();
+                                        }
+                                    });
                                 }
                             });
                             break;
@@ -397,8 +375,13 @@ public class P15_WebView_Settings extends LazyFragment {
                                 @Override
                                 public void dismiss(String data) {
                                     attr.setStandardFontFamily(data);
-                                    wvSettings.set(14, new MultiStyleItem(MultiStyleRVAdapter.TEXTVIEW, "设置WebView的字体", "setStandardFontFamily()", 0, attr.getStandardFontFamily()));
-                                    init();
+                                    adapter.updateItem(titles[1], 14, new MultiStyleItem(MultiStyleRVAdapter.TEXTVIEW, "设置WebView的字体", "setStandardFontFamily()", 0, data));
+                                    new Handler().post(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            adapter.notifyDataSetChanged();
+                                        }
+                                    });
                                 }
                             });
                             break;

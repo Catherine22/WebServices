@@ -490,7 +490,7 @@ class MainActivity : FragmentActivity(), MainInterface {
         left_drawer.adapter = ArrayAdapter<String>(this, R.layout.drawer_list_item, menu)
         // Sets the drawer shadow
         drawer_layout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START)
-        left_drawer.onItemClickListener = AdapterView.OnItemClickListener { p0, p1, pos, p3 ->
+        left_drawer.onItemClickListener = AdapterView.OnItemClickListener { _, _, pos, _ ->
             when (pos) {
                 0 -> {
                     callFragment(Constants.P14_FULL_WEBVIEW)

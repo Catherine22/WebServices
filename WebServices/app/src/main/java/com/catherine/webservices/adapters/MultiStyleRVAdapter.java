@@ -290,7 +290,7 @@ public class MultiStyleRVAdapter extends RecyclerView.Adapter<MultiStyleRVAdapte
         return title;
     }
 
-    public void clearAll() {
+    public void removeAll() {
         items.clear();
     }
 
@@ -342,6 +342,24 @@ public class MultiStyleRVAdapter extends RecyclerView.Adapter<MultiStyleRVAdapte
         }
     }
 
+    public void updateItem(String title, int position, MultiStyleItem item) {
+        if (!TextUtils.isEmpty(title)) {
+            int tag = -1;
+            for (int i = 0; i < items.size(); i++) {
+                MultiStyleItem temp = items.get(i);
+                if (title.equals(temp.getTitle())) {
+                    tag = i;
+                    break;
+                }
+            }
+
+            if (tag == -1)
+                return;
+
+            CLog.Companion.d(TAG, "pos:" + (tag + position + 1));
+            items.set((tag + position + 1), item);
+        }
+    }
 
     class MainRvHolder extends RecyclerView.ViewHolder {
         LinearLayout ll_background;

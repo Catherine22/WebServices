@@ -21,6 +21,7 @@ import android.widget.TextView;
 
 import com.catherine.webservices.Commands;
 import com.catherine.webservices.Constants;
+import com.catherine.webservices.MyApplication;
 import com.catherine.webservices.R;
 import com.catherine.webservices.adapters.TextCardRVAdapter;
 import com.catherine.webservices.entities.ImageCard;
@@ -182,6 +183,7 @@ public class P04_Cache extends LazyFragment {
                 }
             }
         });
+        MyApplication.INSTANCE.registerLocalBroadCastReceiver(client);
         client.gotMessages(Commands.UPDATE_P04);
 
         mainInterface.setBackKeyListener(new BackKeyListener() {

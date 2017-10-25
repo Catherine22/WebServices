@@ -54,14 +54,14 @@ public class MyApplication extends Application {
     public HandlerThread calHandlerThread, socketHandlerThread;
     public HttpClient httpClient;
     private List<String> runningActivities;
-    private Stack<Client> localBroadCastReceivers;
+    private List<Client> localBroadCastReceivers;
 
     @Override
     public void onCreate() {
         INSTANCE = this;
         httpClient = getHttpClient();
         runningActivities = new ArrayList<>();
-        localBroadCastReceivers = new Stack<>();
+        localBroadCastReceivers = new ArrayList<>();
 
         //Invoke the largest storage to save data.
         Map<String, File> externalLocations = FileUtils.getAllStorageLocations();
@@ -146,10 +146,11 @@ public class MyApplication extends Application {
                 }
 
                 //释放全部的localBroadCastReceiver
-                while (localBroadCastReceivers.size() > 0) {
-                    localBroadCastReceivers.peek().release();
-                    localBroadCastReceivers.pop();
+                for (Client c : localBroadCastReceivers) {
+                    if (c != null)
+                        c.release();
                 }
+                localBroadCastReceivers.clear();
             }
         });
         super.onCreate();
