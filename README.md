@@ -237,12 +237,12 @@ In this scenario, if you are sure this website is trusted and you've got to requ
 
 ----------
 
-There are two solutions, the second one is better.
+There are two solutions, the last one is better.
 1. Get the certificate of kyfw.12306.cn and keep it in assets folder. You add this certificate to trusted CA list of client.<br>
 *After the end of the validity period, the certificate is no longer considered an acceptable.*
 
-2. Get the certificate of kyfw.12306.cn and keep it in assets folder. You add this certificate to the trusted CA list of client.<br>
-Normally, the CA of the department which sponsors a certain domain has a longer validity period than that domain. That's why this solution is recommended.
+2. Get the certificate of CA which sponsors kyfw.12306.cn and keep it in assets folder. You add this certificate to the trusted CA list of client.<br>
+Normally, the CAs of the department sponsors specific domains have a longer validity period than domains. That's why this solution is recommended.
 
 **Android example**
 
@@ -323,7 +323,7 @@ On the Fragment, you can...
 >  1. Don't forget to ignore your JavaScriptInterface with Android proguard
 >  2. Add @JavascriptInterface Annotation and you can go to [MyJavaScriptInterface] to see more
 
-In this project, every class that should not be obfuscated implements IgnoreProguard interface.
+In this project, every class that should not be obfuscated implements IgnoreProguard interface.     
 In proguard-rules.pro
 ```gradle
 -keep public class com.catherine.webservices.toolkits.IgnoreProguard
