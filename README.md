@@ -311,25 +311,33 @@ On the page, you can...
 - Back to previous page
 - Show ProgressBar while loading resource
 - Handle JavaScript alert(), confirm() and prompt() dialog
+> Here are some urls to test JavaScript. You could type them in
+> [P14_Full_WebView] :
+>  - [https://www.javascript.com/][3]
+>  - file:///android_asset/js_alert.html
+>  - file:///android_asset/js_confirm.html
+>  - file:///android_asset/js_prompt.html
 
-``` markdown
-Here are some urls to test JavaScript. You could type them in [P14_Full_WebView] :
- - [https://www.javascript.com/][3]
- - file:///android_asset/js_alert.html
- - file:///android_asset/js_confirm.html
- - file:///android_asset/js_prompt.html
+- Call Java function from JavaScript with WebView
+> Two tips:
+>  1. Don't forget to ignore your JavaScriptInterface with Android proguard
+>  2. Add @JavascriptInterface Annotation
+>  Go to [MyJavaScriptInterface] to see more
+
+In proguard-rules.pro
+```gradle
+-keep public class com.catherine.webservices.toolkits.IgnoreProguard
+-keep public class * implements com.catherine.webservices.toolkits.IgnoreProguard
+-keepclassmembers class * implements com.catherine.webservices.toolkits.IgnoreProguard {
+    <methods>;
 ```
 
 Still not work...
-- Call Java function from JavaScript with WebView
 - Synchronize cookie
-- Save photos to your device from the Internet
+- Save photos to your defrom the Internet
 - Visit a HTTPS website with a certain certificate
 - Visit a HTML5 website
 - Visit a website offline if it's available to be cached
-
-
-
 
 **[P15_WebView_Settings]**
 Set attributes of WebView that includes WebViewClient and WebSettings (setAllowFileAccess(), setJavaScriptEnabled(), setSupportZoom() and so forth.)
@@ -369,6 +377,7 @@ Set attributes of WebView that includes WebViewClient and WebSettings (setAllowF
 [P14_Full_WebView]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/P14_Full_WebView.java>
 [P15_WebView_Settings]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/P15_WebView_Settings.java>
 [MySocket]:<https://github.com/Catherine22/WebServices/blob/master/JavaSocketServer/MySocket/src/Main.java>
+[MyJavaScriptInterface]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/network/MyJavaScriptInterface.java>
 [What are examples of TCP and UDP in real life scenario ?]:<https://learningnetwork.cisco.com/thread/87103>
 [Android HTTPS]:<http://blog.csdn.net/iispring/article/details/51615631>
 [github APIs]:<https://api.github.com/>

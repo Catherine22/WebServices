@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport"
+
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="viewport" content="target-densitydpi=device-dpi"/>
+</head>
+<body>
+
+<p>Get Android READ_PHONE_STATE and READ_SMS permission via JavaScript interface</p>
+
+<button onclick="getPermission()">Try it</button>
+
+
+<p>Show a dialog via JavaScript interface</p>
+
+<button onclick="showDialog()">Try it</button>
+
+<script>
+var permission = ['android.permission.READ_PHONE_STATE', 'android.permission.READ_SMS'];
+function getPermission() {
+    AndroidFunction.getPermission(permission);
+}
+function showDialog() {
+   AndroidFunction.showDialog('Hi there!');
+}
+
+</script>
+
+</body>
+</html>

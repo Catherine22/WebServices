@@ -88,7 +88,7 @@ public class P06_Upload extends LazyFragment {
                 context.deleteCharAt(context.length() - 1);
 
                 AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(getActivity());
-                myAlertDialog.setIcon(android.R.drawable.ic_dialog_alert)
+                myAlertDialog.setIcon(R.drawable.ic_warning_black_24dp)
                         .setCancelable(false)
                         .setTitle("注意")
                         .setMessage(String.format("您目前未授权%s存取权限，未授权将造成程式无法执行，是否开启权限？", context.toString()))

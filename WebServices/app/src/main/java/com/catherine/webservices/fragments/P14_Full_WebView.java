@@ -1,10 +1,12 @@
 package com.catherine.webservices.fragments;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -54,6 +56,7 @@ import com.catherine.webservices.entities.WebViewAttr;
 import com.catherine.webservices.interfaces.BackKeyListener;
 import com.catherine.webservices.interfaces.MainInterface;
 import com.catherine.webservices.interfaces.OnRequestPermissionsListener;
+import com.catherine.webservices.network.MyJavaScriptInterface;
 import com.catherine.webservices.toolkits.CLog;
 
 import org.jetbrains.annotations.NotNull;
@@ -123,7 +126,7 @@ public class P14_Full_WebView extends LazyFragment {
                 context.deleteCharAt(context.length() - 1);
 
                 AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(getActivity());
-                myAlertDialog.setIcon(android.R.drawable.ic_dialog_alert)
+                myAlertDialog.setIcon(R.drawable.ic_warning_black_24dp)
                         .setCancelable(false)
                         .setTitle("注意")
                         .setMessage(String.format("您目前未授权%s存取权限，未授权将造成程式无法执行，是否开启权限？", context.toString()))
@@ -570,6 +573,8 @@ public class P14_Full_WebView extends LazyFragment {
                     @Override
                     public void onPageStarted(WebView view, String url, Bitmap favicon) {
                         CLog.Companion.i(TAG, "onPageStarted:" + url);
+                        actv_url.setText(url);
+                        currentUrl = url;
                         super.onPageStarted(view, url, favicon);
                     }
 
@@ -717,6 +722,9 @@ public class P14_Full_WebView extends LazyFragment {
         settings.setNeedInitialFocus(attr.isNeedInitialFocus());
         //支持JS
         settings.setJavaScriptEnabled(attr.isJavaScriptEnabled());
+        //支持JS呼叫MyJavaScriptInterface提供的方法
+        MyJavaScriptInterface javaScriptInterface = new MyJavaScriptInterface(getActivity());
+        wv.addJavascriptInterface(javaScriptInterface, "AndroidFunction");
         //支持通过JS打开新窗口
         settings.setJavaScriptCanOpenWindowsAutomatically(attr.isJavaScriptCanOpenWindowsAutomatically());
         //支持自动加载图片
@@ -739,6 +747,7 @@ public class P14_Full_WebView extends LazyFragment {
 
         wv.loadUrl(formattedUrl(currentUrl));
     }
+
 
     private String formattedUrl(String url) {
         String tmp = url;
