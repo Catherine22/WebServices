@@ -311,7 +311,7 @@ public class P03_Downloader extends LazyFragment {
                 }
 
                 if (running > 0) {
-                    fab_stop.setImageDrawable(getResources().getDrawable(android.R.drawable.ic_media_pause));
+                    fab_stop.setImageDrawable(getResources().getDrawable(R.drawable.pause_selector));
                     for (int i = 0; i < isRunning.length; i++) {
                         if (isRunning[i] == DOWNLOADING) {
                             tasks[i].stop();
@@ -373,9 +373,9 @@ public class P03_Downloader extends LazyFragment {
         }
 
         if (running > 0)
-            fab_stop.setImageDrawable(getResources().getDrawable(android.R.drawable.ic_media_pause));
+            fab_stop.setImageDrawable(getResources().getDrawable(R.drawable.pause_selector));
         else
-            fab_stop.setImageDrawable(getResources().getDrawable(android.R.drawable.ic_media_play));
+            fab_stop.setImageDrawable(getResources().getDrawable(R.drawable.play_selector));
     }
 
 

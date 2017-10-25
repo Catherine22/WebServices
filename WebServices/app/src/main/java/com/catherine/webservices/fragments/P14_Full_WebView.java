@@ -227,7 +227,6 @@ public class P14_Full_WebView extends LazyFragment {
             fab_features.setVisibility(View.INVISIBLE);
         }
 
-
         //可滑动，默认为true
         wv.setVerticalScrollBarEnabled(attr.isVerticalScrollBarEnabled());
         //可滑动，默认为true

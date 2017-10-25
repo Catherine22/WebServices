@@ -44,10 +44,10 @@
         android:layout_marginBottom="@dimen/fab_item_m_b"
         android:layout_marginEnd="@dimen/fab_item_m"
         android:layout_marginRight="@dimen/fab_item_m"
-        android:scaleType="centerInside"
-        app:backgroundTint="@android:color/white"
+        android:scaleType="center"
+        app:backgroundTint="@color/colorPrimary"
         app:fabSize="mini"
-        app:srcCompat="@drawable/cancel"/>
+        app:srcCompat="@drawable/cancel_selector"/>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_settings"
@@ -57,9 +57,9 @@
         android:layout_marginBottom="@dimen/fab_00_m_b"
         android:layout_marginEnd="@dimen/fab_m"
         android:layout_marginRight="@dimen/fab_m"
-        android:scaleType="centerInside"
-        app:backgroundTint="@android:color/white"
+        android:scaleType="center"
+        app:backgroundTint="@color/colorPrimary"
         app:fabSize="normal"
-        app:srcCompat="@drawable/settings"/>
+        app:srcCompat="@drawable/settings_selector"/>
 
 </FrameLayout>

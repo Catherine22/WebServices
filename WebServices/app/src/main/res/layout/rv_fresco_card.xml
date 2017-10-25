@@ -25,7 +25,7 @@
             android:layout_alignParentTop="true"
             android:scaleType="centerCrop"
             app:fadeDuration="300"
-            app:failureImage="@drawable/default_pic"
+            app:failureImage="@drawable/ic_panorama_black_24dp"
             app:placeholderImage="@color/colorAccentDark"/>
 
         <TextView

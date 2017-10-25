@@ -29,9 +29,9 @@
         android:layout_marginBottom="@dimen/fab_00_m_b"
         android:layout_marginEnd="@dimen/fab_m"
         android:layout_marginRight="@dimen/fab_m"
-        android:scaleType="centerInside"
-        android:src="@drawable/trash_bin"
-        app:backgroundTint="@android:color/white"
+        android:scaleType="center"
+        android:src="@drawable/delete_selector"
+        app:backgroundTint="@color/colorPrimary"
         app:fabSize="normal"/>
 
 

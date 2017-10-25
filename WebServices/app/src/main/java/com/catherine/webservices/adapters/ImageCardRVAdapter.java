@@ -105,7 +105,7 @@ public class ImageCardRVAdapter extends RecyclerView.Adapter<ImageCardRVAdapter.
             }
             if (entities.get(position).image != null) {
                 mainRvHolder.iv_main.setVisibility(View.VISIBLE);
-                mainRvHolder.iv_main.setImageDrawable(ctx.getResources().getDrawable(R.drawable.default_pic));
+                mainRvHolder.iv_main.setImageDrawable(ctx.getResources().getDrawable(R.drawable.ic_panorama_black_24dp));
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
@@ -219,7 +219,7 @@ public class ImageCardRVAdapter extends RecyclerView.Adapter<ImageCardRVAdapter.
                         mainRvHolder.tv_subtitle.setText(entities.get(position).subtitle);
                         mainRvHolder.iv_main.setVisibility(View.VISIBLE);
                         //Show default picture
-                        mainRvHolder.iv_main.setImageDrawable(ctx.getResources().getDrawable(R.drawable.default_pic));
+                        mainRvHolder.iv_main.setImageDrawable(ctx.getResources().getDrawable(R.drawable.ic_panorama_black_24dp));
                     } else {
                         //Scenario1: Remove the item instead of showing the default picture in offline mode.
 //                        if (entities.size() > position) {
@@ -231,14 +231,14 @@ public class ImageCardRVAdapter extends RecyclerView.Adapter<ImageCardRVAdapter.
                         mainRvHolder.tv_subtitle.setText(entities.get(position).subtitle);
                         mainRvHolder.iv_main.setVisibility(View.VISIBLE);
                         //Show default picture
-                        mainRvHolder.iv_main.setImageDrawable(ctx.getResources().getDrawable(R.drawable.default_pic));
+                        mainRvHolder.iv_main.setImageDrawable(ctx.getResources().getDrawable(R.drawable.ic_panorama_black_24dp));
                     }
                 } else {
                     entities.get(position).subtitle = "error";
                     mainRvHolder.tv_subtitle.setText(entities.get(position).subtitle);
                     mainRvHolder.iv_main.setVisibility(View.VISIBLE);
                     //Show default picture
-                    mainRvHolder.iv_main.setImageDrawable(ctx.getResources().getDrawable(R.drawable.default_pic));
+                    mainRvHolder.iv_main.setImageDrawable(ctx.getResources().getDrawable(R.drawable.ic_panorama_black_24dp));
                 }
             }
         });
