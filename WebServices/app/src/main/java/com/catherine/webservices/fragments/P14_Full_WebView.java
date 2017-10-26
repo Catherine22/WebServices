@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.DownloadManager;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -16,7 +17,9 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.net.http.SslError;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -58,6 +61,10 @@ import com.catherine.webservices.entities.WebViewAttr;
 import com.catherine.webservices.interfaces.BackKeyListener;
 import com.catherine.webservices.interfaces.MainInterface;
 import com.catherine.webservices.interfaces.OnRequestPermissionsListener;
+import com.catherine.webservices.network.DownloadRequest;
+import com.catherine.webservices.network.DownloaderAsyncTask;
+import com.catherine.webservices.network.DownloaderListener;
+import com.catherine.webservices.network.HttpResponse;
 import com.catherine.webservices.network.MyJavaScriptInterface;
 import com.catherine.webservices.network.NetworkHelper;
 import com.catherine.webservices.security.CertificatesManager;
@@ -66,17 +73,21 @@ import com.catherine.webservices.toolkits.CLog;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedInputStream;
+import java.io.File;
 import java.net.URISyntaxException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 import catherine.messagecenter.Client;
 import catherine.messagecenter.CustomReceiver;
 import catherine.messagecenter.Result;
 
 import static android.content.Context.CLIPBOARD_SERVICE;
+import static android.content.Context.DOWNLOAD_SERVICE;
 
 /**
  * Created by Catherine on 2017/9/19.
@@ -731,6 +742,95 @@ public class P14_Full_WebView extends LazyFragment {
                     }
                 }
         );
+        wv.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                final WebView.HitTestResult result = ((WebView) v).getHitTestResult();
+                if (null == result)
+                    return false;
+                int type = result.getType();
+                if (type == WebView.HitTestResult.UNKNOWN_TYPE)
+                    return false;
+
+                // 这里可以拦截很多类型，我们只处理图片类型就可以了
+                switch (type) {
+                    case WebView.HitTestResult.PHONE_TYPE: // 处理拨号
+                        break;
+                    case WebView.HitTestResult.EMAIL_TYPE: // 处理Email
+                        break;
+                    case WebView.HitTestResult.GEO_TYPE: // 地图类型
+                        break;
+                    case WebView.HitTestResult.SRC_ANCHOR_TYPE: // 超链接
+                        break;
+                    case WebView.HitTestResult.SRC_IMAGE_ANCHOR_TYPE:
+                        break;
+                    case WebView.HitTestResult.IMAGE_TYPE: // 处理长按图片的菜单项
+                        // 获取图片的路径
+                        final String saveImgUrl = result.getExtra();
+
+                        final Dialog myDialog = new Dialog(getActivity());
+                        myDialog.requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
+                        myDialog.setContentView(R.layout.dialog_text);
+                        //设置dialog背景透明
+                        myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                        myDialog.show();
+
+                        final TextView tv_title = myDialog.findViewById(R.id.tv_title);
+                        tv_title.setText("Alert!");
+                        final TextView tv_message = myDialog.findViewById(R.id.tv_message);
+                        tv_message.setText("How do you deal with this image?");
+                        final Button bt_ok = myDialog.findViewById(R.id.bt_ok);
+                        bt_ok.setText("Save");
+                        bt_ok.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                myDialog.dismiss();
+
+                                try {
+                                    String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Download/";
+                                    File dir = new File(path);
+                                    if (!dir.exists())
+                                        dir.mkdirs();
+
+                                    DownloadManager downloadManager = (DownloadManager) getActivity().getSystemService(DOWNLOAD_SERVICE);
+                                    DownloadManager.Request request = new DownloadManager.Request(Uri.parse(saveImgUrl));
+                                    int start = saveImgUrl.lastIndexOf("/") + 1;
+                                    String fileName = saveImgUrl.substring(start, saveImgUrl.length());
+                                    request.setDestinationInExternalPublicDir("/Download/", fileName);
+                                    request.setTitle("WebServices");
+                                    request.setDescription("Downloading...");
+                                    request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+                                    downloadManager.enqueue(request);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+
+                            }
+                        });
+                        final Button bt_cancel = myDialog.findViewById(R.id.bt_cancel);
+                        bt_cancel.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                myDialog.dismiss();
+                            }
+                        });
+
+                        final Button bt_copy = myDialog.findViewById(R.id.bt_copy);
+                        bt_copy.setText("Open");
+                        bt_copy.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                loadUrl(saveImgUrl);
+                                myDialog.dismiss();
+                            }
+                        });
+                        return true;
+                    default:
+                        break;
+                }
+                return false;
+            }
+        });
 
         WebSettings settings = wv.getSettings();
         //将图片调整到适合WebView的大小
@@ -758,6 +858,7 @@ public class P14_Full_WebView extends LazyFragment {
         settings.setJavaScriptEnabled(attr.isJavaScriptEnabled());
         //支持JS呼叫MyJavaScriptInterface提供的方法
         MyJavaScriptInterface javaScriptInterface = new MyJavaScriptInterface(getActivity());
+        //In JS, your code would be name.function_of_your_javaScriptInterface(). For example, AndroidFunction.vibrate(500)
         wv.addJavascriptInterface(javaScriptInterface, "AndroidFunction");
         //支持通过JS打开新窗口
         settings.setJavaScriptCanOpenWindowsAutomatically(attr.isJavaScriptCanOpenWindowsAutomatically());

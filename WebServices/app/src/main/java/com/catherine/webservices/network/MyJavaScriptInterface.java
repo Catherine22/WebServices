@@ -139,6 +139,7 @@ public class MyJavaScriptInterface implements IgnoreProguard {
         showDialog("Succeed!");
     }
 
+    //callback to JS
     @JavascriptInterface
     public String loadPreferences(String key) {
         SharedPreferences sp = ctx.getSharedPreferences("JS", Context.MODE_PRIVATE);

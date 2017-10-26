@@ -305,8 +305,7 @@ udpSocket();
 
 ## WebView
 
-**[P14_Full_WebView]**
-On the Fragment, you can...
+**[P14_Full_WebView]** supports the functions of...
 
 1. Back to previous pages
 2. Show ProgressBar while loading resources
@@ -339,6 +338,9 @@ In proguard-rules.pro
 > - file:///android_asset/js_confirm.html
 > - file:///android_asset/js_prompt.html
 
+7. Save photos to your device from the Internet
+> Save images when detecting a long click event.
+
 8. Visit a HTTPS website and you get a SSL error
 Again, you could use [https://kyfw.12306.cn/otn/regist/init][1] to test. It would pop up a dialog and users decide to continue (unsafe) or stop visiting the webside.		
 Is there a way to add cetificates in WebView?
@@ -346,7 +348,6 @@ Is there a way to add cetificates in WebView?
 
 Still not work...
 6. Synchronize cookie
-7. Save photos to your defrom the Internet
 9. Visit a HTML5 website
 10. Visit a website offline if it's available to be cached
 
@@ -361,6 +362,7 @@ Set attributes of WebView that includes WebViewClient and WebSettings (setAllowF
 - [Socket tutorial]
 - [What are examples of TCP and UDP in real life scenario ?]
 - [Android HTTPS]
+- [WebView tutorial]
 
 
 [MainActivity]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/MainActivity.kt>
@@ -392,6 +394,7 @@ Set attributes of WebView that includes WebViewClient and WebSettings (setAllowF
 [What are examples of TCP and UDP in real life scenario ?]:<https://learningnetwork.cisco.com/thread/87103>
 [Android HTTPS]:<http://blog.csdn.net/iispring/article/details/51615631>
 [github APIs]:<https://api.github.com/>
+[WebView tutorial]:<http://www.jianshu.com/p/3fcf8ba18d7f>
 
 
   [1]: https://kyfw.12306.cn/otn/regist/init
