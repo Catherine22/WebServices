@@ -60,11 +60,15 @@ import com.catherine.webservices.interfaces.MainInterface;
 import com.catherine.webservices.interfaces.OnRequestPermissionsListener;
 import com.catherine.webservices.network.MyJavaScriptInterface;
 import com.catherine.webservices.network.NetworkHelper;
+import com.catherine.webservices.security.CertificatesManager;
 import com.catherine.webservices.toolkits.CLog;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.BufferedInputStream;
 import java.net.URISyntaxException;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
 import java.util.Arrays;
 import java.util.List;
 
@@ -622,19 +626,19 @@ public class P14_Full_WebView extends LazyFragment {
 
                     @Override
                     public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
-                        CLog.Companion.i(TAG, "onReceivedError:" + description);
+                        CLog.Companion.e(TAG, "onReceivedError:" + description);
                         super.onReceivedError(view, errorCode, description, failingUrl);
                     }
 
                     @Override
                     public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
-                        CLog.Companion.i(TAG, "onReceivedError2");
+                        CLog.Companion.e(TAG, "onReceivedError2");
                         super.onReceivedError(view, request, error);
                     }
 
                     @Override
                     public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
-                        CLog.Companion.i(TAG, "onReceivedHttpError");
+                        CLog.Companion.e(TAG, "onReceivedHttpError");
                         super.onReceivedHttpError(view, request, errorResponse);
                     }
 
@@ -651,9 +655,37 @@ public class P14_Full_WebView extends LazyFragment {
                     }
 
                     @Override
-                    public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
-                        CLog.Companion.i(TAG, "onReceivedSslError");
-                        super.onReceivedSslError(view, handler, error);
+                    public void onReceivedSslError(WebView view, final SslErrorHandler handler, SslError error) {
+                        CLog.Companion.e(TAG, "onReceivedSslError");
+                        String message = "SSL Certificate error.";
+                        switch (error.getPrimaryError()) {
+                            case SslError.SSL_UNTRUSTED:
+                                message = "The certificate authority is not trusted.";
+                                break;
+                            case SslError.SSL_EXPIRED:
+                                message = "The certificate has expired.";
+                                break;
+                            case SslError.SSL_IDMISMATCH:
+                                message = "The certificate Hostname mismatch.";
+                                break;
+                            case SslError.SSL_NOTYETVALID:
+                                message = "The certificate is not yet valid.";
+                                break;
+                        }
+                        message += " Do you want to continue anyway?";
+                        showErrorDialog("SSL Error!", message, true, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                handler.proceed();
+                            }
+                        }, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                //stop loading
+                                handler.cancel();
+                            }
+                        });
+//                        super.onReceivedSslError(view, handler, error);
                     }
 
                     @Override
@@ -699,7 +731,6 @@ public class P14_Full_WebView extends LazyFragment {
                     }
                 }
         );
-
 
         WebSettings settings = wv.getSettings();
         //将图片调整到适合WebView的大小
@@ -775,18 +806,7 @@ public class P14_Full_WebView extends LazyFragment {
                 }
             } catch (URISyntaxException e) {
                 e.printStackTrace();
-                AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(getActivity());
-                myAlertDialog.setIcon(R.drawable.ic_warning_black_24dp)
-                        .setCancelable(false)
-                        .setTitle("Error!")
-                        .setMessage("Can't resolve intent://")
-                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-
-                            }
-                        });
-                myAlertDialog.show();
+                showErrorDialog("Error!", "Can't resolve intent://", false, null, null);
             }
         } else {
             try {
@@ -795,20 +815,32 @@ public class P14_Full_WebView extends LazyFragment {
                 startActivity(intent);
             } catch (Exception e) {
                 e.printStackTrace();
-                AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(getActivity());
-                myAlertDialog.setIcon(R.drawable.ic_warning_black_24dp)
-                        .setCancelable(false)
-                        .setTitle("Error!")
-                        .setMessage("Failed to load URL, try other URL")
-                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-
-                            }
-                        });
-                myAlertDialog.show();
+                showErrorDialog("Error!", "Failed to load URL, try other URL", false, null, null);
             }
         }
     }
 
+    private AlertDialog myAlertDialog;
+
+    private void showErrorDialog(String title, String message, boolean showNegativeButton, DialogInterface.OnClickListener pstListener, DialogInterface.OnClickListener ngtListener) {
+        if (myAlertDialog != null && myAlertDialog.isShowing())
+            myAlertDialog.dismiss();
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        if (showNegativeButton) {
+            builder.setIcon(R.drawable.ic_warning_black_24dp)
+                    .setCancelable(false)
+                    .setTitle(title)
+                    .setMessage(message)
+                    .setPositiveButton("OK", pstListener)
+                    .setNegativeButton("Cancel", ngtListener);
+        } else {
+            builder.setIcon(R.drawable.ic_warning_black_24dp)
+                    .setCancelable(false)
+                    .setTitle(title)
+                    .setMessage(message)
+                    .setPositiveButton("OK", pstListener);
+        }
+        myAlertDialog = builder.show();
+    }
 }

@@ -60,5 +60,7 @@
         <item>file:///android_asset/js_confirm.html</item>
         <item>file:///android_asset/js_prompt.html</item>
         <item>file:///android_asset/js_command.html</item>
+        <!--SSL test-->
+        <item>https://kyfw.12306.cn/otn/regist/init</item>
     </string-array>
 </resources>

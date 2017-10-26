@@ -226,7 +226,7 @@ Cache-Control:no-cache, no-store
 ***DO NOT IMPLEMENT "X509TrustManager" TO SKIP VALIDATION***        
 That means man-in-the-middle attacks are allowed.
 
-As I was mentioning, you open a url ([https://kyfw.12306.cn/otn/regist/init][1]) with your Android device and you get an exception:
+As I was mentioning, If you open a url ([https://kyfw.12306.cn/otn/regist/init][1]) with your Android device and you get an exception:
 
 ``` html
 java.security.cert.CertPathValidatorException: Trust anchor for certification path not found.
@@ -339,13 +339,14 @@ In proguard-rules.pro
 > - file:///android_asset/js_confirm.html
 > - file:///android_asset/js_prompt.html
 
-
+8. Visit a HTTPS website and you get a SSL error
+Again, you could use [https://kyfw.12306.cn/otn/regist/init][1] to test. It would pop up a dialog and users decide to continue (unsafe) or stop visiting the webside.		
+Is there a way to add cetificates in WebView?
 
 
 Still not work...
 6. Synchronize cookie
 7. Save photos to your defrom the Internet
-8. Visit a HTTPS website with a certain certificate
 9. Visit a HTML5 website
 10. Visit a website offline if it's available to be cached
 
