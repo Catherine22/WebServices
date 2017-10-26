@@ -35,6 +35,26 @@ class NetworkHelper(private val ctx: Context) {
             val fileNames = url.split("/")
             return fileNames[fileNames.size - 1]
         }
+
+
+        fun formattedUrl(url: String): String {
+            var tmp = url
+            //读取文件
+            if (url.startsWith("file:///") || url.startsWith("content://"))
+                return tmp
+
+            //通过scheme开启其他应用
+            if (url.contains("://"))
+                return tmp
+
+            //简单判断而已，不考虑.cn .org之类的
+            if (url.startsWith("www.") || url.contains(".com"))
+                tmp = if (!url.startsWith("http://") && !url.startsWith("https://")) {
+                    "http://" + url
+                } else
+                    "https://www.google.com.tw/search?q=" + url
+            return tmp
+        }
     }
 
     fun isNetworkHealth(): Boolean {

@@ -9,6 +9,8 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -57,10 +59,12 @@ import com.catherine.webservices.interfaces.BackKeyListener;
 import com.catherine.webservices.interfaces.MainInterface;
 import com.catherine.webservices.interfaces.OnRequestPermissionsListener;
 import com.catherine.webservices.network.MyJavaScriptInterface;
+import com.catherine.webservices.network.NetworkHelper;
 import com.catherine.webservices.toolkits.CLog;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -193,7 +197,7 @@ public class P14_Full_WebView extends LazyFragment {
         actv_url = (AutoCompleteTextView) findViewById(R.id.actv_url);
         actv_url.setFocusableInTouchMode(true);
         actv_url.requestFocus();
-        actv_url.setText(formattedUrl(currentUrl));
+        actv_url.setText(NetworkHelper.Companion.formattedUrl(currentUrl));
         //handle "enter" event
         actv_url.setOnKeyListener(new View.OnKeyListener() {
             public boolean onKey(View v, int keyCode, KeyEvent event) {
@@ -204,7 +208,7 @@ public class P14_Full_WebView extends LazyFragment {
                     mainInterface.hideKeyboard();
 
                     // Perform action on key press
-                    wv.loadUrl(formattedUrl(actv_url.getText().toString()));
+                    loadUrl(actv_url.getText().toString());
                     return true;
                 }
                 return false;
@@ -552,15 +556,13 @@ public class P14_Full_WebView extends LazyFragment {
         });
         wv.setWebViewClient(
                 new WebViewClient() {
-                    //打开网页时不调用系统浏览器， 而是在本WebView中显示
+                    //打开网页时不调用系统浏览器， 而是在此WebView中显示
                     @Override
                     public boolean shouldOverrideUrlLoading(WebView view, String url) {
                         CLog.Companion.i(TAG, "shouldOverrideUrlLoading:" + url);
-//                        iv_icon.setVisibility(View.GONE);
-//                        iv_icon.setImageResource(R.mipmap.ic_launcher_round);
                         actv_url.setText(url);
                         currentUrl = url;
-                        view.loadUrl(formattedUrl(currentUrl));
+                        loadUrl(currentUrl);
                         return true;
                     }
 
@@ -678,11 +680,11 @@ public class P14_Full_WebView extends LazyFragment {
                         super.onUnhandledKeyEvent(view, event);
                     }
 
-                    @Override
-                    public void onScaleChanged(WebView view, float oldScale, float newScale) {
-                        CLog.Companion.i(TAG, "onScaleChanged");
-                        super.onScaleChanged(view, oldScale, newScale);
-                    }
+//                    @Override
+//                    public void onScaleChanged(WebView view, float oldScale, float newScale) {
+//                        CLog.Companion.i(TAG, "onScaleChanged");
+//                        super.onScaleChanged(view, oldScale, newScale);
+//                    }
 
                     @Override
                     public void onReceivedLoginRequest(WebView view, String realm, String account, String args) {
@@ -745,25 +747,68 @@ public class P14_Full_WebView extends LazyFragment {
         settings.setAppCachePath(MyApplication.INSTANCE.getDiskCacheDir("webview").getAbsolutePath());
         //设置WebView中的缓存模式
         settings.setCacheMode(WebSettings.LOAD_DEFAULT);
-
-        wv.loadUrl(formattedUrl(currentUrl));
+        loadUrl(currentUrl);
     }
 
+    private void loadUrl(String urlString) {
+        String url = NetworkHelper.Companion.formattedUrl(urlString);
+        CLog.Companion.i(TAG, "Load " + url);
+        if (url.startsWith("http://") || url.startsWith("https://")) {
+            wv.loadUrl(url);
+        } else if (url.startsWith("intent://")) {
+            try {
+                Intent intent = Intent.parseUri(url, Intent.URI_INTENT_SCHEME);
+                if (intent != null) {
+                    wv.stopLoading();
+                    PackageManager packageManager = getActivity().getPackageManager();
+                    ResolveInfo info = packageManager.resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY);
+                    if (info != null) {
+                        getActivity().startActivity(intent);
+                    } else {
+                        String fallbackUrl = intent.getStringExtra("browser_fallback_url");
+                        wv.loadUrl(fallbackUrl);
 
-    private String formattedUrl(String url) {
-        String tmp = url;
-        if (url.contains("file:///") || url.contains("content://"))
-            return tmp;
+                        // or call external browser
+//                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(fallbackUrl));
+//                    context.startActivity(browserIntent);
+                    }
+                }
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+                AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(getActivity());
+                myAlertDialog.setIcon(R.drawable.ic_warning_black_24dp)
+                        .setCancelable(false)
+                        .setTitle("Error!")
+                        .setMessage("Can't resolve intent://")
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
 
-        if (!url.contains("http://") && !url.contains("https://")) {
-            tmp = "http://" + url;
+                            }
+                        });
+                myAlertDialog.show();
+            }
+        } else {
+            try {
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse(url));
+                startActivity(intent);
+            } catch (Exception e) {
+                e.printStackTrace();
+                AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(getActivity());
+                myAlertDialog.setIcon(R.drawable.ic_warning_black_24dp)
+                        .setCancelable(false)
+                        .setTitle("Error!")
+                        .setMessage("Failed to load URL, try other URL")
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        });
+                myAlertDialog.show();
+            }
         }
-        return tmp;
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
     }
 
 }

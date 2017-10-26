@@ -6,7 +6,6 @@
     </shared>
   </component>
   <component name="AndroidLogFilters">
-    <option name="TOOL_WINDOW_CUSTOM_FILTER" value="P14" />
     <option name="TOOL_WINDOW_LOG_LEVEL" value="verbose" />
     <option name="TOOL_WINDOW_CONFIGURED_FILTER" value="No Filters" />
   </component>
@@ -15,14 +14,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4f67b335-9767-425f-98ef-848df357af36" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../README.md" afterPath="$PROJECT_DIR$/../README.md" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" afterPath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/assets/js_command.html" afterPath="$PROJECT_DIR$/app/src/main/assets/js_command.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/MainActivity.kt" afterPath="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/MainActivity.kt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/entities/WebViewAttr.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/entities/WebViewAttr.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P12_WebView.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P12_WebView.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P13_Nested_WebView.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P13_Nested_WebView.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P14_Full_WebView.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P14_Full_WebView.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/network/MyJavaScriptInterface.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/network/MyJavaScriptInterface.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/toolkits/MyDisplay.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/toolkits/MyDisplay.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/network/NetworkHelper.kt" afterPath="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/network/NetworkHelper.kt" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" afterPath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
     </list>
     <ignored path="WebServices.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -70,32 +68,14 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="P15_WebView_Settings.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P15_WebView_Settings.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="736">
-              <caret line="149" column="32" lean-forward="false" selection-start-line="149" selection-start-column="32" selection-end-line="149" selection-end-column="32" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="js_command.html" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/app/src/main/assets/js_command.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="135">
-              <caret line="18" column="94" lean-forward="false" selection-start-line="18" selection-start-column="94" selection-end-line="18" selection-end-column="94" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="MyJavaScriptInterface.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/network/MyJavaScriptInterface.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1949">
-              <caret line="11" column="42" lean-forward="false" selection-start-line="11" selection-start-column="42" selection-end-line="11" selection-end-column="42" />
-              <folding />
+            <state relative-caret-position="960">
+              <caret line="98" column="37" lean-forward="false" selection-start-line="80" selection-start-column="16" selection-end-line="98" selection-end-column="37" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -132,9 +112,22 @@
       <file leaf-file-name="Constants.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/Constants.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="190">
-              <caret line="90" column="54" lean-forward="false" selection-start-line="90" selection-start-column="54" selection-end-line="90" selection-end-column="54" />
+            <state relative-caret-position="654">
+              <caret line="93" column="0" lean-forward="false" selection-start-line="93" selection-start-column="0" selection-end-line="93" selection-end-column="0" />
               <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="strings.xml" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="309">
+              <caret line="61" column="58" lean-forward="false" selection-start-line="61" selection-start-column="58" selection-end-line="61" selection-end-column="58" />
+              <folding>
+                <element signature="e#1683#1688#0" expanded="true" />
+                <element signature="e#1790#1795#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -142,8 +135,28 @@
       <file leaf-file-name="P14_Full_WebView.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P14_Full_WebView.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-4828">
-              <caret line="227" column="30" lean-forward="false" selection-start-line="227" selection-start-column="24" selection-end-line="227" selection-end-column="30" />
+            <state relative-caret-position="17">
+              <caret line="791" column="17" lean-forward="false" selection-start-line="791" selection-start-column="17" selection-end-line="791" selection-end-column="17" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="P12_WebView.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P12_WebView.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="75">
+              <caret line="160" column="68" lean-forward="false" selection-start-line="160" selection-start-column="68" selection-end-line="160" selection-end-column="68" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="NetworkHelper.kt" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/network/NetworkHelper.kt">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="207">
+              <caret line="49" column="35" lean-forward="true" selection-start-line="49" selection-start-column="35" selection-end-line="49" selection-end-column="35" />
               <folding />
             </state>
           </provider>
@@ -165,17 +178,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>cancel_selec</find>
-      <find>cancel_select</find>
-      <find>cancel_selecto</find>
-      <find>Floating</find>
-      <find>onJsAlert</find>
-      <find>et_url</find>
-      <find>cancel_selector</find>
-      <find>Mission</find>
-      <find>currentUrl</find>
-      <find>onJs</find>
-      <find>act_url</find>
       <find>something</find>
       <find>actv_url.setText</find>
       <find>getPermission</find>
@@ -190,11 +192,22 @@
       <find>layout</find>
       <find>scroll</find>
       <find>callF</find>
-      <find>16</find>
-      <find>JavaScriptEnabled</find>
       <find>javasc</find>
       <find>showAndroidToast</find>
+      <find>JavaScriptEnabled</find>
+      <find>&quot;</find>
+      <find>&quot;ht</find>
+      <find>&quot;htt</find>
+      <find>&quot;http</find>
+      <find>&quot;https</find>
+      <find>onScaleChanged</find>
+      <find>formattedUrl</find>
+      <find>NetworkHelper.Companion.formattedUrl</find>
       <find>sendSMS</find>
+      <find>intent</find>
+      <find>intent:</find>
+      <find>loadUrl</find>
+      <find>16</find>
     </findStrings>
     <replaceStrings>
       <replace>CLog</replace>
@@ -221,6 +234,7 @@
       <replace>actv_url</replace>
       <replace>ic_panorama_black_24dp</replace>
       <replace>R.drawable.ic_warning_black_24dp</replace>
+      <replace>loadUrl</replace>
     </replaceStrings>
     <dirStrings>
       <dir>$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/toolkits/c_local_broadcast</dir>
@@ -5258,7 +5272,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/app/src/main/res/layout/rv_item.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/adapters/MultiStyleRVAdapter.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/dialog_selector.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/dialog_text.xml" />
@@ -5280,7 +5293,6 @@
         <option value="$PROJECT_DIR$/app/src/main/res/values/styles.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/dialog_edittext.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/f_14_full_webview.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
         <option value="$PROJECT_DIR$/app/src/main/assets/js_command2.html" />
         <option value="$PROJECT_DIR$/app/proguard-rules.pro" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/toolkits/IgnoreProguard.java" />
@@ -5292,15 +5304,12 @@
         <option value="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P08_Blocking_Socket.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P09_NIO_Socket.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P10_UDP_Socket.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P12_WebView.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P13_Nested_WebView.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P15_WebView_Settings.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P16_contacts.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/rv_contact.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/toolkits/MyDisplay.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/f_16_contacts.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/adapters/ContactRVAdapter.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P14_Full_WebView.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/entities/Contact.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P16_Contacts.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/MainActivity.kt" />
@@ -5309,6 +5318,11 @@
         <option value="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/network/MyJavaScriptInterface.java" />
         <option value="$PROJECT_DIR$/app/src/main/assets/js_command.html" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/network/NetworkHelper.kt" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P13_Nested_WebView.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P12_WebView.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P14_Full_WebView.java" />
+        <option value="$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
       </list>
     </option>
   </component>
@@ -5366,6 +5380,24 @@
             <PATH_ELEMENT>
               <option name="myItemId" value="Gradle Scripts" />
               <option name="myItemType" value="com.android.tools.idea.navigator.nodes.android.AndroidBuildScriptsGroupNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="WebServices" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.android.AndroidModuleNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="res" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.android.AndroidResFolderNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="values" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.android.AndroidResFolderTypeNode" />
             </PATH_ELEMENT>
           </PATH>
           <PATH>
@@ -5604,7 +5636,7 @@
     <property name="settings.editor.selected.configurable" value="project.propVCSSupport.Mappings" />
     <property name="android.sdk.path" value="$USER_HOME$/Documents/dev/android-sdk-macosx" />
     <property name="device.picker.selection" value="LGD8389caef79b" />
-    <property name="SearchEverywhereHistoryKey" value="MainAc&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/MainActivity.kt&#10;MainA&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/adapters/MainViewPagerAdapter.java&#10;My&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/network/MyJavaScriptInterface.java&#10;Strings&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/res/values/strings.xml&#10;f1&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/res/layout/f_14_full_webview.xml&#10;Cons&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/Constants.java&#10;f&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/res/layout/f_14_full_webview.xml&#10;P05&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/fragments/P05_Gallery.java&#10;Ma&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/MainActivity.kt&#10;rv_&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/res/layout/rv_item.xml&#10;Web&#9;PSI&#9;JAVA://com.catherine.webservices.entities.WebViewAttr&#10;Const&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/Constants.java&#10;MyA&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/MyApplication.java&#10;P15&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/fragments/P15_WebView_Settings.java&#10;f_15&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/res/layout/f_15_wv_settings.xml&#10;f_14&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/res/layout/f_14_full_webview.xml&#10;p15&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/fragments/P15_WebView_Settings.java&#10;P14&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/fragments/P14_Full_WebView.java&#10;r&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/res/layout/rv_item.xml&#10;C&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/res/values/colors.xml&#10;Col&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/res/values/colors.xml&#10;P01&#9;PSI&#9;JAVA://com.catherine.webservices.fragments.P01_Apache&#10;CLog&#9;null&#9;null&#10;CLo&#9;null&#9;null&#10;Main&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/interfaces/MainInterface.kt&#10;ac&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/res/layout/activity_main.xml&#10;N&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/res/layout/f_13_nested_webview.xml&#10;Fres&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/fragments/P11_Fresco.java&#10;f_04&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/res/layout/f_04_cache.xml&#10;P0&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/fragments/P04_Cache.java&#10;strings&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/res/values/strings.xml&#10;acti&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/res/layout/activity_main.xml&#10;f14&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/res/layout/f_14_full_webview.xml&#10;P12&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/fragments/P12_WebView.java&#10;f_01&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/res/layout/f_01_apache.xml&#10;activity&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/res/layout/activity_main.xml&#10;main&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/res/layout/activity_main.xml&#10;M&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/interfaces/MainInterface.kt&#10;activit&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/res/layout/activity_main.xml&#10;im&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/entities/ImageCard.java&#10;P02&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/fragments/P02_HttpURLConnection.java&#10;P11&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/fragments/P11_Fresco.java&#10;Soc&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/fragments/P08_Blocking_Socket.java&#10;Download&#9;PSI&#9;JAVA://com.catherine.webservices.fragments.P03_Downloader&#10;MyApp&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/MyApplication.java&#10;Ima&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/adapters/ImageCardRVAdapter.java&#10;rv_sho&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/res/layout/rv_short_card.xml&#10;Im&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/adapters/ImageCardRVAdapter.java&#10;Certifi&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/security/CertificatesManager.java&#10;Http&#9;PSI&#9;JAVA://com.catherine.webservices.network.MyHttpURLConnection" />
+    <property name="SearchEverywhereHistoryKey" value="Jav&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/network/MyJavaScriptInterface.java&#10;P14&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/fragments/P14_Full_WebView.java&#10;P1&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/fragments/P13_Nested_WebView.java&#10;MainAc&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/MainActivity.kt&#10;MainA&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/adapters/MainViewPagerAdapter.java&#10;My&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/network/MyJavaScriptInterface.java&#10;Strings&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/res/values/strings.xml&#10;f1&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/res/layout/f_14_full_webview.xml&#10;Cons&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/Constants.java&#10;f&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/res/layout/f_14_full_webview.xml&#10;P05&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/fragments/P05_Gallery.java&#10;Ma&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/MainActivity.kt&#10;rv_&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/res/layout/rv_item.xml&#10;Web&#9;PSI&#9;JAVA://com.catherine.webservices.entities.WebViewAttr&#10;Const&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/Constants.java&#10;MyA&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/MyApplication.java&#10;P15&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/fragments/P15_WebView_Settings.java&#10;f_15&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/res/layout/f_15_wv_settings.xml&#10;f_14&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/res/layout/f_14_full_webview.xml&#10;p15&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/fragments/P15_WebView_Settings.java&#10;r&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/res/layout/rv_item.xml&#10;C&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/res/values/colors.xml&#10;Col&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/res/values/colors.xml&#10;P01&#9;PSI&#9;JAVA://com.catherine.webservices.fragments.P01_Apache&#10;CLog&#9;null&#9;null&#10;CLo&#9;null&#9;null&#10;Main&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/interfaces/MainInterface.kt&#10;ac&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/res/layout/activity_main.xml&#10;N&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/res/layout/f_13_nested_webview.xml&#10;Fres&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/fragments/P11_Fresco.java&#10;f_04&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/res/layout/f_04_cache.xml&#10;P0&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/fragments/P04_Cache.java&#10;strings&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/res/values/strings.xml&#10;acti&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/res/layout/activity_main.xml&#10;f14&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/res/layout/f_14_full_webview.xml&#10;P12&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/fragments/P12_WebView.java&#10;f_01&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/res/layout/f_01_apache.xml&#10;activity&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/res/layout/activity_main.xml&#10;main&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/res/layout/activity_main.xml&#10;M&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/interfaces/MainInterface.kt&#10;activit&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/res/layout/activity_main.xml&#10;im&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/entities/ImageCard.java&#10;P02&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/fragments/P02_HttpURLConnection.java&#10;P11&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/fragments/P11_Fresco.java&#10;Soc&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/fragments/P08_Blocking_Socket.java&#10;Download&#9;PSI&#9;JAVA://com.catherine.webservices.fragments.P03_Downloader&#10;MyApp&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/MyApplication.java&#10;Ima&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/adapters/ImageCardRVAdapter.java&#10;rv_sho&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/res/layout/rv_short_card.xml&#10;Im&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/adapters/ImageCardRVAdapter.java" />
     <property name="android.project.structure.last.selected" value="app" />
     <property name="android.project.structure.proportion" value="0.15" />
     <property name="android.profiler.active" value="true" />
@@ -5861,7 +5893,7 @@
       <option name="DEEP_LINK" value="" />
       <option name="ACTIVITY_CLASS" value="" />
       <method>
-        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="false" clearCache="false" clearProvisionedDevices="false" myTimestamp="1508987396615" />
+        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="false" clearCache="false" clearProvisionedDevices="false" myTimestamp="1509002145287" />
       </method>
     </configuration>
     <configuration default="true" type="AndroidTestRunConfigurationType" factoryName="Android Instrumented Tests">
@@ -5908,7 +5940,7 @@
         <option name="ADVANCED_PROFILING_ENABLED" value="false" />
       </Profilers>
       <method>
-        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="false" clearCache="false" clearProvisionedDevices="false" myTimestamp="1508987396615" />
+        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="false" clearCache="false" clearProvisionedDevices="false" myTimestamp="1509002145288" />
       </method>
     </configuration>
     <configuration default="true" type="Application" factoryName="Application">
@@ -6090,7 +6122,7 @@
       <option name="DEEP_LINK" value="" />
       <option name="ACTIVITY_CLASS" value="" />
       <method>
-        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="true" clearCache="false" clearProvisionedDevices="false" myTimestamp="1508987396616" />
+        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="true" clearCache="false" clearProvisionedDevices="false" myTimestamp="1509002145288" />
       </method>
     </configuration>
     <list size="6">
@@ -6314,15 +6346,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/app/src/main/assets/Mission.json" />
-    <entry file="file://$PROJECT_DIR$/app/src/main/assets/sample.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1003">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/.android/build-cache/6b5e03bdf51ef75fb85f0b7878523dd33a3afb0e/output/res/values/values.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="117">
@@ -6394,14 +6417,6 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/assets/js_command2.html" />
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="216">
-          <caret line="49" column="46" lean-forward="false" selection-start-line="49" selection-start-column="46" selection-end-line="49" selection-end-column="46" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/toolkits/IgnoreProguard.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="153">
@@ -6461,22 +6476,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1020">
           <caret line="82" column="38" lean-forward="false" selection-start-line="82" selection-start-column="38" selection-end-line="82" selection-end-column="38" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P12_WebView.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="935">
-          <caret line="82" column="38" lean-forward="false" selection-start-line="82" selection-start-column="38" selection-end-line="82" selection-end-column="38" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P13_Nested_WebView.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="935">
-          <caret line="87" column="38" lean-forward="false" selection-start-line="87" selection-start-column="38" selection-end-line="87" selection-end-column="38" />
           <folding />
         </state>
       </provider>
@@ -6621,14 +6620,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P14_Full_WebView.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-4828">
-          <caret line="227" column="30" lean-forward="false" selection-start-line="227" selection-start-column="24" selection-end-line="227" selection-end-column="30" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/f_16_contacts.xml">
       <provider editor-type-id="android-designer2">
         <state />
@@ -6652,28 +6643,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-358">
           <caret line="33" column="20" lean-forward="false" selection-start-line="33" selection-start-column="20" selection-end-line="33" selection-end-column="20" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/MainActivity.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="127">
-          <caret line="390" column="31" lean-forward="false" selection-start-line="390" selection-start-column="31" selection-end-line="390" selection-end-column="31" />
-          <folding>
-            <element signature="e#9592#10839#0" expanded="false" />
-            <element signature="e#10924#15079#0" expanded="false" />
-            <element signature="e#18391#18894#0" expanded="false" />
-            <element signature="e#22304#22741#0" expanded="false" />
-            <element signature="e#22761#25366#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/Constants.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="190">
-          <caret line="90" column="54" lean-forward="false" selection-start-line="90" selection-start-column="54" selection-end-line="90" selection-end-column="54" />
           <folding />
         </state>
       </provider>
@@ -6702,14 +6671,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P15_WebView_Settings.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="736">
-          <caret line="149" column="32" lean-forward="false" selection-start-line="149" selection-start-column="32" selection-end-line="149" selection-end-column="32" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/AndroidManifest.xml">
       <provider editor-type-id="android-manifest">
         <state />
@@ -6721,19 +6682,102 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/network/MyJavaScriptInterface.java">
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P15_WebView_Settings.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1949">
-          <caret line="11" column="42" lean-forward="false" selection-start-line="11" selection-start-column="42" selection-end-line="11" selection-end-column="42" />
+        <state relative-caret-position="736">
+          <caret line="149" column="32" lean-forward="false" selection-start-line="149" selection-start-column="32" selection-end-line="149" selection-end-column="32" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/toolkits/Utils.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="191">
+          <caret line="15" column="0" lean-forward="true" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P13_Nested_WebView.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="194">
+          <caret line="195" column="24" lean-forward="false" selection-start-line="195" selection-start-column="24" selection-end-line="195" selection-end-column="24" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/assets/js_command.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="135">
-          <caret line="18" column="94" lean-forward="false" selection-start-line="18" selection-start-column="94" selection-end-line="18" selection-end-column="94" />
+        <state relative-caret-position="203">
+          <caret line="22" column="4" lean-forward="false" selection-start-line="22" selection-start-column="4" selection-end-line="22" selection-end-column="4" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/network/MyJavaScriptInterface.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="960">
+          <caret line="98" column="37" lean-forward="false" selection-start-line="80" selection-start-column="16" selection-end-line="98" selection-end-column="37" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P12_WebView.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="75">
+          <caret line="160" column="68" lean-forward="false" selection-start-line="160" selection-start-column="68" selection-end-line="160" selection-end-column="68" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/network/NetworkHelper.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="207">
+          <caret line="49" column="35" lean-forward="true" selection-start-line="49" selection-start-column="35" selection-end-line="49" selection-end-column="35" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P14_Full_WebView.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="17">
+          <caret line="791" column="17" lean-forward="false" selection-start-line="791" selection-start-column="17" selection-end-line="791" selection-end-column="17" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/MainActivity.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="127">
+          <caret line="390" column="31" lean-forward="false" selection-start-line="390" selection-start-column="31" selection-end-line="390" selection-end-column="31" />
+          <folding>
+            <element signature="e#9592#10839#0" expanded="false" />
+            <element signature="e#10924#15079#0" expanded="false" />
+            <element signature="e#18391#18894#0" expanded="false" />
+            <element signature="e#22304#22741#0" expanded="false" />
+            <element signature="e#22761#25366#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/Constants.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="654">
+          <caret line="93" column="0" lean-forward="false" selection-start-line="93" selection-start-column="0" selection-end-line="93" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="309">
+          <caret line="61" column="58" lean-forward="false" selection-start-line="61" selection-start-column="58" selection-end-line="61" selection-end-column="58" />
+          <folding>
+            <element signature="e#1683#1688#0" expanded="true" />
+            <element signature="e#1790#1795#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

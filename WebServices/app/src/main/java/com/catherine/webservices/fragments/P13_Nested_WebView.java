@@ -21,6 +21,7 @@ import com.catherine.webservices.R;
 import com.catherine.webservices.entities.WebViewAttr;
 import com.catherine.webservices.interfaces.MainInterface;
 import com.catherine.webservices.interfaces.OnRequestPermissionsListener;
+import com.catherine.webservices.network.NetworkHelper;
 import com.catherine.webservices.toolkits.CLog;
 import com.catherine.webservices.views.NestedWebView;
 
@@ -192,15 +193,7 @@ public class P13_Nested_WebView extends LazyFragment {
         String ua = settings.getUserAgentString();
         CLog.Companion.i(TAG, "user agent:" + ua);
 
-        wv.loadUrl(formattedUrl(Constants.MY_GITHUB));
-    }
-
-    private String formattedUrl(String url) {
-        String tmp = url;
-        if (!url.contains("http://") && !url.contains("https://")) {
-            tmp = "http://" + url;
-        }
-        return tmp;
+        wv.loadUrl(NetworkHelper.Companion.formattedUrl(Constants.MY_GITHUB));
     }
 
     @Override

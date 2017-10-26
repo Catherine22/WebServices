@@ -43,7 +43,19 @@
 
     <string-array name="url_suggestions">
         <item>https://github.com/Catherine22</item>
+        <item>github.com/Catherine22</item>
+        <item>https://m.facebook.com/100014541792899</item>
+        <item>m.facebook.com/100014541792899</item>
+        <!--launch other apps with the url starts with "intent://"-->
+        <item>https://play.google.com/store/apps/details?id=com.google.android.apps.maps&amp;hl=en
+        </item>
+        <item>play.google.com/store/apps/details?id=com.google.android.apps.maps&amp;hl=en
+        </item>
+        <!--launch other apps with the url starts with "user-defined scheme://"-->
+        <item>market://details?id=com.google.android.apps.maps</item>
+        <!--JS test-->
         <item>https://www.javascript.com/</item>
+        <item>www.javascript.com/</item>
         <item>file:///android_asset/js_alert.html</item>
         <item>file:///android_asset/js_confirm.html</item>
         <item>file:///android_asset/js_prompt.html</item>

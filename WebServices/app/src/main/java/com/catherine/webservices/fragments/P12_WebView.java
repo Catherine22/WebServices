@@ -117,8 +117,11 @@ public class P12_WebView extends LazyFragment {
         features = new ArrayList<>();
         features.add("Nested webView");
         features.add("Full screen webView");
+        features.add("Launch a browser");
+
 
         descriptions = new ArrayList<>();
+        descriptions.add("Load a url");
         descriptions.add("Load a url");
         descriptions.add("Load a url");
     }
@@ -152,6 +155,11 @@ public class P12_WebView extends LazyFragment {
                         break;
                     case 1:
                         mainInterface.callFragment(Constants.P14_FULL_WEBVIEW);
+                        break;
+                    case 2:
+                        Intent intent = new Intent(Intent.ACTION_VIEW);
+                        intent.setData(Uri.parse(Constants.MY_GITHUB));
+                        startActivity(intent);
                         break;
                 }
             }

@@ -308,17 +308,17 @@ udpSocket();
 **[P14_Full_WebView]**
 On the Fragment, you can...
 
-- Back to previous pages
-- Show ProgressBar while loading resources
-- Handle JavaScript alert(), confirm() and prompt() and display the message with a used-defined dialog.
-> Here are some urls to test JavaScript. You could type them in
-> [P14_Full_WebView] :
->  - [https://www.javascript.com/][3]
->  - file:///android_asset/js_alert.html
->  - file:///android_asset/js_confirm.html
->  - file:///android_asset/js_prompt.html
+1. Back to previous pages
+2. Show ProgressBar while loading resources
+3. Launch other apps installed in your device by url scheme
 
-- Call Java function from JavaScript with WebView
+> You could type urls on [P14_Full_WebView] to try.
+>  - market://details?id=com.google.android.apps.maps
+>  - visit [https://play.google.com/store/apps/details?id=com.google.android.apps.maps&hl=en][4] and click the "OPEN IN PLAY STORE APP" button. Then you would redirct to a url starts from intent://play.app.goo.gl/?link=https://play.google.co...
+
+Before using JavaScript, you would have WebView enable JavaScript. Go to [P15_WebView_Settings] to set.		
+4. Handle JavaScript alert(), confirm() and prompt() and display the message with a used-defined dialog.
+5. Call Java function from JavaScript with WebView
 > Two tips:
 >  1. Don't forget to ignore your JavaScriptInterface with Android proguard
 >  2. Add @JavascriptInterface Annotation and you can go to [MyJavaScriptInterface] to see more
@@ -333,12 +333,21 @@ In proguard-rules.pro
 }
 ```
 
+> Here are some URLs would help you test. Just type them on [P14_Full_WebView]:
+> - [https://www.javascript.com/][3] 
+> - file:///android_asset/js_alert.html
+> - file:///android_asset/js_confirm.html
+> - file:///android_asset/js_prompt.html
+
+
+
+
 Still not work...
-- Synchronize cookie
-- Save photos to your defrom the Internet
-- Visit a HTTPS website with a certain certificate
-- Visit a HTML5 website
-- Visit a website offline if it's available to be cached
+6. Synchronize cookie
+7. Save photos to your defrom the Internet
+8. Visit a HTTPS website with a certain certificate
+9. Visit a HTML5 website
+10. Visit a website offline if it's available to be cached
 
 **[P15_WebView_Settings]**
 Set attributes of WebView that includes WebViewClient and WebSettings (setAllowFileAccess(), setJavaScriptEnabled(), setSupportZoom() and so forth.)
@@ -387,3 +396,4 @@ Set attributes of WebView that includes WebViewClient and WebSettings (setAllowF
   [1]: https://kyfw.12306.cn/otn/regist/init
   [2]: https://www.ssllabs.com/ssltest/
   [3]: https://www.javascript.com/
+  [4]: https://play.google.com/store/apps/details?id=com.google.android.apps.maps&hl=en
