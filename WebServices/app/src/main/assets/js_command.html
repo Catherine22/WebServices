@@ -1,32 +1,64 @@
 <!DOCTYPE html>
-<html>
-<head>
+<html xmlns="http://www.w3.org/1999/html">
+<head lang="en">
+    <meta charset="UTF-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta name="viewport"
-
           content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="viewport" content="target-densitydpi=device-dpi"/>
+    <title></title>
+
 </head>
 <body>
 
-<p>Get Android READ_PHONE_STATE and READ_SMS permission via JavaScript interface</p>
+<p>Get Android VIBRATE, READ_CONTACTS and READ_PHONE_STATE permission via JavaScript interface</p>
+<input type="button" value="Get permission" onClick="getPermission()">
+<br>
+<br>
+<input type="button" value="Android dialog" onClick="showAndroidDialog('Hello from JavaScript!')">
+<br>
+<br>
+<input type="button" value="Vibrate" onClick="vibrate(500)">
+<br>
+<br>
+<br>
+<br>
+<input id="user" type="text" placeholder="Username" name="user">
+<input id="pass" type="password" placeholder="Password" name="pass">
+<input type="button" value="Save" onClick="savePrefs()"/>
+<input type="button" value="Load" onClick="loadPrefs()"/>
+<script type="text/javascript">
 
-<button onclick="getPermission()">Try it</button>
+var permission = ['android.permission.READ_CONTACTS','android.permission.READ_PHONE_STATE', 'android.permission.VIBRATE'];
 
+    //These are some basic functions to demonstrate the ease of calling Java methods from JS
+    function showAndroidDialog(message) {
+        AndroidFunction.showDialog(message);
+    }
 
-<p>Show a dialog via JavaScript interface</p>
+    function savePrefs(){
+        AndroidFunction.savePreferences("user", document.getElementById('user').value);
+        AndroidFunction.savePreferences("pass", document.getElementById('pass').value);
+    }
 
-<button onclick="showDialog()">Try it</button>
+    function loadPrefs(){
+        var user = AndroidFunction.loadPreferences("user");
+        var pass = AndroidFunction.loadPreferences("pass");
 
-<script>
-var permission = ['android.permission.READ_PHONE_STATE', 'android.permission.READ_SMS'];
-function getPermission() {
+        showAndroidDialog("Username: " + user + "\nPassword: " + pass);
+    }
+
+    function vibrate(milliseconds){
+        AndroidFunction.vibrate(milliseconds);
+    }
+
+    function getPermission() {
     AndroidFunction.getPermission(permission);
 }
-function showDialog() {
-   AndroidFunction.showDialog('Hi there!');
-}
+
+
+
 
 </script>
 

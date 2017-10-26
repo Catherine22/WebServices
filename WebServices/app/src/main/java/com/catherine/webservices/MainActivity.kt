@@ -26,10 +26,7 @@ import android.widget.ArrayAdapter
 import catherine.messagecenter.AsyncResponse
 import catherine.messagecenter.Server
 import com.catherine.webservices.adapters.MainViewPagerAdapter
-import com.catherine.webservices.fragments.P05_Gallery
-import com.catherine.webservices.fragments.P13_Nested_WebView
-import com.catherine.webservices.fragments.P14_Full_WebView
-import com.catherine.webservices.fragments.P15_WebView_Settings
+import com.catherine.webservices.fragments.*
 import com.catherine.webservices.interfaces.BackKeyListener
 import com.catherine.webservices.interfaces.MainInterface
 import com.catherine.webservices.interfaces.OnItemClickListener
@@ -390,11 +387,13 @@ class MainActivity : FragmentActivity(), MainInterface {
                 tag = "P05"
             }
 
+
             Constants.P15_WEBVIEW_SETTINGS -> {
                 title = "P15_WebView_Settings"
                 fragment = P15_WebView_Settings.newInstance(true)
                 tag = "P15"
             }
+
 
         //has bundle
             Constants.P14_FULL_WEBVIEW -> {

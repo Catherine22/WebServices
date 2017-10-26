@@ -574,6 +574,7 @@ public class P14_Full_WebView extends LazyFragment {
                     public void onPageStarted(WebView view, String url, Bitmap favicon) {
                         CLog.Companion.i(TAG, "onPageStarted:" + url);
                         actv_url.setText(url);
+                        actv_url.dismissDropDown();
                         currentUrl = url;
                         super.onPageStarted(view, url, favicon);
                     }

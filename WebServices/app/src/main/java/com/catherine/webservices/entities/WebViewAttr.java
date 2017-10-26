@@ -26,8 +26,8 @@ public class WebViewAttr {
     private boolean DisplayZoomControls = false;
     private boolean AllowFileAccess = true;
     private boolean NeedInitialFocus = true;
-    private boolean JavaScriptEnabled = false;
-    private boolean JavaScriptCanOpenWindowsAutomatically = false;
+    private boolean JavaScriptEnabled = true;
+    private boolean JavaScriptCanOpenWindowsAutomatically = true;
     private boolean LoadsImagesAutomatically = true;
     private int DefaultFontSize = 16;
     private int MinimumFontSize = 8;
@@ -47,8 +47,8 @@ public class WebViewAttr {
         DisplayZoomControls = sp.getBoolean("DisplayZoomControls", false);
         AllowFileAccess = sp.getBoolean("AllowFileAccess", true);
         NeedInitialFocus = sp.getBoolean("NeedInitialFocus", true);
-        JavaScriptEnabled = sp.getBoolean("JavaScriptEnabled", false);
-        JavaScriptCanOpenWindowsAutomatically = sp.getBoolean("JavaScriptCanOpenWindowsAutomatically", false);
+        JavaScriptEnabled = sp.getBoolean("JavaScriptEnabled", true);
+        JavaScriptCanOpenWindowsAutomatically = sp.getBoolean("JavaScriptCanOpenWindowsAutomatically", true);
         LoadsImagesAutomatically = sp.getBoolean("LoadsImagesAutomatically", true);
         DefaultFontSize = sp.getInt("DefaultFontSize", 16);
         MinimumFontSize = sp.getInt("MinimumFontSize", 8);

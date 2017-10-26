@@ -6,7 +6,9 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Vibrator;
 import android.webkit.JavascriptInterface;
 
 import com.catherine.webservices.Constants;
@@ -45,6 +47,7 @@ public class MyJavaScriptInterface implements IgnoreProguard {
         mainInterface.getPermissions(permissions, new OnRequestPermissionsListener() {
             @Override
             public void onGranted() {
+                //Show contacts
                 AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(ctx);
                 myAlertDialog.setIcon(R.drawable.ic_warning_black_24dp)
                         .setCancelable(false)
@@ -63,10 +66,12 @@ public class MyJavaScriptInterface implements IgnoreProguard {
                 StringBuilder context = new StringBuilder();
                 if (deniedPermissions != null) {
                     for (String p : deniedPermissions) {
-                        if (Manifest.permission.READ_PHONE_STATE.equals(p)) {
+                        if (Manifest.permission.READ_CONTACTS.equals(p)) {
                             context.append("联络人信息、");
-                        } else if (Manifest.permission.READ_SMS.equals(p)) {
-                            context.append("短信、");
+                        } else if (Manifest.permission.READ_PHONE_STATE.equals(p)) {
+                            context.append("读取手机状态、");
+                        } else if (Manifest.permission.VIBRATE.equals(p)) {
+                            context.append("手机震动、");
                         }
                     }
                 }
@@ -115,5 +120,28 @@ public class MyJavaScriptInterface implements IgnoreProguard {
                     }
                 });
         myAlertDialog.show();
+    }
+
+    @JavascriptInterface
+    public void vibrate(long milliseconds) {
+        Vibrator v = (Vibrator) ctx.getSystemService(Context.VIBRATOR_SERVICE);
+        if (v != null) {
+            v.vibrate(milliseconds);
+        }
+    }
+
+    @JavascriptInterface
+    public void savePreferences(String key, String value) {
+        SharedPreferences sp = ctx.getSharedPreferences("JS", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putString(key, value);
+        editor.apply();
+        showDialog("Succeed!");
+    }
+
+    @JavascriptInterface
+    public String loadPreferences(String key) {
+        SharedPreferences sp = ctx.getSharedPreferences("JS", Context.MODE_PRIVATE);
+        return sp.getString(key, "");
     }
 }
