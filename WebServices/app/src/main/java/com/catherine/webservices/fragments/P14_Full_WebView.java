@@ -1,13 +1,11 @@
 package com.catherine.webservices.fragments;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DownloadManager;
 import android.content.ClipData;
 import android.content.ClipboardManager;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -17,7 +15,6 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.net.http.SslError;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -62,26 +59,16 @@ import com.catherine.webservices.entities.WebViewAttr;
 import com.catherine.webservices.interfaces.BackKeyListener;
 import com.catherine.webservices.interfaces.MainInterface;
 import com.catherine.webservices.interfaces.OnRequestPermissionsListener;
-import com.catherine.webservices.network.DownloadRequest;
-import com.catherine.webservices.network.DownloaderAsyncTask;
-import com.catherine.webservices.network.DownloaderListener;
-import com.catherine.webservices.network.HttpResponse;
 import com.catherine.webservices.network.MyJavaScriptInterface;
 import com.catherine.webservices.network.NetworkHelper;
-import com.catherine.webservices.security.CertificatesManager;
 import com.catherine.webservices.toolkits.CLog;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.io.BufferedInputStream;
 import java.io.File;
 import java.net.URISyntaxException;
-import java.security.cert.CertificateFactory;
-import java.security.cert.X509Certificate;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
-import java.util.concurrent.TimeUnit;
 
 import catherine.messagecenter.Client;
 import catherine.messagecenter.CustomReceiver;
@@ -252,6 +239,8 @@ public class P14_Full_WebView extends LazyFragment {
                 pb.setProgress(newProgress);
                 if (pb.getProgress() == 100)
                     pb.setVisibility(View.GONE);
+                else
+                    pb.setVisibility(View.VISIBLE);
                 super.onProgressChanged(view, newProgress);
             }
 
@@ -873,8 +862,10 @@ public class P14_Full_WebView extends LazyFragment {
         settings.setDefaultFontSize(attr.getDefaultFontSize());
         //设置WebView支持的最小字体大小，默认为 8
         settings.setMinimumFontSize(attr.getMinimumFontSize());
-        //在Android 5.0上 Webview 默认不允许加载 Http 与 Https 混合内容
-        settings.setMixedContentMode(attr.getMixedContentMode());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            //在Android 5.0上 WebView 默认不允许加载 Http 与 Https 混合内容
+            settings.setMixedContentMode(attr.getMixedContentMode());
+        }
         //设置User Agent（手机版或桌面版）
         settings.setUserAgentString(attr.getUserAgentString(attr.getUserAgent()));
         String ua = settings.getUserAgentString();

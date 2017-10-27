@@ -6,9 +6,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
+import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -129,6 +131,7 @@ public class P13_Nested_WebView extends LazyFragment {
         client.gotMessages(Commands.WV_SETTINGS);
         wv = (NestedWebView) findViewById(R.id.wv);
         pb = (ProgressBar) findViewById(R.id.pb);
+        pb.setMax(100);
         refresh();
     }
 
@@ -138,17 +141,15 @@ public class P13_Nested_WebView extends LazyFragment {
         wv.setVerticalScrollBarEnabled(attr.isVerticalScrollBarEnabled());
         //可滑动，默认为true
         wv.setHorizontalScrollBarEnabled(attr.isHorizontalScrollBarEnabled());
-        wv.setWebViewClient(new WebViewClient() {
+        wv.setWebChromeClient(new WebChromeClient(){
             @Override
-            public void onPageStarted(WebView view, String url, Bitmap favicon) {
-                pb.setVisibility(View.VISIBLE);
-                super.onPageStarted(view, url, favicon);
-            }
-
-            @Override
-            public void onPageFinished(WebView view, String url) {
-                pb.setVisibility(View.INVISIBLE);
-                super.onPageFinished(view, url);
+            public void onProgressChanged(WebView view, int newProgress) {
+                pb.setProgress(newProgress);
+                if (pb.getProgress() == 100)
+                    pb.setVisibility(View.GONE);
+                else
+                    pb.setVisibility(View.VISIBLE);
+                super.onProgressChanged(view, newProgress);
             }
         });
 
@@ -190,9 +191,19 @@ public class P13_Nested_WebView extends LazyFragment {
         settings.setDefaultFontSize(attr.getDefaultFontSize());
         //设置WebView支持的最小字体大小，默认为 8
         settings.setMinimumFontSize(attr.getMinimumFontSize());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            //在Android 5.0上 WebView 默认不允许加载 Http 与 Https 混合内容
+            settings.setMixedContentMode(attr.getMixedContentMode());
+        }
+        //设置User Agent（手机版或桌面版）
+        settings.setUserAgentString(attr.getUserAgentString(attr.getUserAgent()));
         String ua = settings.getUserAgentString();
-        CLog.Companion.i(TAG, "user agent:" + ua);
+        CLog.Companion.i(TAG, "my user agent:" + ua);
 
+        //cache
+        settings.setAppCachePath(MyApplication.INSTANCE.getDiskCacheDir("webview").getAbsolutePath());
+        //设置WebView中的缓存模式
+        settings.setCacheMode(WebSettings.LOAD_DEFAULT);
         wv.loadUrl(NetworkHelper.Companion.formattedUrl(Constants.MY_GITHUB));
     }
 

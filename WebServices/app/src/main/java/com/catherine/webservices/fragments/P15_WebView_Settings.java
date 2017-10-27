@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -162,7 +163,10 @@ public class P15_WebView_Settings extends LazyFragment {
         wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.EDITTEXT, wv_settings_array[12], "setMinimumFontSize()", 0, String.valueOf(attr.getMinimumFontSize())));
         wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.TEXTVIEW, wv_settings_array[13], "setDefaultTextEncodingName()", 0, attr.getDefaultTextEncodingName()));
         wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.TEXTVIEW, wv_settings_array[14], "setStandardFontFamily()", 0, attr.getStandardFontFamily()));
-        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.TEXTVIEW, wv_settings_array[15], "setMixedContentMode()", 0, attr.getMixedContentModeName(attr.getMixedContentMode())));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+            wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.TEXTVIEW, wv_settings_array[15], "setMixedContentMode()", 0, attr.getMixedContentModeName(attr.getMixedContentMode())));
+        else
+            wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.TEXTVIEW, wv_settings_array[15], "setMixedContentMode()", -1, attr.getMixedContentModeName(attr.getMixedContentMode())));
         wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.TEXTVIEW, wv_settings_array[16], "setUserAgentString()", 0, attr.getUserAgent()));
 
         caches = new ArrayList<>();
