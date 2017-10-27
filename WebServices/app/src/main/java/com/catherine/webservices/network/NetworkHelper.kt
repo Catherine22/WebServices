@@ -48,11 +48,14 @@ class NetworkHelper(private val ctx: Context) {
                 return tmp
 
             //简单判断而已，不考虑.cn .org之类的
-            if (url.startsWith("www.") || url.contains(".com"))
+            if (url.startsWith("www.") || url.contains(".com")) {
                 tmp = if (!url.startsWith("http://") && !url.startsWith("https://")) {
                     "http://" + url
                 } else
-                    "https://www.google.com.tw/search?q=" + url
+                    "https://www.google.com/search?q=" + url
+                return tmp
+            }
+
             return tmp
         }
     }

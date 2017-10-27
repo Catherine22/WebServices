@@ -11,8 +11,9 @@
 
     <string-array name="drawer_array">
         <item>Author</item>
-        <item>WebView settings</item>
         <item>Settings</item>
+        <item>WebView settings</item>
+        <item>WebView history</item>
         <item>Theme</item>
     </string-array>
 

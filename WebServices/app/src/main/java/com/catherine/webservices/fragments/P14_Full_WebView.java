@@ -87,10 +87,11 @@ public class P14_Full_WebView extends LazyFragment {
     public final static String TAG = "P14_Full_WebView";
     private MainInterface mainInterface;
     private WebView wv;
-    private ImageView iv_icon;
+    private ImageView iv_menu, iv_refresh;
     private AutoCompleteTextView actv_url;
     private ProgressBar pb;
     private String currentUrl = Constants.MY_GITHUB;
+    private String displayUrl = getShortName(currentUrl);
     private Client client;
     private WebViewAttr attr;
     private Dialog jsDialog;
@@ -190,33 +191,57 @@ public class P14_Full_WebView extends LazyFragment {
                 }
             }
         });
-        iv_icon = (ImageView) findViewById(R.id.iv_icon);
-        iv_icon.setOnClickListener(new View.OnClickListener() {
+        iv_menu = (ImageView) findViewById(R.id.iv_menu);
+        iv_menu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 mainInterface.openSlideMenu();
             }
         });
+        iv_refresh = (ImageView) findViewById(R.id.iv_refresh);
+        iv_refresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //hide soft keyboard
+                mainInterface.hideKeyboard();
+
+                // Perform action on key press
+                loadUrl(currentUrl);
+                displayUrl = getShortName(currentUrl);
+                actv_url.setText(displayUrl);
+            }
+        });
+
         actv_url = (AutoCompleteTextView) findViewById(R.id.actv_url);
-        actv_url.setFocusableInTouchMode(true);
-        actv_url.requestFocus();
-        actv_url.setText(NetworkHelper.Companion.formattedUrl(currentUrl));
+        currentUrl = NetworkHelper.Companion.formattedUrl(currentUrl);
+        displayUrl = getShortName(currentUrl);
+        actv_url.setText(displayUrl);
         //handle "enter" event
         actv_url.setOnKeyListener(new View.OnKeyListener() {
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 // If the event is a key-down event on the "enter" button
-                if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
-                        (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
                     //hide soft keyboard
                     mainInterface.hideKeyboard();
 
                     // Perform action on key press
-                    loadUrl(actv_url.getText().toString());
+                    currentUrl = actv_url.getText().toString();
+                    loadUrl(currentUrl);
+                    displayUrl = getShortName(currentUrl);
+                    actv_url.setText(displayUrl);
+
                     return true;
                 }
                 return false;
             }
         });
+        actv_url.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                actv_url.setText(currentUrl);
+            }
+        });
+
         String[] urls = getResources().getStringArray(R.array.url_suggestions);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_dropdown_item_1line, Arrays.asList(urls));
         actv_url.setAdapter(adapter);
@@ -247,14 +272,15 @@ public class P14_Full_WebView extends LazyFragment {
             @Override
             public void onReceivedTitle(WebView view, String title) {
                 CLog.Companion.i(TAG, "onReceivedTitle:" + title);
+                displayUrl = title;
+                actv_url.setText(title);
+                actv_url.dismissDropDown();
                 super.onReceivedTitle(view, title);
             }
 
             @Override
             public void onReceivedIcon(WebView view, Bitmap icon) {
                 CLog.Companion.i(TAG, "onReceivedIcon");
-                iv_icon.setVisibility(View.VISIBLE);
-                iv_icon.setImageBitmap(icon);
                 super.onReceivedIcon(view, icon);
             }
 
@@ -561,12 +587,10 @@ public class P14_Full_WebView extends LazyFragment {
         });
         wv.setWebViewClient(
                 new WebViewClient() {
-                    //打开网页时不调用系统浏览器， 而是在此WebView中显示
+                    //打开网页时不调用系统浏览器， 而是在此WebView中显示，返回上一页时并不会呼叫
                     @Override
                     public boolean shouldOverrideUrlLoading(WebView view, String url) {
                         CLog.Companion.i(TAG, "shouldOverrideUrlLoading:" + url);
-                        actv_url.setText(url);
-                        currentUrl = url;
                         loadUrl(currentUrl);
                         return true;
                     }
@@ -580,9 +604,10 @@ public class P14_Full_WebView extends LazyFragment {
                     @Override
                     public void onPageStarted(WebView view, String url, Bitmap favicon) {
                         CLog.Companion.i(TAG, "onPageStarted:" + url);
-                        actv_url.setText(url);
-                        actv_url.dismissDropDown();
                         currentUrl = url;
+                        displayUrl = getShortName(currentUrl);
+                        actv_url.setText(displayUrl);
+                        actv_url.dismissDropDown();
                         super.onPageStarted(view, url, favicon);
                     }
 
@@ -621,7 +646,7 @@ public class P14_Full_WebView extends LazyFragment {
 
                     @Override
                     public void onTooManyRedirects(WebView view, Message cancelMsg, Message continueMsg) {
-                        CLog.Companion.i(TAG, "onTooManyRedirects:" + continueMsg);
+                        CLog.Companion.w(TAG, "onTooManyRedirects:" + continueMsg);
                         super.onTooManyRedirects(view, cancelMsg, continueMsg);
                     }
 
@@ -691,13 +716,13 @@ public class P14_Full_WebView extends LazyFragment {
 
                     @Override
                     public void onReceivedClientCertRequest(WebView view, ClientCertRequest request) {
-                        CLog.Companion.i(TAG, "onReceivedClientCertRequest");
+                        CLog.Companion.w(TAG, "onReceivedClientCertRequest");
                         super.onReceivedClientCertRequest(view, request);
                     }
 
                     @Override
                     public void onReceivedHttpAuthRequest(WebView view, HttpAuthHandler handler, String host, String realm) {
-                        CLog.Companion.i(TAG, "onReceivedHttpAuthRequest");
+                        CLog.Companion.w(TAG, "onReceivedHttpAuthRequest");
                         super.onReceivedHttpAuthRequest(view, handler, host, realm);
                     }
 
@@ -709,7 +734,7 @@ public class P14_Full_WebView extends LazyFragment {
 
                     @Override
                     public void onUnhandledKeyEvent(WebView view, KeyEvent event) {
-                        CLog.Companion.i(TAG, "onUnhandledKeyEvent");
+                        CLog.Companion.w(TAG, "onUnhandledKeyEvent");
                         super.onUnhandledKeyEvent(view, event);
                     }
 
@@ -721,7 +746,7 @@ public class P14_Full_WebView extends LazyFragment {
 
                     @Override
                     public void onReceivedLoginRequest(WebView view, String realm, String account, String args) {
-                        CLog.Companion.i(TAG, "onReceivedLoginRequest");
+                        CLog.Companion.w(TAG, "onReceivedLoginRequest");
                         super.onReceivedLoginRequest(view, realm, account, args);
                     }
 
@@ -912,9 +937,22 @@ public class P14_Full_WebView extends LazyFragment {
                 startActivity(intent);
             } catch (Exception e) {
                 e.printStackTrace();
-                showErrorDialog("Error!", "Failed to load URL, try other URL", false, null, null);
+//                showErrorDialog("Error!", "Failed to load URL, try other URL", true, null, null);
+                //try to google
+                wv.loadUrl("https://www.google.com/search?q=" + urlString);
             }
         }
+    }
+
+    //return authority
+    private String getShortName(String urlString) {
+        String temp = urlString;
+        try {
+            temp = Uri.parse(urlString).getAuthority();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return temp;
     }
 
     private AlertDialog myAlertDialog;

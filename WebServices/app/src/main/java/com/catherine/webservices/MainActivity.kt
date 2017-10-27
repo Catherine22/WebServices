@@ -462,7 +462,10 @@ class MainActivity : FragmentActivity(), MainInterface {
 
     override fun hideKeyboard() {
         val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS)
+        if (imm.isActive) {
+            imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0); // hide
+        }
+
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
