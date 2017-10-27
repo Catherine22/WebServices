@@ -18,6 +18,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.net.http.SslError;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Message;
@@ -872,8 +873,12 @@ public class P14_Full_WebView extends LazyFragment {
         settings.setDefaultFontSize(attr.getDefaultFontSize());
         //设置WebView支持的最小字体大小，默认为 8
         settings.setMinimumFontSize(attr.getMinimumFontSize());
+        //在Android 5.0上 Webview 默认不允许加载 Http 与 Https 混合内容
+        settings.setMixedContentMode(attr.getMixedContentMode());
+        //设置User Agent（手机版或桌面版）
+        settings.setUserAgentString(attr.getUserAgentString(attr.getUserAgent()));
         String ua = settings.getUserAgentString();
-        CLog.Companion.i(TAG, "user agent:" + ua);
+        CLog.Companion.i(TAG, "my user agent:" + ua);
 
         //cache
         settings.setAppCachePath(MyApplication.INSTANCE.getDiskCacheDir("webview").getAbsolutePath());

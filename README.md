@@ -63,7 +63,7 @@ android {
 - HttpURLConnection settings:[MyHttpURLConnection]
 
 
-## OkHttp 
+## OkHttp
 
 
 ## Volley
@@ -191,7 +191,7 @@ Cache-Control: max-age=(0)
 ```
 
 If your cache is not available, then you request ETag (with If-None-Match) or Last-Modified (with If-Modified-Since) to your server.
-Your server returns 304 when it's okay to use the cache has been stored or you might get 200 with new resources.
+Your server would return 304 when it's okay to use the cache that has been stored or you get 200 with new resources.
 
 - **No cache**
 
@@ -248,13 +248,13 @@ Normally, the CAs of the department sponsors specific domains have a longer vali
 
 Take kyfw.12306.cn for example.
 1. Download the certificate of kyfw.12306.cn and add to assets file.
-2. Add this certificate to trustManager[] 
+2. Add this certificate to trustManager[]
 3. Let "HttpsURLConnection" trust this certificate
 4. Go to [P02_HttpURLConnection] to see more.
 
 Another example - request to [github APIs]
 1. Add the PEM formatted String of the certificate.
-2. Add this certificate to trustManager[] 
+2. Add this certificate to trustManager[]
 3. Let "HttpsURLConnection" trust this certificate
 4. Go to [P02_HttpURLConnection] to see more.
 
@@ -274,8 +274,8 @@ Here is the example: [P05_Gallery], [ImageCardRVAdapter]
 
 Three ways to deal with images:
 - Show images directly by calling setImageURI().
-- Prefetch images and show them at the same time.       
-- Prefetch images when the app launches and show caches if they're downloaded.
+- Prefetch images and show them at the same time. That means there're at least two threads -  the one downloads the images and another displays the images.      
+- As the app launches, prefetch images and save them to your cache folder even though the fragment or activity which displays the images hasn't opened yet.
 
 Here is the example: [P11_Fresco], [FrescoRVAdapter]
 
@@ -307,17 +307,17 @@ udpSocket();
 
 **[P14_Full_WebView]** supports the functions of...
 
-1. Back to previous pages
-2. Show ProgressBar while loading resources
-3. Launch other apps installed in your device by url scheme
+1. Going back to previous pages.
+2. Showing a ProgressBar while WebView is loading resources.
+3. Launching other apps installed in your device by url scheme.
 
 > You could type urls on [P14_Full_WebView] to try.
 >  - market://details?id=com.google.android.apps.maps
 >  - visit [https://play.google.com/store/apps/details?id=com.google.android.apps.maps&hl=en][4] and click the "OPEN IN PLAY STORE APP" button. Then you would redirct to a url starts from intent://play.app.goo.gl/?link=https://play.google.co...
 
-Before using JavaScript, you would have WebView enable JavaScript. Go to [P15_WebView_Settings] to set.		
-4. Handle JavaScript alert(), confirm() and prompt() and display the message with a used-defined dialog.
-5. Call Java function from JavaScript with WebView
+Before using JavaScript, you should have WebView enable JavaScript. Go to [P15_WebView_Settings] to set.		
+4. Handling JavaScript alert(), confirm() and prompt() and display the message with a used-defined dialog.
+5. Calling Java function from JavaScript with WebView.
 > Two tips:
 >  1. Don't forget to ignore your JavaScriptInterface with Android proguard
 >  2. Add @JavascriptInterface Annotation and you can go to [MyJavaScriptInterface] to see more
@@ -333,20 +333,24 @@ In proguard-rules.pro
 ```
 
 > Here are some URLs would help you test. Just type them on [P14_Full_WebView]:
-> - [https://www.javascript.com/][3] 
+> - [https://www.javascript.com/][3]
 > - file:///android_asset/js_alert.html
 > - file:///android_asset/js_confirm.html
 > - file:///android_asset/js_prompt.html
 
-7. Save photos to your device from the Internet
-> Save images when detecting a long click event.
+6. Saving photos to your device from the Internet.
+> Save the image after long-clicking it.
 
-8. Visit a HTTPS website and you get a SSL error
-Again, you could use [https://kyfw.12306.cn/otn/regist/init][1] to test. It would pop up a dialog and users decide to continue (unsafe) or stop visiting the webside.		
-Is there a way to add cetificates in WebView?
+7. Visiting a HTTPS website and you get a SSL error.
+> Again, you could use [https://kyfw.12306.cn/otn/regist/init][1] to test.    
+> It would pop up a dialog and users decide to continue (unsafe) or stop visiting the webside.		
 
+8. Visiting desktop sites or mobile sites by setting user-agent
+> - [https://github.com/Catherine22][5]
 
-Still not work...
+**I list all of the test links on [WebView test links]. You could open this page on [P14_Full_WebView].**
+
+Still not work...   
 6. Synchronize cookie
 9. Visit a HTML5 website
 10. Visit a website offline if it's available to be cached
@@ -395,9 +399,10 @@ Set attributes of WebView that includes WebViewClient and WebSettings (setAllowF
 [Android HTTPS]:<http://blog.csdn.net/iispring/article/details/51615631>
 [github APIs]:<https://api.github.com/>
 [WebView tutorial]:<http://www.jianshu.com/p/3fcf8ba18d7f>
-
+[WebView test links]:<https://github.com/Catherine22/WebServices/blob/master/LINKS.md>
 
   [1]: https://kyfw.12306.cn/otn/regist/init
   [2]: https://www.ssllabs.com/ssltest/
   [3]: https://www.javascript.com/
   [4]: https://play.google.com/store/apps/details?id=com.google.android.apps.maps&hl=en
+  [5]: https://github.com/Catherine22

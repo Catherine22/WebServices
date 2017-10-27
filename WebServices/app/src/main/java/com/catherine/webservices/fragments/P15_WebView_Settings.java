@@ -124,42 +124,49 @@ public class P15_WebView_Settings extends LazyFragment {
     }
 
     private WebViewAttr attr;
+    private String[] wv_attr_array, wv_settings_array, wv_cache_array;
 
     private void fillInData() {
+        wv_attr_array = getActivity().getResources().getStringArray(R.array.wv_attr_array);
+        wv_settings_array = getActivity().getResources().getStringArray(R.array.wv_settings_array);
+        wv_cache_array = getActivity().getResources().getStringArray(R.array.wv_cache_array);
+
         titles = new String[]{"WebView Attribute", "WebSettings", "Cache", "Debug"};
         attr = new WebViewAttr(getActivity());
         wvAttr = new ArrayList<>();
-        wvAttr.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "可垂直滑动", "setVerticalScrollBarEnabled()", attr.isVerticalScrollBarEnabled() ? 1 : 0, null));
-        wvAttr.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "可水平滑动", "setHorizontalScrollBarEnabled()", attr.isHorizontalScrollBarEnabled() ? 1 : 0, null));
+        wvAttr.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, wv_attr_array[0], "setVerticalScrollBarEnabled()", attr.isVerticalScrollBarEnabled() ? 1 : 0, null));
+        wvAttr.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, wv_attr_array[1], "setHorizontalScrollBarEnabled()", attr.isHorizontalScrollBarEnabled() ? 1 : 0, null));
 
         wvSettings = new ArrayList<>();
-        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "将图片调整到适合WebView的大小", "setUseWideViewPort()", attr.isUseWideViewPort() ? 1 : 0, null));
-        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "缩放至屏幕的大小", "setLoadWithOverviewMode()", attr.isLoadWithOverviewMode() ? 1 : 0, null));
-        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "设置内置的缩放控件", "setBuiltInZoomControls()", attr.isBuiltInZoomControls() ? 1 : 0, null));
+        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, wv_settings_array[0], "setUseWideViewPort()", attr.isUseWideViewPort() ? 1 : 0, null));
+        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, wv_settings_array[1], "setLoadWithOverviewMode()", attr.isLoadWithOverviewMode() ? 1 : 0, null));
+        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, wv_settings_array[2], "setBuiltInZoomControls()", attr.isBuiltInZoomControls() ? 1 : 0, null));
         if (!attr.isBuiltInZoomControls())
-            wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "支持缩放", "setSupportZoom()", -1, null));//depend on the above (BuiltInZoomControls)
+            wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, wv_settings_array[3], "setSupportZoom()", -1, null));//depend on the above (BuiltInZoomControls)
         else
-            wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "支持缩放", "setSupportZoom()", attr.isSupportZoom() ? 1 : 0, null));//depend on the above (BuiltInZoomControls)
+            wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, wv_settings_array[3], "setSupportZoom()", attr.isSupportZoom() ? 1 : 0, null));//depend on the above (BuiltInZoomControls)
         if (!attr.isSupportZoom() || !attr.isBuiltInZoomControls())
-            wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.EDITTEXT, "设置文本的缩放倍数", "setTextZoom()", -1, String.valueOf(attr.getTextZoom())));//depend on the above (BuiltInZoomControls)
+            wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.EDITTEXT, wv_settings_array[4], "setTextZoom()", -1, String.valueOf(attr.getTextZoom())));//depend on the above (BuiltInZoomControls)
         else
-            wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.EDITTEXT, "设置文本的缩放倍数", "setTextZoom()", 0, String.valueOf(attr.getTextZoom())));//depend on the above (BuiltInZoomControls)
-        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "隐藏原生的缩放控件", "setDisplayZoomControls()", attr.isDisplayZoomControls() ? 1 : 0, null));
-        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "设置可以访问文件", "setAllowFileAccess()", attr.isAllowFileAccess() ? 1 : 0, null));
-        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "当WebView调用requestFocus时为WebView设置节点", "setNeedInitialFocus()", attr.isNeedInitialFocus() ? 1 : 0, null));
-        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "支持JS", "setJavaScriptEnabled()", attr.isJavaScriptEnabled() ? 1 : 0, null));
+            wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.EDITTEXT, wv_settings_array[4], "setTextZoom()", 0, String.valueOf(attr.getTextZoom())));//depend on the above (BuiltInZoomControls)
+        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, wv_settings_array[5], "setDisplayZoomControls()", attr.isDisplayZoomControls() ? 1 : 0, null));
+        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, wv_settings_array[6], "setAllowFileAccess()", attr.isAllowFileAccess() ? 1 : 0, null));
+        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, wv_settings_array[7], "setNeedInitialFocus()", attr.isNeedInitialFocus() ? 1 : 0, null));
+        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, wv_settings_array[8], "setJavaScriptEnabled()", attr.isJavaScriptEnabled() ? 1 : 0, null));
         if (!attr.isJavaScriptEnabled())
-            wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "支持通过JS打开新窗口", "setJavaScriptCanOpenWindowsAutomatically()", -1, null));
+            wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, wv_settings_array[9], "setJavaScriptCanOpenWindowsAutomatically()", -1, null));
         else
-            wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "支持通过JS打开新窗口", "setJavaScriptCanOpenWindowsAutomatically()", attr.isJavaScriptCanOpenWindowsAutomatically() ? 1 : 0, null));
-        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "支持自动加载图片", "setLoadsImagesAutomatically()", attr.isLoadsImagesAutomatically() ? 1 : 0, null));
-        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.EDITTEXT, "设置WebView字体的大小", "setDefaultFontSize()", 0, String.valueOf(attr.getDefaultFontSize())));
-        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.EDITTEXT, "设置WebView支持的最小字体大小", "setMinimumFontSize()", 0, String.valueOf(attr.getMinimumFontSize())));
-        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.TEXTVIEW, "设置编码格式", "setDefaultTextEncodingName()", 0, attr.getDefaultTextEncodingName()));
-        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.TEXTVIEW, "设置WebView的字体", "setStandardFontFamily()", 0, attr.getStandardFontFamily()));
+            wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, wv_settings_array[9], "setJavaScriptCanOpenWindowsAutomatically()", attr.isJavaScriptCanOpenWindowsAutomatically() ? 1 : 0, null));
+        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, wv_settings_array[10], "setLoadsImagesAutomatically()", attr.isLoadsImagesAutomatically() ? 1 : 0, null));
+        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.EDITTEXT, wv_settings_array[11], "setDefaultFontSize()", 0, String.valueOf(attr.getDefaultFontSize())));
+        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.EDITTEXT, wv_settings_array[12], "setMinimumFontSize()", 0, String.valueOf(attr.getMinimumFontSize())));
+        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.TEXTVIEW, wv_settings_array[13], "setDefaultTextEncodingName()", 0, attr.getDefaultTextEncodingName()));
+        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.TEXTVIEW, wv_settings_array[14], "setStandardFontFamily()", 0, attr.getStandardFontFamily()));
+        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.TEXTVIEW, wv_settings_array[15], "setMixedContentMode()", 0, attr.getMixedContentModeName(attr.getMixedContentMode())));
+        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.TEXTVIEW, wv_settings_array[16], "setUserAgentString()", 0, attr.getUserAgent()));
 
         caches = new ArrayList<>();
-        caches.add(new MultiStyleItem(MultiStyleRVAdapter.TEXTVIEW, "设置WebView的缓存模式", "setCacheMode()", 0, attr.getCacheModeName(attr.getCacheMode())));
+        caches.add(new MultiStyleItem(MultiStyleRVAdapter.TEXTVIEW, wv_cache_array[0], "setCacheMode()", 0, attr.getCacheModeName(attr.getCacheMode())));
 
     }
 
@@ -216,15 +223,15 @@ public class P15_WebView_Settings extends LazyFragment {
                             break;
                         case 2:
                             attr.setBuiltInZoomControls(isSelect);
-                            adapter.updateItem(titles[1], 2, new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "设置内置的缩放控件", "setBuiltInZoomControls()", isSelect ? 1 : 0, null));
+                            adapter.updateItem(titles[1], 2, new MultiStyleItem(MultiStyleRVAdapter.SWITCH, wv_settings_array[2], "setBuiltInZoomControls()", isSelect ? 1 : 0, null));
                             if (isSelect) {
                                 attr.setSupportZoom(true);
-                                adapter.updateItem(titles[1], 3, new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "支持缩放", "setSupportZoom()", 1, null));
-                                adapter.updateItem(titles[1], 4, new MultiStyleItem(MultiStyleRVAdapter.EDITTEXT, "设置文本的缩放倍数", "setTextZoom()", 0, String.valueOf(attr.getTextZoom())));
+                                adapter.updateItem(titles[1], 3, new MultiStyleItem(MultiStyleRVAdapter.SWITCH, wv_settings_array[3], "setSupportZoom()", 1, null));
+                                adapter.updateItem(titles[1], 4, new MultiStyleItem(MultiStyleRVAdapter.EDITTEXT, wv_settings_array[4], "setTextZoom()", 0, String.valueOf(attr.getTextZoom())));
                             } else {
                                 attr.setSupportZoom(false);
-                                adapter.updateItem(titles[1], 3, new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "支持缩放", "setSupportZoom()", -1, null));
-                                adapter.updateItem(titles[1], 4, new MultiStyleItem(MultiStyleRVAdapter.EDITTEXT, "设置文本的缩放倍数", "setTextZoom()", -1, String.valueOf(attr.getTextZoom())));
+                                adapter.updateItem(titles[1], 3, new MultiStyleItem(MultiStyleRVAdapter.SWITCH, wv_settings_array[3], "setSupportZoom()", -1, null));
+                                adapter.updateItem(titles[1], 4, new MultiStyleItem(MultiStyleRVAdapter.EDITTEXT, wv_settings_array[4], "setTextZoom()", -1, String.valueOf(attr.getTextZoom())));
                             }
                             new Handler().post(new Runnable() {
                                 @Override
@@ -235,11 +242,11 @@ public class P15_WebView_Settings extends LazyFragment {
                             break;
                         case 3:
                             attr.setSupportZoom(isSelect);
-                            adapter.updateItem(titles[1], 3, new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "支持缩放", "setSupportZoom()", isSelect ? 1 : 0, null));
+                            adapter.updateItem(titles[1], 3, new MultiStyleItem(MultiStyleRVAdapter.SWITCH, wv_settings_array[3], "setSupportZoom()", isSelect ? 1 : 0, null));
                             if (isSelect) {
-                                adapter.updateItem(titles[1], 4, new MultiStyleItem(MultiStyleRVAdapter.EDITTEXT, "设置文本的缩放倍数", "setTextZoom()", 0, String.valueOf(attr.getTextZoom())));
+                                adapter.updateItem(titles[1], 4, new MultiStyleItem(MultiStyleRVAdapter.EDITTEXT, wv_settings_array[4], "setTextZoom()", 0, String.valueOf(attr.getTextZoom())));
                             } else {
-                                adapter.updateItem(titles[1], 4, new MultiStyleItem(MultiStyleRVAdapter.EDITTEXT, "设置文本的缩放倍数", "setTextZoom()", -1, String.valueOf(attr.getTextZoom())));
+                                adapter.updateItem(titles[1], 4, new MultiStyleItem(MultiStyleRVAdapter.EDITTEXT, wv_settings_array[4], "setTextZoom()", -1, String.valueOf(attr.getTextZoom())));
                             }
                             new Handler().post(new Runnable() {
                                 @Override
@@ -280,11 +287,11 @@ public class P15_WebView_Settings extends LazyFragment {
                             break;
                         case 8:
                             attr.setJavaScriptEnabled(isSelect);
-                            adapter.updateItem(titles[1], 8, new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "支持JS", "setJavaScriptEnabled()", isSelect ? 1 : 0, null));
+                            adapter.updateItem(titles[1], 8, new MultiStyleItem(MultiStyleRVAdapter.SWITCH, wv_settings_array[8], "setJavaScriptEnabled()", isSelect ? 1 : 0, null));
                             if (isSelect) {
-                                adapter.updateItem(titles[1], 9, new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "支持通过JS打开新窗口", "setJavaScriptCanOpenWindowsAutomatically()", 1, null));
+                                adapter.updateItem(titles[1], 9, new MultiStyleItem(MultiStyleRVAdapter.SWITCH, wv_settings_array[9], "setJavaScriptCanOpenWindowsAutomatically()", 1, null));
                             } else {
-                                adapter.updateItem(titles[1], 9, new MultiStyleItem(MultiStyleRVAdapter.SWITCH, "支持通过JS打开新窗口", "setJavaScriptCanOpenWindowsAutomatically()", -1, null));
+                                adapter.updateItem(titles[1], 9, new MultiStyleItem(MultiStyleRVAdapter.SWITCH, wv_settings_array[9], "setJavaScriptCanOpenWindowsAutomatically()", -1, null));
                             }
                             new Handler().post(new Runnable() {
                                 @Override
@@ -355,7 +362,7 @@ public class P15_WebView_Settings extends LazyFragment {
                                 @Override
                                 public void dismiss(String data) {
                                     attr.setDefaultTextEncodingName(data);
-                                    adapter.updateItem(titles[1], 13, new MultiStyleItem(MultiStyleRVAdapter.TEXTVIEW, "设置编码格式", "setDefaultTextEncodingName()", 0, data));
+                                    adapter.updateItem(titles[1], 13, new MultiStyleItem(MultiStyleRVAdapter.TEXTVIEW, wv_settings_array[13], "setDefaultTextEncodingName()", 0, data));
                                     new Handler().post(new Runnable() {
                                         @Override
                                         public void run() {
@@ -379,7 +386,7 @@ public class P15_WebView_Settings extends LazyFragment {
                                 @Override
                                 public void dismiss(String data) {
                                     attr.setStandardFontFamily(data);
-                                    adapter.updateItem(titles[1], 14, new MultiStyleItem(MultiStyleRVAdapter.TEXTVIEW, "设置WebView的字体", "setStandardFontFamily()", 0, data));
+                                    adapter.updateItem(titles[1], 14, new MultiStyleItem(MultiStyleRVAdapter.TEXTVIEW, wv_settings_array[14], "setStandardFontFamily()", 0, data));
                                     new Handler().post(new Runnable() {
                                         @Override
                                         public void run() {
@@ -389,16 +396,12 @@ public class P15_WebView_Settings extends LazyFragment {
                                 }
                             });
                             break;
-
-                    }
-                } else if (titles[2].equals(title)) {
-                    switch (position) {
-                        case 0:
+                        case 15:
                             //show selector
                             int r = 0;
-                            String[] modes = getActivity().getResources().getStringArray(R.array.cache_mode);
+                            String[] modes = getActivity().getResources().getStringArray(R.array.mixed_content_mode);
                             for (int i = 0; i < modes.length; i++) {
-                                if (modes[i].equals(attr.getCacheModeName(attr.getCacheMode()))) {
+                                if (modes[i].equals(attr.getMixedContentModeName(attr.getMixedContentMode()))) {
                                     r = i;
                                     break;
                                 }
@@ -406,8 +409,59 @@ public class P15_WebView_Settings extends LazyFragment {
                             showRBDialog(modes, r, new DialogCallback() {
                                 @Override
                                 public void dismiss(String data) {
+                                    attr.setMixedContentMode(attr.getMixedContentMode(data));
+                                    adapter.updateItem(titles[1], 15, new MultiStyleItem(MultiStyleRVAdapter.TEXTVIEW, wv_settings_array[15], "setMixedContentMode()", 0, data));
+                                    new Handler().post(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            adapter.notifyDataSetChanged();
+                                        }
+                                    });
+                                }
+                            });
+                            break;
+                        case 16:
+                            //show selector
+                            int s = 0;
+                            String[] ua = getActivity().getResources().getStringArray(R.array.user_agent);
+                            for (int i = 0; i < ua.length; i++) {
+                                if (ua[i].equals(attr.getUserAgent())) {
+                                    s = i;
+                                    break;
+                                }
+                            }
+                            showRBDialog(ua, s, new DialogCallback() {
+                                @Override
+                                public void dismiss(String data) {
+                                    attr.setUserAgent(data);
+                                    adapter.updateItem(titles[1], 16, new MultiStyleItem(MultiStyleRVAdapter.TEXTVIEW, wv_settings_array[16], "getUserAgent()", 0, data));
+                                    new Handler().post(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            adapter.notifyDataSetChanged();
+                                        }
+                                    });
+                                }
+                            });
+                            break;
+                    }
+                } else if (titles[2].equals(title)) {
+                    switch (position) {
+                        case 0:
+                            //show selector
+                            int p = 0;
+                            String[] modes = getActivity().getResources().getStringArray(R.array.cache_mode);
+                            for (int i = 0; i < modes.length; i++) {
+                                if (modes[i].equals(attr.getCacheModeName(attr.getCacheMode()))) {
+                                    p = i;
+                                    break;
+                                }
+                            }
+                            showRBDialog(modes, p, new DialogCallback() {
+                                @Override
+                                public void dismiss(String data) {
                                     attr.setCacheMode(attr.getCacheMode(data));
-                                    adapter.updateItem(titles[2], 0, new MultiStyleItem(MultiStyleRVAdapter.TEXTVIEW, "设置WebView的缓存模式", "setCacheMode()", 0, data));
+                                    adapter.updateItem(titles[2], 0, new MultiStyleItem(MultiStyleRVAdapter.TEXTVIEW, wv_cache_array[0], "setCacheMode()", 0, data));
                                     new Handler().post(new Runnable() {
                                         @Override
                                         public void run() {

@@ -15,6 +15,7 @@
         android:id="@+id/ll"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
         android:layout_weight="5"
         android:orientation="vertical">
 
@@ -58,6 +59,8 @@
         android:layout_marginRight="5dp"
         android:layout_weight="1"
         android:background="@android:color/transparent"
+        android:ellipsize="end"
+        android:maxLines="3"
         android:textColor="@color/checker_board_dark"
         android:visibility="gone"/>
 
