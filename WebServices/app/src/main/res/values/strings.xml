@@ -13,7 +13,7 @@
         <item>Author</item>
         <item>Settings</item>
         <item>WebView settings</item>
-        <item>WebView history</item>
+        <item>Logcat</item>
         <item>Theme</item>
     </string-array>
 
@@ -43,7 +43,10 @@
     </string-array>
 
     <string-array name="wv_cache_array">
+        <item>浏览历史记录</item>
         <item>设置WebView的缓存模式</item>
+        <item>删除浏览历史记录</item>
+        <item>删除WebView缓存</item>
     </string-array>
 
     <string-array name="font_array">

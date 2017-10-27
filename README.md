@@ -345,8 +345,10 @@ In proguard-rules.pro
 > Again, you could use [https://kyfw.12306.cn/otn/regist/init][1] to test.    
 > It would pop up a dialog and users decide to continue (unsafe) or stop visiting the webside.		
 
-8. Visiting desktop sites or mobile sites by setting user-agent
+8. Switching desktop sites or mobile sites by user-agent
 > - [https://github.com/Catherine22][5]
+
+
 
 **I list all of the test links on [WebView test links]. You could open this page on [P14_Full_WebView].**
 

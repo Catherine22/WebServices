@@ -394,6 +394,12 @@ class MainActivity : FragmentActivity(), MainInterface {
                 tag = "P15"
             }
 
+            Constants.P16_WEBVIEW_HISTORY -> {
+                title = "P16_WebView_History"
+                fragment = P16_WebView_History.newInstance(true)
+                tag = "P16"
+            }
+
 
         //has bundle
             Constants.P14_FULL_WEBVIEW -> {
@@ -497,7 +503,7 @@ class MainActivity : FragmentActivity(), MainInterface {
                 0 -> {
                     callFragment(Constants.P14_FULL_WEBVIEW)
                 }
-                1 -> {
+                2 -> {
                     callFragment(Constants.P15_WEBVIEW_SETTINGS)
                 }
             }

@@ -6,7 +6,7 @@
     </shared>
   </component>
   <component name="AndroidLogFilters">
-    <option name="TOOL_WINDOW_CUSTOM_FILTER" value="P14_" />
+    <option name="TOOL_WINDOW_CUSTOM_FILTER" value="P16_WebView_History" />
     <option name="TOOL_WINDOW_LOG_LEVEL" value="verbose" />
     <option name="TOOL_WINDOW_CONFIGURED_FILTER" value="No Filters" />
   </component>
@@ -15,24 +15,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4f67b335-9767-425f-98ef-848df357af36" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/src/main/res/drawable-hdpi/ic_refresh_black_24dp.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/src/main/res/drawable-hdpi/ic_refresh_white_24dp.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/src/main/res/drawable-mdpi/ic_refresh_black_24dp.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/src/main/res/drawable-mdpi/ic_refresh_white_24dp.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/src/main/res/drawable-xhdpi/ic_refresh_black_24dp.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/src/main/res/drawable-xhdpi/ic_refresh_white_24dp.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/src/main/res/drawable-xxhdpi/ic_refresh_black_24dp.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/src/main/res/drawable-xxhdpi/ic_refresh_white_24dp.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/src/main/res/drawable-xxxhdpi/ic_refresh_black_24dp.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/src/main/res/drawable-xxxhdpi/ic_refresh_white_24dp.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/src/main/res/drawable/ic_refresh_black_24dp.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/src/main/res/drawable/ic_refresh_white_24dp.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/src/main/res/drawable/refresh_selector.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/adapters/SimpleStyleRVAdapter.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/entities/ImageCardEx.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P16_WebView_History.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/src/main/res/layout/f_16_wv_history.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/src/main/res/layout/rv_item_image.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../README.md" afterPath="$PROJECT_DIR$/../README.md" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/Constants.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/Constants.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/MainActivity.kt" afterPath="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/MainActivity.kt" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/adapters/MultiStyleRVAdapter.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/adapters/MultiStyleRVAdapter.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P14_Full_WebView.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P14_Full_WebView.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/network/NetworkHelper.kt" afterPath="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/network/NetworkHelper.kt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/layout/f_14_full_webview.xml" afterPath="$PROJECT_DIR$/app/src/main/res/layout/f_14_full_webview.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P15_WebView_Settings.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P15_WebView_Settings.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/network/MyJavaScriptInterface.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/network/MyJavaScriptInterface.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" afterPath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
     </list>
     <ignored path="WebServices.iws" />
@@ -81,93 +76,123 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="P14_Full_WebView.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="P14_Full_WebView.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P14_Full_WebView.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="101">
-              <caret line="589" column="63" lean-forward="false" selection-start-line="589" selection-start-column="63" selection-end-line="589" selection-end-column="63" />
+            <state relative-caret-position="202">
+              <caret line="662" column="74" lean-forward="false" selection-start-line="662" selection-start-column="74" selection-end-line="662" selection-end-column="74" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#4193#4194#0" expanded="true" />
-                <element signature="e#4240#4241#0" expanded="true" />
-                <element signature="e#5207#5481#0" expanded="true" />
-                <element signature="e#5480#5481#0" expanded="true" />
-                <element signature="e#5509#5987#0" expanded="true" />
-                <element signature="e#5986#5987#0" expanded="true" />
-                <element signature="e#6099#6100#0" expanded="true" />
-                <element signature="e#6137#6138#0" expanded="true" />
-                <element signature="e#6392#6556#0" expanded="true" />
-                <element signature="e#6555#6556#0" expanded="true" />
-                <element signature="e#6721#7315#0" expanded="true" />
-                <element signature="e#7314#7315#0" expanded="true" />
-                <element signature="e#7411#7577#0" expanded="true" />
-                <element signature="e#7576#7577#0" expanded="true" />
-                <element signature="e#7682#8070#0" expanded="true" />
-                <element signature="e#8069#8070#0" expanded="true" />
-                <element signature="e#8366#9107#0" expanded="true" />
-                <element signature="e#9106#9107#0" expanded="true" />
-                <element signature="e#9146#9308#0" expanded="true" />
-                <element signature="e#9307#9308#0" expanded="true" />
-                <element signature="e#13894#14152#0" expanded="true" />
-                <element signature="e#14151#14152#0" expanded="true" />
-                <element signature="e#14288#14545#0" expanded="true" />
-                <element signature="e#14544#14545#0" expanded="true" />
-                <element signature="e#14676#15345#0" expanded="true" />
-                <element signature="e#15344#15345#0" expanded="true" />
-                <element signature="e#16719#16977#0" expanded="true" />
-                <element signature="e#16976#16977#0" expanded="true" />
-                <element signature="e#17113#17370#0" expanded="true" />
-                <element signature="e#17369#17370#0" expanded="true" />
-                <element signature="e#17501#18170#0" expanded="true" />
-                <element signature="e#18169#18170#0" expanded="true" />
-                <element signature="e#19750#20278#0" expanded="true" />
-                <element signature="e#20277#20278#0" expanded="true" />
-                <element signature="e#20414#20671#0" expanded="true" />
-                <element signature="e#20670#20671#0" expanded="true" />
-                <element signature="e#20802#21471#0" expanded="true" />
-                <element signature="e#21470#21471#0" expanded="true" />
-                <element signature="e#31326#31595#0" expanded="true" />
-                <element signature="e#31594#31595#0" expanded="true" />
-                <element signature="e#31597#31912#0" expanded="true" />
-                <element signature="e#31911#31912#0" expanded="true" />
-                <element signature="e#34198#38895#0" expanded="true" />
-                <element signature="e#36260#37875#0" expanded="true" />
-                <element signature="e#37874#37875#0" expanded="true" />
-                <element signature="e#38019#38251#0" expanded="true" />
-                <element signature="e#38250#38251#0" expanded="true" />
-                <element signature="e#38439#38724#0" expanded="true" />
-                <element signature="e#38723#38724#0" expanded="true" />
-                <element signature="e#38894#38895#0" expanded="true" />
+                <element signature="e#4589#4590#0" expanded="true" />
+                <element signature="e#4636#4637#0" expanded="true" />
+                <element signature="e#5603#5877#0" expanded="true" />
+                <element signature="e#5876#5877#0" expanded="true" />
+                <element signature="e#5905#6383#0" expanded="true" />
+                <element signature="e#6382#6383#0" expanded="true" />
+                <element signature="e#6495#6496#0" expanded="true" />
+                <element signature="e#6533#6534#0" expanded="true" />
+                <element signature="e#6873#7037#0" expanded="true" />
+                <element signature="e#7036#7037#0" expanded="true" />
+                <element signature="e#7131#7725#0" expanded="true" />
+                <element signature="e#7724#7725#0" expanded="true" />
+                <element signature="e#7821#7987#0" expanded="true" />
+                <element signature="e#7986#7987#0" expanded="true" />
+                <element signature="e#8092#8480#0" expanded="true" />
+                <element signature="e#8479#8480#0" expanded="true" />
+                <element signature="e#8776#9517#0" expanded="true" />
+                <element signature="e#9516#9517#0" expanded="true" />
+                <element signature="e#9556#9718#0" expanded="true" />
+                <element signature="e#9717#9718#0" expanded="true" />
+                <element signature="e#14337#14595#0" expanded="true" />
+                <element signature="e#14594#14595#0" expanded="true" />
+                <element signature="e#14731#14988#0" expanded="true" />
+                <element signature="e#14987#14988#0" expanded="true" />
+                <element signature="e#15119#15788#0" expanded="true" />
+                <element signature="e#15787#15788#0" expanded="true" />
+                <element signature="e#17162#17420#0" expanded="true" />
+                <element signature="e#17419#17420#0" expanded="true" />
+                <element signature="e#17556#17813#0" expanded="true" />
+                <element signature="e#17812#17813#0" expanded="true" />
+                <element signature="e#17944#18613#0" expanded="true" />
+                <element signature="e#18612#18613#0" expanded="true" />
+                <element signature="e#20193#20721#0" expanded="true" />
+                <element signature="e#20720#20721#0" expanded="true" />
+                <element signature="e#20857#21114#0" expanded="true" />
+                <element signature="e#21113#21114#0" expanded="true" />
+                <element signature="e#21245#21914#0" expanded="true" />
+                <element signature="e#21913#21914#0" expanded="true" />
+                <element signature="e#27430#29947#0" expanded="true" />
+                <element signature="e#29946#29947#0" expanded="true" />
+                <element signature="e#34476#34745#0" expanded="true" />
+                <element signature="e#34744#34745#0" expanded="true" />
+                <element signature="e#34747#35062#0" expanded="true" />
+                <element signature="e#35061#35062#0" expanded="true" />
+                <element signature="e#37348#42045#0" expanded="true" />
+                <element signature="e#39410#41025#0" expanded="true" />
+                <element signature="e#41024#41025#0" expanded="true" />
+                <element signature="e#41169#41401#0" expanded="true" />
+                <element signature="e#41400#41401#0" expanded="true" />
+                <element signature="e#41589#41874#0" expanded="true" />
+                <element signature="e#41873#41874#0" expanded="true" />
+                <element signature="e#42044#42045#0" expanded="true" />
                 <element signature="method#showErrorDialog#0;class#P14_Full_WebView#0" expanded="false" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="MainActivity.kt" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/MainActivity.kt">
+      <file leaf-file-name="Constants.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/Constants.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="475">
-              <caret line="466" column="9" lean-forward="false" selection-start-line="466" selection-start-column="9" selection-end-line="466" selection-end-column="9" />
+            <state relative-caret-position="671">
+              <caret line="91" column="47" lean-forward="false" selection-start-line="91" selection-start-column="28" selection-end-line="91" selection-end-column="47" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="P16_WebView_History.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P16_WebView_History.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1110">
+              <caret line="233" column="68" lean-forward="false" selection-start-line="233" selection-start-column="68" selection-end-line="233" selection-end-column="68" />
               <folding>
-                <element signature="e#9592#10839#0" expanded="false" />
-                <element signature="e#10924#15079#0" expanded="false" />
-                <element signature="e#18446#18949#0" expanded="false" />
-                <element signature="e#22359#22796#0" expanded="false" />
-                <element signature="e#22816#25421#0" expanded="false" />
+                <element signature="e#2985#2986#0" expanded="true" />
+                <element signature="e#3029#3030#0" expanded="true" />
+                <element signature="e#5467#5671#0" expanded="true" />
+                <element signature="e#5670#5671#0" expanded="true" />
+                <element signature="e#9316#9317#0" expanded="true" />
+                <element signature="e#9356#9357#0" expanded="true" />
+                <element signature="e#9396#9397#0" expanded="true" />
+                <element signature="e#9431#9432#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="f_14_full_webview.xml" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/f_14_full_webview.xml">
+      <file leaf-file-name="SimpleStyleRVAdapter.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/adapters/SimpleStyleRVAdapter.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-107">
+              <caret line="98" column="32" lean-forward="false" selection-start-line="98" selection-start-column="32" selection-end-line="98" selection-end-column="32" />
+              <folding>
+                <element signature="e#5314#6292#0" expanded="true" />
+                <element signature="e#5645#6115#0" expanded="true" />
+                <element signature="e#6114#6115#0" expanded="true" />
+                <element signature="e#6291#6292#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="rv_item_image.xml" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/rv_item_image.xml">
           <provider editor-type-id="android-designer2">
             <state />
           </provider>
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="364">
-              <caret line="53" column="44" lean-forward="false" selection-start-line="53" selection-start-column="44" selection-end-line="53" selection-end-column="44" />
+            <state relative-caret-position="-100">
+              <caret line="12" column="14" lean-forward="false" selection-start-line="12" selection-start-column="5" selection-end-line="12" selection-end-column="14" />
               <folding />
             </state>
           </provider>
@@ -176,92 +201,13 @@
       <file leaf-file-name="P15_WebView_Settings.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P15_WebView_Settings.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-5774">
-              <caret line="168" column="126" lean-forward="false" selection-start-line="168" selection-start-column="126" selection-end-line="168" selection-end-column="126" />
+            <state relative-caret-position="108">
+              <caret line="514" column="17" lean-forward="false" selection-start-line="514" selection-start-column="17" selection-end-line="514" selection-end-column="17" />
               <folding>
-                <element signature="e#10033#10227#0" expanded="true" />
-                <element signature="e#10226#10227#0" expanded="true" />
-                <element signature="e#10493#10697#0" expanded="true" />
-                <element signature="e#10696#10697#0" expanded="true" />
-                <element signature="e#11388#28091#0" expanded="true" />
-                <element signature="e#13681#13923#0" expanded="true" />
-                <element signature="e#13922#13923#0" expanded="true" />
-                <element signature="e#14775#15017#0" expanded="true" />
-                <element signature="e#15016#15017#0" expanded="true" />
-                <element signature="e#17580#17822#0" expanded="true" />
-                <element signature="e#17821#17822#0" expanded="true" />
-                <element signature="e#21375#22170#0" expanded="true" />
-                <element signature="e#21822#22104#0" expanded="true" />
-                <element signature="e#22103#22104#0" expanded="true" />
-                <element signature="e#22169#22170#0" expanded="true" />
-                <element signature="e#22789#23574#0" expanded="true" />
-                <element signature="e#23226#23508#0" expanded="true" />
-                <element signature="e#23507#23508#0" expanded="true" />
-                <element signature="e#23573#23574#0" expanded="true" />
-                <element signature="e#24229#25036#0" expanded="true" />
-                <element signature="e#24688#24970#0" expanded="true" />
-                <element signature="e#24969#24970#0" expanded="true" />
-                <element signature="e#25035#25036#0" expanded="true" />
-                <element signature="e#25634#26401#0" expanded="true" />
-                <element signature="e#26053#26335#0" expanded="true" />
-                <element signature="e#26334#26335#0" expanded="true" />
-                <element signature="e#26400#26401#0" expanded="true" />
-                <element signature="e#27149#27930#0" expanded="true" />
-                <element signature="e#27929#27930#0" expanded="true" />
-                <element signature="e#28090#28091#0" expanded="true" />
-                <marker date="1509076302000" expanded="false" signature="27582:27708" ph="() → {" />
-                <marker date="1509076302000" expanded="false" signature="27821:27864" ph="}" />
-                <marker date="1509076302000" expanded="false" signature="29819:29956" ph="(radioGroup, i) → {" />
-                <marker date="1509076302000" expanded="false" signature="30048:30063" ph="}" />
-                <marker date="1509076302000" expanded="false" signature="30163:30258" ph="(view) → {" />
-                <marker date="1509076302000" expanded="false" signature="30401:30416" ph="}" />
+                <element signature="imports" expanded="true" />
+                <element signature="e#12687#29546#0" expanded="true" />
+                <element signature="e#29545#29546#0" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="strings.xml" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="168">
-              <caret line="15" column="36" lean-forward="true" selection-start-line="15" selection-start-column="36" selection-end-line="15" selection-end-column="36" />
-              <folding>
-                <element signature="e#2815#2820#0" expanded="true" />
-                <element signature="e#2922#2927#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="P13_Nested_WebView.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P13_Nested_WebView.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1192">
-              <caret line="55" column="57" lean-forward="false" selection-start-line="55" selection-start-column="57" selection-end-line="55" selection-end-column="57" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="activity_main.xml" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml">
-          <provider editor-type-id="android-designer2">
-            <state />
-          </provider>
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="132">
-              <caret line="32" column="49" lean-forward="false" selection-start-line="32" selection-start-column="49" selection-end-line="39" selection-end-column="71" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="NetworkHelper.kt" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/network/NetworkHelper.kt">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="141">
-              <caret line="54" column="43" lean-forward="false" selection-start-line="54" selection-start-column="43" selection-end-line="54" selection-end-column="43" />
-              <folding />
             </state>
           </provider>
         </entry>
@@ -282,36 +228,36 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>&quot;设置可以访问文件&quot;</find>
-      <find>&quot;当WebView调用requestFocus时为WebView设置节点&quot;</find>
-      <find>&quot;支持JS&quot;</find>
-      <find>&quot;支持通过JS打开新窗口&quot;</find>
-      <find>&quot;设置WebView字体的大小&quot;</find>
-      <find>&quot;设置WebView支持的最小字体大小&quot;</find>
-      <find>&quot;设置WebView的字体&quot;</find>
-      <find>&quot;设置http和https混合内容的处理&quot;</find>
-      <find>设置WebView的缓存模式</find>
-      <find>MixedContentMode</find>
-      <find>user_agent_detail</find>
-      <find>my user</find>
-      <find>setMixedContentMode</find>
-      <find>UserAgent</find>
-      <find>&quot;设置WebView的缓存模式&quot;</find>
-      <find>pb</find>
-      <find>ProgressBar</find>
-      <find>pb.</find>
-      <find>Name</find>
-      <find>actv_url.get</find>
-      <find>maxLines</find>
-      <find>iv_icon</find>
-      <find>iv_menu</find>
-      <find>Failed to load URL</find>
-      <find>loadUrl</find>
-      <find>https://www.google.com.us/search?q=</find>
-      <find>contentMo</find>
-      <find>hideKeyboard</find>
-      <find>currentUrl</find>
-      <find>actv_url</find>
+      <find>Bitmap</find>
+      <find>getSharedPreferences</find>
+      <find>s</find>
+      <find>save</find>
+      <find>saveB</find>
+      <find>saveBit</find>
+      <find>saveBi</find>
+      <find>b</find>
+      <find>bi</find>
+      <find>bit</find>
+      <find>bitm</find>
+      <find>bitma</find>
+      <find>bitmapT</find>
+      <find>bitmap</find>
+      <find>sp =</find>
+      <find>callFr</find>
+      <find>diskLruCache</find>
+      <find>wv_cache_array</find>
+      <find>callFragment</find>
+      <find>clearFolder</find>
+      <find>onPage</find>
+      <find>click</find>
+      <find>fillInData</find>
+      <find>getDateTime</find>
+      <find>handler</find>
+      <find>getRoughDateTime</find>
+      <find>icon</find>
+      <find>&quot;webview&quot;</find>
+      <find>pageIcon</find>
+      <find>items</find>
     </findStrings>
     <replaceStrings>
       <replace>CLog.i(TAG,</replace>
@@ -5381,12 +5327,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/app/src/main/assets/js_confirm.html" />
-        <option value="$PROJECT_DIR$/app/src/main/assets/js_alert.html" />
-        <option value="$PROJECT_DIR$/app/src/main/res/layout/f_socket.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/res/drawable/actionbar_back_selector.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/res/drawable/sidebar_button_selector.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/res/drawable/cancel_selector.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/adapters/ImageCardRVAdapter.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/rv_fresco_card.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/drawable/settings_selector.xml" />
@@ -5415,7 +5355,6 @@
         <option value="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/adapters/ContactRVAdapter.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/entities/Contact.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P16_Contacts.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/Constants.java" />
         <option value="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" />
         <option value="$PROJECT_DIR$/app/src/main/assets/js_command.html" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P12_WebView.java" />
@@ -5423,14 +5362,21 @@
         <option value="$PROJECT_DIR$/../README.md" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/rv_item.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/entities/WebViewAttr.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P15_WebView_Settings.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P13_Nested_WebView.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/MainActivity.kt" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/interfaces/MainInterface.kt" />
         <option value="$PROJECT_DIR$/app/src/main/res/drawable/refresh_selector.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/f_14_full_webview.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/network/NetworkHelper.kt" />
+        <option value="$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout/f_16_wv_history.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/Constants.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/MainActivity.kt" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P15_WebView_Settings.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/adapters/MultiStyleRVAdapter.java" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout/rv_item_image.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/entities/ImageCardEx.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/adapters/SimpleStyleRVAdapter.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P16_WebView_History.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P14_Full_WebView.java" />
       </list>
     </option>
@@ -5503,24 +5449,6 @@
             <PATH_ELEMENT>
               <option name="myItemId" value="Gradle Scripts" />
               <option name="myItemType" value="com.android.tools.idea.navigator.nodes.android.AndroidBuildScriptsGroupNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="WebServices" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="app" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.android.AndroidModuleNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="res" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.android.AndroidResFolderNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="values" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.android.AndroidResFolderTypeNode" />
             </PATH_ELEMENT>
           </PATH>
           <PATH>
@@ -5615,7 +5543,29 @@
               <option name="myItemType" value="com.android.tools.idea.navigator.nodes.android.AndroidPsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="fragments" />
+              <option name="myItemId" value="entities" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="WebServices" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.android.AndroidModuleNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.android.AndroidSourceTypeNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="webservices" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.android.AndroidPsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="adapters" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -5657,7 +5607,7 @@
     <property name="settings.editor.selected.configurable" value="project.propVCSSupport.Mappings" />
     <property name="android.sdk.path" value="$USER_HOME$/Documents/dev/android-sdk-macosx" />
     <property name="device.picker.selection" value="LGD8389caef79b" />
-    <property name="SearchEverywhereHistoryKey" value="MainA&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/MainActivity.kt&#10;P15&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/fragments/P15_WebView_Settings.java&#10;MyA&#9;PSI&#9;JAVA://com.catherine.webservices.MyApplication&#10;MyHtt&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/network/MyHttpURLConnection.java&#10;Const&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/Constants.java&#10;P0&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/fragments/P03_Downloader.java&#10;Down&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/fragments/P03_Downloader.java&#10;P02&#9;PSI&#9;JAVA://com.catherine.webservices.fragments.P02_HttpURLConnection&#10;Jav&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/network/MyJavaScriptInterface.java&#10;P14&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/fragments/P14_Full_WebView.java&#10;P1&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/fragments/P13_Nested_WebView.java&#10;MainAc&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/MainActivity.kt&#10;My&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/network/MyJavaScriptInterface.java&#10;Strings&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/res/values/strings.xml&#10;f1&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/res/layout/f_14_full_webview.xml&#10;Cons&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/Constants.java&#10;f&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/res/layout/f_14_full_webview.xml&#10;P05&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/fragments/P05_Gallery.java&#10;Ma&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/MainActivity.kt&#10;rv_&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/res/layout/rv_item.xml&#10;Web&#9;PSI&#9;JAVA://com.catherine.webservices.entities.WebViewAttr&#10;f_15&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/res/layout/f_15_wv_settings.xml&#10;f_14&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/res/layout/f_14_full_webview.xml&#10;p15&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/fragments/P15_WebView_Settings.java&#10;r&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/res/layout/rv_item.xml&#10;C&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/res/values/colors.xml&#10;Col&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/res/values/colors.xml&#10;P01&#9;PSI&#9;JAVA://com.catherine.webservices.fragments.P01_Apache&#10;CLog&#9;null&#9;null&#10;CLo&#9;null&#9;null&#10;Main&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/interfaces/MainInterface.kt&#10;ac&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/res/layout/activity_main.xml&#10;N&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/res/layout/f_13_nested_webview.xml&#10;Fres&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/fragments/P11_Fresco.java&#10;f_04&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/res/layout/f_04_cache.xml&#10;strings&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/res/values/strings.xml&#10;acti&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/res/layout/activity_main.xml&#10;f14&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/res/layout/f_14_full_webview.xml&#10;P12&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/fragments/P12_WebView.java&#10;f_01&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/res/layout/f_01_apache.xml&#10;activity&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/res/layout/activity_main.xml&#10;main&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/res/layout/activity_main.xml&#10;M&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/interfaces/MainInterface.kt&#10;activit&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/res/layout/activity_main.xml&#10;im&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/entities/ImageCard.java&#10;P11&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/fragments/P11_Fresco.java&#10;Soc&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/fragments/P08_Blocking_Socket.java&#10;Download&#9;PSI&#9;JAVA://com.catherine.webservices.fragments.P03_Downloader&#10;MyApp&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/MyApplication.java&#10;Ima&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/adapters/ImageCardRVAdapter.java" />
+    <property name="SearchEverywhereHistoryKey" value="Cons&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/Constants.java&#10;MainA&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/MainActivity.kt&#10;MyApp&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/MyApplication.java&#10;P15&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/fragments/P15_WebView_Settings.java&#10;MyA&#9;PSI&#9;JAVA://com.catherine.webservices.MyApplication&#10;MyHtt&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/network/MyHttpURLConnection.java&#10;Const&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/Constants.java&#10;P0&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/fragments/P03_Downloader.java&#10;Down&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/fragments/P03_Downloader.java&#10;P02&#9;PSI&#9;JAVA://com.catherine.webservices.fragments.P02_HttpURLConnection&#10;Jav&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/network/MyJavaScriptInterface.java&#10;P14&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/fragments/P14_Full_WebView.java&#10;P1&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/fragments/P13_Nested_WebView.java&#10;MainAc&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/MainActivity.kt&#10;My&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/network/MyJavaScriptInterface.java&#10;Strings&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/res/values/strings.xml&#10;f1&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/res/layout/f_14_full_webview.xml&#10;f&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/res/layout/f_14_full_webview.xml&#10;P05&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/fragments/P05_Gallery.java&#10;Ma&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/MainActivity.kt&#10;rv_&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/res/layout/rv_item.xml&#10;Web&#9;PSI&#9;JAVA://com.catherine.webservices.entities.WebViewAttr&#10;f_15&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/res/layout/f_15_wv_settings.xml&#10;f_14&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/res/layout/f_14_full_webview.xml&#10;p15&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/fragments/P15_WebView_Settings.java&#10;r&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/res/layout/rv_item.xml&#10;C&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/res/values/colors.xml&#10;Col&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/res/values/colors.xml&#10;P01&#9;PSI&#9;JAVA://com.catherine.webservices.fragments.P01_Apache&#10;CLog&#9;null&#9;null&#10;CLo&#9;null&#9;null&#10;Main&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/interfaces/MainInterface.kt&#10;ac&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/res/layout/activity_main.xml&#10;N&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/res/layout/f_13_nested_webview.xml&#10;Fres&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/fragments/P11_Fresco.java&#10;f_04&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/res/layout/f_04_cache.xml&#10;strings&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/res/values/strings.xml&#10;acti&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/res/layout/activity_main.xml&#10;f14&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/res/layout/f_14_full_webview.xml&#10;P12&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/fragments/P12_WebView.java&#10;f_01&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/res/layout/f_01_apache.xml&#10;activity&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/res/layout/activity_main.xml&#10;main&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/res/layout/activity_main.xml&#10;M&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/interfaces/MainInterface.kt&#10;activit&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/res/layout/activity_main.xml&#10;im&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/entities/ImageCard.java&#10;P11&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/fragments/P11_Fresco.java&#10;Soc&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/fragments/P08_Blocking_Socket.java&#10;Download&#9;PSI&#9;JAVA://com.catherine.webservices.fragments.P03_Downloader&#10;Ima&#9;FILE&#9;file:///Users/Nexton/AndroidStudioProjects/WebServices/WebServices/app/src/main/java/com/catherine/webservices/adapters/ImageCardRVAdapter.java" />
     <property name="android.project.structure.last.selected" value="app" />
     <property name="android.project.structure.proportion" value="0.15" />
     <property name="android.profiler.active" value="true" />
@@ -5689,11 +5639,11 @@
       <recent name="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/security/certificate_extensions" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="com.catherine.webservices.entities" />
       <recent name="com.catherine.webservices.adapters" />
       <recent name="com.catherine.webservices.fragments" />
       <recent name="com.catherine.webservices.interfaces" />
       <recent name="com.catherine.webservices.network" />
-      <recent name="com.catherine.webservices.views.ViewPager" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/parcelables" />
@@ -5914,7 +5864,7 @@
       <option name="DEEP_LINK" value="" />
       <option name="ACTIVITY_CLASS" value="" />
       <method>
-        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="false" clearCache="false" clearProvisionedDevices="false" myTimestamp="1509086999124" />
+        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="false" clearCache="false" clearProvisionedDevices="false" myTimestamp="1509098425326" />
       </method>
     </configuration>
     <configuration default="true" type="AndroidTestRunConfigurationType" factoryName="Android Instrumented Tests">
@@ -5961,7 +5911,7 @@
         <option name="ADVANCED_PROFILING_ENABLED" value="false" />
       </Profilers>
       <method>
-        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="false" clearCache="false" clearProvisionedDevices="false" myTimestamp="1509086999124" />
+        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="false" clearCache="false" clearProvisionedDevices="false" myTimestamp="1509098425326" />
       </method>
     </configuration>
     <configuration default="true" type="Application" factoryName="Application">
@@ -6143,7 +6093,7 @@
       <option name="DEEP_LINK" value="" />
       <option name="ACTIVITY_CLASS" value="" />
       <method>
-        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="true" clearCache="false" clearProvisionedDevices="false" myTimestamp="1509086999126" />
+        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="true" clearCache="false" clearProvisionedDevices="false" myTimestamp="1509098425327" />
       </method>
     </configuration>
     <list size="6">
@@ -6246,7 +6196,7 @@
       <window_info id="Android Profiler" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.42439863" sideWeight="0.56117827" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Build Variants" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.19637462" sideWeight="0.6393443" order="3" side_tool="true" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32302406" sideWeight="0.5407855" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Logcat" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.4450172" sideWeight="0.4592145" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Logcat" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32474226" sideWeight="0.4592145" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -6263,7 +6213,7 @@
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3298969" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Captures" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.43814433" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Gradle Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33333334" sideWeight="0.53172207" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.22432025" sideWeight="0.36065573" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.23111783" sideWeight="0.36065573" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3024055" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Gradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32930514" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Theme Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -6367,85 +6317,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/app/proguard-rules.pro">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="523">
-          <caret line="71" column="0" lean-forward="false" selection-start-line="71" selection-start-column="0" selection-end-line="74" selection-end-column="14" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/f_01_apache.xml">
-      <provider editor-type-id="android-designer2">
-        <state />
-      </provider>
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="23" selection-end-column="14" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/rv_text_card.xml">
-      <provider editor-type-id="android-designer2">
-        <state />
-      </provider>
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-22">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/adapters/CardRVAdapter.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-911">
-          <caret line="25" column="6" lean-forward="false" selection-start-line="25" selection-start-column="6" selection-end-line="25" selection-end-column="6" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/adapters/ImageCardRVAdapter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="498">
-          <caret line="240" column="100" lean-forward="false" selection-start-line="240" selection-start-column="100" selection-end-line="240" selection-end-column="100" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/rv_card.xml">
-      <provider editor-type-id="android-designer2">
-        <state />
-      </provider>
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="268">
-          <caret line="38" column="38" lean-forward="true" selection-start-line="38" selection-start-column="38" selection-end-line="39" selection-end-column="37" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/adapters/TextCardRVAdapter.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="252">
-          <caret line="61" column="73" lean-forward="false" selection-start-line="61" selection-start-column="73" selection-end-line="61" selection-end-column="73" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/rv_contact.xml" />
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/entities/ImageCard.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="185">
-          <caret line="12" column="13" lean-forward="false" selection-start-line="12" selection-start-column="13" selection-end-line="12" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/adapters/FrescoRVAdapter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="40" column="30" lean-forward="true" selection-start-line="40" selection-start-column="30" selection-end-line="40" selection-end-column="30" />
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://$USER_HOME$/.android/build-cache/735050f63dfde32c55a8601be8c07e7497821d8e/output/jars/classes.jar!/android/support/v4/app/Fragment.class">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="181">
@@ -6471,22 +6342,6 @@
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/f_16_contacts.xml" />
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/entities/Contact.java" />
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P16_Contacts.java" />
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/adapters/MultiStyleRVAdapter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="118">
-          <caret line="31" column="13" lean-forward="false" selection-start-line="31" selection-start-column="13" selection-end-line="31" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/entities/MultiStyleItem.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="442">
-          <caret line="31" column="11" lean-forward="false" selection-start-line="31" selection-start-column="11" selection-end-line="31" selection-end-column="11" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/toolkits/Utils.kt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="191">
@@ -6514,6 +6369,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="214">
           <caret line="214" column="40" lean-forward="false" selection-start-line="214" selection-start-column="40" selection-end-line="214" selection-end-column="40" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -6521,6 +6377,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="181">
           <caret line="44" column="22" lean-forward="true" selection-start-line="44" selection-start-column="22" selection-end-line="44" selection-end-column="22" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -6549,6 +6406,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="149">
           <caret line="325" column="62" lean-forward="false" selection-start-line="325" selection-start-column="38" selection-end-line="325" selection-end-column="62" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -6556,6 +6414,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-2819">
           <caret line="31" column="13" lean-forward="false" selection-start-line="31" selection-start-column="13" selection-end-line="31" selection-end-column="13" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -6563,6 +6422,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="150">
           <caret line="180" column="84" lean-forward="true" selection-start-line="179" selection-start-column="12" selection-end-line="180" selection-end-column="84" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -6570,24 +6430,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2414">
           <caret line="168" column="47" lean-forward="false" selection-start-line="168" selection-start-column="47" selection-end-line="168" selection-end-column="47" />
-          <folding>
-            <element signature="imports" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/Constants.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1122">
-          <caret line="66" column="114" lean-forward="false" selection-start-line="66" selection-start-column="37" selection-end-line="66" selection-end-column="114" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/MyApplication.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="170">
-          <caret line="50" column="13" lean-forward="false" selection-start-line="50" selection-start-column="13" selection-end-line="50" selection-end-column="13" />
           <folding>
             <element signature="imports" expanded="false" />
           </folding>
@@ -6640,17 +6482,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/rv_item.xml">
-      <provider editor-type-id="android-designer2">
-        <state />
-      </provider>
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="201">
-          <caret line="61" column="30" lean-forward="false" selection-start-line="61" selection-start-column="30" selection-end-line="61" selection-end-column="30" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/drawable/actionbar_back_selector.xml">
       <provider editor-type-id="android-designer2">
         <state />
@@ -6669,17 +6500,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml">
-      <provider editor-type-id="android-designer2">
-        <state />
-      </provider>
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="132">
-          <caret line="32" column="49" lean-forward="false" selection-start-line="32" selection-start-column="49" selection-end-line="39" selection-end-column="71" />
           <folding />
         </state>
       </provider>
@@ -6714,51 +6534,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P15_WebView_Settings.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-5774">
-          <caret line="168" column="126" lean-forward="false" selection-start-line="168" selection-start-column="126" selection-end-line="168" selection-end-column="126" />
-          <folding>
-            <element signature="e#10033#10227#0" expanded="true" />
-            <element signature="e#10226#10227#0" expanded="true" />
-            <element signature="e#10493#10697#0" expanded="true" />
-            <element signature="e#10696#10697#0" expanded="true" />
-            <element signature="e#11388#28091#0" expanded="true" />
-            <element signature="e#13681#13923#0" expanded="true" />
-            <element signature="e#13922#13923#0" expanded="true" />
-            <element signature="e#14775#15017#0" expanded="true" />
-            <element signature="e#15016#15017#0" expanded="true" />
-            <element signature="e#17580#17822#0" expanded="true" />
-            <element signature="e#17821#17822#0" expanded="true" />
-            <element signature="e#21375#22170#0" expanded="true" />
-            <element signature="e#21822#22104#0" expanded="true" />
-            <element signature="e#22103#22104#0" expanded="true" />
-            <element signature="e#22169#22170#0" expanded="true" />
-            <element signature="e#22789#23574#0" expanded="true" />
-            <element signature="e#23226#23508#0" expanded="true" />
-            <element signature="e#23507#23508#0" expanded="true" />
-            <element signature="e#23573#23574#0" expanded="true" />
-            <element signature="e#24229#25036#0" expanded="true" />
-            <element signature="e#24688#24970#0" expanded="true" />
-            <element signature="e#24969#24970#0" expanded="true" />
-            <element signature="e#25035#25036#0" expanded="true" />
-            <element signature="e#25634#26401#0" expanded="true" />
-            <element signature="e#26053#26335#0" expanded="true" />
-            <element signature="e#26334#26335#0" expanded="true" />
-            <element signature="e#26400#26401#0" expanded="true" />
-            <element signature="e#27149#27930#0" expanded="true" />
-            <element signature="e#27929#27930#0" expanded="true" />
-            <element signature="e#28090#28091#0" expanded="true" />
-            <marker date="1509076302000" expanded="false" signature="27582:27708" ph="() → {" />
-            <marker date="1509076302000" expanded="false" signature="27821:27864" ph="}" />
-            <marker date="1509076302000" expanded="false" signature="29819:29956" ph="(radioGroup, i) → {" />
-            <marker date="1509076302000" expanded="false" signature="30048:30063" ph="}" />
-            <marker date="1509076302000" expanded="false" signature="30163:30258" ph="(view) → {" />
-            <marker date="1509076302000" expanded="false" signature="30401:30416" ph="}" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/f_14_full_webview.xml">
       <provider editor-type-id="android-designer2">
         <state />
@@ -6767,20 +6542,6 @@
         <state relative-caret-position="364">
           <caret line="53" column="44" lean-forward="false" selection-start-line="53" selection-start-column="44" selection-end-line="53" selection-end-column="44" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/MainActivity.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="475">
-          <caret line="466" column="9" lean-forward="false" selection-start-line="466" selection-start-column="9" selection-end-line="466" selection-end-column="9" />
-          <folding>
-            <element signature="e#9592#10839#0" expanded="false" />
-            <element signature="e#10924#15079#0" expanded="false" />
-            <element signature="e#18446#18949#0" expanded="false" />
-            <element signature="e#22359#22796#0" expanded="false" />
-            <element signature="e#22816#25421#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -6800,74 +6561,273 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P14_Full_WebView.java">
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml">
+      <provider editor-type-id="android-designer2">
+        <state />
+      </provider>
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="101">
-          <caret line="589" column="63" lean-forward="false" selection-start-line="589" selection-start-column="63" selection-end-line="589" selection-end-column="63" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#4193#4194#0" expanded="true" />
-            <element signature="e#4240#4241#0" expanded="true" />
-            <element signature="e#5207#5481#0" expanded="true" />
-            <element signature="e#5480#5481#0" expanded="true" />
-            <element signature="e#5509#5987#0" expanded="true" />
-            <element signature="e#5986#5987#0" expanded="true" />
-            <element signature="e#6099#6100#0" expanded="true" />
-            <element signature="e#6137#6138#0" expanded="true" />
-            <element signature="e#6392#6556#0" expanded="true" />
-            <element signature="e#6555#6556#0" expanded="true" />
-            <element signature="e#6721#7315#0" expanded="true" />
-            <element signature="e#7314#7315#0" expanded="true" />
-            <element signature="e#7411#7577#0" expanded="true" />
-            <element signature="e#7576#7577#0" expanded="true" />
-            <element signature="e#7682#8070#0" expanded="true" />
-            <element signature="e#8069#8070#0" expanded="true" />
-            <element signature="e#8366#9107#0" expanded="true" />
-            <element signature="e#9106#9107#0" expanded="true" />
-            <element signature="e#9146#9308#0" expanded="true" />
-            <element signature="e#9307#9308#0" expanded="true" />
-            <element signature="e#13894#14152#0" expanded="true" />
-            <element signature="e#14151#14152#0" expanded="true" />
-            <element signature="e#14288#14545#0" expanded="true" />
-            <element signature="e#14544#14545#0" expanded="true" />
-            <element signature="e#14676#15345#0" expanded="true" />
-            <element signature="e#15344#15345#0" expanded="true" />
-            <element signature="e#16719#16977#0" expanded="true" />
-            <element signature="e#16976#16977#0" expanded="true" />
-            <element signature="e#17113#17370#0" expanded="true" />
-            <element signature="e#17369#17370#0" expanded="true" />
-            <element signature="e#17501#18170#0" expanded="true" />
-            <element signature="e#18169#18170#0" expanded="true" />
-            <element signature="e#19750#20278#0" expanded="true" />
-            <element signature="e#20277#20278#0" expanded="true" />
-            <element signature="e#20414#20671#0" expanded="true" />
-            <element signature="e#20670#20671#0" expanded="true" />
-            <element signature="e#20802#21471#0" expanded="true" />
-            <element signature="e#21470#21471#0" expanded="true" />
-            <element signature="e#31326#31595#0" expanded="true" />
-            <element signature="e#31594#31595#0" expanded="true" />
-            <element signature="e#31597#31912#0" expanded="true" />
-            <element signature="e#31911#31912#0" expanded="true" />
-            <element signature="e#34198#38895#0" expanded="true" />
-            <element signature="e#36260#37875#0" expanded="true" />
-            <element signature="e#37874#37875#0" expanded="true" />
-            <element signature="e#38019#38251#0" expanded="true" />
-            <element signature="e#38250#38251#0" expanded="true" />
-            <element signature="e#38439#38724#0" expanded="true" />
-            <element signature="e#38723#38724#0" expanded="true" />
-            <element signature="e#38894#38895#0" expanded="true" />
-            <element signature="method#showErrorDialog#0;class#P14_Full_WebView#0" expanded="false" />
-          </folding>
+        <state relative-caret-position="246">
+          <caret line="40" column="0" lean-forward="false" selection-start-line="40" selection-start-column="0" selection-end-line="40" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P07_Socket.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="170">
+          <caret line="36" column="13" lean-forward="false" selection-start-line="36" selection-start-column="13" selection-end-line="36" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/MyApplication.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="298">
+          <caret line="149" column="34" lean-forward="true" selection-start-line="149" selection-start-column="34" selection-end-line="149" selection-end-column="34" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P05_Gallery.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="238">
+          <caret line="53" column="24" lean-forward="true" selection-start-line="53" selection-start-column="24" selection-end-line="53" selection-end-column="24" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/adapters/FrescoRVAdapter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="85">
+          <caret line="40" column="30" lean-forward="true" selection-start-line="40" selection-start-column="30" selection-end-line="40" selection-end-column="30" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="168">
-          <caret line="15" column="36" lean-forward="true" selection-start-line="15" selection-start-column="36" selection-end-line="15" selection-end-column="36" />
+        <state relative-caret-position="-394">
+          <caret line="15" column="20" lean-forward="false" selection-start-line="15" selection-start-column="20" selection-end-line="15" selection-end-column="20" />
           <folding>
-            <element signature="e#2815#2820#0" expanded="true" />
-            <element signature="e#2922#2927#0" expanded="true" />
+            <element signature="e#2897#2902#0" expanded="true" />
+            <element signature="e#3004#3009#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/MainActivity.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="160">
+          <caret line="505" column="17" lean-forward="false" selection-start-line="505" selection-start-column="17" selection-end-line="505" selection-end-column="17" />
+          <folding>
+            <element signature="e#9592#10839#0" expanded="false" />
+            <element signature="e#10924#15079#0" expanded="false" />
+            <element signature="e#18647#19150#0" expanded="false" />
+            <element signature="e#22560#22997#0" expanded="false" />
+            <element signature="e#23017#25622#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/f_16_wv_history.xml">
+      <provider editor-type-id="android-designer2">
+        <state />
+      </provider>
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="261">
+          <caret line="23" column="33" lean-forward="false" selection-start-line="23" selection-start-column="25" selection-end-line="23" selection-end-column="33" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/adapters/MultiStyleRVAdapter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="254">
+          <caret line="80" column="11" lean-forward="false" selection-start-line="80" selection-start-column="11" selection-end-line="80" selection-end-column="11" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/rv_item.xml">
+      <provider editor-type-id="android-designer2">
+        <state />
+      </provider>
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="201">
+          <caret line="61" column="30" lean-forward="false" selection-start-line="61" selection-start-column="30" selection-end-line="61" selection-end-column="30" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/entities/MultiStyleItem.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="186">
+          <caret line="16" column="0" lean-forward="true" selection-start-line="15" selection-start-column="24" selection-end-line="16" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/entities/ImageCard.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="185">
+          <caret line="12" column="13" lean-forward="false" selection-start-line="12" selection-start-column="13" selection-end-line="12" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/adapters/ImageCardRVAdapter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="94">
+          <caret line="55" column="12" lean-forward="true" selection-start-line="55" selection-start-column="12" selection-end-line="55" selection-end-column="95" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/entities/ImageCardEx.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="180">
+          <caret line="88" column="44" lean-forward="false" selection-start-line="88" selection-start-column="44" selection-end-line="88" selection-end-column="44" />
+          <folding>
+            <element signature="e#624#625#0" expanded="true" />
+            <element signature="e#652#653#0" expanded="true" />
+            <element signature="e#694#695#0" expanded="true" />
+            <element signature="e#728#729#0" expanded="true" />
+            <element signature="e#763#764#0" expanded="true" />
+            <element signature="e#794#795#0" expanded="true" />
+            <element signature="e#842#843#0" expanded="true" />
+            <element signature="e#882#883#0" expanded="true" />
+            <element signature="e#914#915#0" expanded="true" />
+            <element signature="e#942#943#0" expanded="true" />
+            <element signature="e#984#985#0" expanded="true" />
+            <element signature="e#1018#1019#0" expanded="true" />
+            <element signature="e#1047#1048#0" expanded="true" />
+            <element signature="e#1075#1076#0" expanded="true" />
+            <element signature="e#1114#1115#0" expanded="true" />
+            <element signature="e#1148#1149#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P15_WebView_Settings.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="108">
+          <caret line="514" column="17" lean-forward="false" selection-start-line="514" selection-start-column="17" selection-end-line="514" selection-end-column="17" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#12687#29546#0" expanded="true" />
+            <element signature="e#29545#29546#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/rv_item_image.xml">
+      <provider editor-type-id="android-designer2">
+        <state />
+      </provider>
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-100">
+          <caret line="12" column="14" lean-forward="false" selection-start-line="12" selection-start-column="5" selection-end-line="12" selection-end-column="14" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/adapters/SimpleStyleRVAdapter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-107">
+          <caret line="98" column="32" lean-forward="false" selection-start-line="98" selection-start-column="32" selection-end-line="98" selection-end-column="32" />
+          <folding>
+            <element signature="e#5314#6292#0" expanded="true" />
+            <element signature="e#5645#6115#0" expanded="true" />
+            <element signature="e#6114#6115#0" expanded="true" />
+            <element signature="e#6291#6292#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P16_WebView_History.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1110">
+          <caret line="233" column="68" lean-forward="false" selection-start-line="233" selection-start-column="68" selection-end-line="233" selection-end-column="68" />
+          <folding>
+            <element signature="e#2985#2986#0" expanded="true" />
+            <element signature="e#3029#3030#0" expanded="true" />
+            <element signature="e#5467#5671#0" expanded="true" />
+            <element signature="e#5670#5671#0" expanded="true" />
+            <element signature="e#9316#9317#0" expanded="true" />
+            <element signature="e#9356#9357#0" expanded="true" />
+            <element signature="e#9396#9397#0" expanded="true" />
+            <element signature="e#9431#9432#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/Constants.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="671">
+          <caret line="91" column="47" lean-forward="false" selection-start-line="91" selection-start-column="28" selection-end-line="91" selection-end-column="47" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P14_Full_WebView.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="202">
+          <caret line="662" column="74" lean-forward="false" selection-start-line="662" selection-start-column="74" selection-end-line="662" selection-end-column="74" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#4589#4590#0" expanded="true" />
+            <element signature="e#4636#4637#0" expanded="true" />
+            <element signature="e#5603#5877#0" expanded="true" />
+            <element signature="e#5876#5877#0" expanded="true" />
+            <element signature="e#5905#6383#0" expanded="true" />
+            <element signature="e#6382#6383#0" expanded="true" />
+            <element signature="e#6495#6496#0" expanded="true" />
+            <element signature="e#6533#6534#0" expanded="true" />
+            <element signature="e#6873#7037#0" expanded="true" />
+            <element signature="e#7036#7037#0" expanded="true" />
+            <element signature="e#7131#7725#0" expanded="true" />
+            <element signature="e#7724#7725#0" expanded="true" />
+            <element signature="e#7821#7987#0" expanded="true" />
+            <element signature="e#7986#7987#0" expanded="true" />
+            <element signature="e#8092#8480#0" expanded="true" />
+            <element signature="e#8479#8480#0" expanded="true" />
+            <element signature="e#8776#9517#0" expanded="true" />
+            <element signature="e#9516#9517#0" expanded="true" />
+            <element signature="e#9556#9718#0" expanded="true" />
+            <element signature="e#9717#9718#0" expanded="true" />
+            <element signature="e#14337#14595#0" expanded="true" />
+            <element signature="e#14594#14595#0" expanded="true" />
+            <element signature="e#14731#14988#0" expanded="true" />
+            <element signature="e#14987#14988#0" expanded="true" />
+            <element signature="e#15119#15788#0" expanded="true" />
+            <element signature="e#15787#15788#0" expanded="true" />
+            <element signature="e#17162#17420#0" expanded="true" />
+            <element signature="e#17419#17420#0" expanded="true" />
+            <element signature="e#17556#17813#0" expanded="true" />
+            <element signature="e#17812#17813#0" expanded="true" />
+            <element signature="e#17944#18613#0" expanded="true" />
+            <element signature="e#18612#18613#0" expanded="true" />
+            <element signature="e#20193#20721#0" expanded="true" />
+            <element signature="e#20720#20721#0" expanded="true" />
+            <element signature="e#20857#21114#0" expanded="true" />
+            <element signature="e#21113#21114#0" expanded="true" />
+            <element signature="e#21245#21914#0" expanded="true" />
+            <element signature="e#21913#21914#0" expanded="true" />
+            <element signature="e#27430#29947#0" expanded="true" />
+            <element signature="e#29946#29947#0" expanded="true" />
+            <element signature="e#34476#34745#0" expanded="true" />
+            <element signature="e#34744#34745#0" expanded="true" />
+            <element signature="e#34747#35062#0" expanded="true" />
+            <element signature="e#35061#35062#0" expanded="true" />
+            <element signature="e#37348#42045#0" expanded="true" />
+            <element signature="e#39410#41025#0" expanded="true" />
+            <element signature="e#41024#41025#0" expanded="true" />
+            <element signature="e#41169#41401#0" expanded="true" />
+            <element signature="e#41400#41401#0" expanded="true" />
+            <element signature="e#41589#41874#0" expanded="true" />
+            <element signature="e#41873#41874#0" expanded="true" />
+            <element signature="e#42044#42045#0" expanded="true" />
+            <element signature="method#showErrorDialog#0;class#P14_Full_WebView#0" expanded="false" />
           </folding>
         </state>
       </provider>

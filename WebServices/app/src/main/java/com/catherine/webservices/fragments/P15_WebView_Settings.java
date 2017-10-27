@@ -3,8 +3,10 @@ package com.catherine.webservices.fragments;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
@@ -23,6 +25,7 @@ import android.widget.RadioGroup;
 
 import com.catherine.webservices.Commands;
 import com.catherine.webservices.Constants;
+import com.catherine.webservices.MyApplication;
 import com.catherine.webservices.R;
 import com.catherine.webservices.adapters.MultiStyleRVAdapter;
 import com.catherine.webservices.entities.MultiStyleItem;
@@ -33,6 +36,7 @@ import com.catherine.webservices.interfaces.OnMultiItemSelectListener;
 import com.catherine.webservices.interfaces.OnRequestPermissionsListener;
 import com.catherine.webservices.toolkits.CLog;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -170,7 +174,10 @@ public class P15_WebView_Settings extends LazyFragment {
         wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.TEXTVIEW, wv_settings_array[16], "setUserAgentString()", 0, attr.getUserAgent()));
 
         caches = new ArrayList<>();
-        caches.add(new MultiStyleItem(MultiStyleRVAdapter.TEXTVIEW, wv_cache_array[0], "setCacheMode()", 0, attr.getCacheModeName(attr.getCacheMode())));
+        caches.add(new MultiStyleItem(MultiStyleRVAdapter.TEXTVIEW, wv_cache_array[0], "history", 0, ""));
+        caches.add(new MultiStyleItem(MultiStyleRVAdapter.TEXTVIEW, wv_cache_array[1], "setCacheMode()", 0, attr.getCacheModeName(attr.getCacheMode())));
+        caches.add(new MultiStyleItem(MultiStyleRVAdapter.TEXTVIEW, wv_cache_array[2], "clear history", 0, ""));
+        caches.add(new MultiStyleItem(MultiStyleRVAdapter.TEXTVIEW, wv_cache_array[3], "clear cache", 0, ""));
 
     }
 
@@ -197,7 +204,22 @@ public class P15_WebView_Settings extends LazyFragment {
         adapter = new MultiStyleRVAdapter(getActivity(), null, null, new OnMultiItemClickListener() {
             @Override
             public void onItemClick(View view, String title, int position) {
-
+                CLog.Companion.i(TAG, title + "[" + position + "]");
+                if (titles[2].equals(title)) {
+                    switch (position) {
+                        case 0:
+                            mainInterface.callFragment(Constants.P16_WEBVIEW_HISTORY);
+                            break;
+                        case 2:
+                            SharedPreferences sp = getActivity().getSharedPreferences("wv_history", Context.MODE_PRIVATE);
+                            sp.edit().clear().apply();
+                            break;
+                        case 3:
+                            File dir = new File(MyApplication.INSTANCE.getDiskCacheDir("webview").getAbsolutePath());
+                            clearFolder(dir);
+                            break;
+                    }
+                }
             }
 
             @Override
@@ -452,6 +474,9 @@ public class P15_WebView_Settings extends LazyFragment {
                 } else if (titles[2].equals(title)) {
                     switch (position) {
                         case 0:
+//                            mainInterface.callFragment(Constants.P16_WEBVIEW_HISTORY);
+                            break;
+                        case 1:
                             //show selector
                             int p = 0;
                             String[] modes = getActivity().getResources().getStringArray(R.array.cache_mode);
@@ -465,7 +490,7 @@ public class P15_WebView_Settings extends LazyFragment {
                                 @Override
                                 public void dismiss(String data) {
                                     attr.setCacheMode(attr.getCacheMode(data));
-                                    adapter.updateItem(titles[2], 0, new MultiStyleItem(MultiStyleRVAdapter.TEXTVIEW, wv_cache_array[0], "setCacheMode()", 0, data));
+                                    adapter.updateItem(titles[2], 1, new MultiStyleItem(MultiStyleRVAdapter.TEXTVIEW, wv_cache_array[1], "setCacheMode()", 0, data));
                                     new Handler().post(new Runnable() {
                                         @Override
                                         public void run() {
@@ -485,6 +510,21 @@ public class P15_WebView_Settings extends LazyFragment {
         adapter.mergeList(titles[2], caches);
         rv_main_list.setAdapter(adapter);
         srl_container.setRefreshing(false);
+    }
+
+    private void clearFolder(File dir) {
+        try {
+            if (dir.exists() && dir.isDirectory()) {
+                for (File f : dir.listFiles()) {
+                    if (f.exists() && f.isDirectory())
+                        clearFolder(f);
+                    else
+                        f.delete();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private Dialog alertDialog;

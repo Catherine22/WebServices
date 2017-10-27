@@ -132,7 +132,7 @@ public class MyJavaScriptInterface implements IgnoreProguard {
 
     @JavascriptInterface
     public void savePreferences(String key, String value) {
-        SharedPreferences sp = ctx.getSharedPreferences("JS", Context.MODE_PRIVATE);
+        SharedPreferences sp = ctx.getSharedPreferences("wv_js", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
         editor.putString(key, value);
         editor.apply();
@@ -142,7 +142,7 @@ public class MyJavaScriptInterface implements IgnoreProguard {
     //callback to JS
     @JavascriptInterface
     public String loadPreferences(String key) {
-        SharedPreferences sp = ctx.getSharedPreferences("JS", Context.MODE_PRIVATE);
+        SharedPreferences sp = ctx.getSharedPreferences("wv_js", Context.MODE_PRIVATE);
         return sp.getString(key, "");
     }
 }

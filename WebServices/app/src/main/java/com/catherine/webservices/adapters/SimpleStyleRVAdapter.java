@@ -1,6 +1,10 @@
 package com.catherine.webservices.adapters;
 
+import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.Handler;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.KeyEvent;
@@ -10,16 +14,22 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.catherine.webservices.MyApplication;
 import com.catherine.webservices.R;
+import com.catherine.webservices.entities.ImageCardEx;
 import com.catherine.webservices.entities.MultiStyleItem;
 import com.catherine.webservices.interfaces.OnMultiItemClickListener;
 import com.catherine.webservices.interfaces.OnMultiItemSelectListener;
 import com.catherine.webservices.toolkits.CLog;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,20 +39,15 @@ import java.util.List;
  * catherine919@soft-world.com.tw
  */
 
-public class MultiStyleRVAdapter extends RecyclerView.Adapter<MultiStyleRVAdapter.MainRvHolder> {
-    private final static String TAG = "MultiStyleRVAdapter";
+public class SimpleStyleRVAdapter extends RecyclerView.Adapter<SimpleStyleRVAdapter.MainRvHolder> {
+    private final static String TAG = "SimpleStyleRVAdapter";
     private Context ctx;
     private int titles;
-    private List<MultiStyleItem> items;
+    private List<ImageCardEx> items;
     private OnMultiItemClickListener listener;
-    private OnMultiItemSelectListener selector;
+    private Handler handler;
 
     //Hexadecimal - online decimal to hex converter tool: http://www.binaryhexconverter.com/decimal-to-hex-converter
-    //selector
-    public final static int CHECK_BOX = 0x000001;
-    public final static int SWITCH = 0x000010;
-    public final static int EDITTEXT = 0x000100;
-    public final static int TEXTVIEW = 0x001000;
 
     //background
     private final int TOP = 0x0010000;
@@ -51,17 +56,17 @@ public class MultiStyleRVAdapter extends RecyclerView.Adapter<MultiStyleRVAdapte
     //style
     private final int PLAIN_TEXT = 0x1000000;
 
-    public MultiStyleRVAdapter(Context ctx, String title, List<MultiStyleItem> items, OnMultiItemClickListener listener, OnMultiItemSelectListener selector) {
+    public SimpleStyleRVAdapter(Context ctx, String title, List<ImageCardEx> items, OnMultiItemClickListener listener) {
         this.items = new ArrayList<>();
         this.ctx = ctx;
         this.listener = listener;
-        this.selector = selector;
+        handler = new Handler(MyApplication.INSTANCE.calHandlerThread.getLooper());
         mergeList(title, items);
     }
 
     @Override
     public MainRvHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        return new MainRvHolder(LayoutInflater.from(ctx).inflate(R.layout.rv_item, viewGroup, false));
+        return new MainRvHolder(LayoutInflater.from(ctx).inflate(R.layout.rv_item_image, viewGroup, false));
     }
 
     @Override
@@ -82,9 +87,8 @@ public class MultiStyleRVAdapter extends RecyclerView.Adapter<MultiStyleRVAdapte
 
         String title = items.get(position).getTitle();
         String subtitle = items.get(position).getSubtitle();
+        final String icon = items.get(position).getImage();
         int style = items.get(position).getStyle();
-        int select = items.get(position).getSelect();
-        String data = items.get(position).getData();
 
         //This is a title not an item
         if ((style & PLAIN_TEXT) == PLAIN_TEXT) {
@@ -92,10 +96,7 @@ public class MultiStyleRVAdapter extends RecyclerView.Adapter<MultiStyleRVAdapte
             mainRvHolder.tv_title.setText(title);
             mainRvHolder.tv_title.setTextColor(ctx.getResources().getColor(R.color.colorAccentDark));
             mainRvHolder.tv_subtitle.setVisibility(View.GONE);
-            mainRvHolder.cb.setVisibility(View.GONE);
-            mainRvHolder.s.setVisibility(View.GONE);
-            mainRvHolder.et.setVisibility(View.GONE);
-            mainRvHolder.tv.setVisibility(View.GONE);
+            mainRvHolder.iv_icon.setVisibility(View.GONE);
         } else {
             //Item
             if ((style & (TOP | BOTTOM)) == (TOP | BOTTOM))
@@ -124,109 +125,34 @@ public class MultiStyleRVAdapter extends RecyclerView.Adapter<MultiStyleRVAdapte
                 mainRvHolder.tv_subtitle.setText("NULL");
             }
 
-            if ((style & CHECK_BOX) == CHECK_BOX) {
-                mainRvHolder.cb.setVisibility(View.VISIBLE);
-                if (select == -1) {
-                    mainRvHolder.cb.setChecked(false);
-                    mainRvHolder.cb.setEnabled(false);
-                    mainRvHolder.tv_title.setTextColor(ctx.getResources().getColor(R.color.checker_board_dark));
-                } else {
-                    boolean statue = (select == 1);
-                    mainRvHolder.cb.setEnabled(true);
-                    mainRvHolder.cb.setChecked(statue);
-                    mainRvHolder.cb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                        @Override
-                        public void onCheckedChanged(CompoundButton compoundButton, boolean isCheck) {
-                            selector.onItemSelect(getTitle(position), getPosInSet(position), isCheck, null);
-                        }
-                    });
-                }
-
-            } else {
-                mainRvHolder.cb.setVisibility(View.GONE);
-            }
-
-            if ((style & SWITCH) == SWITCH) {
-                mainRvHolder.s.setVisibility(View.VISIBLE);
-                if (select == -1) {
-                    mainRvHolder.s.setChecked(false);
-                    mainRvHolder.s.setEnabled(false);
-                    mainRvHolder.tv_title.setTextColor(ctx.getResources().getColor(R.color.checker_board_dark));
-                } else {
-                    boolean statue = (select == 1);
-                    mainRvHolder.s.setEnabled(true);
-                    mainRvHolder.s.setChecked(statue);
-                    mainRvHolder.s.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                        @Override
-                        public void onCheckedChanged(CompoundButton compoundButton, boolean isCheck) {
-                            selector.onItemSelect(getTitle(position), getPosInSet(position), isCheck, null);
-                        }
-                    });
-                    //Disable checkBox
-                    mainRvHolder.cb.setVisibility(View.GONE);
-                }
-            } else {
-                mainRvHolder.s.setVisibility(View.GONE);
-            }
-
-            if ((style & EDITTEXT) == EDITTEXT) {
-                mainRvHolder.et.setVisibility(View.VISIBLE);
-                mainRvHolder.et.setText(data);
-                if (select == -1) {
-                    mainRvHolder.et.setEnabled(false);
-                    mainRvHolder.et.setFocusableInTouchMode(false);
-                    mainRvHolder.et.setFocusable(false);
-                    mainRvHolder.et.setClickable(false);
-                    mainRvHolder.tv_title.setTextColor(ctx.getResources().getColor(R.color.checker_board_dark));
-                } else {
-                    mainRvHolder.et.setEnabled(true);
-                    mainRvHolder.et.setEnabled(true);
-                    mainRvHolder.et.setFocusableInTouchMode(true);
-                    mainRvHolder.et.setFocusable(true);
-                    mainRvHolder.et.setClickable(true);
-                    mainRvHolder.et.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            //Do nothing because the purpose of this listener is used to prevent from IllegalStateException:focus search returned a view that wasn't able to take focus!
-                        }
-                    });
-                    mainRvHolder.et.setOnKeyListener(new View.OnKeyListener() {
-                        public boolean onKey(View v, int keyCode, KeyEvent event) {
-                            // If the event is a key-down event on the "enter" button
-                            if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
-                                    (keyCode == KeyEvent.KEYCODE_ENTER)) {
-                                selector.onItemSelect(getTitle(position), getPosInSet(position), false, mainRvHolder.et.getText().toString());
-                                return true;
-                            }
-                            return false;
-                        }
-                    });
-                }
-
-                //Disable checkBox & switch
-                mainRvHolder.cb.setVisibility(View.GONE);
-                mainRvHolder.s.setVisibility(View.GONE);
-            } else {
-                mainRvHolder.et.setVisibility(View.GONE);
-            }
-
-            if ((style & TEXTVIEW) == TEXTVIEW) {
-                mainRvHolder.tv.setVisibility(View.VISIBLE);
-                mainRvHolder.tv.setText(data);
-                mainRvHolder.tv.setOnClickListener(new View.OnClickListener() {
+            mainRvHolder.iv_icon.setVisibility(View.VISIBLE);
+            mainRvHolder.iv_icon.setImageResource(R.drawable.ic_panorama_black_24dp);
+            if (!TextUtils.isEmpty(icon)) {
+                handler.post(new Runnable() {
                     @Override
-                    public void onClick(View view) {
-                        selector.onItemSelect(getTitle(position), getPosInSet(position), false, mainRvHolder.tv.getText().toString());
+                    public void run() {
+                        try {
+                            File f = new File(icon);
+                            final Bitmap bitmap = BitmapFactory.decodeStream(new FileInputStream(f));
+                            ((Activity) ctx).runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (bitmap != null)
+                                        mainRvHolder.iv_icon.setImageBitmap(bitmap);
+                                    else
+                                        mainRvHolder.iv_icon.setImageResource(R.drawable.ic_panorama_black_24dp);
+                                }
+                            });
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                        }
                     }
                 });
 
-                //Disable checkBox & switch & editText
-                mainRvHolder.cb.setVisibility(View.GONE);
-                mainRvHolder.s.setVisibility(View.GONE);
-                mainRvHolder.et.setVisibility(View.GONE);
             } else {
-                mainRvHolder.tv.setVisibility(View.GONE);
+                mainRvHolder.tv_subtitle.setText("NULL");
             }
+
         }
 
     }
@@ -235,8 +161,8 @@ public class MultiStyleRVAdapter extends RecyclerView.Adapter<MultiStyleRVAdapte
      * @param title Get all of the items between this title and next title
      * @return all of the items when the title has not found
      */
-    public List<MultiStyleItem> getItems(String title) {
-        List<MultiStyleItem> temp = new ArrayList<>();
+    public List<ImageCardEx> getItems(String title) {
+        List<ImageCardEx> temp = new ArrayList<>();
         int from = 0;
         for (int i = 0; i < items.size(); i++) {
             if (title.equals(items.get(i).getTitle()) && (items.get(i).getStyle() & PLAIN_TEXT) == PLAIN_TEXT) {
@@ -294,7 +220,7 @@ public class MultiStyleRVAdapter extends RecyclerView.Adapter<MultiStyleRVAdapte
         items.clear();
     }
 
-    public void mergeList(String title, List<MultiStyleItem> list) {
+    public void mergeList(String title, List<ImageCardEx> list) {
 //        CLog.Companion.w(TAG, "CHECK_BOX:" + CHECK_BOX);
 //        CLog.Companion.w(TAG, "SWITCH:" + SWITCH);
 //        CLog.Companion.w(TAG, "TOP:" + TOP);
@@ -303,7 +229,7 @@ public class MultiStyleRVAdapter extends RecyclerView.Adapter<MultiStyleRVAdapte
         if (list != null && list.size() > 0) {
             if (!TextUtils.isEmpty(title)) {
                 titles++;
-                MultiStyleItem item = new MultiStyleItem();
+                ImageCardEx item = new ImageCardEx();
                 item.setStyle(PLAIN_TEXT);
                 item.setTitle(title);
                 items.add(item);
@@ -313,11 +239,11 @@ public class MultiStyleRVAdapter extends RecyclerView.Adapter<MultiStyleRVAdapte
         }
     }
 
-    public void updateItem(String title, int position, MultiStyleItem item) {
+    public void updateItem(String title, int position, ImageCardEx item) {
         if (!TextUtils.isEmpty(title)) {
             int tag = -1;
             for (int i = 0; i < items.size(); i++) {
-                MultiStyleItem temp = items.get(i);
+                ImageCardEx temp = items.get(i);
                 if (title.equals(temp.getTitle())) {
                     tag = i;
                     break;
@@ -336,7 +262,7 @@ public class MultiStyleRVAdapter extends RecyclerView.Adapter<MultiStyleRVAdapte
      * adjust background
      */
     private void optimizeStyle() {
-        MultiStyleItem temp = items.get(0);
+        ImageCardEx temp = items.get(0);
         if (temp.getStyle() != PLAIN_TEXT)
             temp.setStyle(temp.getStyle() | TOP);
 
@@ -345,7 +271,7 @@ public class MultiStyleRVAdapter extends RecyclerView.Adapter<MultiStyleRVAdapte
             temp.setStyle(temp.getStyle() | BOTTOM);
 
         for (int i = 0; i < items.size(); i++) {
-            MultiStyleItem item = items.get(i);
+            ImageCardEx item = items.get(i);
             if (item.getStyle() == PLAIN_TEXT) {
                 //skip
             } else {
@@ -361,7 +287,7 @@ public class MultiStyleRVAdapter extends RecyclerView.Adapter<MultiStyleRVAdapte
 
         //Debug
         for (int i = 0; i < items.size(); i++) {
-            MultiStyleItem item = items.get(i);
+            ImageCardEx item = items.get(i);
             CLog.Companion.i(TAG, item.getTitle() + ":" + item.getStyle());
         }
 
@@ -371,20 +297,14 @@ public class MultiStyleRVAdapter extends RecyclerView.Adapter<MultiStyleRVAdapte
         LinearLayout ll_background;
         TextView tv_title;
         TextView tv_subtitle;
-        TextView tv;
-        EditText et;
-        CheckBox cb;
-        Switch s;
+        ImageView iv_icon;
 
         MainRvHolder(View itemView) {
             super(itemView);
             ll_background = itemView.findViewById(R.id.ll_background);
             tv_title = itemView.findViewById(R.id.tv_title);
             tv_subtitle = itemView.findViewById(R.id.tv_subtitle);
-            tv = itemView.findViewById(R.id.tv);
-            et = itemView.findViewById(R.id.et);
-            cb = itemView.findViewById(R.id.cb);
-            s = itemView.findViewById(R.id.s);
+            iv_icon = itemView.findViewById(R.id.iv_icon);
         }
     }
 }

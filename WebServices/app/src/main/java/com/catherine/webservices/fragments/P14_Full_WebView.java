@@ -6,8 +6,10 @@ import android.app.Dialog;
 import android.app.DownloadManager;
 import android.content.ClipData;
 import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
@@ -18,6 +20,8 @@ import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.HandlerThread;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -34,6 +38,7 @@ import android.webkit.PermissionRequest;
 import android.webkit.RenderProcessGoneDetail;
 import android.webkit.SslErrorHandler;
 import android.webkit.ValueCallback;
+import android.webkit.WebBackForwardList;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
@@ -64,11 +69,16 @@ import com.catherine.webservices.network.NetworkHelper;
 import com.catherine.webservices.toolkits.CLog;
 
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import catherine.messagecenter.Client;
 import catherine.messagecenter.CustomReceiver;
@@ -92,9 +102,11 @@ public class P14_Full_WebView extends LazyFragment {
     private ProgressBar pb;
     private String currentUrl = Constants.MY_GITHUB;
     private String displayUrl = getShortName(currentUrl);
+    private Bitmap pageIcon;
     private Client client;
     private WebViewAttr attr;
     private Dialog jsDialog;
+    private SharedPreferences sp;
     //test js -> https://www.javascript.com/
 
     public static P14_Full_WebView newInstance(boolean isLazyLoad) {
@@ -167,13 +179,13 @@ public class P14_Full_WebView extends LazyFragment {
     }
 
     private void initComponent() {
+        sp = getActivity().getSharedPreferences("wv_history", Context.MODE_PRIVATE);
         client = new Client(getActivity(), new CustomReceiver() {
             @Override
             public void onBroadcastReceive(@NotNull Result result) {
                 refresh();
             }
         });
-        MyApplication.INSTANCE.registerLocalBroadCastReceiver(client);
         client.gotMessages(Commands.WV_SETTINGS);
         mainInterface.setBackKeyListener(new BackKeyListener() {
             @Override
@@ -281,6 +293,7 @@ public class P14_Full_WebView extends LazyFragment {
             @Override
             public void onReceivedIcon(WebView view, Bitmap icon) {
                 CLog.Companion.i(TAG, "onReceivedIcon");
+                pageIcon = icon;
                 super.onReceivedIcon(view, icon);
             }
 
@@ -604,6 +617,7 @@ public class P14_Full_WebView extends LazyFragment {
                     @Override
                     public void onPageStarted(WebView view, String url, Bitmap favicon) {
                         CLog.Companion.i(TAG, "onPageStarted:" + url);
+                        pageIcon = null;
                         currentUrl = url;
                         displayUrl = getShortName(currentUrl);
                         actv_url.setText(displayUrl);
@@ -614,6 +628,54 @@ public class P14_Full_WebView extends LazyFragment {
                     @Override
                     public void onPageFinished(WebView view, String url) {
                         CLog.Companion.i(TAG, "onPageFinished:" + url);
+
+                        Handler handler = new Handler(MyApplication.INSTANCE.calHandlerThread.getLooper());
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                //save to my history
+                                try {
+                                    String time = System.currentTimeMillis() + "";
+                                    String h = sp.getString("wv_history", "");
+                                    JSONArray ja;
+                                    if (TextUtils.isEmpty(h)) {
+                                        ja = new JSONArray();
+                                    } else
+                                        ja = new JSONArray(h);
+
+                                    JSONObject jo = new JSONObject();
+                                    jo.put("shortName", displayUrl);
+                                    jo.put("url", currentUrl);
+                                    jo.put("time", time);
+
+                                    String icon = "";
+                                    try {
+                                        if (pageIcon != null) {
+                                            File f = new File(MyApplication.INSTANCE.getDiskCacheDir("webview").getAbsolutePath() + "/icon/");
+                                            if (!f.exists())
+                                                f.mkdirs();
+
+                                            File file = new File(f, time + ".dat");
+                                            FileOutputStream fOut = new FileOutputStream(file);
+                                            pageIcon.compress(Bitmap.CompressFormat.PNG, 100, fOut);
+                                            fOut.flush();
+                                            fOut.close();
+                                            icon = file.getAbsolutePath();
+                                        }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                    jo.put("icon", icon);
+                                    ja.put(jo);
+
+                                    SharedPreferences.Editor editor = sp.edit();
+                                    editor.putString("data", ja.toString());
+                                    editor.apply();
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
                         super.onPageFinished(view, url);
                     }
 
@@ -942,6 +1004,12 @@ public class P14_Full_WebView extends LazyFragment {
                 wv.loadUrl("https://www.google.com/search?q=" + urlString);
             }
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        client.release();
+        super.onDestroy();
     }
 
     //return authority
