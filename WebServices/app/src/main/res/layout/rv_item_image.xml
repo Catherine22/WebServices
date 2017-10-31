@@ -29,13 +29,17 @@
         <TextView
             android:id="@+id/tv_title"
             style="@style/item_title"
+            android:ellipsize="end"
             android:gravity="center_vertical"
+            android:maxLines="3"
             android:textSize="20sp"/>
 
         <TextView
             android:id="@+id/tv_subtitle"
             style="@style/item_subtitle"
+            android:ellipsize="end"
             android:gravity="center_vertical"
+            android:maxLines="3"
             android:textSize="16sp"/>
     </LinearLayout>
 

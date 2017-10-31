@@ -30,6 +30,7 @@ import android.view.View;
 import android.view.Window;
 import android.webkit.ClientCertRequest;
 import android.webkit.ConsoleMessage;
+import android.webkit.CookieManager;
 import android.webkit.GeolocationPermissions;
 import android.webkit.HttpAuthHandler;
 import android.webkit.JsPromptResult;
@@ -38,7 +39,6 @@ import android.webkit.PermissionRequest;
 import android.webkit.RenderProcessGoneDetail;
 import android.webkit.SslErrorHandler;
 import android.webkit.ValueCallback;
-import android.webkit.WebBackForwardList;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
@@ -78,7 +78,6 @@ import java.io.FileOutputStream;
 import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import catherine.messagecenter.Client;
 import catherine.messagecenter.CustomReceiver;
@@ -102,7 +101,6 @@ public class P14_Full_WebView extends LazyFragment {
     private ProgressBar pb;
     private String currentUrl = Constants.MY_GITHUB;
     private String displayUrl = getShortName(currentUrl);
-    private Bitmap pageIcon;
     private Client client;
     private WebViewAttr attr;
     private Dialog jsDialog;
@@ -247,10 +245,14 @@ public class P14_Full_WebView extends LazyFragment {
                 return false;
             }
         });
-        actv_url.setOnClickListener(new View.OnClickListener() {
+
+        actv_url.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
-            public void onClick(View v) {
-                actv_url.setText(currentUrl);
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    actv_url.setText(currentUrl);
+                } else
+                    actv_url.setText(displayUrl);
             }
         });
 
@@ -293,7 +295,6 @@ public class P14_Full_WebView extends LazyFragment {
             @Override
             public void onReceivedIcon(WebView view, Bitmap icon) {
                 CLog.Companion.i(TAG, "onReceivedIcon");
-                pageIcon = icon;
                 super.onReceivedIcon(view, icon);
             }
 
@@ -604,7 +605,11 @@ public class P14_Full_WebView extends LazyFragment {
                     @Override
                     public boolean shouldOverrideUrlLoading(WebView view, String url) {
                         CLog.Companion.i(TAG, "shouldOverrideUrlLoading:" + url);
-                        loadUrl(currentUrl);
+                        currentUrl = url;
+                        displayUrl = getShortName(currentUrl);
+                        actv_url.setText(displayUrl);
+                        actv_url.dismissDropDown();
+                        loadUrl(url);
                         return true;
                     }
 
@@ -617,17 +622,14 @@ public class P14_Full_WebView extends LazyFragment {
                     @Override
                     public void onPageStarted(WebView view, String url, Bitmap favicon) {
                         CLog.Companion.i(TAG, "onPageStarted:" + url);
-                        pageIcon = null;
-                        currentUrl = url;
-                        displayUrl = getShortName(currentUrl);
-                        actv_url.setText(displayUrl);
-                        actv_url.dismissDropDown();
                         super.onPageStarted(view, url, favicon);
                     }
 
                     @Override
                     public void onPageFinished(WebView view, String url) {
                         CLog.Companion.i(TAG, "onPageFinished:" + url);
+                        String cookies = CookieManager.getInstance().getCookie(url);
+                        CLog.Companion.i(TAG, "Eat a cookie:" + cookies);
 
                         Handler handler = new Handler(MyApplication.INSTANCE.calHandlerThread.getLooper());
                         handler.post(new Runnable() {
@@ -636,7 +638,7 @@ public class P14_Full_WebView extends LazyFragment {
                                 //save to my history
                                 try {
                                     String time = System.currentTimeMillis() + "";
-                                    String h = sp.getString("wv_history", "");
+                                    String h = sp.getString("data", "");
                                     JSONArray ja;
                                     if (TextUtils.isEmpty(h)) {
                                         ja = new JSONArray();
@@ -647,25 +649,6 @@ public class P14_Full_WebView extends LazyFragment {
                                     jo.put("shortName", displayUrl);
                                     jo.put("url", currentUrl);
                                     jo.put("time", time);
-
-                                    String icon = "";
-                                    try {
-                                        if (pageIcon != null) {
-                                            File f = new File(MyApplication.INSTANCE.getDiskCacheDir("webview").getAbsolutePath() + "/icon/");
-                                            if (!f.exists())
-                                                f.mkdirs();
-
-                                            File file = new File(f, time + ".dat");
-                                            FileOutputStream fOut = new FileOutputStream(file);
-                                            pageIcon.compress(Bitmap.CompressFormat.PNG, 100, fOut);
-                                            fOut.flush();
-                                            fOut.close();
-                                            icon = file.getAbsolutePath();
-                                        }
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    }
-                                    jo.put("icon", icon);
                                     ja.put(jo);
 
                                     SharedPreferences.Editor editor = sp.edit();

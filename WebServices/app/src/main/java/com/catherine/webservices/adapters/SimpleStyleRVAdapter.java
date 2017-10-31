@@ -89,6 +89,7 @@ public class SimpleStyleRVAdapter extends RecyclerView.Adapter<SimpleStyleRVAdap
         String subtitle = items.get(position).getSubtitle();
         final String icon = items.get(position).getImage();
         int style = items.get(position).getStyle();
+        CLog.Companion.i(TAG,position+":"+items.toString());
 
         //This is a title not an item
         if ((style & PLAIN_TEXT) == PLAIN_TEXT) {
@@ -150,7 +151,7 @@ public class SimpleStyleRVAdapter extends RecyclerView.Adapter<SimpleStyleRVAdap
                 });
 
             } else {
-                mainRvHolder.tv_subtitle.setText("NULL");
+                mainRvHolder.iv_icon.setImageResource(R.drawable.ic_panorama_black_24dp);
             }
 
         }

@@ -38,7 +38,8 @@
             android:hint="@string/et_hint"
             android:inputType="textUri"
             android:maxLines="1"
-            android:selectAllOnFocus="true" android:singleLine="true"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
             android:textColor="@android:color/white"/>
 
         <ImageView

@@ -158,7 +158,7 @@ public class P16_WebView_History extends LazyFragment {
             tv_empty.setVisibility(View.INVISIBLE);
             try {
                 JSONArray ja = new JSONArray(h);
-                List<DataObject> itemCollection = new ArrayList<>();
+                final List<DataObject> itemCollection = new ArrayList<>();
                 Map<String, List<ImageCardEx>> data = new LinkedHashMap<>();
                 for (int i = 0; i < ja.length(); i++) {
                     DataObject obj = new DataObject();
@@ -168,7 +168,7 @@ public class P16_WebView_History extends LazyFragment {
                 Collections.sort(itemCollection);
 
 
-                for (int i = itemCollection.size() - 1; i >= 0; i--) {
+                for (int i = 0; i < itemCollection.size(); i++) {
                     DataObject d = itemCollection.get(i);
                     ImageCardEx ice = new ImageCardEx();
                     String title = d.getRoughDateTime();
@@ -190,12 +190,42 @@ public class P16_WebView_History extends LazyFragment {
 
                     @Override
                     public void onItemClick(View view, String title, int position) {
-
+                        DataObject d = itemCollection.get(position);
+                        AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(getActivity());
+                        myAlertDialog.setIcon(R.drawable.ic_warning_black_24dp)
+                                .setCancelable(false)
+                                .setTitle(d.getData().optString("shortName", ""))
+                                .setMessage(d.getData().optString("url", ""))
+                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                    }
+                                });
+                        myAlertDialog.show();
                     }
 
                     @Override
-                    public void onItemLongClick(View view, String title, int position) {
+                    public void onItemLongClick(View view, String title, final int position) {
+                        AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(getActivity());
+                        myAlertDialog.setIcon(R.drawable.ic_warning_black_24dp)
+                                .setCancelable(false)
+                                .setTitle("Remove it")
+                                .setMessage("Do you want to remove this item from the list?")
+                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        itemCollection.remove(position);
+                                        //TODO update recyclerView
+                                    }
+                                })
+                                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
 
+                                    }
+                                })
+                        ;
+                        myAlertDialog.show();
                     }
                 });
                 for (Map.Entry<String, List<ImageCardEx>> entry : data.entrySet()) {
