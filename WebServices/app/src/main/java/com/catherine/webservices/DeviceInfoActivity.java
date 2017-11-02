@@ -243,7 +243,7 @@ public class DeviceInfoActivity extends FragmentActivity {
         features.add("IMSI (GSM)");
 
         NetworkHelper networkHelper = new NetworkHelper(this);
-        desc.add(networkHelper.isNetworkHealth() + "");
+        desc.add(networkHelper.isNetworkHealthy() + "");
         features.add("Network Health");
 
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);

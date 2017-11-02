@@ -178,7 +178,7 @@ public class P10_UDP_Socket extends LazyFragment {
         public void connectFailure(Exception e) {
             e.printStackTrace();
             if (e instanceof ConnectException) {
-                if (!helper.isNetworkHealth()) {
+                if (!helper.isNetworkHealthy()) {
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {

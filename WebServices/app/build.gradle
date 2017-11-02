@@ -98,4 +98,5 @@ dependencies {
     compile 'com.google.android.gms:play-services-ads:11.4.2'
     compile files('libs/bcprov-jdk15on-1.54.jar')
     compile files('libs/bcmail-jdk15on-1.54.jar')
+    compile files('libs/mail.jar')
 }

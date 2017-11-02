@@ -214,7 +214,7 @@ public class ImageCardRVAdapter extends RecyclerView.Adapter<ImageCardRVAdapter.
             public void run() {
 
                 if (offlineMode) {
-                    if (helper.isNetworkHealth()) {
+                    if (helper.isNetworkHealthy()) {
                         entities.get(position).subtitle = "error";
                         mainRvHolder.tv_subtitle.setText(entities.get(position).subtitle);
                         mainRvHolder.iv_main.setVisibility(View.VISIBLE);

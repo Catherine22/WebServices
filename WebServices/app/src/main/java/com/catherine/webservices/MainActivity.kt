@@ -99,7 +99,7 @@ class MainActivity : FragmentActivity(), MainInterface {
                 val checkStateWork = Handler(MyApplication.INSTANCE.calHandlerThread.looper)
                 checkStateWork.post {
                     val networkHelper = NetworkHelper(this@MainActivity)
-                    CLog.d(TAG, "isNetworkHealth:${networkHelper.isNetworkHealth()}")
+                    CLog.d(TAG, "isNetworkHealthy:${networkHelper.isNetworkHealthy()}")
                     CLog.d(TAG, "isWifi:${networkHelper.isWifi()}")
                     networkHelper.listenToNetworkState(object : NetworkHealthListener {
                         override fun networkConnected(type: String) {

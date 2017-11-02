@@ -172,7 +172,7 @@ public class P09_NIO_Socket extends LazyFragment {
         public void connectFailure(Exception e) {
             e.printStackTrace();
             if (e instanceof ConnectException) {
-                if (!helper.isNetworkHealth()) {
+                if (!helper.isNetworkHealthy()) {
                     tv_state.setText(getResources().getString(R.string.offline));
                 }
             } else if (e instanceof SocketException) {
@@ -195,7 +195,7 @@ public class P09_NIO_Socket extends LazyFragment {
         public void connectFailure(Exception e) {
             e.printStackTrace();
             if (e instanceof ConnectException) {
-                if (!helper.isNetworkHealth()) {
+                if (!helper.isNetworkHealthy()) {
                     tv_state.setText(getResources().getString(R.string.offline));
                 }
             } else if (e instanceof SocketException) {

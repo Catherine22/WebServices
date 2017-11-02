@@ -203,7 +203,7 @@ public class P11_Fresco extends LazyFragment {
                             CLog.Companion.e(TAG, e.getMessage());
                         }
 
-                        if (helper.isNetworkHealth()) {
+                        if (helper.isNetworkHealthy()) {
                             //retry?
                             tv_offline.setText(sb.toString());
                             tv_offline.setVisibility(View.VISIBLE);

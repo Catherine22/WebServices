@@ -1,6 +1,8 @@
 package com.catherine.webservices.network;
 
+import android.os.Build;
 import android.text.TextUtils;
+import android.webkit.WebSettings;
 
 import com.catherine.webservices.MyApplication;
 import com.catherine.webservices.toolkits.CLog;
@@ -31,11 +33,17 @@ public class MyApache {
     public final static String TAG = "MyApache";
 
     public static Map<String, String> getDefaultHeaders() {
+        String userAgent;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            userAgent = WebSettings.getDefaultUserAgent(MyApplication.INSTANCE);
+        } else {
+            userAgent = System.getProperty("http.agent");
+        }
         Map<String, String> headers = new HashMap<>();
         headers.put("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8");
         headers.put("Content-type", "application/x-www-form-urlencoded; charset=UTF-8");
         headers.put("Accept-Language", Locale.getDefault().toString());
-        headers.put("User-Agent", System.getProperty("http.agent"));
+        headers.put("User-Agent", userAgent);
         headers.put("Accept-Encoding", "gzip");//gzip, deflate, br
         return headers;
     }
