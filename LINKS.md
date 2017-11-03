@@ -9,10 +9,6 @@ https://play.google.com/store/apps/details?id=com.google.android.apps.maps&amp;h
 
 ## JavaScript
 https://www.javascript.com/
-https://github.com/Catherine22/WebServices/tree/master/WebServices/app/src/main/assets/js_alert.html
-https://github.com/Catherine22/WebServices/tree/master/WebServices/app/src/main/assets/js_confirm.html
-https://github.com/Catherine22/WebServices/tree/master/WebServices/app/src/main/assets/js_prompt.html
-https://github.com/Catherine22/WebServices/tree/master/WebServices/app/src/main/assets/js_command.html
 
 ## SSL
 https://kyfw.12306.cn/otn/regist/init

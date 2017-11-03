@@ -351,7 +351,7 @@ public class P14_Full_WebView extends LazyFragment {
                 else {
                     jsDialog = new Dialog(getActivity());
                     jsDialog.requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
-                    jsDialog.setContentView(R.layout.dialog_text);
+                    jsDialog.setContentView(R.layout.dialog_alert);
                     //设置dialog背景透明
                     jsDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                     jsDialog.show();
@@ -367,14 +367,6 @@ public class P14_Full_WebView extends LazyFragment {
                         public void onClick(View v) {
                             jsDialog.dismiss();
                             result.confirm();
-                        }
-                    });
-                    final Button bt_cancel = jsDialog.findViewById(R.id.bt_cancel);
-                    bt_cancel.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            jsDialog.dismiss();
-                            result.cancel();
                         }
                     });
 
@@ -951,7 +943,7 @@ public class P14_Full_WebView extends LazyFragment {
     private void loadUrl(String urlString) {
         String url = NetworkHelper.Companion.formattedUrl(urlString);
         CLog.Companion.i(TAG, "Load " + url);
-        if (url.startsWith("http://") || url.startsWith("https://")) {
+        if (url.startsWith("http://") || url.startsWith("https://") || url.startsWith("file:///") || url.startsWith("content://")) {
             wv.loadUrl(url);
         } else if (url.startsWith("intent://")) {
             try {
