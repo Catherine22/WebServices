@@ -211,21 +211,22 @@ public class MyHttpURLConnection {
             e = ex;
         }
 
-        if (e == null && TextUtils.isEmpty(error))
-            listener.connectSuccess(new HttpResponse.Builder()
-                    .code(code)
-                    .codeString(msg)
-                    .headers(responseHeaders)
-                    .body(response)
-                    .build());
-        else
-            listener.connectFailure(new HttpResponse.Builder()
-                    .code(code)
-                    .codeString(msg)
-                    .headers(responseHeaders)
-                    .errorMessage(response)
-                    .build(), e);
-
+        if (listener != null) {
+            if (e == null && TextUtils.isEmpty(error))
+                listener.connectSuccess(new HttpResponse.Builder()
+                        .code(code)
+                        .codeString(msg)
+                        .headers(responseHeaders)
+                        .body(response)
+                        .build());
+            else
+                listener.connectFailure(new HttpResponse.Builder()
+                        .code(code)
+                        .codeString(msg)
+                        .headers(responseHeaders)
+                        .errorMessage(response)
+                        .build(), e);
+        }
         HttpResponseCache cache = HttpResponseCache.getInstalled();
         if (cache != null)
             cache.flush();

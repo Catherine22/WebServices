@@ -39,7 +39,6 @@ class NetworkHealthService : Service() {
         super.onCreate()
         internetReceiver = InternetConnectivityReceiver()
         val internetIntentFilter = IntentFilter("android.net.conn.CONNECTIVITY_CHANGE")
-        internetReceiver = InternetConnectivityReceiver()
         registerReceiver(internetReceiver, internetIntentFilter)
 
     }

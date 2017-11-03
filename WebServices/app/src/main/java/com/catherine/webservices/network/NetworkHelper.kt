@@ -90,12 +90,12 @@ class NetworkHelper(private val ctx: Context) {
             }
         })
         client?.gotMessages(Commands.C_NETWORK_STATE)
-        MyApplication.INSTANCE.registerLocalBroadCastReceiver(client)
         val nhs = Intent(ctx, NetworkHealthService::class.java)
         ctx.startService(nhs)
     }
 
     fun stopListeningToNetworkState() {
+        client?.release()
         val nhs = Intent(ctx, NetworkHealthService::class.java)
         ctx.stopService(nhs)
     }

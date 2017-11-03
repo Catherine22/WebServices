@@ -127,7 +127,6 @@ public class P13_Nested_WebView extends LazyFragment {
                 refresh();
             }
         });
-        MyApplication.INSTANCE.registerLocalBroadCastReceiver(client);
         client.gotMessages(Commands.WV_SETTINGS);
         wv = (NestedWebView) findViewById(R.id.wv);
         pb = (ProgressBar) findViewById(R.id.pb);
@@ -141,7 +140,7 @@ public class P13_Nested_WebView extends LazyFragment {
         wv.setVerticalScrollBarEnabled(attr.isVerticalScrollBarEnabled());
         //可滑动，默认为true
         wv.setHorizontalScrollBarEnabled(attr.isHorizontalScrollBarEnabled());
-        wv.setWebChromeClient(new WebChromeClient(){
+        wv.setWebChromeClient(new WebChromeClient() {
             @Override
             public void onProgressChanged(WebView view, int newProgress) {
                 pb.setProgress(newProgress);
@@ -207,8 +206,10 @@ public class P13_Nested_WebView extends LazyFragment {
         wv.loadUrl(NetworkHelper.Companion.formattedUrl(Constants.MY_GITHUB));
     }
 
+
     @Override
     public void onDestroy() {
+        client.release();
         super.onDestroy();
     }
 }

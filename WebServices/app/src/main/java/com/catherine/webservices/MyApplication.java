@@ -54,14 +54,12 @@ public class MyApplication extends Application {
     public HandlerThread calHandlerThread, socketHandlerThread;
     public HttpClient httpClient;
     private List<String> runningActivities;
-    private List<Client> localBroadCastReceivers;
 
     @Override
     public void onCreate() {
         INSTANCE = this;
         httpClient = getHttpClient();
         runningActivities = new ArrayList<>();
-        localBroadCastReceivers = new ArrayList<>();
 
         //Invoke the largest storage to save data.
         Map<String, File> externalLocations = FileUtils.getAllStorageLocations();
@@ -144,13 +142,6 @@ public class MyApplication extends Application {
                     stopLooper(calHandlerThread);
                     stopLooper(socketHandlerThread);
                 }
-
-                //释放全部的localBroadCastReceiver
-                for (Client c : localBroadCastReceivers) {
-                    if (c != null)
-                        c.release();
-                }
-                localBroadCastReceivers.clear();
             }
         });
         super.onCreate();
@@ -204,15 +195,6 @@ public class MyApplication extends Application {
                 Fresco.initialize(INSTANCE, config);
             }
         });
-    }
-
-    /**
-     * 添加接收器，最后关闭应用时一并释放
-     *
-     * @param client
-     */
-    public void registerLocalBroadCastReceiver(Client client) {
-        localBroadCastReceivers.add(client);
     }
 
     public File getDiskCacheDir() throws NullPointerException {

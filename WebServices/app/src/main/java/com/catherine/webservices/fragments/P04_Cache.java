@@ -183,7 +183,6 @@ public class P04_Cache extends LazyFragment {
                 }
             }
         });
-        MyApplication.INSTANCE.registerLocalBroadCastReceiver(client);
         client.gotMessages(Commands.UPDATE_P04);
 
         mainInterface.setBackKeyListener(new BackKeyListener() {
@@ -443,5 +442,11 @@ public class P04_Cache extends LazyFragment {
                 }
             });
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        client.release();
+        super.onDestroy();
     }
 }
