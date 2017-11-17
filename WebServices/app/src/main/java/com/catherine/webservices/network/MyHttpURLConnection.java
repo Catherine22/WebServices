@@ -52,10 +52,11 @@ public class MyHttpURLConnection {
             userAgent = System.getProperty("http.agent");
         }
         Map<String, String> headers = new HashMap<>();
-        headers.put("Accept", "text/html,application/xhtml+xml,application/xml,application/json;q=0.9,image/webp,image/apng,*/*;q=0.8");
-        headers.put("Content-type", "application/x-www-form-urlencoded; charset=UTF-8");
+        headers.put("Accept", "*/*");
+        headers.put("Content-type", "application/x-www-form-urlencoded; charset=UTF-8");//"application/json" and so forth
         headers.put("Accept-Language", Locale.getDefault().toString());
         headers.put("User-Agent", userAgent);
+        headers.put("Connection", "keep-alive");
         headers.put("Accept-Encoding", "gzip");//gzip, deflate, br
         return headers;
     }
