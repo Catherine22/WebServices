@@ -52,7 +52,7 @@ public class MyHttpURLConnection {
             userAgent = System.getProperty("http.agent");
         }
         Map<String, String> headers = new HashMap<>();
-        headers.put("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8");
+        headers.put("Accept", "text/html,application/xhtml+xml,application/xml,application/json;q=0.9,image/webp,image/apng,*/*;q=0.8");
         headers.put("Content-type", "application/x-www-form-urlencoded; charset=UTF-8");
         headers.put("Accept-Language", Locale.getDefault().toString());
         headers.put("User-Agent", userAgent);
@@ -163,7 +163,7 @@ public class MyHttpURLConnection {
             if (isPost) {
                 //获取conn的输出流
                 OutputStream os = conn.getOutputStream();
-                os.write(request.getBody().getBytes(HTTP.UTF_8));
+                os.write(body.getBytes(HTTP.UTF_8));
                 os.close();
             }
 
