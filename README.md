@@ -322,7 +322,7 @@ Before using JavaScript, you should have WebView enable JavaScript. Go to [P15_W
 >  1. Don't forget to ignore your JavaScriptInterface with Android proguard
 >  2. Add @JavascriptInterface Annotation and you can go to [MyJavaScriptInterface] to see more
 
-In this project, every class that should not be obfuscated implements IgnoreProguard interface.     
+In this project, all classes that can not be obfuscated implement IgnoreProguard interface.     
 In proguard-rules.pro
 ```gradle
 -keep public class com.catherine.webservices.toolkits.IgnoreProguard
@@ -349,16 +349,9 @@ In proguard-rules.pro
 > - [https://github.com/Catherine22][5]
 
 
-
-**I list all of the test links on [WebView test links]. You could open this page on [P14_Full_WebView].**
-
-Still not work...   
-6. Synchronize cookie
-9. Visit a HTML5 website
-10. Visit a website offline if it's available to be cached
-
 **[P15_WebView_Settings]**
 Set attributes of WebView that includes WebViewClient and WebSettings (setAllowFileAccess(), setJavaScriptEnabled(), setSupportZoom() and so forth.)
+
 
 ## References
 - [Tencent bugly]
@@ -401,7 +394,6 @@ Set attributes of WebView that includes WebViewClient and WebSettings (setAllowF
 [Android HTTPS]:<http://blog.csdn.net/iispring/article/details/51615631>
 [github APIs]:<https://api.github.com/>
 [WebView tutorial]:<http://www.jianshu.com/p/3fcf8ba18d7f>
-[WebView test links]:<https://github.com/Catherine22/WebServices/blob/master/LINKS.md>
 
   [1]: https://kyfw.12306.cn/otn/regist/init
   [2]: https://www.ssllabs.com/ssltest/
