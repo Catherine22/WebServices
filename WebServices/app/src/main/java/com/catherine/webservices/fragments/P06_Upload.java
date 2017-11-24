@@ -28,6 +28,7 @@ import com.catherine.webservices.toolkits.CLog;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -167,6 +168,15 @@ public class P06_Upload extends LazyFragment {
                                                         sb.append("\n");
                                                         sb.append(e.getMessage());
                                                         CLog.Companion.e(TAG, e.getMessage());
+
+                                                        if (e instanceof SocketTimeoutException) {
+                                                            DialogManager.showAlertDialog(getActivity(), "Connection timeout. Please check your server.", new DialogInterface.OnClickListener() {
+                                                                @Override
+                                                                public void onClick(DialogInterface dialog, int which) {
+
+                                                                }
+                                                            });
+                                                        }
                                                     }
                                                     contents.set(position, sb.toString());
                                                     adapter.setContents(contents);
@@ -204,6 +214,15 @@ public class P06_Upload extends LazyFragment {
                                                         sb.append("\n");
                                                         sb.append(e.getMessage());
                                                         CLog.Companion.e(TAG, e.getMessage());
+
+                                                        if (e instanceof SocketTimeoutException) {
+                                                            DialogManager.showAlertDialog(getActivity(), "Connection timeout. Please check your server.", new DialogInterface.OnClickListener() {
+                                                                @Override
+                                                                public void onClick(DialogInterface dialog, int which) {
+
+                                                                }
+                                                            });
+                                                        }
                                                     }
                                                     contents.set(position, sb.toString());
                                                     adapter.setContents(contents);
@@ -249,6 +268,15 @@ public class P06_Upload extends LazyFragment {
                                                         sb.append("\n");
                                                         sb.append(e.getMessage());
                                                         CLog.Companion.e(TAG, e.getMessage());
+
+                                                        if (e instanceof SocketTimeoutException) {
+                                                            DialogManager.showAlertDialog(getActivity(), "Connection timeout. Please check your server.", new DialogInterface.OnClickListener() {
+                                                                @Override
+                                                                public void onClick(DialogInterface dialog, int which) {
+
+                                                                }
+                                                            });
+                                                        }
                                                     }
                                                     contents.set(position, sb.toString());
                                                     adapter.setContents(contents);
@@ -290,6 +318,15 @@ public class P06_Upload extends LazyFragment {
                                                         sb.append("\n");
                                                         sb.append(e.getMessage());
                                                         CLog.Companion.e(TAG, e.getMessage());
+
+                                                        if (e instanceof SocketTimeoutException) {
+                                                            DialogManager.showAlertDialog(getActivity(), "Connection timeout. Please check your server.", new DialogInterface.OnClickListener() {
+                                                                @Override
+                                                                public void onClick(DialogInterface dialog, int which) {
+
+                                                                }
+                                                            });
+                                                        }
                                                     }
                                                     contents.set(position, sb.toString());
                                                     adapter.setContents(contents);
@@ -334,6 +371,15 @@ public class P06_Upload extends LazyFragment {
                                                         sb.append("\n");
                                                         sb.append(e.getMessage());
                                                         CLog.Companion.e(TAG, e.getMessage());
+
+                                                        if (e instanceof SocketTimeoutException) {
+                                                            DialogManager.showAlertDialog(getActivity(), "Connection timeout. Please check your server.", new DialogInterface.OnClickListener() {
+                                                                @Override
+                                                                public void onClick(DialogInterface dialog, int which) {
+
+                                                                }
+                                                            });
+                                                        }
                                                     }
                                                     contents.set(position, sb.toString());
                                                     adapter.setContents(contents);
@@ -375,6 +421,15 @@ public class P06_Upload extends LazyFragment {
                                                         sb.append("\n");
                                                         sb.append(e.getMessage());
                                                         CLog.Companion.e(TAG, e.getMessage());
+
+                                                        if (e instanceof SocketTimeoutException) {
+                                                            DialogManager.showAlertDialog(getActivity(), "Connection timeout. Please check your server.", new DialogInterface.OnClickListener() {
+                                                                @Override
+                                                                public void onClick(DialogInterface dialog, int which) {
+
+                                                                }
+                                                            });
+                                                        }
                                                     }
                                                     contents.set(position, sb.toString());
                                                     adapter.setContents(contents);

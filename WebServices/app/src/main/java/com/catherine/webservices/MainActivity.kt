@@ -255,6 +255,9 @@ class MainActivity : BaseFragmentActivity(), MainInterface {
                 2 -> {
                     callFragment(Constants.P15_WEBVIEW_SETTINGS)
                 }
+                3 -> {
+                    callFragment(Constants.P16_WEBVIEW_HISTORY)
+                }
             }
             //            left_drawer.setItemChecked(pos, true)
             drawer_layout.closeDrawer(left_drawer)

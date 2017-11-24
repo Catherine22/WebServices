@@ -20,6 +20,7 @@ import com.catherine.webservices.network.NetworkHelper;
 import com.catherine.webservices.network.SocketListener;
 
 import java.net.ConnectException;
+import java.net.SocketException;
 import java.util.List;
 
 /**
@@ -170,6 +171,8 @@ public class P10_UDP_Socket extends LazyFragment {
                         }
                     });
                 }
+            } else if (e instanceof SocketException) {
+                tv_state.setText("Server error");
             }
         }
     }

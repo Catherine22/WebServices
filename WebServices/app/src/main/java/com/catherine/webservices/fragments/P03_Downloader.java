@@ -24,6 +24,7 @@ import com.catherine.webservices.network.DownloaderListener;
 import com.catherine.webservices.network.HttpResponse;
 import com.catherine.webservices.toolkits.CLog;
 
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -172,6 +173,15 @@ public class P03_Downloader extends LazyFragment {
                                     sb.append("\n");
                                     sb.append(e.getMessage());
                                     CLog.Companion.e(TAG, e.getMessage());
+
+                                    if (e instanceof SocketTimeoutException) {
+                                        DialogManager.showAlertDialog(getActivity(), "Connection timeout. Please check your server.", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+
+                                            }
+                                        });
+                                    }
                                 }
                                 infos.set(position0, sb.toString());
                                 updateView(position0, ERROR);
@@ -219,6 +229,15 @@ public class P03_Downloader extends LazyFragment {
                                     sb.append("\n");
                                     sb.append(e.getMessage());
                                     CLog.Companion.e(TAG, e.getMessage());
+
+                                    if (e instanceof SocketTimeoutException) {
+                                        DialogManager.showAlertDialog(getActivity(), "Connection timeout. Please check your server.", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+
+                                            }
+                                        });
+                                    }
                                 }
                                 infos.set(position1, sb.toString());
                                 updateView(position1, ERROR);

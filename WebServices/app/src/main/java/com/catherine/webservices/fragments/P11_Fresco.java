@@ -1,5 +1,6 @@
 package com.catherine.webservices.fragments;
 
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -16,6 +17,7 @@ import android.widget.Toast;
 import com.catherine.webservices.Constants;
 import com.catherine.webservices.R;
 import com.catherine.webservices.adapters.FrescoRVAdapter;
+import com.catherine.webservices.components.DialogManager;
 import com.catherine.webservices.entities.ImageCard;
 import com.catherine.webservices.interfaces.OnItemClickListener;
 import com.catherine.webservices.network.HttpAsyncTask;
@@ -41,6 +43,7 @@ import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -201,6 +204,15 @@ public class P11_Fresco extends LazyFragment {
                             sb.append("\n");
                             sb.append(e.getMessage());
                             CLog.Companion.e(TAG, e.getMessage());
+
+                            if (e instanceof SocketTimeoutException) {
+                                DialogManager.showAlertDialog(getActivity(), "Connection timeout. Please check your server.", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+
+                                    }
+                                });
+                            }
                         }
 
                         if (helper.isNetworkHealthy()) {

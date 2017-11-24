@@ -13,6 +13,7 @@
         <item>Author</item>
         <item>Settings</item>
         <item>WebView settings</item>
+        <item>WebView history</item>
         <item>Logcat</item>
         <item>Theme</item>
     </string-array>

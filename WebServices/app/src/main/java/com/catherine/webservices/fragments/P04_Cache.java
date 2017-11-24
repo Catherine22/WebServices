@@ -47,6 +47,7 @@ import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -110,7 +111,7 @@ public class P04_Cache extends LazyFragment {
                 }
 
                 context.deleteCharAt(context.length() - 1);
-                DialogManager.showPermissionDialog( getActivity(), String.format( getActivity().getResources().getString(R.string.permission_request), context), new DialogInterface.OnClickListener() {
+                DialogManager.showPermissionDialog(getActivity(), String.format(getActivity().getResources().getString(R.string.permission_request), context), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         getActivity().finish();
@@ -380,6 +381,15 @@ public class P04_Cache extends LazyFragment {
                             sb.append("\n");
                             sb.append(e.toString());
                             tv_pb_info.setText(sb.toString());
+
+                            if (e instanceof SocketTimeoutException) {
+                                DialogManager.showAlertDialog(getActivity(), "Connection timeout. Please check your server.", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+
+                                    }
+                                });
+                            }
                         }
                         CLog.Companion.e(TAG, sb.toString());
                     }

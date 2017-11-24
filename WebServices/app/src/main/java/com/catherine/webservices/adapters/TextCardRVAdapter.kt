@@ -5,6 +5,7 @@ import android.os.Build
 import android.support.v7.widget.RecyclerView
 import android.text.Html
 import android.text.TextUtils
+import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -41,6 +42,9 @@ class TextCardRVAdapter(private var ctx: Context, var contents: List<String>?, v
 
         if (contents != null && contents!!.size > position && !TextUtils.isEmpty(contents!![position])) {
             holder.itemView.tv_main.visibility = View.VISIBLE
+
+            //Enable TextView open url links
+            holder.itemView.tv_main.movementMethod = LinkMovementMethod.getInstance()
             if (fromHtml) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                     holder.itemView.tv_main.text = Html.fromHtml(contents!![position], Html.FROM_HTML_MODE_COMPACT)

@@ -1,6 +1,7 @@
 package com.catherine.webservices.fragments;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -18,6 +19,7 @@ import android.widget.TextView;
 import com.catherine.webservices.Constants;
 import com.catherine.webservices.R;
 import com.catherine.webservices.adapters.ImageCardRVAdapter;
+import com.catherine.webservices.components.DialogManager;
 import com.catherine.webservices.entities.ImageCard;
 import com.catherine.webservices.interfaces.OnItemClickListener;
 import com.catherine.webservices.network.HttpAsyncTask;
@@ -35,6 +37,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -160,6 +163,15 @@ public class P05_Gallery extends LazyFragment {
                             sb.append("\n");
                             sb.append(e.getMessage());
                             CLog.Companion.e(TAG, e.getMessage());
+
+                            if (e instanceof SocketTimeoutException) {
+                                DialogManager.showAlertDialog(getActivity(), "Connection timeout. Please check your server.", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+
+                                    }
+                                });
+                            }
                         }
 
                         if (helper.isNetworkHealthy()) {

@@ -1,5 +1,6 @@
 package com.catherine.webservices.fragments;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -13,6 +14,7 @@ import com.catherine.webservices.Constants;
 import com.catherine.webservices.MyApplication;
 import com.catherine.webservices.R;
 import com.catherine.webservices.adapters.TextCardRVAdapter;
+import com.catherine.webservices.components.DialogManager;
 import com.catherine.webservices.interfaces.OnItemClickListener;
 import com.catherine.webservices.network.HttpRequest;
 import com.catherine.webservices.network.HttpResponse;
@@ -24,6 +26,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.jetbrains.annotations.NotNull;
 
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -266,6 +269,15 @@ public class P01_Apache extends LazyFragment {
                 sb.append("\n");
                 sb.append(e.getMessage());
                 CLog.Companion.e(TAG, e.getMessage());
+
+                if (e instanceof SocketTimeoutException) {
+                    DialogManager.showAlertDialog(getActivity(), "Connection timeout. Please check your server.", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                        }
+                    });
+                }
             }
             contents.set(position, sb.toString());
             adapter.setContents(contents);
