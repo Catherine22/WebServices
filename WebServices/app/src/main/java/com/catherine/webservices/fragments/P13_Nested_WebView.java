@@ -16,10 +16,12 @@ import com.catherine.webservices.Constants;
 import com.catherine.webservices.MyApplication;
 import com.catherine.webservices.R;
 import com.catherine.webservices.components.DialogManager;
+import com.catherine.webservices.components.MyNestedWebView;
 import com.catherine.webservices.components.NestedWebView;
 import com.catherine.webservices.entities.WebViewAttr;
 import com.catherine.webservices.interfaces.MainInterface;
 import com.catherine.webservices.interfaces.OnRequestPermissionsListener;
+import com.catherine.webservices.interfaces.WebViewProgressListener;
 import com.catherine.webservices.network.NetworkHelper;
 import com.catherine.webservices.toolkits.CLog;
 
@@ -42,7 +44,7 @@ import catherine.messagecenter.Result;
 public class P13_Nested_WebView extends LazyFragment {
     public final static String TAG = "P13_Nested_WebView";
     private MainInterface mainInterface;
-    private NestedWebView wv;
+    private MyNestedWebView wv;
     private ProgressBar pb;
     private Client client;
     private WebViewAttr attr;
@@ -82,7 +84,7 @@ public class P13_Nested_WebView extends LazyFragment {
                 }
 
                 context.deleteCharAt(context.length() - 1);
-                DialogManager.showPermissionDialog( getActivity(), String.format( getActivity().getResources().getString(R.string.permission_request), context), new DialogInterface.OnClickListener() {
+                DialogManager.showPermissionDialog(getActivity(), String.format(getActivity().getResources().getString(R.string.permission_request), context), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         getActivity().finish();
@@ -110,9 +112,8 @@ public class P13_Nested_WebView extends LazyFragment {
             }
         });
         client.gotMessages(Commands.WV_SETTINGS);
-        wv = (NestedWebView) findViewById(R.id.wv);
+        wv = (MyNestedWebView) findViewById(R.id.wv);
         pb = (ProgressBar) findViewById(R.id.pb);
-        pb.setMax(100);
         refresh();
     }
 
@@ -122,15 +123,13 @@ public class P13_Nested_WebView extends LazyFragment {
         wv.setVerticalScrollBarEnabled(attr.isVerticalScrollBarEnabled());
         //可滑动，默认为true
         wv.setHorizontalScrollBarEnabled(attr.isHorizontalScrollBarEnabled());
-        wv.setWebChromeClient(new WebChromeClient() {
+        wv.addWebViewProgressListener(new WebViewProgressListener() {
             @Override
             public void onProgressChanged(WebView view, int newProgress) {
-                pb.setProgress(newProgress);
-                if (pb.getProgress() == 100)
-                    pb.setVisibility(View.GONE);
+                if (newProgress == 100)
+                    pb.setVisibility(View.INVISIBLE);
                 else
                     pb.setVisibility(View.VISIBLE);
-                super.onProgressChanged(view, newProgress);
             }
         });
 

@@ -2,6 +2,7 @@ package com.catherine.webservices;
 
 import android.app.Activity;
 import android.app.Application;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -9,6 +10,7 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.text.TextUtils;
 
+import com.catherine.webservices.services.NetworkHealthService;
 import com.catherine.webservices.toolkits.CLog;
 import com.catherine.webservices.toolkits.FileUtils;
 import com.facebook.cache.common.CacheErrorLogger;
@@ -142,6 +144,9 @@ public class MyApplication extends Application {
                     stopLooper(calHandlerThread);
                     stopLooper(socketHandlerThread);
                 }
+
+                Intent nhs = new Intent(INSTANCE, NetworkHealthService.class);
+                INSTANCE.stopService(nhs);
             }
         });
         super.onCreate();

@@ -60,6 +60,7 @@ import com.catherine.webservices.Constants;
 import com.catherine.webservices.MyApplication;
 import com.catherine.webservices.R;
 import com.catherine.webservices.components.DialogManager;
+import com.catherine.webservices.components.MyWebView;
 import com.catherine.webservices.entities.WebViewAttr;
 import com.catherine.webservices.interfaces.BackKeyListener;
 import com.catherine.webservices.interfaces.MainInterface;
@@ -93,7 +94,7 @@ import static android.content.Context.DOWNLOAD_SERVICE;
 public class P14_Full_WebView extends LazyFragment {
     public final static String TAG = "P14_Full_WebView";
     private MainInterface mainInterface;
-    private WebView wv;
+    private MyWebView wv;
     private ImageView iv_menu, iv_refresh;
     private AutoCompleteTextView actv_url;
     private ProgressBar pb;
@@ -200,7 +201,7 @@ public class P14_Full_WebView extends LazyFragment {
                 mainInterface.hideKeyboard();
 
                 // Perform action on key press
-                loadUrl(currentUrl);
+                wv.loadUrl(currentUrl);
                 displayUrl = getShortName(currentUrl);
                 actv_url.setText(displayUrl);
             }
@@ -220,7 +221,7 @@ public class P14_Full_WebView extends LazyFragment {
 
                     // Perform action on key press
                     currentUrl = actv_url.getText().toString();
-                    loadUrl(currentUrl);
+                    wv.loadUrl(currentUrl);
                     displayUrl = getShortName(currentUrl);
                     actv_url.setText(displayUrl);
 
@@ -246,7 +247,7 @@ public class P14_Full_WebView extends LazyFragment {
 
         pb = (ProgressBar) findViewById(R.id.pb);
         pb.setMax(100);
-        wv = (WebView) findViewById(R.id.wv);
+        wv = (MyWebView) findViewById(R.id.wv);
         refresh();
     }
 
@@ -585,7 +586,7 @@ public class P14_Full_WebView extends LazyFragment {
                         displayUrl = getShortName(currentUrl);
                         actv_url.setText(displayUrl);
                         actv_url.dismissDropDown();
-                        loadUrl(url);
+                        wv.loadUrl(url);
                         return true;
                     }
 
@@ -855,7 +856,7 @@ public class P14_Full_WebView extends LazyFragment {
                         bt_copy.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                loadUrl(saveImgUrl);
+                                wv.loadUrl(saveImgUrl);
                                 myDialog.dismiss();
                             }
                         });
@@ -920,58 +921,7 @@ public class P14_Full_WebView extends LazyFragment {
         settings.setAppCachePath(MyApplication.INSTANCE.getDiskCacheDir("webview").getAbsolutePath());
         //设置WebView中的缓存模式
         settings.setCacheMode(WebSettings.LOAD_DEFAULT);
-        loadUrl(currentUrl);
-    }
-
-    private void loadUrl(String urlString) {
-        String url = NetworkHelper.Companion.formattedUrl(urlString);
-        CLog.Companion.i(TAG, "Load " + url);
-        if (url.startsWith("http://") || url.startsWith("https://") || url.startsWith("file:///") || url.startsWith("content://")) {
-            wv.loadUrl(url);
-        } else if (url.startsWith("intent://")) {
-            try {
-                Intent intent = Intent.parseUri(url, Intent.URI_INTENT_SCHEME);
-                if (intent != null) {
-                    wv.stopLoading();
-                    PackageManager packageManager = getActivity().getPackageManager();
-                    ResolveInfo info = packageManager.resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY);
-                    if (info != null) {
-                        getActivity().startActivity(intent);
-                    } else {
-                        String fallbackUrl = intent.getStringExtra("browser_fallback_url");
-                        wv.loadUrl(fallbackUrl);
-
-                        // or call external browser
-//                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(fallbackUrl));
-//                    context.startActivity(browserIntent);
-                    }
-                }
-            } catch (URISyntaxException e) {
-                e.printStackTrace();
-                DialogManager.showErrorDialog(getActivity(), "Can't resolve intent://", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                });
-            }
-        } else {
-            try {
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setData(Uri.parse(url));
-                startActivity(intent);
-            } catch (Exception e) {
-                e.printStackTrace();
-//                DialogManager.showErrorDialog(getActivity(), "Failed to load URL, try other URL", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//
-//                    }
-//                });
-                //try to google
-                wv.loadUrl("https://www.google.com/search?q=" + urlString);
-            }
-        }
+        wv.loadUrl(currentUrl);
     }
 
     @Override
@@ -990,7 +940,5 @@ public class P14_Full_WebView extends LazyFragment {
         }
         return temp;
     }
-
-    private AlertDialog myAlertDialog;
 
 }

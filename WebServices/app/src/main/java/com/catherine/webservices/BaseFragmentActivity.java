@@ -159,7 +159,6 @@ public abstract class BaseFragmentActivity extends AppCompatActivity {
         else
             listener.onGranted();
 
-
         requestSpec = 0x0000;
         grantedSpec = 0x0000;
         confirmedSpec = 0x0000;

@@ -64,7 +64,7 @@
         android:layout_alignParentLeft="true" android:layout_alignParentStart="true"
         android:layout_below="@+id/rl" android:background="@color/colorPrimary"/>
 
-    <WebView
+    <com.catherine.webservices.components.MyWebView
         android:id="@+id/wv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

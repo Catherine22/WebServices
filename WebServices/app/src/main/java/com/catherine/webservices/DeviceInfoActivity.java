@@ -2,14 +2,10 @@ package com.catherine.webservices;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.Uri;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
@@ -17,8 +13,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -28,17 +22,14 @@ import android.view.View;
 
 import com.catherine.webservices.adapters.TextCardRVAdapter;
 import com.catherine.webservices.interfaces.OnItemClickListener;
-import com.catherine.webservices.interfaces.OnRequestPermissionsListener;
 import com.catherine.webservices.network.NetworkHelper;
 import com.catherine.webservices.security.ADID_AsyncTask;
-import com.catherine.webservices.toolkits.CLog;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
@@ -55,7 +46,6 @@ public class DeviceInfoActivity extends BaseFragmentActivity {
     private SwipeRefreshLayout srl_container;
     private ADID_AsyncTask adid_asyncTask;
     private Handler handler;
-    private OnRequestPermissionsListener listener;
 
     @Override
     @SuppressLint("MissingSuperCall")
@@ -399,7 +389,7 @@ public class DeviceInfoActivity extends BaseFragmentActivity {
     }
 
     private void initComponent() {
-        srl_container = (SwipeRefreshLayout) findViewById(R.id.srl_container);
+        srl_container = findViewById(R.id.srl_container);
         srl_container.setColorSchemeResources(R.color.colorPrimary, R.color.colorAccent, R.color.colorPrimaryDark, R.color.colorAccentDark);
         srl_container.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -409,7 +399,7 @@ public class DeviceInfoActivity extends BaseFragmentActivity {
                 srl_container.setRefreshing(false);
             }
         });
-        RecyclerView rv_main_list = (RecyclerView) findViewById(R.id.rv_main_list);
+        RecyclerView rv_main_list = findViewById(R.id.rv_main_list);
 //        rv_main_list.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.Companion.getVERTICAL_LIST()));
         rv_main_list.setLayoutManager(new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL));
         adapter = new TextCardRVAdapter(this, null, features, desc, new OnItemClickListener() {
@@ -429,6 +419,7 @@ public class DeviceInfoActivity extends BaseFragmentActivity {
                         clipboard.setPrimaryClip(clip);
                     }
                 } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
 
@@ -438,212 +429,6 @@ public class DeviceInfoActivity extends BaseFragmentActivity {
             }
         });
         rv_main_list.setAdapter(adapter);
-    }
-
-    //constants
-    private final static int OPEN_SETTINGS = 1;
-    private final static int ACCESS_PERMISSION = 2;
-    private final static int PERMISSION_OVERLAY = 3;
-    private final static int PERMISSION_WRITE_SETTINGS = 4;
-
-    private final int GRANTED_SAW = 0x0001;     //同意特殊权限(SYSTEM_ALERT_WINDOW)
-    private final int GRANTED_WS = 0x0010;      //同意特殊权限(WRITE_SETTINGS)
-    private int requestSpec = 0x0000;           //需要的特殊权限
-    private int grantedSpec = 0x0000;           //已取得的特殊权限
-    private int confirmedSpec = 0x0000;         //已询问的特殊权限
-    private List<String> deniedPermissionsList; //被拒绝的权限
-
-
-    /**
-     * 要求用户打开权限,仅限android 6.0 以上
-     * <p/>
-     * SYSTEM_ALERT_WINDOW 和 WRITE_SETTINGS, 这两个权限比较特殊，
-     * 不能通过代码申请方式获取，必须得用户打开软件设置页手动打开，才能授权。
-     *
-     * @param permissions 手机权限 e.g. Manifest.permission.ACCESS_FINE_LOCATION
-     * @param listener    此变量implements事件的接口,负责传递信息
-     */
-    @TargetApi(Build.VERSION_CODES.M)
-    public void getPermissions(String[] permissions, OnRequestPermissionsListener listener) {
-        if (permissions == null || permissions.length == 0 || Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            listener.onGranted();
-            return;
-        }
-        this.listener = listener;
-        deniedPermissionsList = new LinkedList<>();
-        for (String p : permissions) {
-            if (p.equals(android.Manifest.permission.SYSTEM_ALERT_WINDOW)) {
-                requestSpec |= GRANTED_SAW;
-                if (android.provider.Settings.canDrawOverlays(this))
-                    grantedSpec |= GRANTED_SAW;
-            } else if (p.equals(android.Manifest.permission.WRITE_SETTINGS)) {
-                requestSpec |= GRANTED_WS;
-                if (android.provider.Settings.System.canWrite(this))
-                    grantedSpec |= GRANTED_WS;
-            } else if (ActivityCompat.checkSelfPermission(this, p) != PackageManager.PERMISSION_GRANTED) {
-                deniedPermissionsList.add(p);
-            }
-
-        }
-
-        if (requestSpec != grantedSpec) {
-            getASpecPermission(requestSpec);
-        } else {// Granted all of the special permissions
-            if (deniedPermissionsList.size() != 0) {
-                //Ask for the permissions
-                String[] deniedPermissions = new String[deniedPermissionsList.size()];
-                for (int i = 0; i < deniedPermissionsList.size(); i++) {
-                    deniedPermissions[i] = deniedPermissionsList.get(i);
-                }
-                ActivityCompat.requestPermissions(this, deniedPermissions, ACCESS_PERMISSION);
-            } else {
-                listener.onGranted();
-
-                requestSpec = 0x0000;
-                grantedSpec = 0x0000;
-                confirmedSpec = 0x0000;
-                deniedPermissionsList = null;
-            }
-        }
-    }
-
-
-    @TargetApi(Build.VERSION_CODES.M)
-    private void getASpecPermission(int permissions) {
-        if ((permissions & GRANTED_SAW) == GRANTED_SAW && (permissions & grantedSpec) != GRANTED_SAW) {
-            Intent intent = new Intent(android.provider.Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getPackageName()));
-            startActivityForResult(intent, Constants.PERMISSION_OVERLAY);
-        }
-
-        if ((permissions & GRANTED_WS) == GRANTED_WS && (permissions & grantedSpec) != GRANTED_WS) {
-            Intent intent = new Intent(android.provider.Settings.ACTION_MANAGE_WRITE_SETTINGS, Uri.parse("package:" + getPackageName()));
-            startActivityForResult(intent, Constants.PERMISSION_WRITE_SETTINGS);
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        //Press home key then click icon to launch while checking permission
-        if (permissions.length == 0) {
-            requestSpec = 0x0000;
-            grantedSpec = 0x0000;
-            confirmedSpec = 0x0000;
-            deniedPermissionsList = null;
-            listener.onRetry();
-            return;
-        }
-
-        List<String> deniedResults = new ArrayList<>();
-        for (int i = 0; i < grantResults.length; i++) {
-            if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
-                deniedResults.add(permissions[i]);
-            }
-        }
-
-        if ((requestSpec & GRANTED_WS) == GRANTED_WS && (grantedSpec & GRANTED_WS) != GRANTED_WS)
-            deniedResults.add(Manifest.permission.WRITE_SETTINGS);
-
-        if ((requestSpec & GRANTED_SAW) == GRANTED_SAW && (grantedSpec & GRANTED_SAW) != GRANTED_SAW)
-            deniedResults.add(Manifest.permission.SYSTEM_ALERT_WINDOW);
-
-
-        if (deniedResults.size() != 0)
-            listener.onDenied(deniedResults);
-        else
-            listener.onGranted();
-
-
-        requestSpec = 0x0000;
-        grantedSpec = 0x0000;
-        confirmedSpec = 0x0000;
-        deniedPermissionsList = null;
-    }
-
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        CLog.Companion.i(TAG, "request:" + requestCode + "/resultCode" + resultCode);
-        super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode) {
-            case PERMISSION_OVERLAY:
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    confirmedSpec |= GRANTED_SAW;
-                    confirmedSpec |= grantedSpec;
-                    if (android.provider.Settings.canDrawOverlays(this))
-                        grantedSpec |= GRANTED_SAW;
-                    if (confirmedSpec == requestSpec) {
-                        if (deniedPermissionsList.size() != 0) {
-                            //Ask for the permissions
-                            String[] deniedPermissions = new String[deniedPermissionsList.size()];
-                            for (int i = 0; i < deniedPermissionsList.size(); i++) {
-                                deniedPermissions[i] = deniedPermissionsList.get(i);
-                            }
-                            ActivityCompat.requestPermissions(this, deniedPermissions, ACCESS_PERMISSION);
-                        } else {
-                            List<String> deniedResults = new ArrayList<>();
-                            if ((requestSpec & GRANTED_WS) == GRANTED_WS && (grantedSpec & GRANTED_WS) != GRANTED_WS)
-                                deniedResults.add(Manifest.permission.WRITE_SETTINGS);
-
-                            if ((requestSpec & GRANTED_SAW) == GRANTED_SAW && (grantedSpec & GRANTED_SAW) != GRANTED_SAW)
-                                deniedResults.add(Manifest.permission.SYSTEM_ALERT_WINDOW);
-
-                            if (deniedResults.size() > 0)
-                                listener.onDenied(deniedResults);
-                            else
-                                listener.onGranted();
-
-                            requestSpec = 0x0000;
-                            grantedSpec = 0x0000;
-                            confirmedSpec = 0x0000;
-                            deniedPermissionsList = null;
-                        }
-                    }
-                }
-                break;
-            case PERMISSION_WRITE_SETTINGS:
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    confirmedSpec |= GRANTED_WS;
-                    confirmedSpec |= grantedSpec;
-                    if (android.provider.Settings.System.canWrite(this))
-                        grantedSpec |= GRANTED_WS;
-                    if (confirmedSpec == requestSpec) {
-                        if (deniedPermissionsList.size() != 0) {
-                            //Ask for the permissions
-                            String[] deniedPermissions = new String[deniedPermissionsList.size()];
-                            for (int i = 0; i < deniedPermissionsList.size(); i++) {
-                                deniedPermissions[i] = deniedPermissionsList.get(i);
-                            }
-                            ActivityCompat.requestPermissions(this, deniedPermissions, ACCESS_PERMISSION);
-                        } else {
-                            List<String> deniedResults = new ArrayList<>();
-                            if ((requestSpec & GRANTED_WS) == GRANTED_WS && (grantedSpec & GRANTED_WS) != GRANTED_WS)
-                                deniedResults.add(Manifest.permission.WRITE_SETTINGS);
-
-                            if ((requestSpec & GRANTED_SAW) == GRANTED_SAW && (grantedSpec & GRANTED_SAW) != GRANTED_SAW)
-                                deniedResults.add(Manifest.permission.SYSTEM_ALERT_WINDOW);
-
-                            if (deniedResults.size() > 0)
-                                listener.onDenied(deniedResults);
-                            else
-                                listener.onGranted();
-
-                            requestSpec = 0x0000;
-                            grantedSpec = 0x0000;
-                            confirmedSpec = 0x0000;
-                            deniedPermissionsList = null;
-                        }
-                    }
-                }
-                break;
-            case OPEN_SETTINGS:
-                requestSpec = 0x0000;
-                grantedSpec = 0x0000;
-                confirmedSpec = 0x0000;
-                deniedPermissionsList = null;
-                listener.onRetry();
-                break;
-        }
     }
 
 }
