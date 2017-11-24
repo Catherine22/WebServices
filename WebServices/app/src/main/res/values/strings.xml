@@ -179,7 +179,7 @@
     <string name="cancel_button">取消</string>
     <string name="retry_button">重试</string>
     <string name="close_button">关闭</string>
-    <string name="permission_request">您目前未授权％1 $ s存取权限，未授权将造成程式无法执行，是否开启权限</string>
+    <string name="permission_request">您目前未授权%s存取权限，未授权将造成程式无法执行，是否开启权限</string>
     <string name="permission_request_write_settings">此权限为出示兑换条码时控制萤幕亮度，如您关闭将造成程式无法执行,是否确定关闭</string>
     <string name="permission_request_camera">您目前未授权相机存取权限，未授权将造成扫描功能无法开启，是否开启权限</string>
     <string name="permission_storage">储存</string>

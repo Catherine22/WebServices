@@ -1,7 +1,6 @@
 package com.catherine.webservices.fragments;
 
 import android.Manifest;
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
@@ -159,16 +158,9 @@ public class P16_WebView_History extends LazyFragment {
                 }
 
                 adapter = new SimpleStyleRVAdapter(getActivity(), null, null, new OnMultiItemClickListener() {
-
                     @Override
                     public void onItemClick(View view, String title, int position) {
-                        DataObject d = itemCollection.get(position);
-                        DialogManager.showAlertDialog(getActivity(), d.getData().optString("shortName", "") + "\n" + d.getData().optString("url", ""), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-
-                            }
-                        });
+                        CLog.Companion.i(TAG, "click:" + position);
                     }
 
                     @Override
@@ -176,8 +168,7 @@ public class P16_WebView_History extends LazyFragment {
                         DialogManager.showAlertDialog(getActivity(), "Do you want to remove this item from the list?", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                itemCollection.remove(position);
-                                //TODO update recyclerView
+                                //TODO remove the item and update recyclerView
                             }
                         }, new DialogInterface.OnClickListener() {
                             @Override
