@@ -87,6 +87,7 @@ public class P11_Fresco extends LazyFragment {
             @Override
             public void networkConnected(@NotNull String type) {
                 if (retry) {
+                    retry = false;
                     fillInData();
                 }
             }
@@ -108,7 +109,6 @@ public class P11_Fresco extends LazyFragment {
 
     private void fillInData() {
         tv_offline.setVisibility(View.GONE);
-        retry = false;
         entities = new ArrayList<>();
         if (getArguments() != null && getArguments().getParcelableArrayList("imageCards") != null)
             entities = getArguments().getParcelableArrayList("imageCards");
@@ -204,7 +204,6 @@ public class P11_Fresco extends LazyFragment {
                         }
 
                         if (helper.isNetworkHealthy()) {
-                            //retry?
                             tv_offline.setText(sb.toString());
                             tv_offline.setVisibility(View.VISIBLE);
                         } else {
@@ -288,5 +287,11 @@ public class P11_Fresco extends LazyFragment {
             ++failed;
             CLog.Companion.e(TAG, "observer, failed:" + failed);
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        helper.stopListeningToNetworkState();
+        super.onDestroy();
     }
 }

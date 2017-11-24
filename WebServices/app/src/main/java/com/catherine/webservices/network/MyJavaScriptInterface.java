@@ -13,6 +13,7 @@ import android.webkit.JavascriptInterface;
 
 import com.catherine.webservices.Constants;
 import com.catherine.webservices.R;
+import com.catherine.webservices.components.DialogManager;
 import com.catherine.webservices.interfaces.MainInterface;
 import com.catherine.webservices.interfaces.OnRequestPermissionsListener;
 import com.catherine.webservices.toolkits.CLog;
@@ -48,17 +49,12 @@ public class MyJavaScriptInterface implements IgnoreProguard {
             @Override
             public void onGranted() {
                 //Show contacts
-                AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(ctx);
-                myAlertDialog.setIcon(R.drawable.ic_warning_black_24dp)
-                        .setCancelable(false)
-                        .setTitle("Result")
-                        .setMessage("Succeed!")
-                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                            }
-                        });
-                myAlertDialog.show();
+                DialogManager.showAlertDialog(ctx, "Succeed!", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
             }
 
             @Override
@@ -77,26 +73,12 @@ public class MyJavaScriptInterface implements IgnoreProguard {
                 }
 
                 context.deleteCharAt(context.length() - 1);
-
-                AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(ctx);
-                myAlertDialog.setIcon(R.drawable.ic_warning_black_24dp)
-                        .setCancelable(false)
-                        .setTitle("注意")
-                        .setMessage(String.format("您目前未授权%s存取权限，未授权将造成程式无法执行，是否开启权限？", context.toString()))
-                        .setNegativeButton("继续关闭", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-//                                ((Activity) ctx).finish();
-                            }
-                        }).setPositiveButton("确定开启", new DialogInterface.OnClickListener() {
+                DialogManager.showPermissionDialog(ctx, String.format(ctx.getResources().getString(R.string.permission_request), context), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Intent intent = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-                                Uri.fromParts("package", ctx.getPackageName(), null));
-                        ((Activity) ctx).startActivityForResult(intent, Constants.OPEN_SETTINGS);
+//                        ((Activity) ctx).finish();
                     }
                 });
-                myAlertDialog.show();
             }
 
             @Override
@@ -109,17 +91,12 @@ public class MyJavaScriptInterface implements IgnoreProguard {
     @JavascriptInterface
     public void showDialog(String message) {
         CLog.Companion.i(TAG, "showDialog()");
-        AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(ctx);
-        myAlertDialog.setIcon(R.drawable.ic_warning_black_24dp)
-                .setCancelable(false)
-                .setTitle("JS Message")
-                .setMessage(message)
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                    }
-                });
-        myAlertDialog.show();
+        DialogManager.showAlertDialog(ctx, "You received a message from JS:\n" + message, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
     }
 
     @JavascriptInterface

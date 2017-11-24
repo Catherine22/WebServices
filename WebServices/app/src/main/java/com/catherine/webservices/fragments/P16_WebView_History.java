@@ -4,13 +4,9 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,36 +14,26 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
-import com.catherine.webservices.Constants;
-import com.catherine.webservices.MyApplication;
 import com.catherine.webservices.R;
 import com.catherine.webservices.adapters.SimpleStyleRVAdapter;
-import com.catherine.webservices.adapters.TextCardRVAdapter;
+import com.catherine.webservices.components.DialogManager;
 import com.catherine.webservices.entities.ImageCardEx;
-import com.catherine.webservices.interfaces.BackKeyListener;
 import com.catherine.webservices.interfaces.MainInterface;
-import com.catherine.webservices.interfaces.OnItemClickListener;
 import com.catherine.webservices.interfaces.OnMultiItemClickListener;
 import com.catherine.webservices.interfaces.OnRequestPermissionsListener;
 import com.catherine.webservices.toolkits.CLog;
 
-import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -97,26 +83,12 @@ public class P16_WebView_History extends LazyFragment {
                 }
 
                 context.deleteCharAt(context.length() - 1);
-
-                AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(getActivity());
-                myAlertDialog.setIcon(R.drawable.ic_warning_black_24dp)
-                        .setCancelable(false)
-                        .setTitle("注意")
-                        .setMessage(String.format("您目前未授权%s存取权限，未授权将造成程式无法执行，是否开启权限？", context.toString()))
-                        .setNegativeButton("继续关闭", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                getActivity().finish();
-                            }
-                        }).setPositiveButton("确定开启", new DialogInterface.OnClickListener() {
+                DialogManager.showPermissionDialog(getActivity(), String.format(getActivity().getResources().getString(R.string.permission_request), context), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Intent intent = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-                                Uri.fromParts("package", getActivity().getPackageName(), null));
-                        startActivityForResult(intent, Constants.OPEN_SETTINGS);
+                        getActivity().finish();
                     }
                 });
-                myAlertDialog.show();
             }
 
             @Override
@@ -191,41 +163,28 @@ public class P16_WebView_History extends LazyFragment {
                     @Override
                     public void onItemClick(View view, String title, int position) {
                         DataObject d = itemCollection.get(position);
-                        AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(getActivity());
-                        myAlertDialog.setIcon(R.drawable.ic_warning_black_24dp)
-                                .setCancelable(false)
-                                .setTitle(d.getData().optString("shortName", ""))
-                                .setMessage(d.getData().optString("url", ""))
-                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                    }
-                                });
-                        myAlertDialog.show();
+                        DialogManager.showAlertDialog(getActivity(), d.getData().optString("shortName", "") + "\n" + d.getData().optString("url", ""), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        });
                     }
 
                     @Override
                     public void onItemLongClick(View view, String title, final int position) {
-                        AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(getActivity());
-                        myAlertDialog.setIcon(R.drawable.ic_warning_black_24dp)
-                                .setCancelable(false)
-                                .setTitle("Remove it")
-                                .setMessage("Do you want to remove this item from the list?")
-                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        itemCollection.remove(position);
-                                        //TODO update recyclerView
-                                    }
-                                })
-                                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
+                        DialogManager.showAlertDialog(getActivity(), "Do you want to remove this item from the list?", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                itemCollection.remove(position);
+                                //TODO update recyclerView
+                            }
+                        }, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
 
-                                    }
-                                })
-                        ;
-                        myAlertDialog.show();
+                            }
+                        });
                     }
                 });
                 for (Map.Entry<String, List<ImageCardEx>> entry : data.entrySet()) {

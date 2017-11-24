@@ -3,10 +3,8 @@ package com.catherine.webservices;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
-import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
@@ -20,9 +18,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -52,7 +48,7 @@ import java.util.UUID;
  * catherine919@soft-world.com.tw
  */
 
-public class DeviceInfoActivity extends FragmentActivity {
+public class DeviceInfoActivity extends BaseFragmentActivity {
     public final static String TAG = "P00_DeviceInfo";
     private List<String> features, contents, desc;
     private TextCardRVAdapter adapter;
@@ -61,67 +57,18 @@ public class DeviceInfoActivity extends FragmentActivity {
     private Handler handler;
     private OnRequestPermissionsListener listener;
 
+    @Override
+    @SuppressLint("MissingSuperCall")
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState, R.layout.f_00_device_info, new String[]{Manifest.permission.READ_PHONE_STATE, Manifest.permission.BLUETOOTH});
+    }
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.f_00_device_info);
+    protected void onPermissionGranted() {
         handler = new Handler(MyApplication.INSTANCE.calHandlerThread.getLooper());
-        init();
+        fillInData();
+        initComponent();
     }
-
-    private void init() {
-        getPermissions(new String[]{Manifest.permission.READ_PHONE_STATE, Manifest.permission.BLUETOOTH}, new OnRequestPermissionsListener() {
-            @Override
-            public void onGranted() {
-                fillInData();
-                initComponent();
-            }
-
-            @Override
-            public void onDenied(@org.jetbrains.annotations.Nullable List<String> deniedPermissions) {
-                StringBuilder context = new StringBuilder();
-                if (deniedPermissions != null) {
-                    for (String p : deniedPermissions) {
-                        if (Manifest.permission.READ_PHONE_STATE.equals(p)) {
-                            context.append("存取电话、");
-                        }
-                        if (Manifest.permission.BLUETOOTH.equals(p)) {
-                            context.append("蓝牙、");
-                        }
-                    }
-                }
-
-                context.deleteCharAt(context.length() - 1);
-
-                AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(DeviceInfoActivity.this);
-                myAlertDialog.setIcon(R.drawable.ic_warning_black_24dp)
-                        .setCancelable(false)
-                        .setTitle("注意")
-                        .setMessage(String.format("您目前未授权%s存取权限，未授权将造成程式无法执行，是否开启权限？", context.toString()))
-                        .setNegativeButton("继续关闭", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                finish();
-                            }
-                        }).setPositiveButton("确定开启", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Intent intent = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-                                Uri.fromParts("package", getPackageName(), null));
-                        startActivityForResult(intent, Constants.OPEN_SETTINGS);
-                    }
-                });
-                myAlertDialog.show();
-            }
-
-            @Override
-            public void onRetry() {
-                init();
-            }
-        });
-    }
-
 
     @SuppressLint("HardwareIds")
     private void fillInData() {

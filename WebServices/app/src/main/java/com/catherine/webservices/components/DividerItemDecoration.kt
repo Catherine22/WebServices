@@ -1,4 +1,4 @@
-package com.catherine.webservices.views
+package com.catherine.webservices.components
 
 import android.content.Context
 import android.content.res.TypedArray

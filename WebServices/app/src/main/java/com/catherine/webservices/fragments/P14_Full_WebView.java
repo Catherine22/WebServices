@@ -21,7 +21,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
-import android.os.HandlerThread;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -60,6 +59,7 @@ import com.catherine.webservices.Commands;
 import com.catherine.webservices.Constants;
 import com.catherine.webservices.MyApplication;
 import com.catherine.webservices.R;
+import com.catherine.webservices.components.DialogManager;
 import com.catherine.webservices.entities.WebViewAttr;
 import com.catherine.webservices.interfaces.BackKeyListener;
 import com.catherine.webservices.interfaces.MainInterface;
@@ -70,11 +70,9 @@ import com.catherine.webservices.toolkits.CLog;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.List;
@@ -142,26 +140,12 @@ public class P14_Full_WebView extends LazyFragment {
                 }
 
                 context.deleteCharAt(context.length() - 1);
-
-                AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(getActivity());
-                myAlertDialog.setIcon(R.drawable.ic_warning_black_24dp)
-                        .setCancelable(false)
-                        .setTitle("注意")
-                        .setMessage(String.format("您目前未授权%s存取权限，未授权将造成程式无法执行，是否开启权限？", context.toString()))
-                        .setNegativeButton("继续关闭", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                getActivity().finish();
-                            }
-                        }).setPositiveButton("确定开启", new DialogInterface.OnClickListener() {
+                DialogManager.showPermissionDialog(getActivity(), String.format(getResources().getString(R.string.permission_request), context), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Intent intent = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-                                Uri.fromParts("package", getActivity().getPackageName(), null));
-                        startActivityForResult(intent, Constants.OPEN_SETTINGS);
+                        getActivity().finish();
                     }
                 });
-                myAlertDialog.show();
             }
 
             @Override
@@ -736,7 +720,7 @@ public class P14_Full_WebView extends LazyFragment {
                                 break;
                         }
                         message += " Do you want to continue anyway?";
-                        showErrorDialog("SSL Error!", message, true, new DialogInterface.OnClickListener() {
+                        DialogManager.showErrorDialog(getActivity(), "SSL Error:\n" + message, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 handler.proceed();
@@ -744,7 +728,6 @@ public class P14_Full_WebView extends LazyFragment {
                         }, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                //stop loading
                                 handler.cancel();
                             }
                         });
@@ -965,7 +948,12 @@ public class P14_Full_WebView extends LazyFragment {
                 }
             } catch (URISyntaxException e) {
                 e.printStackTrace();
-                showErrorDialog("Error!", "Can't resolve intent://", false, null, null);
+                DialogManager.showErrorDialog(getActivity(), "Can't resolve intent://", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
             }
         } else {
             try {
@@ -974,7 +962,12 @@ public class P14_Full_WebView extends LazyFragment {
                 startActivity(intent);
             } catch (Exception e) {
                 e.printStackTrace();
-//                showErrorDialog("Error!", "Failed to load URL, try other URL", true, null, null);
+//                DialogManager.showErrorDialog(getActivity(), "Failed to load URL, try other URL", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//
+//                    }
+//                });
                 //try to google
                 wv.loadUrl("https://www.google.com/search?q=" + urlString);
             }
@@ -1000,25 +993,4 @@ public class P14_Full_WebView extends LazyFragment {
 
     private AlertDialog myAlertDialog;
 
-    private void showErrorDialog(String title, String message, boolean showNegativeButton, DialogInterface.OnClickListener pstListener, DialogInterface.OnClickListener ngtListener) {
-        if (myAlertDialog != null && myAlertDialog.isShowing())
-            myAlertDialog.dismiss();
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        if (showNegativeButton) {
-            builder.setIcon(R.drawable.ic_warning_black_24dp)
-                    .setCancelable(false)
-                    .setTitle(title)
-                    .setMessage(message)
-                    .setPositiveButton("OK", pstListener)
-                    .setNegativeButton("Cancel", ngtListener);
-        } else {
-            builder.setIcon(R.drawable.ic_warning_black_24dp)
-                    .setCancelable(false)
-                    .setTitle(title)
-                    .setMessage(message)
-                    .setPositiveButton("OK", pstListener);
-        }
-        myAlertDialog = builder.show();
-    }
 }

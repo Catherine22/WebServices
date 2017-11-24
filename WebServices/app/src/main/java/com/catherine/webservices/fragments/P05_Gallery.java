@@ -82,6 +82,7 @@ public class P05_Gallery extends LazyFragment {
             @Override
             public void networkConnected(@NotNull String type) {
                 if (retry) {
+                    retry = false;
                     fillInData();
                 }
             }
@@ -104,7 +105,6 @@ public class P05_Gallery extends LazyFragment {
     }
 
     private void fillInData() {
-        retry = false;
         tv_offline.setVisibility(View.GONE);
         entities = new ArrayList<>();
         adapter.setImageCards(entities, false);
@@ -163,7 +163,6 @@ public class P05_Gallery extends LazyFragment {
                         }
 
                         if (helper.isNetworkHealthy()) {
-                            //retry?
                             tv_offline.setText(sb.toString());
                             tv_offline.setVisibility(View.VISIBLE);
                         } else {
@@ -247,5 +246,11 @@ public class P05_Gallery extends LazyFragment {
                 editor.apply();
             }
         });
+    }
+
+    @Override
+    public void onDestroy() {
+        helper.stopListeningToNetworkState();
+        super.onDestroy();
     }
 }

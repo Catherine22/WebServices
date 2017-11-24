@@ -12,6 +12,7 @@ public class Constants {
     public final static int PERMISSION_OVERLAY = 1;
     public final static int PERMISSION_WRITE_SETTINGS = 2;
     public final static int OPEN_SETTINGS = 3;
+    public final static int ACCESS_PERMISSION = 4;
 
     public final static int THREAD_POOL_TIMEOUT = 2000;
     public final static int TIMEOUT = 10000;

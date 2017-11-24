@@ -16,6 +16,7 @@ import catherine.messagecenter.AsyncResponse
 import catherine.messagecenter.Server
 import com.catherine.webservices.Commands
 import com.catherine.webservices.toolkits.CLog
+import com.catherine.webservices.toolkits.IgnoreProguard
 
 /**
  * Created by Catherine on 2017/7/17.
@@ -23,7 +24,7 @@ import com.catherine.webservices.toolkits.CLog
  * catherine919@soft-world.com.tw
  */
 
-class NetworkHealthService : Service() {
+class NetworkHealthService : Service(), IgnoreProguard {
     private var internetReceiver: InternetConnectivityReceiver? = null
     private var sv: Server? = null
 

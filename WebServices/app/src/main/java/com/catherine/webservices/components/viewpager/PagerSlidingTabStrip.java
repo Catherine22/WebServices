@@ -1,4 +1,4 @@
-package com.catherine.webservices.views.viewpager;
+package com.catherine.webservices.components.viewpager;
 /*
  * Copyright (C) 2013 Andreas Stuetz <andreas.stuetz@gmail.com>
  *

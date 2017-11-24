@@ -1,5 +1,6 @@
 package com.catherine.webservices.network
 
+import android.app.ActivityManager
 import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
@@ -90,14 +91,29 @@ class NetworkHelper(private val ctx: Context) {
             }
         })
         client?.gotMessages(Commands.C_NETWORK_STATE)
-        val nhs = Intent(ctx, NetworkHealthService::class.java)
-        ctx.startService(nhs)
+        if (!isRunningService(ctx, NetworkHealthService::class.java.name)) {
+            val nhs = Intent(ctx, NetworkHealthService::class.java)
+            ctx.startService(nhs)
+        }
     }
 
     fun stopListeningToNetworkState() {
         client?.release()
-        val nhs = Intent(ctx, NetworkHealthService::class.java)
-        ctx.stopService(nhs)
+//        val nhs = Intent(ctx, NetworkHealthService::class.java)
+//        ctx.stopService(nhs)
+    }
+
+
+    private fun isRunningService(ctx: Context, serviceName: String): Boolean {
+        var isRunning = false
+        val am = ctx.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+        val infos = am.getRunningServices(100)
+        for (info in infos) {
+            val runningServiceName = info.service.className
+            if (runningServiceName == serviceName)
+                isRunning = true
+        }
+        return isRunning
     }
 
 
