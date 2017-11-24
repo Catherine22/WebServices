@@ -16,7 +16,7 @@
         android:layout_height="30dp"
         android:layout_gravity="center_vertical"
         android:scaleType="centerInside"
-        android:src="@drawable/ic_panorama_black_24dp"/>
+        android:src="@drawable/default_pic"/>
 
     <LinearLayout
         android:id="@+id/ll"

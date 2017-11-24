@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.webkit.WebSettings;
-import android.webkit.WebView;
 
 import com.catherine.webservices.R;
 

@@ -22,6 +22,7 @@ import com.catherine.webservices.R;
 import com.catherine.webservices.adapters.TextCardRVAdapter;
 import com.catherine.webservices.components.DialogManager;
 import com.catherine.webservices.entities.ImageCard;
+import com.catherine.webservices.entities.TestData;
 import com.catherine.webservices.interfaces.BackKeyListener;
 import com.catherine.webservices.interfaces.MainInterface;
 import com.catherine.webservices.interfaces.OnItemClickListener;
@@ -47,7 +48,6 @@ import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -249,7 +249,7 @@ public class P04_Cache extends LazyFragment {
                     pb.setSecondaryProgress(failed + succeed);
                     double p = succeed * 100.0 / len;
                     double e = failed * 100.0 / len;
-                    tv_pb_info.setText(String.format(Locale.ENGLISH, "Cached: %.2f%%, failed: %.2f%%", p, e));
+                    tv_pb_info.setText(String.format(Locale.ENGLISH, "Fresco Cached: %.2f%%, failed: %.2f%%", p, e));
                     if (imageCards.size() == succeed) {
                         CLog.Companion.i(TAG, "All the images are cached!");
                     }
@@ -258,22 +258,7 @@ public class P04_Cache extends LazyFragment {
             }
         });
 
-        //Prefetch the images. It works by clicking the final item
-        ADID_AsyncTask adid_asyncTask = new ADID_AsyncTask(
-                new ADID_AsyncTask.ADID_Callback() {
-                    @Override
-                    public void onResponse(@NonNull String ADID) {
-                        prefetchToDiskCache(ADID);
-                    }
-
-                    @Override
-                    public void onError(@NonNull Exception e) {
-                        CLog.Companion.e(TAG, "Failed to get ADID: " + e.toString());
-                        prefetchToDiskCache("FAKE-ADID");
-
-                    }
-                });
-        adid_asyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        prefetchToDiskCache();
     }
 
 
@@ -309,8 +294,8 @@ public class P04_Cache extends LazyFragment {
     private int succeed, failed;
     private int len;
 
-    private void prefetchToDiskCache(String ADID) {
-        len = 0;
+    private void prefetchToDiskCache() {
+        len = TestData.IMAGES1.length;
         succeed = 0;
         failed = 0;
         pb.setProgress(0);
@@ -318,84 +303,37 @@ public class P04_Cache extends LazyFragment {
         imageCards = new ArrayList<>();
         subscriber = new PrefetchSubscriber();
 
-        Map<String, String> body = new HashMap<>();
-        body.put("from", "10");
-        body.put("to", "20");
-        body.put("ADID", ADID);
-        HttpRequest r = new HttpRequest.Builder()
-                .body(MyHttpURLConnection.getSimpleStringBody(body))
-                .url(NetworkHelper.Companion.encodeURL(String.format(Locale.ENGLISH, "%sResourceServlet", Constants.HOST)))
-                .listener(new HttpResponseListener() {
-                    @Override
-                    public void connectSuccess(@NonNull HttpResponse response) {
-                        CLog.Companion.i(TAG, "connectSuccess");
-//                        CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
-                        try {
-                            JSONObject jo = new JSONObject(response.getBody());
-                            JSONArray pics = jo.getJSONArray("pics");
-                            len = pics.length();
-                            pb.setMax(len);
-                            for (int i = 0; i < pics.length(); i++) {
-                                String url = pics.getString(i);
-                                ImageCard ic = new ImageCard(NetworkHelper.Companion.getFileNameFromUrl(url), "fresh", url);
-                                imageCards.add(ic);
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            return;
-                        }
-                        //cache
-                        try {
-                            for (int i = 0; i < imageCards.size(); i++) {
-                                String url = imageCards.get(i).image;
-                                ImageRequest imageRequest = ImageRequest.fromUri(url);
-                                CacheKey cacheKey = DefaultCacheKeyFactory.getInstance().getEncodedCacheKey(imageRequest, null);
-                                if (!ImagePipelineFactory.getInstance().getMainFileCache().hasKey(cacheKey)) {
-                                    DataSource<Void> ds = Fresco.getImagePipeline().prefetchToDiskCache(ImageRequest.fromUri(url), null);
-                                    ds.subscribe(subscriber, new DefaultExecutorSupplier(3).forBackgroundTasks());
-                                } else {
-                                    succeed++;
-                                }
-                            }
+        //Let's say those image links are downloaded successfully from an API
+        pb.setMax(TestData.IMAGES1.length);
+        for (int i = 0; i < TestData.IMAGES1.length; i++) {
+            String url = TestData.IMAGES1[i];
+            ImageCard ic = new ImageCard(NetworkHelper.Companion.getFileNameFromUrl(url), "fresh", url);
+            imageCards.add(ic);
+        }
+        //cache
+        try {
+            for (int i = 0; i < imageCards.size(); i++) {
+                String url = imageCards.get(i).image;
+                ImageRequest imageRequest = ImageRequest.fromUri(url);
+                CacheKey cacheKey = DefaultCacheKeyFactory.getInstance().getEncodedCacheKey(imageRequest, null);
+                if (!ImagePipelineFactory.getInstance().getMainFileCache().hasKey(cacheKey)) {
+                    DataSource<Void> ds = Fresco.getImagePipeline().prefetchToDiskCache(ImageRequest.fromUri(url), null);
+                    ds.subscribe(subscriber, new DefaultExecutorSupplier(3).forBackgroundTasks());
+                } else {
+                    succeed++;
+                }
+            }
 
-                            if (succeed == imageCards.size()) {
-                                double p = succeed * 100.0 / len;
-                                double e = failed * 100.0 / len;
-                                pb.setProgress(succeed);
-                                pb.setSecondaryProgress(failed + succeed);
-                                tv_pb_info.setText(String.format(Locale.ENGLISH, "Cached: %.2f%%, failed: %.2f%%", p, e));
-                            }
-                        } catch (Exception e) {
-                            CLog.Companion.e(TAG, "Cache error:" + e.getMessage());
-                        }
-
-
-                    }
-
-                    @Override
-                    public void connectFailure(@NonNull HttpResponse response, Exception e) {
-                        StringBuilder sb = new StringBuilder();
-                        sb.append(String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, error:%s", response.getCode(), response.getCodeString(), response.getErrorMessage()));
-                        tv_pb_info.setText(sb.toString());
-                        if (e != null) {
-                            sb.append("\n");
-                            sb.append(e.toString());
-                            tv_pb_info.setText(sb.toString());
-
-                            if (e instanceof SocketTimeoutException) {
-                                DialogManager.showAlertDialog(getActivity(), "Connection timeout. Please check your server.", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-
-                                    }
-                                });
-                            }
-                        }
-                        CLog.Companion.e(TAG, sb.toString());
-                    }
-                })
-                .build();
-        new HttpAsyncTask(r).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            if (succeed == imageCards.size()) {
+                double p = succeed * 100.0 / len;
+                double e = failed * 100.0 / len;
+                pb.setProgress(succeed);
+                pb.setSecondaryProgress(failed + succeed);
+                tv_pb_info.setText(String.format(Locale.ENGLISH, "Fresco Cached: %.2f%%, failed: %.2f%%", p, e));
+            }
+        } catch (Exception e) {
+            CLog.Companion.e(TAG, "Cache error:" + e.getMessage());
+        }
     }
 
     private class PrefetchSubscriber extends BaseDataSubscriber<Void> {
@@ -411,7 +349,7 @@ public class P04_Cache extends LazyFragment {
                     pb.setSecondaryProgress(failed + succeed);
                     double p = succeed * 100.0 / len;
                     double e = failed * 100.0 / len;
-                    tv_pb_info.setText(String.format(Locale.ENGLISH, "Cached: %.2f%%, failed: %.2f%%", p, e));
+                    tv_pb_info.setText(String.format(Locale.ENGLISH, "Fresco Cached: %.2f%%, failed: %.2f%%", p, e));
                     if (imageCards.size() == succeed) {
                         CLog.Companion.i(TAG, "All the images are cached!");
                     }
@@ -431,7 +369,7 @@ public class P04_Cache extends LazyFragment {
                     double e = failed * 100.0 / len;
                     pb.setProgress(succeed);
                     pb.setSecondaryProgress(failed + succeed);
-                    tv_pb_info.setText(String.format(Locale.ENGLISH, "Cached: %.2f%%, failed: %.2f%%", p, e));
+                    tv_pb_info.setText(String.format(Locale.ENGLISH, "Fresco Cached: %.2f%%, failed: %.2f%%", p, e));
                 }
             });
         }

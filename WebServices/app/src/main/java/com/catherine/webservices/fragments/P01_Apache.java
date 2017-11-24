@@ -20,6 +20,8 @@ import com.catherine.webservices.network.HttpRequest;
 import com.catherine.webservices.network.HttpResponse;
 import com.catherine.webservices.network.HttpResponseListener;
 import com.catherine.webservices.network.MyApache;
+import com.catherine.webservices.network.NetworkHealthListener;
+import com.catherine.webservices.network.NetworkHelper;
 import com.catherine.webservices.toolkits.CLog;
 
 import org.apache.http.NameValuePair;
@@ -47,6 +49,9 @@ public class P01_Apache extends LazyFragment {
     private Callback callback;
     private TextCardRVAdapter adapter;
     private HandlerThread handlerThreadB, handlerThreadC;
+    private NetworkHelper helper;
+    private boolean retry;
+    private int step;
 
     public static P01_Apache newInstance(boolean isLazyLoad) {
         Bundle args = new Bundle();
@@ -92,6 +97,22 @@ public class P01_Apache extends LazyFragment {
     }
 
     private void initComponent() {
+        helper = new NetworkHelper(getActivity());
+        helper.listenToNetworkState(new NetworkHealthListener() {
+            @Override
+            public void networkConnected(@NotNull String type) {
+                CLog.Companion.i(TAG, "network connected:" + type);
+                if (retry) {
+                    retry = false;
+                    connect(step);
+                }
+            }
+
+            @Override
+            public void networkDisable() {
+                CLog.Companion.e(TAG, "network disable");
+            }
+        });
         myApache = new MyApache();
         callback = new Callback();
         handlerThreadB = new HandlerThread("Looper B");
@@ -116,116 +137,7 @@ public class P01_Apache extends LazyFragment {
         adapter = new TextCardRVAdapter(getActivity(), null, features, desc, new OnItemClickListener() {
             @Override
             public void onItemClick(View view, final int position) {
-                switch (position) {
-                    case 0:
-                        srl_container.setRefreshing(true);
-                        networkTask.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                Map<String, String> headers = MyApache.getDefaultHeaders();
-                                headers.put("h1", "Hi there!");
-                                headers.put("h2", "I am a mobile phone.");
-                                headers.put("Authorization", Constants.AUTHORIZATION);
-                                callback.setPosition(position);
-                                myApache.doGet(new HttpRequest.Builder()
-                                        .url(Constants.HOST + "LoginServlet?name=zhangsan&password=123456")
-                                        .headers(headers)
-                                        .listener(callback)
-                                        .build());
-                            }
-                        });
-                        break;
-                    case 1:
-                        srl_container.setRefreshing(true);
-                        networkTask.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                Map<String, String> headers = MyApache.getDefaultHeaders();
-                                headers.put("Authorization", Constants.AUTHORIZATION);
-
-                                List<NameValuePair> nameValuePairs = new ArrayList<>();
-                                nameValuePairs.add(new BasicNameValuePair("name", "zhangsan"));
-                                nameValuePairs.add(new BasicNameValuePair("password", "123456"));
-                                callback.setPosition(position);
-                                myApache.doPost(nameValuePairs, new HttpRequest.Builder()
-                                        .url(Constants.HOST + "LoginServlet")
-                                        .headers(headers)
-                                        .listener(callback)
-                                        .build());
-                            }
-                        });
-                        break;
-                    case 2:
-                        srl_container.setRefreshing(true);
-                        networkTask.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                Map<String, String> headers = MyApache.getDefaultHeaders();
-                                headers.put("Authorization", "12345");
-                                List<NameValuePair> nameValuePairs = new ArrayList<>();
-                                nameValuePairs.add(new BasicNameValuePair("name", "zhangsan"));
-                                nameValuePairs.add(new BasicNameValuePair("password", "123456"));
-                                callback.setPosition(position);
-                                myApache.doPost(nameValuePairs, new HttpRequest.Builder()
-                                        .url(Constants.HOST + "LoginServlet")
-                                        .headers(headers)
-                                        .listener(callback)
-                                        .build());
-                            }
-                        });
-                        break;
-                    case 3:
-                        srl_container.setRefreshing(true);
-                        Handler networkTaskB = new Handler(handlerThreadB.getLooper());
-                        networkTaskB.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                Map<String, String> headers = MyApache.getDefaultHeaders();
-                                headers.put("Authorization", Constants.AUTHORIZATION);
-
-                                List<NameValuePair> nameValuePairs = new ArrayList<>();
-                                nameValuePairs.add(new BasicNameValuePair("name", ""));
-                                nameValuePairs.add(new BasicNameValuePair("password", ""));
-                                callback.setPosition(position);
-                                myApache.doPost(nameValuePairs, new HttpRequest.Builder()
-                                        .url(Constants.HOST + "LoginServlet")
-                                        .headers(headers)
-                                        .listener(callback)
-                                        .build());
-                            }
-                        });
-                        break;
-                    case 4:
-                        srl_container.setRefreshing(true);
-                        Handler networkTaskC = new Handler(handlerThreadC.getLooper());
-                        networkTaskC.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                callback.setPosition(position);
-                                myApache.doGet(new HttpRequest.Builder()
-                                        .url("http://dictionary.cambridge.org/dictionary/english-chinese-simplified/philosopher")
-                                        .listener(callback)
-                                        .build());
-
-                            }
-                        });
-                        break;
-                    case 5:
-                        srl_container.setRefreshing(true);
-                        Handler networkTaskC2 = new Handler(handlerThreadC.getLooper());
-                        networkTaskC2.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                callback.setPosition(position);
-                                myApache.doGet(new HttpRequest.Builder()
-                                        .url(Constants.GITHUB_API_DOMAIN + "users/Catherine22/repos")
-                                        .listener(callback)
-                                        .build());
-
-                            }
-                        });
-                        break;
-                }
+                connect(position);
             }
 
             @Override
@@ -236,6 +148,122 @@ public class P01_Apache extends LazyFragment {
         rv_main_list.setAdapter(adapter);
         adapter.setFromHtml(true);
     }
+
+    private void connect(final int position) {
+        step = position;
+        retry = false;
+        switch (position) {
+            case 0:
+                srl_container.setRefreshing(true);
+                networkTask.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Map<String, String> headers = MyApache.getDefaultHeaders();
+                        headers.put("h1", "Hi there!");
+                        headers.put("h2", "I am a mobile phone.");
+                        headers.put("Authorization", Constants.AUTHORIZATION);
+                        callback.setPosition(position);
+                        myApache.doGet(new HttpRequest.Builder()
+                                .url(Constants.HOST + "LoginServlet?name=zhangsan&password=123456")
+                                .headers(headers)
+                                .listener(callback)
+                                .build());
+                    }
+                });
+                break;
+            case 1:
+                srl_container.setRefreshing(true);
+                networkTask.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Map<String, String> headers = MyApache.getDefaultHeaders();
+                        headers.put("Authorization", Constants.AUTHORIZATION);
+
+                        List<NameValuePair> nameValuePairs = new ArrayList<>();
+                        nameValuePairs.add(new BasicNameValuePair("name", "zhangsan"));
+                        nameValuePairs.add(new BasicNameValuePair("password", "123456"));
+                        callback.setPosition(position);
+                        myApache.doPost(nameValuePairs, new HttpRequest.Builder()
+                                .url(Constants.HOST + "LoginServlet")
+                                .headers(headers)
+                                .listener(callback)
+                                .build());
+                    }
+                });
+                break;
+            case 2:
+                srl_container.setRefreshing(true);
+                networkTask.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Map<String, String> headers = MyApache.getDefaultHeaders();
+                        headers.put("Authorization", "12345");
+                        List<NameValuePair> nameValuePairs = new ArrayList<>();
+                        nameValuePairs.add(new BasicNameValuePair("name", "zhangsan"));
+                        nameValuePairs.add(new BasicNameValuePair("password", "123456"));
+                        callback.setPosition(position);
+                        myApache.doPost(nameValuePairs, new HttpRequest.Builder()
+                                .url(Constants.HOST + "LoginServlet")
+                                .headers(headers)
+                                .listener(callback)
+                                .build());
+                    }
+                });
+                break;
+            case 3:
+                srl_container.setRefreshing(true);
+                Handler networkTaskB = new Handler(handlerThreadB.getLooper());
+                networkTaskB.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Map<String, String> headers = MyApache.getDefaultHeaders();
+                        headers.put("Authorization", Constants.AUTHORIZATION);
+
+                        List<NameValuePair> nameValuePairs = new ArrayList<>();
+                        nameValuePairs.add(new BasicNameValuePair("name", ""));
+                        nameValuePairs.add(new BasicNameValuePair("password", ""));
+                        callback.setPosition(position);
+                        myApache.doPost(nameValuePairs, new HttpRequest.Builder()
+                                .url(Constants.HOST + "LoginServlet")
+                                .headers(headers)
+                                .listener(callback)
+                                .build());
+                    }
+                });
+                break;
+            case 4:
+                srl_container.setRefreshing(true);
+                Handler networkTaskC = new Handler(handlerThreadC.getLooper());
+                networkTaskC.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        callback.setPosition(position);
+                        myApache.doGet(new HttpRequest.Builder()
+                                .url("http://dictionary.cambridge.org/dictionary/english-chinese-simplified/philosopher")
+                                .listener(callback)
+                                .build());
+
+                    }
+                });
+                break;
+            case 5:
+                srl_container.setRefreshing(true);
+                Handler networkTaskC2 = new Handler(handlerThreadC.getLooper());
+                networkTaskC2.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        callback.setPosition(position);
+                        myApache.doGet(new HttpRequest.Builder()
+                                .url(Constants.GITHUB_API_DOMAIN + "users/Catherine22/repos")
+                                .listener(callback)
+                                .build());
+
+                    }
+                });
+                break;
+        }
+    }
+
 
     private class Callback implements HttpResponseListener {
         private int position;
@@ -263,22 +291,34 @@ public class P01_Apache extends LazyFragment {
         public void connectFailure(HttpResponse response, Exception e) {
             //Running in a non-UI thread right now.
             StringBuilder sb = new StringBuilder();
-            sb.append(String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getErrorMessage()));
-            CLog.Companion.e(TAG, sb.toString());
-            if (e != null) {
-                sb.append("\n");
-                sb.append(e.getMessage());
-                CLog.Companion.e(TAG, e.getMessage());
+            if (!helper.isNetworkHealthy()) {
+                DialogManager.showAlertDialog(getActivity(), "Please turn on Wi-Fi or cellular.", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
 
-                if (e instanceof SocketTimeoutException) {
-                    DialogManager.showAlertDialog(getActivity(), "Connection timeout. Please check your server.", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
+                    }
+                });
+                sb.append("retry...");
+                retry = true;
+            } else {
+                sb.append(String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getErrorMessage()));
+                CLog.Companion.e(TAG, sb.toString());
+                if (e != null) {
+                    sb.append("\n");
+                    sb.append(e.getMessage());
+                    CLog.Companion.e(TAG, e.getMessage());
 
-                        }
-                    });
+                    if (e instanceof SocketTimeoutException) {
+                        DialogManager.showAlertDialog(getActivity(), "Connection timeout. Please check your server.", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        });
+                    }
                 }
             }
+
             contents.set(position, sb.toString());
             adapter.setContents(contents);
             getActivity().runOnUiThread(new Runnable() {
@@ -289,5 +329,11 @@ public class P01_Apache extends LazyFragment {
                 }
             });
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        helper.stopListeningToNetworkState();
+        super.onDestroy();
     }
 }

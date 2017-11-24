@@ -127,7 +127,7 @@ public class SimpleStyleRVAdapter extends RecyclerView.Adapter<SimpleStyleRVAdap
             }
 
             mainRvHolder.iv_icon.setVisibility(View.VISIBLE);
-            mainRvHolder.iv_icon.setImageResource(R.drawable.ic_panorama_black_24dp);
+            mainRvHolder.iv_icon.setImageResource(R.drawable.default_pic);
             if (!TextUtils.isEmpty(icon)) {
                 handler.post(new Runnable() {
                     @Override
@@ -141,7 +141,7 @@ public class SimpleStyleRVAdapter extends RecyclerView.Adapter<SimpleStyleRVAdap
                                     if (bitmap != null)
                                         mainRvHolder.iv_icon.setImageBitmap(bitmap);
                                     else
-                                        mainRvHolder.iv_icon.setImageResource(R.drawable.ic_panorama_black_24dp);
+                                        mainRvHolder.iv_icon.setImageResource(R.drawable.default_pic);
                                 }
                             });
                         } catch (FileNotFoundException e) {
@@ -151,7 +151,7 @@ public class SimpleStyleRVAdapter extends RecyclerView.Adapter<SimpleStyleRVAdap
                 });
 
             } else {
-                mainRvHolder.iv_icon.setImageResource(R.drawable.ic_panorama_black_24dp);
+                mainRvHolder.iv_icon.setImageResource(R.drawable.default_pic);
             }
 
         }

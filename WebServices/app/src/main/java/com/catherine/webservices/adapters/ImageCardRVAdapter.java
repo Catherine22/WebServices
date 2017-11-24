@@ -105,7 +105,8 @@ public class ImageCardRVAdapter extends RecyclerView.Adapter<ImageCardRVAdapter.
             }
             if (entities.get(position).image != null) {
                 mainRvHolder.iv_main.setVisibility(View.VISIBLE);
-                mainRvHolder.iv_main.setImageDrawable(ctx.getResources().getDrawable(R.drawable.ic_panorama_black_24dp));
+                mainRvHolder.iv_main.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                mainRvHolder.iv_main.setImageDrawable(ctx.getResources().getDrawable(R.drawable.default_pic));
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
@@ -126,6 +127,7 @@ public class ImageCardRVAdapter extends RecyclerView.Adapter<ImageCardRVAdapter.
                                         CLog.Companion.d(TAG, "show cache " + position);
                                         entities.get(position).subtitle = "cache";
                                         mainRvHolder.tv_subtitle.setText(entities.get(position).subtitle);
+                                        mainRvHolder.iv_main.setScaleType(ImageView.ScaleType.CENTER_CROP);
                                         mainRvHolder.iv_main.setVisibility(View.VISIBLE);
                                         mainRvHolder.iv_main.setImageBitmap(bitmap);
 
@@ -160,6 +162,7 @@ public class ImageCardRVAdapter extends RecyclerView.Adapter<ImageCardRVAdapter.
                                         CLog.Companion.d(TAG, "fresh");
                                         entities.get(position).subtitle = "fresh";
                                         mainRvHolder.tv_subtitle.setText(entities.get(position).subtitle);
+                                        mainRvHolder.iv_main.setScaleType(ImageView.ScaleType.CENTER_CROP);
                                         mainRvHolder.iv_main.setVisibility(View.VISIBLE);
                                         mainRvHolder.iv_main.setImageBitmap(bitmap);
 
@@ -217,9 +220,10 @@ public class ImageCardRVAdapter extends RecyclerView.Adapter<ImageCardRVAdapter.
                     if (helper.isNetworkHealthy()) {
                         entities.get(position).subtitle = "error";
                         mainRvHolder.tv_subtitle.setText(entities.get(position).subtitle);
+                        mainRvHolder.iv_main.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
                         mainRvHolder.iv_main.setVisibility(View.VISIBLE);
                         //Show default picture
-                        mainRvHolder.iv_main.setImageDrawable(ctx.getResources().getDrawable(R.drawable.ic_panorama_black_24dp));
+                        mainRvHolder.iv_main.setImageDrawable(ctx.getResources().getDrawable(R.drawable.default_pic));
                     } else {
                         //Scenario1: Remove the item instead of showing the default picture in offline mode.
 //                        if (entities.size() > position) {
@@ -229,16 +233,18 @@ public class ImageCardRVAdapter extends RecyclerView.Adapter<ImageCardRVAdapter.
                         //Scenario2:
                         entities.get(position).subtitle = "failed to cache";
                         mainRvHolder.tv_subtitle.setText(entities.get(position).subtitle);
+                        mainRvHolder.iv_main.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
                         mainRvHolder.iv_main.setVisibility(View.VISIBLE);
                         //Show default picture
-                        mainRvHolder.iv_main.setImageDrawable(ctx.getResources().getDrawable(R.drawable.ic_panorama_black_24dp));
+                        mainRvHolder.iv_main.setImageDrawable(ctx.getResources().getDrawable(R.drawable.default_pic));
                     }
                 } else {
                     entities.get(position).subtitle = "error";
                     mainRvHolder.tv_subtitle.setText(entities.get(position).subtitle);
+                    mainRvHolder.iv_main.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
                     mainRvHolder.iv_main.setVisibility(View.VISIBLE);
                     //Show default picture
-                    mainRvHolder.iv_main.setImageDrawable(ctx.getResources().getDrawable(R.drawable.ic_panorama_black_24dp));
+                    mainRvHolder.iv_main.setImageDrawable(ctx.getResources().getDrawable(R.drawable.default_pic));
                 }
             }
         });
