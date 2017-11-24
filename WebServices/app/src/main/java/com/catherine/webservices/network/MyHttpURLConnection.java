@@ -4,6 +4,7 @@ package com.catherine.webservices.network;
 import android.net.http.HttpResponseCache;
 import android.os.Build;
 import android.text.TextUtils;
+import android.webkit.WebSettings;
 
 import com.catherine.webservices.MyApplication;
 import com.catherine.webservices.toolkits.CLog;
@@ -11,6 +12,7 @@ import com.catherine.webservices.toolkits.StreamUtils;
 
 import org.apache.http.protocol.HTTP;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -18,6 +20,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.security.KeyStore;
 import java.security.SecureRandom;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -41,14 +45,34 @@ public class MyHttpURLConnection {
     public final static int MAX_CACHE_SIZE = 10 * 1024 * 1024;//10M
 
     public static Map<String, String> getDefaultHeaders() {
+        String userAgent;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            userAgent = WebSettings.getDefaultUserAgent(MyApplication.INSTANCE);
+        } else {
+            userAgent = System.getProperty("http.agent");
+        }
         Map<String, String> headers = new HashMap<>();
-        headers.put("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8");
-        headers.put("Content-type", "application/x-www-form-urlencoded; charset=UTF-8");
+        headers.put("Accept", "*/*");
+        headers.put("Content-type", "application/x-www-form-urlencoded; charset=UTF-8");//"application/json" and so forth
         headers.put("Accept-Language", Locale.getDefault().toString());
-        headers.put("User-Agent", System.getProperty("http.agent"));
+        headers.put("User-Agent", userAgent);
+        headers.put("Connection", "keep-alive");
         headers.put("Accept-Encoding", "gzip");//gzip, deflate, br
         return headers;
     }
+
+//    public static X509Certificate getDefaultCert() {
+//        X509Certificate cert = null;
+//        try {
+//            BufferedInputStream bis = new BufferedInputStream(MyApplication.INSTANCE.getAssets().open("srca.cer"));
+//            CertificateFactory cf = CertificateFactory.getInstance("X.509");
+//            cert = (X509Certificate) cf.generateCertificate(bis);
+//            bis.close();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return cert;
+//    }
 
     public static String getSimpleStringBody(Map<String, String> nameValuePairs) {
         StringBuilder sb = new StringBuilder();
@@ -79,6 +103,7 @@ public class MyHttpURLConnection {
         String response = "";
         String error = "";
         Exception e = null;
+        String body = request.getBody();
         Map<String, String> responseHeaders = new HashMap<>();
         try {
             boolean cacheable = isCacheable(request);
@@ -132,10 +157,14 @@ public class MyHttpURLConnection {
                 }
             }
 
+            if (request.getCipher() != null) {
+                body = request.getCipher().encrypt(body);
+            }
+
             if (isPost) {
                 //获取conn的输出流
                 OutputStream os = conn.getOutputStream();
-                os.write(request.getBody().getBytes(HTTP.UTF_8));
+                os.write(body.getBytes(HTTP.UTF_8));
                 os.close();
             }
 
@@ -168,6 +197,9 @@ public class MyHttpURLConnection {
                 else
                     response = StreamUtils.getString(is);
                 is.close();
+
+                if (request.getCipher() != null)
+                    response = request.getCipher().decrypt(response);
             }
 
             is = conn.getErrorStream();
@@ -180,21 +212,22 @@ public class MyHttpURLConnection {
             e = ex;
         }
 
-        if (e == null && TextUtils.isEmpty(error))
-            listener.connectSuccess(new HttpResponse.Builder()
-                    .code(code)
-                    .codeString(msg)
-                    .headers(responseHeaders)
-                    .body(response)
-                    .build());
-        else
-            listener.connectFailure(new HttpResponse.Builder()
-                    .code(code)
-                    .codeString(msg)
-                    .headers(responseHeaders)
-                    .errorMessage(response)
-                    .build(), e);
-
+        if (listener != null) {
+            if (e == null && TextUtils.isEmpty(error))
+                listener.connectSuccess(new HttpResponse.Builder()
+                        .code(code)
+                        .codeString(msg)
+                        .headers(responseHeaders)
+                        .body(response)
+                        .build());
+            else
+                listener.connectFailure(new HttpResponse.Builder()
+                        .code(code)
+                        .codeString(msg)
+                        .headers(responseHeaders)
+                        .errorMessage(response)
+                        .build(), e);
+        }
         HttpResponseCache cache = HttpResponseCache.getInstalled();
         if (cache != null)
             cache.flush();

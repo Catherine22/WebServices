@@ -7,6 +7,7 @@
 
 
     <color name="grey300">#E0E0E0</color>
+    <color name="grey700">#2b2b2b</color>
     <color name="grey900">#212121</color>
 
     <color name="checker_board_light">@color/grey300</color>

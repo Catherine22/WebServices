@@ -2,12 +2,15 @@ package com.catherine.webservices;
 
 import android.app.Activity;
 import android.app.Application;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.os.HandlerThread;
 import android.text.TextUtils;
 
+import com.catherine.webservices.services.NetworkHealthService;
 import com.catherine.webservices.toolkits.CLog;
 import com.catherine.webservices.toolkits.FileUtils;
 import com.facebook.cache.common.CacheErrorLogger;
@@ -53,14 +56,12 @@ public class MyApplication extends Application {
     public HandlerThread calHandlerThread, socketHandlerThread;
     public HttpClient httpClient;
     private List<String> runningActivities;
-    private Stack<Client> localBroadCastReceivers;
 
     @Override
     public void onCreate() {
         INSTANCE = this;
         httpClient = getHttpClient();
         runningActivities = new ArrayList<>();
-        localBroadCastReceivers = new Stack<>();
 
         //Invoke the largest storage to save data.
         Map<String, File> externalLocations = FileUtils.getAllStorageLocations();
@@ -144,11 +145,8 @@ public class MyApplication extends Application {
                     stopLooper(socketHandlerThread);
                 }
 
-                //释放全部的localBroadCastReceiver
-                while (localBroadCastReceivers.size() > 0) {
-                    localBroadCastReceivers.peek().release();
-                    localBroadCastReceivers.pop();
-                }
+                Intent nhs = new Intent(INSTANCE, NetworkHealthService.class);
+                INSTANCE.stopService(nhs);
             }
         });
         super.onCreate();
@@ -167,44 +165,41 @@ public class MyApplication extends Application {
      * 获取权限后重新初始化
      */
     public void init() {
-        File rootDir = new File(Constants.ROOT_PATH);
-        if (!rootDir.exists())
-            rootDir.mkdirs();
-        FileUtils.copyAssets();
+        Handler h = new Handler(calHandlerThread.getLooper());
+        h.post(new Runnable() {
+            @Override
+            public void run() {
+                File rootDir = new File(Constants.ROOT_PATH);
+                if (!rootDir.exists())
+                    rootDir.mkdirs();
+                FileUtils.copyAssets();
 
 
-        //fresco
-        //check free memory (MB)
-        File externalStorageDir = Environment.getExternalStorageDirectory();
-        long temp = externalStorageDir.getFreeSpace();
-        long free = (temp > 10 * ByteConstants.MB) ? 20 * ByteConstants.MB : temp;
-        CLog.Companion.i(TAG, "free memory = " + temp / ByteConstants.MB + " MB, use " + free / (2 * ByteConstants.MB) + " MB to cache images.");
-        DiskCacheConfig diskCacheConfig = DiskCacheConfig.newBuilder(MyApplication.this)
-                .setCacheErrorLogger(new CacheErrorLogger() {
-                    @Override
-                    public void logError(CacheErrorCategory category, Class<?> clazz, String message, Throwable throwable) {
-                        CLog.Companion.e("Fresco CacheError", category + ":" + message);
-                    }
-                })
-                .setVersion(1)
-                .setMaxCacheSize(free / 2)
-                .setBaseDirectoryName(Constants.FRESCO_DIR)
-                .setBaseDirectoryPath(rootDir)
-                .build();
-        ImagePipelineConfig config = ImagePipelineConfig.newBuilder(MyApplication.this)
-                .setResizeAndRotateEnabledForNetwork(true)
-                .setMainDiskCacheConfig(diskCacheConfig)
-                .build();
-        Fresco.initialize(this, config);
-    }
-
-    /**
-     * 添加接收器，最后关闭应用时一并释放
-     *
-     * @param client
-     */
-    public void registerLocalBroadCastReceiver(Client client) {
-        localBroadCastReceivers.add(client);
+                //fresco
+                //check free memory (MB)
+                File externalStorageDir = Environment.getExternalStorageDirectory();
+                long temp = externalStorageDir.getFreeSpace();
+                long free = (temp > 10 * ByteConstants.MB) ? 20 * ByteConstants.MB : temp;
+                CLog.Companion.i(TAG, "free memory = " + temp / ByteConstants.MB + " MB, use " + free / (2 * ByteConstants.MB) + " MB to cache images.");
+                DiskCacheConfig diskCacheConfig = DiskCacheConfig.newBuilder(MyApplication.this)
+                        .setCacheErrorLogger(new CacheErrorLogger() {
+                            @Override
+                            public void logError(CacheErrorCategory category, Class<?> clazz, String message, Throwable throwable) {
+                                CLog.Companion.e("Fresco CacheError", category + ":" + message);
+                            }
+                        })
+                        .setVersion(1)
+                        .setMaxCacheSize(free / 2)
+                        .setBaseDirectoryName(Constants.FRESCO_DIR)
+                        .setBaseDirectoryPath(rootDir)
+                        .build();
+                ImagePipelineConfig config = ImagePipelineConfig.newBuilder(MyApplication.this)
+                        .setResizeAndRotateEnabledForNetwork(true)
+                        .setMainDiskCacheConfig(diskCacheConfig)
+                        .build();
+                Fresco.initialize(INSTANCE, config);
+            }
+        });
     }
 
     public File getDiskCacheDir() throws NullPointerException {

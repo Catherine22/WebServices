@@ -29,20 +29,12 @@
 
         <TextView
             android:id="@+id/tv_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:textSize="16sp"
+            style="@style/item_title"
         />
 
         <TextView
             android:id="@+id/tv_subtitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:textSize="14sp"
+            style="@style/item_subtitle"
         />
 
         <ProgressBar

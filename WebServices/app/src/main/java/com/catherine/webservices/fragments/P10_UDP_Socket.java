@@ -1,10 +1,7 @@
 package com.catherine.webservices.fragments;
 
 import android.Manifest;
-import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -15,6 +12,7 @@ import android.widget.TextView;
 
 import com.catherine.webservices.Constants;
 import com.catherine.webservices.R;
+import com.catherine.webservices.components.DialogManager;
 import com.catherine.webservices.interfaces.MainInterface;
 import com.catherine.webservices.interfaces.OnRequestPermissionsListener;
 import com.catherine.webservices.network.MyUDPSocket;
@@ -22,6 +20,7 @@ import com.catherine.webservices.network.NetworkHelper;
 import com.catherine.webservices.network.SocketListener;
 
 import java.net.ConnectException;
+import java.net.SocketException;
 import java.util.List;
 
 /**
@@ -78,26 +77,12 @@ public class P10_UDP_Socket extends LazyFragment {
                 }
 
                 context.deleteCharAt(context.length() - 1);
-
-                AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(getActivity());
-                myAlertDialog.setIcon(android.R.drawable.ic_dialog_alert)
-                        .setCancelable(false)
-                        .setTitle("注意")
-                        .setMessage(String.format("您目前未授权%s存取权限，未授权将造成程式无法执行，是否开启权限？", context.toString()))
-                        .setNegativeButton("继续关闭", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                getActivity().finish();
-                            }
-                        }).setPositiveButton("确定开启", new DialogInterface.OnClickListener() {
+                DialogManager.showPermissionDialog(getActivity(), String.format(getActivity().getResources().getString(R.string.permission_request), context), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Intent intent = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-                                Uri.fromParts("package", getActivity().getPackageName(), null));
-                        startActivityForResult(intent, Constants.OPEN_SETTINGS);
+                        getActivity().finish();
                     }
                 });
-                myAlertDialog.show();
             }
 
             @Override
@@ -178,7 +163,7 @@ public class P10_UDP_Socket extends LazyFragment {
         public void connectFailure(Exception e) {
             e.printStackTrace();
             if (e instanceof ConnectException) {
-                if (!helper.isNetworkHealth()) {
+                if (!helper.isNetworkHealthy()) {
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -186,6 +171,8 @@ public class P10_UDP_Socket extends LazyFragment {
                         }
                     });
                 }
+            } else if (e instanceof SocketException) {
+                tv_state.setText("Server error");
             }
         }
     }

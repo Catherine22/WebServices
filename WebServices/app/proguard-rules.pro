@@ -67,3 +67,10 @@
 
 #xml
 -dontwarn org.dom4j.**
+
+#JavaScript interface
+-keep public class com.catherine.webservices.toolkits.IgnoreProguard
+-keep public class * implements com.catherine.webservices.toolkits.IgnoreProguard
+-keepclassmembers class * implements com.catherine.webservices.toolkits.IgnoreProguard {
+    <methods>;
+}

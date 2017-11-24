@@ -1,10 +1,7 @@
 package com.catherine.webservices.fragments;
 
 import android.Manifest;
-import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -19,10 +16,13 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.catherine.webservices.Commands;
 import com.catherine.webservices.Constants;
 import com.catherine.webservices.R;
 import com.catherine.webservices.adapters.TextCardRVAdapter;
+import com.catherine.webservices.components.DialogManager;
 import com.catherine.webservices.entities.ImageCard;
+import com.catherine.webservices.entities.TestData;
 import com.catherine.webservices.interfaces.BackKeyListener;
 import com.catherine.webservices.interfaces.MainInterface;
 import com.catherine.webservices.interfaces.OnItemClickListener;
@@ -54,6 +54,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import catherine.messagecenter.Client;
+import catherine.messagecenter.CustomReceiver;
+import catherine.messagecenter.Result;
+
 /**
  * Created by Catherine on 2017/9/15.
  * Soft-World Inc.
@@ -69,6 +73,7 @@ public class P04_Cache extends LazyFragment {
     private TextCardRVAdapter adapter;
     private ProgressBar pb;
     private TextView tv_pb_info;
+    private Client client;
 
     public static P04_Cache newInstance(boolean isLazyLoad) {
         Bundle args = new Bundle();
@@ -82,11 +87,11 @@ public class P04_Cache extends LazyFragment {
     public void onCreateViewLazy(Bundle savedInstanceState) {
         super.onCreateViewLazy(savedInstanceState);
         setContentView(R.layout.f_04_cache);
-        mainInterface = (MainInterface) getActivity();
         init();
     }
 
     private void init() {
+        mainInterface = (MainInterface) getActivity();
         mainInterface.getPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, new OnRequestPermissionsListener() {
             @Override
             public void onGranted() {
@@ -106,26 +111,12 @@ public class P04_Cache extends LazyFragment {
                 }
 
                 context.deleteCharAt(context.length() - 1);
-
-                AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(getActivity());
-                myAlertDialog.setIcon(android.R.drawable.ic_dialog_alert)
-                        .setCancelable(false)
-                        .setTitle("注意")
-                        .setMessage(String.format("您目前未授权%s存取权限，未授权将造成程式无法执行，是否开启权限？", context.toString()))
-                        .setNegativeButton("继续关闭", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                getActivity().finish();
-                            }
-                        }).setPositiveButton("确定开启", new DialogInterface.OnClickListener() {
+                DialogManager.showPermissionDialog(getActivity(), String.format(getActivity().getResources().getString(R.string.permission_request), context), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Intent intent = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-                                Uri.fromParts("package", getActivity().getPackageName(), null));
-                        startActivityForResult(intent, Constants.OPEN_SETTINGS);
+                        getActivity().finish();
                     }
                 });
-                myAlertDialog.show();
             }
 
             @Override
@@ -155,23 +146,6 @@ public class P04_Cache extends LazyFragment {
         descriptions.add("Show images from the Internet.");
         descriptions.add("Download images from the Internet and cache them.");
         descriptions.add("Download and cache images then show caches.");
-
-        //Prefetch the images. It works by clicking the final item
-        ADID_AsyncTask adid_asyncTask = new ADID_AsyncTask(
-                new ADID_AsyncTask.ADID_Callback() {
-                    @Override
-                    public void onResponse(@NonNull String ADID) {
-                        prefetchToDiskCache(ADID);
-                    }
-
-                    @Override
-                    public void onError(@NonNull Exception e) {
-                        CLog.Companion.e(TAG, "Failed to get ADID: " + e.toString());
-                        prefetchToDiskCache("FAKE-ADID");
-
-                    }
-                });
-        adid_asyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     private void initComponent() {
@@ -185,6 +159,16 @@ public class P04_Cache extends LazyFragment {
             }
         });
 
+        client = new Client(getActivity(), new CustomReceiver() {
+            @Override
+            public void onBroadcastReceive(@NotNull Result result) {
+                if (result.getMBoolean() != null && result.getMBoolean()) {
+                    updateView();
+                }
+            }
+        });
+        client.gotMessages(Commands.UPDATE_P04);
+
         mainInterface.setBackKeyListener(new BackKeyListener() {
             @Override
             public void OnKeyDown() {
@@ -195,37 +179,6 @@ public class P04_Cache extends LazyFragment {
                     mainInterface.backToPreviousPage();
             }
         });
-
-        //restore bottom layout when back to this page.
-        getChildFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
-            @Override
-            public void onBackStackChanged() {
-                if (getChildFragmentManager().getBackStackEntryCount() == 0) {
-                    mainInterface.restoreBottomLayout();
-                    mainInterface.addBottomLayout(R.layout.bottom_progressbar);
-                    View bottom = mainInterface.getBottomLayout();
-                    pb = bottom.findViewById(R.id.pb);
-                    tv_pb_info = bottom.findViewById(R.id.tv_pb_info);
-
-                    pb.setMax(len);
-                    pb.setProgress(succeed);
-                    pb.setSecondaryProgress(failed + succeed);
-                    double p = succeed * 100.0 / len;
-                    double e = failed * 100.0 / len;
-                    tv_pb_info.setText(String.format(Locale.ENGLISH, "Cached: %.2f%%, failed: %.2f%%", p, e));
-                    if (imageCards.size() == succeed) {
-                        CLog.Companion.i(TAG, "All the images are cached!");
-                    }
-                }
-
-            }
-        });
-
-        mainInterface.restoreBottomLayout();
-        mainInterface.addBottomLayout(R.layout.bottom_progressbar);
-        View bottom = mainInterface.getBottomLayout();
-        pb = bottom.findViewById(R.id.pb);
-        tv_pb_info = bottom.findViewById(R.id.tv_pb_info);
 
         RecyclerView rv_main_list = (RecyclerView) findViewById(R.id.rv_main_list);
 //        rv_main_list.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.Companion.getVERTICAL_LIST()));
@@ -270,15 +223,42 @@ public class P04_Cache extends LazyFragment {
             }
         });
         rv_main_list.setAdapter(adapter);
-        mainInterface.setBackKeyListener(new BackKeyListener() {
+        updateView();
+    }
+
+    private void updateView() {
+        mainInterface.restoreBottomLayout();
+        mainInterface.addBottomLayout(R.layout.bottom_progressbar);
+        View bottom = mainInterface.getBottomLayout();
+        pb = bottom.findViewById(R.id.pb);
+        tv_pb_info = bottom.findViewById(R.id.tv_pb_info);
+
+        //restore bottom layout when back to this page.
+        getChildFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
             @Override
-            public void OnKeyDown() {
-                if (getChildFragmentManager().getBackStackEntryCount() > 0) {
-                    getChildFragmentManager().popBackStack();
-                } else
-                    mainInterface.backToPreviousPage();
+            public void onBackStackChanged() {
+                if (getChildFragmentManager().getBackStackEntryCount() == 0) {
+                    mainInterface.restoreBottomLayout();
+                    mainInterface.addBottomLayout(R.layout.bottom_progressbar);
+                    View bottom = mainInterface.getBottomLayout();
+                    pb = bottom.findViewById(R.id.pb);
+                    tv_pb_info = bottom.findViewById(R.id.tv_pb_info);
+
+                    pb.setMax(len);
+                    pb.setProgress(succeed);
+                    pb.setSecondaryProgress(failed + succeed);
+                    double p = succeed * 100.0 / len;
+                    double e = failed * 100.0 / len;
+                    tv_pb_info.setText(String.format(Locale.ENGLISH, "Fresco Cached: %.2f%%, failed: %.2f%%", p, e));
+                    if (imageCards.size() == succeed) {
+                        CLog.Companion.i(TAG, "All the images are cached!");
+                    }
+                }
+
             }
         });
+
+        prefetchToDiskCache();
     }
 
 
@@ -314,8 +294,8 @@ public class P04_Cache extends LazyFragment {
     private int succeed, failed;
     private int len;
 
-    private void prefetchToDiskCache(String ADID) {
-        len = 0;
+    private void prefetchToDiskCache() {
+        len = TestData.IMAGES1.length;
         succeed = 0;
         failed = 0;
         pb.setProgress(0);
@@ -323,74 +303,37 @@ public class P04_Cache extends LazyFragment {
         imageCards = new ArrayList<>();
         subscriber = new PrefetchSubscriber();
 
-        Map<String, String> body = new HashMap<>();
-        body.put("from", "10");
-        body.put("to", "20");
-        body.put("ADID", ADID);
-        HttpRequest r = new HttpRequest.Builder()
-                .body(MyHttpURLConnection.getSimpleStringBody(body))
-                .url(NetworkHelper.Companion.encodeURL(String.format(Locale.ENGLISH, "%sResourceServlet", Constants.HOST)))
-                .listener(new HttpResponseListener() {
-                    @Override
-                    public void connectSuccess(@NonNull HttpResponse response) {
-                        CLog.Companion.i(TAG, "connectSuccess");
-//                        CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
-                        try {
-                            JSONObject jo = new JSONObject(response.getBody());
-                            JSONArray pics = jo.getJSONArray("pics");
-                            len = pics.length();
-                            pb.setMax(len);
-                            for (int i = 0; i < pics.length(); i++) {
-                                String url = pics.getString(i);
-                                ImageCard ic = new ImageCard(NetworkHelper.Companion.getFileNameFromUrl(url), "fresh", url);
-                                imageCards.add(ic);
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            return;
-                        }
-                        //cache
-                        try {
-                            for (int i = 0; i < imageCards.size(); i++) {
-                                String url = imageCards.get(i).image;
-                                ImageRequest imageRequest = ImageRequest.fromUri(url);
-                                CacheKey cacheKey = DefaultCacheKeyFactory.getInstance().getEncodedCacheKey(imageRequest, null);
-                                if (!ImagePipelineFactory.getInstance().getMainFileCache().hasKey(cacheKey)) {
-                                    DataSource<Void> ds = Fresco.getImagePipeline().prefetchToDiskCache(ImageRequest.fromUri(url), null);
-                                    ds.subscribe(subscriber, new DefaultExecutorSupplier(3).forBackgroundTasks());
-                                } else {
-                                    succeed++;
-                                }
-                            }
+        //Let's say those image links are downloaded successfully from an API
+        pb.setMax(TestData.IMAGES1.length);
+        for (int i = 0; i < TestData.IMAGES1.length; i++) {
+            String url = TestData.IMAGES1[i];
+            ImageCard ic = new ImageCard(NetworkHelper.Companion.getFileNameFromUrl(url), "fresh", url);
+            imageCards.add(ic);
+        }
+        //cache
+        try {
+            for (int i = 0; i < imageCards.size(); i++) {
+                String url = imageCards.get(i).image;
+                ImageRequest imageRequest = ImageRequest.fromUri(url);
+                CacheKey cacheKey = DefaultCacheKeyFactory.getInstance().getEncodedCacheKey(imageRequest, null);
+                if (!ImagePipelineFactory.getInstance().getMainFileCache().hasKey(cacheKey)) {
+                    DataSource<Void> ds = Fresco.getImagePipeline().prefetchToDiskCache(ImageRequest.fromUri(url), null);
+                    ds.subscribe(subscriber, new DefaultExecutorSupplier(3).forBackgroundTasks());
+                } else {
+                    succeed++;
+                }
+            }
 
-                            if (succeed == imageCards.size()) {
-                                double p = succeed * 100.0 / len;
-                                double e = failed * 100.0 / len;
-                                pb.setProgress(succeed);
-                                pb.setSecondaryProgress(failed + succeed);
-                                tv_pb_info.setText(String.format(Locale.ENGLISH, "Cached: %.2f%%, failed: %.2f%%", p, e));
-                            }
-                        } catch (Exception e) {
-                            CLog.Companion.e(TAG, "Cache error:" + e.getMessage());
-                        }
-
-
-                    }
-
-                    @Override
-                    public void connectFailure(@NonNull HttpResponse response, Exception e) {
-                        StringBuilder sb = new StringBuilder();
-                        sb.append(String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, error:%s", response.getCode(), response.getCodeString(), response.getErrorMessage()));
-                        CLog.Companion.e(TAG, sb.toString());
-                        if (e != null) {
-                            sb.append("\n");
-                            sb.append(e.getMessage());
-                            CLog.Companion.e(TAG, e.getMessage());
-                        }
-                    }
-                })
-                .build();
-        new HttpAsyncTask(r).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            if (succeed == imageCards.size()) {
+                double p = succeed * 100.0 / len;
+                double e = failed * 100.0 / len;
+                pb.setProgress(succeed);
+                pb.setSecondaryProgress(failed + succeed);
+                tv_pb_info.setText(String.format(Locale.ENGLISH, "Fresco Cached: %.2f%%, failed: %.2f%%", p, e));
+            }
+        } catch (Exception e) {
+            CLog.Companion.e(TAG, "Cache error:" + e.getMessage());
+        }
     }
 
     private class PrefetchSubscriber extends BaseDataSubscriber<Void> {
@@ -406,7 +349,7 @@ public class P04_Cache extends LazyFragment {
                     pb.setSecondaryProgress(failed + succeed);
                     double p = succeed * 100.0 / len;
                     double e = failed * 100.0 / len;
-                    tv_pb_info.setText(String.format(Locale.ENGLISH, "Cached: %.2f%%, failed: %.2f%%", p, e));
+                    tv_pb_info.setText(String.format(Locale.ENGLISH, "Fresco Cached: %.2f%%, failed: %.2f%%", p, e));
                     if (imageCards.size() == succeed) {
                         CLog.Companion.i(TAG, "All the images are cached!");
                     }
@@ -426,9 +369,15 @@ public class P04_Cache extends LazyFragment {
                     double e = failed * 100.0 / len;
                     pb.setProgress(succeed);
                     pb.setSecondaryProgress(failed + succeed);
-                    tv_pb_info.setText(String.format(Locale.ENGLISH, "Cached: %.2f%%, failed: %.2f%%", p, e));
+                    tv_pb_info.setText(String.format(Locale.ENGLISH, "Fresco Cached: %.2f%%, failed: %.2f%%", p, e));
                 }
             });
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        client.release();
+        super.onDestroy();
     }
 }

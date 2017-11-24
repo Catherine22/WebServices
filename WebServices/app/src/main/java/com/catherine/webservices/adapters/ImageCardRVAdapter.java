@@ -105,6 +105,7 @@ public class ImageCardRVAdapter extends RecyclerView.Adapter<ImageCardRVAdapter.
             }
             if (entities.get(position).image != null) {
                 mainRvHolder.iv_main.setVisibility(View.VISIBLE);
+                mainRvHolder.iv_main.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
                 mainRvHolder.iv_main.setImageDrawable(ctx.getResources().getDrawable(R.drawable.default_pic));
                 handler.post(new Runnable() {
                     @Override
@@ -126,6 +127,7 @@ public class ImageCardRVAdapter extends RecyclerView.Adapter<ImageCardRVAdapter.
                                         CLog.Companion.d(TAG, "show cache " + position);
                                         entities.get(position).subtitle = "cache";
                                         mainRvHolder.tv_subtitle.setText(entities.get(position).subtitle);
+                                        mainRvHolder.iv_main.setScaleType(ImageView.ScaleType.CENTER_CROP);
                                         mainRvHolder.iv_main.setVisibility(View.VISIBLE);
                                         mainRvHolder.iv_main.setImageBitmap(bitmap);
 
@@ -160,6 +162,7 @@ public class ImageCardRVAdapter extends RecyclerView.Adapter<ImageCardRVAdapter.
                                         CLog.Companion.d(TAG, "fresh");
                                         entities.get(position).subtitle = "fresh";
                                         mainRvHolder.tv_subtitle.setText(entities.get(position).subtitle);
+                                        mainRvHolder.iv_main.setScaleType(ImageView.ScaleType.CENTER_CROP);
                                         mainRvHolder.iv_main.setVisibility(View.VISIBLE);
                                         mainRvHolder.iv_main.setImageBitmap(bitmap);
 
@@ -214,9 +217,10 @@ public class ImageCardRVAdapter extends RecyclerView.Adapter<ImageCardRVAdapter.
             public void run() {
 
                 if (offlineMode) {
-                    if (helper.isNetworkHealth()) {
+                    if (helper.isNetworkHealthy()) {
                         entities.get(position).subtitle = "error";
                         mainRvHolder.tv_subtitle.setText(entities.get(position).subtitle);
+                        mainRvHolder.iv_main.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
                         mainRvHolder.iv_main.setVisibility(View.VISIBLE);
                         //Show default picture
                         mainRvHolder.iv_main.setImageDrawable(ctx.getResources().getDrawable(R.drawable.default_pic));
@@ -229,6 +233,7 @@ public class ImageCardRVAdapter extends RecyclerView.Adapter<ImageCardRVAdapter.
                         //Scenario2:
                         entities.get(position).subtitle = "failed to cache";
                         mainRvHolder.tv_subtitle.setText(entities.get(position).subtitle);
+                        mainRvHolder.iv_main.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
                         mainRvHolder.iv_main.setVisibility(View.VISIBLE);
                         //Show default picture
                         mainRvHolder.iv_main.setImageDrawable(ctx.getResources().getDrawable(R.drawable.default_pic));
@@ -236,6 +241,7 @@ public class ImageCardRVAdapter extends RecyclerView.Adapter<ImageCardRVAdapter.
                 } else {
                     entities.get(position).subtitle = "error";
                     mainRvHolder.tv_subtitle.setText(entities.get(position).subtitle);
+                    mainRvHolder.iv_main.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
                     mainRvHolder.iv_main.setVisibility(View.VISIBLE);
                     //Show default picture
                     mainRvHolder.iv_main.setImageDrawable(ctx.getResources().getDrawable(R.drawable.default_pic));

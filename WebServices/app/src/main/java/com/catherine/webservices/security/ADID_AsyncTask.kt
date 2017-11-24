@@ -6,6 +6,7 @@ import com.catherine.webservices.MyApplication
 import com.google.android.gms.ads.identifier.AdvertisingIdClient
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException
 import com.google.android.gms.common.GooglePlayServicesRepairableException
+import java.io.IOException
 
 
 /**
@@ -25,12 +26,19 @@ class ADID_AsyncTask(private val callback: ADID_Callback) : AsyncTask<String, Vo
         } catch (e: GooglePlayServicesNotAvailableException) {
             e.printStackTrace()
             this.e = e
+            //You do not have Google Play. We cannot acquire your AdID. Please install Google Play.
         } catch (e: GooglePlayServicesRepairableException) {
             e.printStackTrace()
             this.e = e
+            //Google Play service error. We cannot acquire your AdID. Please try again later.
+        } catch (e: IOException) {
+            e.printStackTrace()
+            this.e = e
+            //Your Google Play version is out of date. We cannot acquire your AdID. Please update to the newest Google Play version and restart.
         } catch (e: NullPointerException) {
             e.printStackTrace()
             this.e = e
+            //Your Google Play version is out of date. We cannot acquire your AdID. Please update to the newest Google Play version and restart.
         } catch (e: Exception) {
             e.printStackTrace()
             this.e = e

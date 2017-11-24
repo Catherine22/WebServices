@@ -8,19 +8,19 @@ Looper class keeps the thread alive, holds a message queue and pop works off a q
 Handler class helps put work at the head, the tail or even set a time-based delay.
 
 ## AsyncTask：
-*Helps get work on/off the UI thread.*
+*Help get work on/off the UI thread.*
 
-- Basically, all AsyncTasks are created in a same thread, it means them will execute in a serial fashion from a single message queue.
+- Basically, all AsyncTasks are created in a same thread. That means them will execute in a serial fashion from a single message queue.
 - There is a way to force AsyncTask works in thread-pooled way : AsyncTask.executeOnExecutor
 
 ## HandlerThread
-*Dedicated thread for API callbacks.*
+*Dedicate thread for API callbacks.*
 
 - HandlerThread is a nifty solution for the work that not deal with UI updates.
 - Don't forget to assign the priority because CPU can only execute a few parallel threads.
 
 ## ThreadPool
-*Running lots of parallel small works.*
+*Run a lot of parallel small works.*
 
 ## IntentService
 *It's ideal for background tasks. It also helps get intents off UI thread.*
@@ -63,7 +63,7 @@ android {
 - HttpURLConnection settings:[MyHttpURLConnection]
 
 
-## OkHttp 
+## OkHttp
 
 
 ## Volley
@@ -191,7 +191,7 @@ Cache-Control: max-age=(0)
 ```
 
 If your cache is not available, then you request ETag (with If-None-Match) or Last-Modified (with If-Modified-Since) to your server.
-Your server returns 304 when it's okay to use the cache has been stored or you might get 200 with new resources.
+Your server would return 304 when it's okay to use the cache that has been stored or you get 200 with new resources.
 
 - **No cache**
 
@@ -226,7 +226,7 @@ Cache-Control:no-cache, no-store
 ***DO NOT IMPLEMENT "X509TrustManager" TO SKIP VALIDATION***        
 That means man-in-the-middle attacks are allowed.
 
-As I was mentioning, you open a url ([https://kyfw.12306.cn/otn/regist/init][1]) with your Android device and you get an exception:
+As I was mentioning, If you open a url ([https://kyfw.12306.cn/otn/regist/init][1]) with your Android device and you get an exception:
 
 ``` html
 java.security.cert.CertPathValidatorException: Trust anchor for certification path not found.
@@ -237,24 +237,24 @@ In this scenario, if you are sure this website is trusted and you've got to requ
 
 ----------
 
-There are two solutions, the second one is better.
+There are two solutions, the last one is better.
 1. Get the certificate of kyfw.12306.cn and keep it in assets folder. You add this certificate to trusted CA list of client.<br>
 *After the end of the validity period, the certificate is no longer considered an acceptable.*
 
-2. Get the certificate of kyfw.12306.cn and keep it in assets folder. You add this certificate to the trusted CA list of client.<br>
-Normally, the CA of the department which sponsors a certain domain has a longer validity period than that domain. That's why this solution is recommended.
+2. Get the certificate of CA which sponsors kyfw.12306.cn and keep it in assets folder. You add this certificate to the trusted CA list of client.<br>
+Normally, the CAs of the department sponsors specific domains have a longer validity period than domains. That's why this solution is recommended.
 
 **Android example**
 
 Take kyfw.12306.cn for example.
 1. Download the certificate of kyfw.12306.cn and add to assets file.
-2. Add this certificate to trustManager[] 
+2. Add this certificate to trustManager[]
 3. Let "HttpsURLConnection" trust this certificate
 4. Go to [P02_HttpURLConnection] to see more.
 
 Another example - request to [github APIs]
 1. Add the PEM formatted String of the certificate.
-2. Add this certificate to trustManager[] 
+2. Add this certificate to trustManager[]
 3. Let "HttpsURLConnection" trust this certificate
 4. Go to [P02_HttpURLConnection] to see more.
 
@@ -264,18 +264,18 @@ Check SSL certificates here : [https://www.ssllabs.com/ssltest/][2]
 
 **ImageView + DiskLruCache**
 1. Download a url list.		
-2. Check internal or external storage of the device and if the image has had cache, skip step 3 and show it.
+2. Check internal or external storage of the device. If the images have had been cached, skip step 3 and show them.
 3. Download each image from the list and try to cache them.		
-4. Show images whatever it has been cached.		
+4. Show images whatever they have been cached.		
 
 Here is the example: [P05_Gallery], [ImageCardRVAdapter]
 
 **Fresco - SimpleDraweeView**
 
 Three ways to deal with images:
-- Show images directly by calling setImageURI (String url).
-- Prefetch images and show them.
-- Prefetch images before show them.
+- Show images directly by calling setImageURI().
+- Prefetch images and show them at the same time. That means there're at least two threads -  the one downloads the images and another displays the images.      
+- As the app launches, prefetch images and save them to your cache folder even though the fragment or activity which displays the images hasn't opened yet.
 
 Here is the example: [P11_Fresco], [FrescoRVAdapter]
 
@@ -303,7 +303,62 @@ udpSocket();
 ```
 - Client : Run WebServices and open [P10_UDP_Socket] fragment on Android devices.
 
+## WebView
 
+**[P14_Full_WebView]** supports the functions of...
+
+1. Going back to previous pages.
+2. Showing a ProgressBar while WebView is loading resources.
+3. Launching other apps installed in your device by url scheme.
+
+> You could type urls on [P14_Full_WebView] to try.
+>  - market://details?id=com.google.android.apps.maps
+>  - visit [https://play.google.com/store/apps/details?id=com.google.android.apps.maps&hl=en][4] and click the "OPEN IN PLAY STORE APP" button. Then you would redirct to a url starts from intent://play.app.goo.gl/?link=https://play.google.co...
+
+Before using JavaScript, you should have WebView enable JavaScript. Go to [P15_WebView_Settings] to set.		
+4. Handling JavaScript alert(), confirm() and prompt() and display the message with a used-defined dialog.
+5. Calling Java function from JavaScript with WebView.
+> Two tips:
+>  1. Don't forget to ignore your JavaScriptInterface with Android proguard
+>  2. Add @JavascriptInterface Annotation and you can go to [MyJavaScriptInterface] to see more
+
+In this project, every class that should not be obfuscated implements IgnoreProguard interface.     
+In proguard-rules.pro
+```gradle
+-keep public class com.catherine.webservices.toolkits.IgnoreProguard
+-keep public class * implements com.catherine.webservices.toolkits.IgnoreProguard
+-keepclassmembers class * implements com.catherine.webservices.toolkits.IgnoreProguard {
+    <methods>;
+}
+```
+
+> Here are some URLs would help you test. Just type them on [P14_Full_WebView]:
+> - [https://www.javascript.com/][3]
+> - file:///android_asset/js_alert.html
+> - file:///android_asset/js_confirm.html
+> - file:///android_asset/js_prompt.html
+
+6. Saving photos to your device from the Internet.
+> Save the image after long-clicking it.
+
+7. Visiting a HTTPS website and you get a SSL error.
+> Again, you could use [https://kyfw.12306.cn/otn/regist/init][1] to test.    
+> It would pop up a dialog and users decide to continue (unsafe) or stop visiting the webside.		
+
+8. Switching desktop sites or mobile sites by user-agent
+> - [https://github.com/Catherine22][5]
+
+
+
+**I list all of the test links on [WebView test links]. You could open this page on [P14_Full_WebView].**
+
+Still not work...   
+6. Synchronize cookie
+9. Visit a HTML5 website
+10. Visit a website offline if it's available to be cached
+
+**[P15_WebView_Settings]**
+Set attributes of WebView that includes WebViewClient and WebSettings (setAllowFileAccess(), setJavaScriptEnabled(), setSupportZoom() and so forth.)
 
 ## References
 - [Tencent bugly]
@@ -313,6 +368,7 @@ udpSocket();
 - [Socket tutorial]
 - [What are examples of TCP and UDP in real life scenario ?]
 - [Android HTTPS]
+- [WebView tutorial]
 
 
 [MainActivity]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/MainActivity.kt>
@@ -337,11 +393,18 @@ udpSocket();
 [P08_Blocking_Socket]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/P08_Blocking_Socket.java>
 [P09_NIO_Socket]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/P09_NIO_Socket.java>
 [P10_UDP_Socket]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/P10_UDP_Socket.java>
+[P14_Full_WebView]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/P14_Full_WebView.java>
+[P15_WebView_Settings]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/P15_WebView_Settings.java>
 [MySocket]:<https://github.com/Catherine22/WebServices/blob/master/JavaSocketServer/MySocket/src/Main.java>
+[MyJavaScriptInterface]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/network/MyJavaScriptInterface.java>
 [What are examples of TCP and UDP in real life scenario ?]:<https://learningnetwork.cisco.com/thread/87103>
 [Android HTTPS]:<http://blog.csdn.net/iispring/article/details/51615631>
 [github APIs]:<https://api.github.com/>
-
+[WebView tutorial]:<http://www.jianshu.com/p/3fcf8ba18d7f>
+[WebView test links]:<https://github.com/Catherine22/WebServices/blob/master/LINKS.md>
 
   [1]: https://kyfw.12306.cn/otn/regist/init
   [2]: https://www.ssllabs.com/ssltest/
+  [3]: https://www.javascript.com/
+  [4]: https://play.google.com/store/apps/details?id=com.google.android.apps.maps&hl=en
+  [5]: https://github.com/Catherine22

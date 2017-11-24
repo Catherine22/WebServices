@@ -1,5 +1,6 @@
 package com.catherine.webservices.fragments;
 
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -16,7 +17,9 @@ import android.widget.Toast;
 import com.catherine.webservices.Constants;
 import com.catherine.webservices.R;
 import com.catherine.webservices.adapters.FrescoRVAdapter;
+import com.catherine.webservices.components.DialogManager;
 import com.catherine.webservices.entities.ImageCard;
+import com.catherine.webservices.entities.TestData;
 import com.catherine.webservices.interfaces.OnItemClickListener;
 import com.catherine.webservices.network.HttpAsyncTask;
 import com.catherine.webservices.network.HttpRequest;
@@ -41,6 +44,7 @@ import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -60,8 +64,6 @@ public class P11_Fresco extends LazyFragment {
     private FrescoRVAdapter adapter;
     private ProgressBar pb;
     private TextView tv_offline;
-    private NetworkHelper helper;
-    private boolean retry;
     private boolean cacheable;
     private PrefetchSubscriber subscriber;
     private int succeed, failed;
@@ -81,22 +83,6 @@ public class P11_Fresco extends LazyFragment {
 
         if (getArguments() != null)
             cacheable = getArguments().getBoolean("cacheable", false);
-
-        helper = new NetworkHelper(getActivity());
-        helper.listenToNetworkState(new NetworkHealthListener() {
-            @Override
-            public void networkConnected(@NotNull String type) {
-                if (retry) {
-                    fillInData();
-                }
-            }
-
-            @Override
-            public void networkDisable() {
-                tv_offline.setText(getString(R.string.offline));
-                tv_offline.setVisibility(View.VISIBLE);
-            }
-        });
         initComponent();
         fillInData();
     }
@@ -108,114 +94,65 @@ public class P11_Fresco extends LazyFragment {
 
     private void fillInData() {
         tv_offline.setVisibility(View.GONE);
-        retry = false;
         entities = new ArrayList<>();
         if (getArguments() != null && getArguments().getParcelableArrayList("imageCards") != null)
             entities = getArguments().getParcelableArrayList("imageCards");
         adapter.updateData(entities);
         adapter.notifyDataSetChanged();
         if (entities.size() == 0) {
-            ADID_AsyncTask adid_asyncTask = new ADID_AsyncTask(
-                    new ADID_AsyncTask.ADID_Callback() {
-                        @Override
-                        public void onResponse(@NonNull String ADID) {
-                            getPicList(ADID);
-                        }
-
-                        @Override
-                        public void onError(@NonNull Exception e) {
-                            CLog.Companion.e(TAG, "Failed to get ADID: " + e.toString());
-                            getPicList("FAKE-ADID");
-
-                        }
-                    });
-            adid_asyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            getPicList();
         } else {
             pb.setVisibility(View.INVISIBLE);
         }
     }
 
-    private void getPicList(String ADID) {
-        Map<String, String> body = new HashMap<>();
-        body.put("from", "0");
-        body.put("to", "10");
-        body.put("ADID", ADID);
-        HttpRequest r = new HttpRequest.Builder()
-                .body(MyHttpURLConnection.getSimpleStringBody(body))
-                .url(NetworkHelper.Companion.encodeURL(String.format(Locale.ENGLISH, "%sResourceServlet", Constants.HOST)))
-                .listener(new HttpResponseListener() {
-                    @Override
-                    public void connectSuccess(@NonNull HttpResponse response) {
-                        pb.setVisibility(View.INVISIBLE);
-                        CLog.Companion.i(TAG, "connectSuccess");
-//                        CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
-                        try {
-                            JSONObject jo = new JSONObject(response.getBody());
-                            JSONArray pics = jo.getJSONArray("pics");
-                            for (int i = 0; i < pics.length(); i++) {
-                                ImageCard ic = new ImageCard();
-                                ic.image = pics.getString(i);
-                                ic.title = NetworkHelper.Companion.getFileNameFromUrl(pics.getString(i));
-                                ic.subtitle = "fresh";//not cache
-                                entities.add(ic);
-                            }
-                            adapter.updateData(entities);
-                            adapter.notifyDataSetChanged();
+    private void getPicList() {
+        try {
+            pb.setVisibility(View.INVISIBLE);
+            //Let's say those image links are downloaded successfully from an API
+            JSONArray ja = new JSONArray();
+            for (int i = 0; i < TestData.IMAGES2.length; i++) {
+                ja.put(TestData.IMAGES2[i]);
+            }
+            JSONObject jo = new JSONObject();
+            jo.put("pics", ja);
+            JSONArray pics = jo.getJSONArray("pics");
+            for (int i = 0; i < pics.length(); i++) {
+                ImageCard imageCard = new ImageCard();
+                imageCard.image = pics.getString(i);
+                imageCard.title = NetworkHelper.Companion.getFileNameFromUrl(pics.getString(i));
+                imageCard.subtitle = "fresh";//not cache
+                entities.add(imageCard);
+            }
+            adapter.updateData(entities);
+            adapter.notifyDataSetChanged();
 
-                        } catch (Exception e) {
-                            pb.setVisibility(View.INVISIBLE);
-                            e.printStackTrace();
-                            return;
-                        }
-                        //cache
-                        if (cacheable) {
-                            try {
-                                for (int i = 0; i < entities.size(); i++) {
+        } catch (Exception e) {
+            pb.setVisibility(View.INVISIBLE);
+            e.printStackTrace();
+            return;
+        }
+        //cache
+        if (cacheable) {
+            try {
+                for (int i = 0; i < entities.size(); i++) {
 //                                    File file = new File(Constants.ROOT_PATH + Constants.FRESCO_DIR + "/");
-                                    String url = entities.get(i).image;
-                                    ImageRequest imageRequest = ImageRequest.fromUri(url);
-                                    CacheKey cacheKey = DefaultCacheKeyFactory.getInstance().getEncodedCacheKey(imageRequest, null);
-                                    BinaryResource resource = ImagePipelineFactory.getInstance().getMainFileCache().getResource(cacheKey);
-                                    if (resource == null || resource.size() == 0) {
-                                        DataSource<Void> ds = Fresco.getImagePipeline().prefetchToDiskCache(ImageRequest.fromUri(url), null);
-                                        ds.subscribe(subscriber, new DefaultExecutorSupplier(3).forBackgroundTasks());
-                                    }
-                                }
-                            } catch (Exception e) {
-                                pb.setVisibility(View.INVISIBLE);
-                                CLog.Companion.e(TAG, "Cache error:" + e.getMessage());
-                                tv_offline.setText(String.format(Locale.ENGLISH, "connectFailure JSON error:%s", e.getMessage()));
-                                tv_offline.setVisibility(View.VISIBLE);
-                            }
-                        }
-
+                    String url = entities.get(i).image;
+                    ImageRequest imageRequest = ImageRequest.fromUri(url);
+                    CacheKey cacheKey = DefaultCacheKeyFactory.getInstance().getEncodedCacheKey(imageRequest, null);
+                    BinaryResource resource = ImagePipelineFactory.getInstance().getMainFileCache().getResource(cacheKey);
+                    if (resource == null || resource.size() == 0) {
+                        DataSource<Void> ds = Fresco.getImagePipeline().prefetchToDiskCache(ImageRequest.fromUri(url), null);
+                        ds.subscribe(subscriber, new DefaultExecutorSupplier(3).forBackgroundTasks());
                     }
-
-                    @Override
-                    public void connectFailure(@NonNull HttpResponse response, Exception e) {
-                        pb.setVisibility(View.INVISIBLE);
-                        StringBuilder sb = new StringBuilder();
-                        sb.append(String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, error:%s", response.getCode(), response.getCodeString(), response.getErrorMessage()));
-                        CLog.Companion.e(TAG, sb.toString());
-                        if (e != null) {
-                            sb.append("\n");
-                            sb.append(e.getMessage());
-                            CLog.Companion.e(TAG, e.getMessage());
-                        }
-
-                        if (helper.isNetworkHealth()) {
-                            //retry?
-                            tv_offline.setText(sb.toString());
-                            tv_offline.setVisibility(View.VISIBLE);
-                        } else {
-                            retry = true;
-                            tv_offline.setText(getString(R.string.offline));
-                            tv_offline.setVisibility(View.VISIBLE);
-                        }
-                    }
-                })
-                .build();
-        new HttpAsyncTask(r).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                }
+            } catch (Exception e) {
+                pb.setVisibility(View.INVISIBLE);
+                CLog.Companion.e(TAG, "Cache error:" + e.getMessage());
+                tv_offline.setText(String.format(Locale.ENGLISH, "connectFailure JSON error:%s", e.getMessage()));
+                tv_offline.setVisibility(View.VISIBLE);
+            }
+        }
     }
 
 

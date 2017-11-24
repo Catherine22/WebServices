@@ -2,4 +2,187 @@
     <string name="app_name">WebServices</string>
     <string name="offline">offline</string>
     <string name="no_cache">No cache</string>
+    <string name="drawer_open">Where to?</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="copy">Copy</string>
+    <string name="drawer_close"/>
+    <string name="et_hint">Input something here!</string>
+
+    <string-array name="drawer_array">
+        <item>Author</item>
+        <item>Settings</item>
+        <item>WebView settings</item>
+        <item>WebView history</item>
+        <item>Logcat</item>
+        <item>Theme</item>
+    </string-array>
+
+    <string-array name="wv_attr_array">
+        <item>可垂直滑动</item>
+        <item>可水平滑动</item>
+    </string-array>
+
+    <string-array name="wv_settings_array">
+        <item>将图片调整到适合WebView的大小</item>
+        <item>缩放至屏幕的大小</item>
+        <item>设置内置的缩放控件</item>
+        <item>支持缩放</item>
+        <item>设置文本的缩放倍数</item>
+        <item>隐藏原生的缩放控件</item>
+        <item>设置可以访问文件</item><!--6-->
+        <item>当WebView调用requestFocus时为WebView设置节点</item>
+        <item>支持JS</item>
+        <item>支持通过JS打开新窗口</item>
+        <item>支持自动加载图片</item>
+        <item>设置WebView字体的大小</item><!--11-->
+        <item>设置WebView支持的最小字体大小</item>
+        <item>设置编码格式</item>
+        <item>设置WebView的字体</item>
+        <item>设置http或https的混合模式</item>
+        <item>设置User Agent</item><!--16-->
+    </string-array>
+
+    <string-array name="wv_cache_array">
+        <item>浏览历史记录</item>
+        <item>设置WebView的缓存模式</item>
+        <item>删除浏览历史记录</item>
+        <item>删除WebView缓存</item>
+    </string-array>
+
+    <string-array name="font_array">
+        <item>sans-serif</item>
+        <item>monospace</item>
+        <item>serif</item>
+        <item>cursive</item>
+        <item>fantasy</item>
+    </string-array>
+
+    <string-array name="text_encode">
+        <item>UTF-8</item>
+        <item>US-ASCII</item>
+        <item>ISO-8859-1</item>
+        <item>UTF-16BE</item>
+        <item>UTF-16LE</item>
+        <item>UTF-16</item>
+    </string-array>
+
+    <string-array name="cache_mode">
+        <item>LOAD_DEFAULT</item>
+        <item>LOAD_NORMAL</item>
+        <item>LOAD_CACHE_ELSE_NETWORK</item>
+        <item>LOAD_NO_CACHE</item>
+        <item>LOAD_CACHE_ONLY</item>
+    </string-array>
+
+    <string-array name="mixed_content_mode">
+        <item>MIXED_CONTENT_ALWAYS_ALLOW</item>
+        <item>MIXED_CONTENT_NEVER_ALLOW</item>
+        <item>MIXED_CONTENT_COMPATIBILITY_MODE</item>
+    </string-array>
+
+    <string-array name="url_suggestions">
+        <item>https://github.com/Catherine22</item>
+        <item>github.com/Catherine22</item>
+        <item>https://m.facebook.com/100014541792899</item>
+        <item>m.facebook.com/100014541792899</item>
+        <!--launch other apps with the url starts with "intent://"-->
+        <item>https://play.google.com/store/apps/details?id=com.google.android.apps.maps&amp;hl=en
+        </item>
+        <item>play.google.com/store/apps/details?id=com.google.android.apps.maps&amp;hl=en
+        </item>
+        <!--launch other apps with the url starts with "user-defined scheme://"-->
+        <item>market://details?id=com.google.android.apps.maps</item>
+        <!--JS test-->
+        <item>https://www.javascript.com/</item>
+        <item>www.javascript.com/</item>
+        <item>file:///android_asset/js_alert.html</item>
+        <item>file:///android_asset/js_confirm.html</item>
+        <item>file:///android_asset/js_prompt.html</item>
+        <item>file:///android_asset/js_command.html</item>
+        <!--SSL test-->
+        <item>https://kyfw.12306.cn/otn/regist/init</item>
+    </string-array>
+
+    <string-array name="user_agent">
+        <item>Default</item>
+        <item>Chrome - Android Mobile</item>
+        <item>Chrome - Android Tablet</item>
+        <item>Chrome - iPhone</item>
+        <item>Chrome - iPad</item>
+        <item>Chrome - Windows</item>
+        <item>Chrome - Mac</item>
+        <item>Edge - Windows</item>
+        <item>Edge - Mobile</item>
+        <item>Edge - XBox</item>
+        <item>Safari - iPad</item>
+        <item>Safari - iPhone</item>
+        <item>Safari - Mac</item>
+        <item>UC browser- Android Mobile</item>
+    </string-array>
+
+    <string-array name="user_agent_detail">
+        <item>N/A</item>
+        <item>Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like
+            Gecko) Chrome/62.0.3202.75 Mobile Safari/537.36
+        </item>
+        <item>Mozilla/5.0 (Linux; Android 4.3; Nexus 7 Build/JSS15Q) AppleWebKit/537.36 (KHTML, like
+            Gecko) Chrome/62.0.3202.75 Safari/537.36
+        </item>
+        <item>Mozilla/5.0 (iPhone; CPU iPhone OS 9_1 like Mac OS X) AppleWebKit/601.1 (KHTML, like
+            Gecko) CriOS/62.0.3202.75 Mobile/13B143 Safari/601.1.46
+        </item>
+        <item>Mozilla/5.0 (iPad; CPU OS 9_1 like Mac OS X) AppleWebKit/601.1 (KHTML, like Gecko)
+            CriOS/62.0.3202.75 Mobile/13B143 Safari/601.1.46
+        </item>
+        <item>Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko)
+            Chrome/62.0.3202.75 Safari/537.36
+        </item>
+        <item>Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko)
+            Chrome/62.0.3202.75 Safari/537.36
+        </item>
+        <item>Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)
+            Chrome/42.0.2311.135 Safari/537.36 Edge/12.10240
+        </item>
+        <item>Mozilla/5.0 (Windows Phone 10.0; Android 4.2.1; Microsoft; Lumia 640 XL LTE)
+            AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Mobile Safari/537.36
+            Edge/12.10166
+        </item>
+        <item>Mozilla/5.0 (Windows NT 10.0; Win64; x64; Xbox; Xbox One) AppleWebKit/537.36 (KHTML,
+            like Gecko) Chrome/42.0.2311.135 Safari/537.36 Edge/13.10586
+        </item>
+        <item>Mozilla/5.0 (iPad; CPU OS 9_1 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko)
+            Version/9.0 Mobile/13B137 Safari/601.1
+        </item>
+        <item>Mozilla/5.0 (iPhone; CPU iPhone OS 9_1 like Mac OS X) AppleWebKit/601.1.46 (KHTML,
+            like Gecko) Version/9.0 Mobile/13B137 Safari/601.1
+        </item>
+        <item>Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) AppleWebKit/537.75.14 (KHTML, like
+            Gecko) Version/7.0.3 Safari/7046A194A
+        </item>
+        <item>Mozilla/5.0 (Linux; U; Android 4.4.4; en-US; XT1022 Build/KXC21.5-40)
+            AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 UCBrowser/10.7.0.636 U3/0.8.0 Mobile
+            Safari/534.30
+        </item>
+    </string-array>
+
+
+    <string name="dialog_title_error">错误讯息</string>
+    <string name="dialog_title_hint">提示！</string>
+    <string name="dialog_title_attention">注意！</string>
+    <string name="continue_button">继续</string>
+    <string name="yes">是</string>
+    <string name="no">否</string>
+    <string name="yes_n_open">确定开启</string>
+    <string name="no_n_close">继续关闭</string>
+    <string name="confirm_button">确定</string>
+    <string name="cancel_button">取消</string>
+    <string name="retry_button">重试</string>
+    <string name="close_button">关闭</string>
+    <string name="permission_request">您目前未授权%s存取权限，未授权将造成程式无法执行，是否开启权限</string>
+    <string name="permission_request_write_settings">此权限为出示兑换条码时控制萤幕亮度，如您关闭将造成程式无法执行,是否确定关闭</string>
+    <string name="permission_request_camera">您目前未授权相机存取权限，未授权将造成扫描功能无法开启，是否开启权限</string>
+    <string name="permission_storage">储存</string>
+    <string name="permission_phone">电话</string>
+    <string name="permission_sms">简讯</string>
 </resources>

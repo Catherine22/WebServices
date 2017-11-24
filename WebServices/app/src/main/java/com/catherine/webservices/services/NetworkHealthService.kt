@@ -14,7 +14,9 @@ import android.os.IBinder
 import android.widget.Toast
 import catherine.messagecenter.AsyncResponse
 import catherine.messagecenter.Server
+import com.catherine.webservices.Commands
 import com.catherine.webservices.toolkits.CLog
+import com.catherine.webservices.toolkits.IgnoreProguard
 
 /**
  * Created by Catherine on 2017/7/17.
@@ -22,7 +24,7 @@ import com.catherine.webservices.toolkits.CLog
  * catherine919@soft-world.com.tw
  */
 
-class NetworkHealthService : Service() {
+class NetworkHealthService : Service(), IgnoreProguard {
     private var internetReceiver: InternetConnectivityReceiver? = null
     private var sv: Server? = null
 
@@ -38,7 +40,6 @@ class NetworkHealthService : Service() {
         super.onCreate()
         internetReceiver = InternetConnectivityReceiver()
         val internetIntentFilter = IntentFilter("android.net.conn.CONNECTIVITY_CHANGE")
-        internetReceiver = InternetConnectivityReceiver()
         registerReceiver(internetReceiver, internetIntentFilter)
 
     }
@@ -60,13 +61,13 @@ class NetworkHealthService : Service() {
                             val b = Bundle()
                             b.putBoolean("isConnectedOrConnecting", true)
                             b.putString("typeName", ni.typeName)
-                            sv?.pushBundle("C_NETWORK_STATE", b)
+                            sv?.pushBundle(Commands.C_NETWORK_STATE, b)
                             Toast.makeText(this@NetworkHealthService, ni.typeName + " network connected", Toast.LENGTH_LONG).show()
                         } else {
                             //NetworkInfo对象为空 则代表没有网络
                             val b = Bundle()
                             b.putBoolean("isConnectedOrConnecting", false)
-                            sv?.pushBundle("C_NETWORK_STATE", b)
+                            sv?.pushBundle(Commands.C_NETWORK_STATE, b)
                             CLog.e(TAG, "Network disabled")
                             Toast.makeText(this@NetworkHealthService, "Network disabled", Toast.LENGTH_LONG).show()
                         }

@@ -1,10 +1,7 @@
 package com.catherine.webservices.fragments;
 
 import android.Manifest;
-import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -17,6 +14,7 @@ import android.view.View;
 import com.catherine.webservices.Constants;
 import com.catherine.webservices.R;
 import com.catherine.webservices.adapters.ProgressCardRVAdapter;
+import com.catherine.webservices.components.DialogManager;
 import com.catherine.webservices.interfaces.MainInterface;
 import com.catherine.webservices.interfaces.OnItemClickListener;
 import com.catherine.webservices.interfaces.OnRequestPermissionsListener;
@@ -26,6 +24,7 @@ import com.catherine.webservices.network.DownloaderListener;
 import com.catherine.webservices.network.HttpResponse;
 import com.catherine.webservices.toolkits.CLog;
 
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -97,26 +96,12 @@ public class P03_Downloader extends LazyFragment {
                 }
 
                 context.deleteCharAt(context.length() - 1);
-
-                AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(getActivity());
-                myAlertDialog.setIcon(android.R.drawable.ic_dialog_alert)
-                        .setCancelable(false)
-                        .setTitle("注意")
-                        .setMessage(String.format("您目前未授权%s存取权限，未授权将造成程式无法执行，是否开启权限？", context.toString()))
-                        .setNegativeButton("继续关闭", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                getActivity().finish();
-                            }
-                        }).setPositiveButton("确定开启", new DialogInterface.OnClickListener() {
+                DialogManager.showPermissionDialog( getActivity(), String.format( getActivity().getResources().getString(R.string.permission_request), context), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Intent intent = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-                                Uri.fromParts("package", getActivity().getPackageName(), null));
-                        startActivityForResult(intent, Constants.OPEN_SETTINGS);
+                        getActivity().finish();
                     }
                 });
-                myAlertDialog.show();
             }
 
             @Override
@@ -188,6 +173,15 @@ public class P03_Downloader extends LazyFragment {
                                     sb.append("\n");
                                     sb.append(e.getMessage());
                                     CLog.Companion.e(TAG, e.getMessage());
+
+                                    if (e instanceof SocketTimeoutException) {
+                                        DialogManager.showAlertDialog(getActivity(), "Connection timeout. Please check your server.", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+
+                                            }
+                                        });
+                                    }
                                 }
                                 infos.set(position0, sb.toString());
                                 updateView(position0, ERROR);
@@ -235,6 +229,15 @@ public class P03_Downloader extends LazyFragment {
                                     sb.append("\n");
                                     sb.append(e.getMessage());
                                     CLog.Companion.e(TAG, e.getMessage());
+
+                                    if (e instanceof SocketTimeoutException) {
+                                        DialogManager.showAlertDialog(getActivity(), "Connection timeout. Please check your server.", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+
+                                            }
+                                        });
+                                    }
                                 }
                                 infos.set(position1, sb.toString());
                                 updateView(position1, ERROR);
@@ -311,7 +314,7 @@ public class P03_Downloader extends LazyFragment {
                 }
 
                 if (running > 0) {
-                    fab_stop.setImageDrawable(getResources().getDrawable(android.R.drawable.ic_media_pause));
+                    fab_stop.setImageDrawable(getResources().getDrawable(R.drawable.pause_selector));
                     for (int i = 0; i < isRunning.length; i++) {
                         if (isRunning[i] == DOWNLOADING) {
                             tasks[i].stop();
@@ -373,9 +376,9 @@ public class P03_Downloader extends LazyFragment {
         }
 
         if (running > 0)
-            fab_stop.setImageDrawable(getResources().getDrawable(android.R.drawable.ic_media_pause));
+            fab_stop.setImageDrawable(getResources().getDrawable(R.drawable.pause_selector));
         else
-            fab_stop.setImageDrawable(getResources().getDrawable(android.R.drawable.ic_media_play));
+            fab_stop.setImageDrawable(getResources().getDrawable(R.drawable.play_selector));
     }
 
 

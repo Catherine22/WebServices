@@ -1,5 +1,6 @@
 package com.catherine.webservices.network
 
+import android.app.ActivityManager
 import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
@@ -7,6 +8,7 @@ import android.net.Uri
 import catherine.messagecenter.Client
 import catherine.messagecenter.CustomReceiver
 import catherine.messagecenter.Result
+import com.catherine.webservices.Commands
 import com.catherine.webservices.MyApplication
 import com.catherine.webservices.services.NetworkHealthService
 import java.net.InetAddress
@@ -34,9 +36,32 @@ class NetworkHelper(private val ctx: Context) {
             val fileNames = url.split("/")
             return fileNames[fileNames.size - 1]
         }
+
+
+        fun formattedUrl(url: String): String {
+            var tmp = url
+            //读取文件
+            if (url.startsWith("file:///") || url.startsWith("content://"))
+                return tmp
+
+            //通过scheme开启其他应用
+            if (url.contains("://"))
+                return tmp
+
+            //简单判断而已，不考虑.cn .org之类的
+            if (url.startsWith("www.") || url.contains(".com")) {
+                tmp = if (!url.startsWith("http://") && !url.startsWith("https://")) {
+                    "http://" + url
+                } else
+                    "https://www.google.com/search?q=" + url
+                return tmp
+            }
+
+            return tmp
+        }
     }
 
-    fun isNetworkHealth(): Boolean {
+    fun isNetworkHealthy(): Boolean {
         val cm = ctx.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val activeNetwork = cm.activeNetworkInfo
         if (activeNetwork != null) {
@@ -65,15 +90,30 @@ class NetworkHelper(private val ctx: Context) {
                 }
             }
         })
-        client?.gotMessages("C_NETWORK_STATE")
-        MyApplication.INSTANCE.registerLocalBroadCastReceiver(client)
-        val nhs = Intent(ctx, NetworkHealthService::class.java)
-        ctx.startService(nhs)
+        client?.gotMessages(Commands.C_NETWORK_STATE)
+        if (!isRunningService(ctx, NetworkHealthService::class.java.name)) {
+            val nhs = Intent(ctx, NetworkHealthService::class.java)
+            ctx.startService(nhs)
+        }
     }
 
     fun stopListeningToNetworkState() {
-        val nhs = Intent(ctx, NetworkHealthService::class.java)
-        ctx.stopService(nhs)
+        client?.release()
+//        val nhs = Intent(ctx, NetworkHealthService::class.java)
+//        ctx.stopService(nhs)
+    }
+
+
+    private fun isRunningService(ctx: Context, serviceName: String): Boolean {
+        var isRunning = false
+        val am = ctx.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+        val infos = am.getRunningServices(100)
+        for (info in infos) {
+            val runningServiceName = info.service.className
+            if (runningServiceName == serviceName)
+                isRunning = true
+        }
+        return isRunning
     }
 
 

@@ -55,7 +55,7 @@ public class ImageCard implements Parcelable {
 
     @Override
     public String toString() {
-        return "Student{" +
+        return "ImageCard{" +
                 "title='" + title + '\'' +
                 ", subtitle='" + subtitle + '\'' +
                 ", image='" + image + '\'' +
