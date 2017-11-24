@@ -333,6 +333,7 @@ public class P01_Apache extends LazyFragment {
 
     @Override
     public void onDestroy() {
+        if (helper != null)
         helper.stopListeningToNetworkState();
         super.onDestroy();
     }

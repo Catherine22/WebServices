@@ -126,6 +126,7 @@ public class P05_Gallery extends LazyFragment {
     }
 
     private void loadResponse(JSONObject jo, boolean shrinkList) throws JSONException {
+        CLog.Companion.i(TAG, jo.toString());
         tv_offline.setVisibility(View.GONE);
         JSONArray pics = jo.getJSONArray("pics");
         for (int i = 0; i < pics.length(); i++) {
