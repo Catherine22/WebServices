@@ -4,6 +4,8 @@ import android.Manifest;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -33,13 +35,15 @@ public class P17_WebView_Test_List extends LazyFragment {
     private SwipeRefreshLayout srl_container;
     private MainInterface mainInterface;
     private SimpleStyleRVAdapter adapter;
+    private String baseURL;
 
-    private List<ImageCardEx> jsList, intentList, userDefinedSchemeList, sslList, h5List, others;
+    private List<ImageCardEx> jsList, intentList, userDefinedSchemeList, sslList, h5List, loadDataList, others;
     private final String titleIntent = "Intent links";
     private final String titleScheme = "User-defined scheme";
     private final String titleJs = "JavaScript";
     private final String titleSSL = "SSL";
     private final String titleH5 = "HTML5";
+    private final String titleLoadData = "Load Data With Base URL";
     private final String titleOthers = "Others";
 
     public static P17_WebView_Test_List newInstance(boolean isLazyLoad) {
@@ -130,9 +134,16 @@ public class P17_WebView_Test_List extends LazyFragment {
                     b.putString("url", sslList.get(position).getSubtitle());
                 } else if (titleOthers.equals(title)) {
                     b.putString("url", others.get(position).getSubtitle());
+                } else if (titleLoadData.equals(title)) {
+                    b.putString("loadData", loadDataList.get(position).getSubtitle());
+                    switch (position) {
+                        case 1:
+                            b.putString("baseURL", baseURL);
+                            break;
+                    }
                 }
 
-                mainInterface.callFragment(Constants.P14_FULL_WEBVIEW, b);
+                callFragment(Constants.P13_NESTED_WEBVIEW, b);
             }
 
             @Override
@@ -149,6 +160,7 @@ public class P17_WebView_Test_List extends LazyFragment {
         userDefinedSchemeList = new ArrayList<>();
         sslList = new ArrayList<>();
         h5List = new ArrayList<>();
+        loadDataList = new ArrayList<>();
         others = new ArrayList<>();
 
         ImageCardEx imageCardEx2 = new ImageCardEx();
@@ -206,6 +218,27 @@ public class P17_WebView_Test_List extends LazyFragment {
         h5List.add(imageCardEx10);
         adapter.mergeList(titleH5, h5List);
 
+        ImageCardEx imageCardEx11 = new ImageCardEx();
+        imageCardEx11.setTitle("Data includes html and js");
+        imageCardEx11.setSubtitle("<html>\n" +
+                "<body>\n" +
+                "  <p>Before the script...</p>\n" +
+                "  <script>\n" +
+                "    alert( 'Hello, world!' );\n" +
+                "  </script>\n" +
+                "  <p>...After the script.</p>\n" +
+                "</body>\n" +
+                "</html>");
+        imageCardEx11.setStyle(0);
+        loadDataList.add(imageCardEx11);
+        ImageCardEx imageCardEx12 = new ImageCardEx();
+        imageCardEx12.setTitle("Data + baseURL");
+        baseURL = "http://img.my.csdn.net";
+        imageCardEx12.setSubtitle("风景优美 <img src='/uploads/201309/01/1378037151_7904.jpg'>");
+        imageCardEx12.setStyle(0);
+        loadDataList.add(imageCardEx12);
+        adapter.mergeList(titleLoadData, loadDataList);
+
         ImageCardEx imageCardEx0 = new ImageCardEx();
         imageCardEx0.setTitle("github.com");
         imageCardEx0.setSubtitle("https://github.com/Catherine22");
@@ -217,5 +250,24 @@ public class P17_WebView_Test_List extends LazyFragment {
         imageCardEx1.setStyle(0);
         others.add(imageCardEx1);
         adapter.mergeList(titleOthers, others);
+    }
+
+    private void callFragment(int id, Bundle bundle) {
+        CLog.Companion.d(TAG, "call " + id);
+        Fragment fragment = null;
+        String tag = "";
+        String title = "";
+        switch (id) {
+            case Constants.P13_NESTED_WEBVIEW:
+                title = "P13_Nested_WebView";
+                fragment = P13_Nested_WebView.newInstance(true);
+                fragment.setArguments(bundle);
+                tag = "P13";
+                break;
+        }
+        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+        transaction.add(R.id.fl_container, fragment, tag);
+        transaction.addToBackStack(title);
+        transaction.commitAllowingStateLoss();
     }
 }

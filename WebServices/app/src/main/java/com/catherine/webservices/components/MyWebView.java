@@ -52,18 +52,13 @@ public class MyWebView extends WebView {
         initSettings(context);
     }
 
-    public MyWebView(Context context, AttributeSet attrs, Context ctx) {
-        super(context, attrs);
-        initSettings(context);
-    }
-
-    public MyWebView(Context context, AttributeSet attrs, int defStyleAttr, Context ctx) {
+    public MyWebView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initSettings(context);
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public MyWebView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes, Context ctx) {
+    public MyWebView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         initSettings(context);
     }

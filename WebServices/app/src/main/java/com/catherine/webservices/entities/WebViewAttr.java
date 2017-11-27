@@ -7,6 +7,8 @@ import android.webkit.WebSettings;
 
 import com.catherine.webservices.R;
 
+import java.util.Arrays;
+
 /**
  * Created by Catherine on 2017/10/23.
  * Soft-World Inc.
@@ -24,7 +26,7 @@ public class WebViewAttr {
     //WebSettings
     private boolean UseWideViewPort = true;
     private boolean LoadWithOverviewMode = true;
-    private boolean BuiltInZoomControls = true;
+    private boolean BuiltInZoomControls = false;
     private boolean SupportZoom = true;
     private int TextZoom = 100;
     private boolean DisplayZoomControls = false;
@@ -32,9 +34,12 @@ public class WebViewAttr {
     private boolean JavaScriptEnabled = true;
     private boolean JavaScriptCanOpenWindowsAutomatically = true;
     private boolean LoadsImagesAutomatically = true;
+    private boolean SaveFormData = false;
+    private boolean AllowContentAccess = true;
     private boolean AllowFileAccess = true;
     private boolean AllowUniversalAccessFromFileURLs = false;
     private boolean AllowFileAccessFromFileURLs = false;
+    private boolean MediaPlaybackRequiresUserGesture = true;
     private boolean SafeBrowsingEnabled = true;
     private int DefaultFontSize = 16;
     private int MinimumFontSize = 8;
@@ -56,16 +61,19 @@ public class WebViewAttr {
         HorizontalScrollBarEnabled = sp.getBoolean("HorizontalScrollBarEnabled", true);
         UseWideViewPort = sp.getBoolean("UseWideViewPort", true);
         LoadWithOverviewMode = sp.getBoolean("LoadWithOverviewMode", true);
-        BuiltInZoomControls = sp.getBoolean("BuiltInZoomControls", true);
+        BuiltInZoomControls = sp.getBoolean("BuiltInZoomControls", false);
         SupportZoom = sp.getBoolean("SupportZoom", true);
         DisplayZoomControls = sp.getBoolean("DisplayZoomControls", false);
         NeedInitialFocus = sp.getBoolean("NeedInitialFocus", true);
         JavaScriptEnabled = sp.getBoolean("JavaScriptEnabled", true);
         JavaScriptCanOpenWindowsAutomatically = sp.getBoolean("JavaScriptCanOpenWindowsAutomatically", true);
         LoadsImagesAutomatically = sp.getBoolean("LoadsImagesAutomatically", true);
+        SaveFormData = sp.getBoolean("SaveFormData", false);
+        AllowContentAccess = sp.getBoolean("AllowContentAccess", true);
         AllowFileAccess = sp.getBoolean("AllowFileAccess", true);
         AllowUniversalAccessFromFileURLs = sp.getBoolean("AllowUniversalAccessFromFileURLs", false);
-        AllowFileAccessFromFileURLs= sp.getBoolean("AllowFileAccessFromFileURLs", false);
+        AllowFileAccessFromFileURLs = sp.getBoolean("AllowFileAccessFromFileURLs", false);
+        MediaPlaybackRequiresUserGesture = sp.getBoolean("MediaPlaybackRequiresUserGesture", true);
         SafeBrowsingEnabled = sp.getBoolean("SafeBrowsingEnabled", true);
         TextZoom = sp.getInt("TextZoom", 100);
         DefaultFontSize = sp.getInt("DefaultFontSize", 16);
@@ -98,7 +106,7 @@ public class WebViewAttr {
     }
 
     public boolean isBuiltInZoomControls() {
-        BuiltInZoomControls = sp.getBoolean("BuiltInZoomControls", true);
+        BuiltInZoomControls = sp.getBoolean("BuiltInZoomControls", false);
         return BuiltInZoomControls;
     }
 
@@ -127,13 +135,23 @@ public class WebViewAttr {
         return JavaScriptCanOpenWindowsAutomatically;
     }
 
+    public boolean isSaveFormData() {
+        SaveFormData = sp.getBoolean("SaveFormData", false);
+        return SaveFormData;
+    }
+
     public boolean isLoadsImagesAutomatically() {
         LoadsImagesAutomatically = sp.getBoolean("LoadsImagesAutomatically", true);
         return LoadsImagesAutomatically;
     }
 
+    public boolean isAllowContentAccess() {
+        AllowContentAccess = sp.getBoolean("AllowContentAccess", true);
+        return AllowContentAccess;
+    }
+
     public boolean isAllowFileAccess() {
-            AllowFileAccess = sp.getBoolean("AllowFileAccess", true);
+        AllowFileAccess = sp.getBoolean("AllowFileAccess", true);
         return AllowFileAccess;
     }
 
@@ -145,6 +163,11 @@ public class WebViewAttr {
     public boolean isAllowFileAccessFromFileURLs() {
         AllowFileAccessFromFileURLs = sp.getBoolean("AllowFileAccessFromFileURLs", false);
         return AllowFileAccessFromFileURLs;
+    }
+
+    public boolean isMediaPlaybackRequiresUserGesture() {
+        MediaPlaybackRequiresUserGesture = sp.getBoolean("MediaPlaybackRequiresUserGesture", true);
+        return MediaPlaybackRequiresUserGesture;
     }
 
     public boolean isSafeBrowsingEnabled() {
@@ -322,9 +345,19 @@ public class WebViewAttr {
         sp.edit().putBoolean("JavaScriptCanOpenWindowsAutomatically", JavaScriptCanOpenWindowsAutomatically).apply();
     }
 
+    public void setSaveFormData(boolean SaveFormData) {
+        this.SaveFormData = SaveFormData;
+        sp.edit().putBoolean("SaveFormData", SaveFormData).apply();
+    }
+
     public void setLoadsImagesAutomatically(boolean LoadsImagesAutomatically) {
         this.LoadsImagesAutomatically = LoadsImagesAutomatically;
         sp.edit().putBoolean("LoadsImagesAutomatically", LoadsImagesAutomatically).apply();
+    }
+
+    public void setAllowContentAccess(boolean AllowContentAccess) {
+        this.AllowContentAccess = AllowContentAccess;
+        sp.edit().putBoolean("AllowContentAccess", AllowContentAccess).apply();
     }
 
     public void setAllowFileAccess(boolean AllowFileAccess) {
@@ -340,6 +373,11 @@ public class WebViewAttr {
     public void setAllowFileAccessFromFileURLs(boolean AllowFileAccessFromFileURLs) {
         this.AllowFileAccessFromFileURLs = AllowFileAccessFromFileURLs;
         sp.edit().putBoolean("AllowFileAccessFromFileURLs", AllowFileAccessFromFileURLs).apply();
+    }
+
+    public void setMediaPlaybackRequiresUserGesture(boolean MediaPlaybackRequiresUserGesture) {
+        this.MediaPlaybackRequiresUserGesture = MediaPlaybackRequiresUserGesture;
+        sp.edit().putBoolean("MediaPlaybackRequiresUserGesture", MediaPlaybackRequiresUserGesture).apply();
     }
 
     public void setSafeBrowsingEnabled(boolean SafeBrowsingEnabled) {
@@ -391,6 +429,7 @@ public class WebViewAttr {
     public String toString() {
         return "WebViewAttr{" +
                 "sp=" + sp +
+                ", ctx=" + ctx +
                 ", VerticalScrollBarEnabled=" + VerticalScrollBarEnabled +
                 ", HorizontalScrollBarEnabled=" + HorizontalScrollBarEnabled +
                 ", UseWideViewPort=" + UseWideViewPort +
@@ -399,19 +438,26 @@ public class WebViewAttr {
                 ", SupportZoom=" + SupportZoom +
                 ", TextZoom=" + TextZoom +
                 ", DisplayZoomControls=" + DisplayZoomControls +
-                ", AllowFileAccess=" + AllowFileAccess +
                 ", NeedInitialFocus=" + NeedInitialFocus +
                 ", JavaScriptEnabled=" + JavaScriptEnabled +
                 ", JavaScriptCanOpenWindowsAutomatically=" + JavaScriptCanOpenWindowsAutomatically +
                 ", LoadsImagesAutomatically=" + LoadsImagesAutomatically +
+                ", SaveFormData=" + SaveFormData +
+                ", AllowContentAccess=" + AllowContentAccess +
+                ", AllowFileAccess=" + AllowFileAccess +
+                ", AllowUniversalAccessFromFileURLs=" + AllowUniversalAccessFromFileURLs +
+                ", AllowFileAccessFromFileURLs=" + AllowFileAccessFromFileURLs +
+                ", MediaPlaybackRequiresUserGesture=" + MediaPlaybackRequiresUserGesture +
+                ", SafeBrowsingEnabled=" + SafeBrowsingEnabled +
                 ", DefaultFontSize=" + DefaultFontSize +
                 ", MinimumFontSize=" + MinimumFontSize +
-                ", DefaultTextEncodingName=" + DefaultTextEncodingName +
-                ", StandardFontFamily=" + StandardFontFamily +
+                ", DefaultTextEncodingName='" + DefaultTextEncodingName + '\'' +
+                ", StandardFontFamily='" + StandardFontFamily + '\'' +
                 ", CacheMode=" + CacheMode +
                 ", MixedContentMode=" + MixedContentMode +
-                ", UserAgent=" + UserAgent +
-                ", UserAgentString=" + getUserAgentString(UserAgent) +
+                ", UserAgent='" + UserAgent + '\'' +
+                ", user_agent=" + Arrays.toString(user_agent) +
+                ", user_agent_detail=" + Arrays.toString(user_agent_detail) +
                 '}';
     }
 }

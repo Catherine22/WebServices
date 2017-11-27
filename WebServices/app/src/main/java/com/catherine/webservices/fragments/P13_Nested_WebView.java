@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -20,11 +21,13 @@ import com.catherine.webservices.entities.WebViewAttr;
 import com.catherine.webservices.interfaces.MainInterface;
 import com.catherine.webservices.interfaces.OnRequestPermissionsListener;
 import com.catherine.webservices.interfaces.WebViewProgressListener;
+import com.catherine.webservices.network.MyJavaScriptInterface;
 import com.catherine.webservices.network.NetworkHelper;
 import com.catherine.webservices.toolkits.CLog;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import catherine.messagecenter.Client;
@@ -45,7 +48,6 @@ public class P13_Nested_WebView extends LazyFragment {
     private MyNestedWebView wv;
     private ProgressBar pb;
     private Client client;
-    private WebViewAttr attr;
 
     public static P13_Nested_WebView newInstance(boolean isLazyLoad) {
         Bundle args = new Bundle();
@@ -116,7 +118,7 @@ public class P13_Nested_WebView extends LazyFragment {
     }
 
     private void refresh() {
-        attr = new WebViewAttr(getActivity());
+        WebViewAttr attr = new WebViewAttr(getActivity());
         //可滑动，默认为true
         wv.setVerticalScrollBarEnabled(attr.isVerticalScrollBarEnabled());
         //可滑动，默认为true
@@ -149,18 +151,22 @@ public class P13_Nested_WebView extends LazyFragment {
         settings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
         //多窗口
         settings.supportMultipleWindows();
-        //关闭WebView中缓存
-        settings.setCacheMode(WebSettings.LOAD_NO_CACHE);
-        //设置可以访问文件
-        settings.setAllowFileAccess(attr.isAllowFileAccess());
         //当WebView调用requestFocus时为WebView设置节点
         settings.setNeedInitialFocus(attr.isNeedInitialFocus());
         //支持JS
         settings.setJavaScriptEnabled(attr.isJavaScriptEnabled());
+        //支持JS呼叫MyJavaScriptInterface提供的方法
+        MyJavaScriptInterface javaScriptInterface = new MyJavaScriptInterface(getActivity());
+        //In JS, your code would be name.function_of_your_javaScriptInterface(). For example, AndroidFunction.vibrate(500)
+        wv.addJavascriptInterface(javaScriptInterface, "AndroidFunction");
         //支持通过JS打开新窗口
         settings.setJavaScriptCanOpenWindowsAutomatically(attr.isJavaScriptCanOpenWindowsAutomatically());
         //支持自动加载图片
         settings.setLoadsImagesAutomatically(attr.isLoadsImagesAutomatically());
+        //是否允许获取WebView的内容URL ，可以让WebView访问ContentProvider存储的内容。
+        settings.setAllowContentAccess(attr.isAllowContentAccess());
+        //设置可以访问文件
+        settings.setAllowFileAccess(attr.isAllowFileAccess());
         //设置编码格式
         settings.setDefaultTextEncodingName(attr.getDefaultTextEncodingName());
         //设置WebView的字体，默认字体为 "sans-serif"
@@ -169,20 +175,60 @@ public class P13_Nested_WebView extends LazyFragment {
         settings.setDefaultFontSize(attr.getDefaultFontSize());
         //设置WebView支持的最小字体大小，默认为 8
         settings.setMinimumFontSize(attr.getMinimumFontSize());
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            //在Android 5.0上 WebView 默认不允许加载 Http 与 Https 混合内容
-            settings.setMixedContentMode(attr.getMixedContentMode());
-        }
         //设置User Agent（手机版或桌面版）
         settings.setUserAgentString(attr.getUserAgentString(attr.getUserAgent()));
         String ua = settings.getUserAgentString();
         CLog.Companion.i(TAG, "my user agent:" + ua);
+        //是否保存表单数据
+        settings.setSaveFormData(attr.isSaveFormData());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            /*
+             * 是否允许Js访问任何来源的内容。包括访问file scheme的URLs。考虑到安全性，
+             * 限制Js访问范围默认禁用。注意：该方法只影响file scheme类型的资源，其他类型资源如图片类型的，
+             * 不会受到影响。ICE_CREAM_SANDWICH_MR1版本以及以下默认为true，JELLY_BEAN版本
+             * 以上默认为false
+             */
+            settings.setAllowUniversalAccessFromFileURLs(attr.isAllowUniversalAccessFromFileURLs());
+            /*
+             * 是否允许Js访问其他file scheme的URLs。包括访问file scheme的资源。考虑到安全性，
+             * 限制Js访问范围默认禁用。注意：该方法只影响file scheme类型的资源，其他类型资源如图片类型的，
+             * 不会受到影响。如果getAllowUniversalAccessFromFileURLs为true，则该方法被忽略。
+             * ICE_CREAM_SANDWICH_MR1版本以及以下默认为true，JELLY_BEAN版本以上默认为false
+             */
+            settings.setAllowFileAccessFromFileURLs(attr.isAllowFileAccessFromFileURLs());
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            //是否需要用户手势来播放Media，默认true
+            settings.setMediaPlaybackRequiresUserGesture(attr.isMediaPlaybackRequiresUserGesture());
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            //在Android 5.0上 WebView 默认不允许加载 Http 与 Https 混合内容
+            settings.setMixedContentMode(attr.getMixedContentMode());
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            //支持安全浏览
+            settings.setSafeBrowsingEnabled(attr.isSafeBrowsingEnabled());
+        }
 
         //cache
         settings.setAppCachePath(MyApplication.INSTANCE.getDiskCacheDir("webview").getAbsolutePath());
         //设置WebView中的缓存模式
         settings.setCacheMode(WebSettings.LOAD_DEFAULT);
-        wv.loadUrl(NetworkHelper.Companion.formattedUrl(Constants.MY_GITHUB));
+        Bundle b = getArguments();
+        if (b != null) {
+            String loadData = b.getString("loadData", null);
+            if (TextUtils.isEmpty(loadData))
+                wv.loadUrl(NetworkHelper.Companion.formattedUrl(b.getString("url", Constants.MY_GITHUB)));
+            else {
+                String baseUrl = b.getString("baseURL", null);
+                String mimeType = b.getString("mimeType", null);
+                String encoding = b.getString("encoding", null);
+                String historyUrl = b.getString("historyUrl", null);
+                wv.loadDataWithBaseURL(baseUrl, loadData, mimeType, encoding, historyUrl);
+            }
+        } else {
+            wv.loadUrl(NetworkHelper.Companion.formattedUrl(Constants.MY_GITHUB));
+        }
     }
 
 

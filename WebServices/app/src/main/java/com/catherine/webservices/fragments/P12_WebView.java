@@ -22,6 +22,7 @@ import com.catherine.webservices.interfaces.BackKeyListener;
 import com.catherine.webservices.interfaces.MainInterface;
 import com.catherine.webservices.interfaces.OnItemClickListener;
 import com.catherine.webservices.interfaces.OnRequestPermissionsListener;
+import com.catherine.webservices.toolkits.CLog;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -77,7 +78,7 @@ public class P12_WebView extends LazyFragment {
                 }
 
                 context.deleteCharAt(context.length() - 1);
-                DialogManager.showPermissionDialog( getActivity(), String.format( getActivity().getResources().getString(R.string.permission_request), context), new DialogInterface.OnClickListener() {
+                DialogManager.showPermissionDialog(getActivity(), String.format(getActivity().getResources().getString(R.string.permission_request), context), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         getActivity().finish();
@@ -137,19 +138,13 @@ public class P12_WebView extends LazyFragment {
                         startActivity(intent);
                         break;
                     case 1:
-                        Fragment fragment = P13_Nested_WebView.newInstance(true);
-                        String tag = "P13";
-                        String title = "P13_Nested_WebView";
-                        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-                        transaction.add(R.id.fl_container, fragment, tag);
-                        transaction.addToBackStack(title);
-                        transaction.commitAllowingStateLoss();
+                        callFragment(Constants.P13_NESTED_WEBVIEW);
                         break;
                     case 2:
                         mainInterface.callFragment(Constants.P14_FULL_WEBVIEW);
                         break;
                     case 3:
-                        mainInterface.callFragment(Constants.P17_WEBVIEW_TEST_LIST);
+                        callFragment(Constants.P17_WEBVIEW_TEST_LIST);
                         break;
                 }
             }
@@ -182,5 +177,29 @@ public class P12_WebView extends LazyFragment {
 
             }
         });
+    }
+
+
+    private void callFragment(int id) {
+        CLog.Companion.d(TAG, "call " + id);
+        Fragment fragment = null;
+        String tag = "";
+        String title = "";
+        switch (id) {
+            case Constants.P13_NESTED_WEBVIEW:
+                title = "P13_Nested_WebView";
+                fragment = P13_Nested_WebView.newInstance(true);
+                tag = "P13";
+                break;
+            case Constants.P17_WEBVIEW_TEST_LIST:
+                title = "P17_WebView_Test_List";
+                fragment = P17_WebView_Test_List.newInstance(true);
+                tag = "P17";
+                break;
+        }
+        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+        transaction.add(R.id.fl_container, fragment, tag);
+        transaction.addToBackStack(title);
+        transaction.commitAllowingStateLoss();
     }
 }

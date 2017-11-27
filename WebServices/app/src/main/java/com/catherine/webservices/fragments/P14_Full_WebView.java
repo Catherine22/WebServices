@@ -159,11 +159,12 @@ public class P14_Full_WebView extends LazyFragment {
     private void initComponent() {
         Bundle b = getArguments();
         if (b != null) {
-            currentUrl = b.getString("url", Constants.MY_GITHUB);
+            currentUrl = NetworkHelper.Companion.formattedUrl(b.getString("url", Constants.MY_GITHUB));
         } else {
-            currentUrl = Constants.MY_GITHUB;
+            currentUrl = NetworkHelper.Companion.formattedUrl(Constants.MY_GITHUB);
         }
         displayUrl = getShortName(currentUrl);
+
         sp = getActivity().getSharedPreferences("wv_history", Context.MODE_PRIVATE);
         client = new Client(getActivity(), new CustomReceiver() {
             @Override
@@ -210,8 +211,6 @@ public class P14_Full_WebView extends LazyFragment {
         });
 
         actv_url = (AutoCompleteTextView) findViewById(R.id.actv_url);
-        currentUrl = NetworkHelper.Companion.formattedUrl(currentUrl);
-        displayUrl = getShortName(currentUrl);
         actv_url.setText(displayUrl);
         //handle "enter" event
         actv_url.setOnKeyListener(new View.OnKeyListener() {
@@ -877,7 +876,7 @@ public class P14_Full_WebView extends LazyFragment {
         settings.setLoadWithOverviewMode(attr.isLoadWithOverviewMode());
         //支持缩放，默认为true。是下面那个的前提。
         settings.setSupportZoom(attr.isSupportZoom());
-        //设置内置的缩放控件。
+        //设置内置的缩放控件，由浮动在窗口上的缩放控制和手势缩放控制组成，默认false。
         settings.setBuiltInZoomControls(attr.isBuiltInZoomControls());
         //设置文本的缩放倍数，默认为 100，若上面是false，则该WebView不可缩放，这个不管设置什么都不能缩放。
         settings.setTextZoom(attr.getTextZoom());
@@ -900,8 +899,24 @@ public class P14_Full_WebView extends LazyFragment {
         settings.setJavaScriptCanOpenWindowsAutomatically(attr.isJavaScriptCanOpenWindowsAutomatically());
         //支持自动加载图片
         settings.setLoadsImagesAutomatically(attr.isLoadsImagesAutomatically());
+        //是否允许获取WebView的内容URL ，可以让WebView访问ContentProvider存储的内容。
+        settings.setAllowContentAccess(attr.isAllowContentAccess());
         //设置可以访问文件
         settings.setAllowFileAccess(attr.isAllowFileAccess());
+        //设置编码格式
+        settings.setDefaultTextEncodingName(attr.getDefaultTextEncodingName());
+        //设置WebView的字体，默认字体为 "sans-serif"
+        settings.setStandardFontFamily(attr.getStandardFontFamily());
+        //设置WebView字体的大小，默认大小为 16
+        settings.setDefaultFontSize(attr.getDefaultFontSize());
+        //设置WebView支持的最小字体大小，默认为 8
+        settings.setMinimumFontSize(attr.getMinimumFontSize());
+        //设置User Agent（手机版或桌面版）
+        settings.setUserAgentString(attr.getUserAgentString(attr.getUserAgent()));
+        String ua = settings.getUserAgentString();
+        CLog.Companion.i(TAG, "my user agent:" + ua);
+        //是否保存表单数据
+        settings.setSaveFormData(attr.isSaveFormData());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             /*
              * 是否允许Js访问任何来源的内容。包括访问file scheme的URLs。考虑到安全性，
@@ -918,26 +933,18 @@ public class P14_Full_WebView extends LazyFragment {
              */
             settings.setAllowFileAccessFromFileURLs(attr.isAllowFileAccessFromFileURLs());
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            //支持安全浏览
-            settings.setSafeBrowsingEnabled(attr.isSafeBrowsingEnabled());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            //是否需要用户手势来播放Media，默认true
+            settings.setMediaPlaybackRequiresUserGesture(attr.isMediaPlaybackRequiresUserGesture());
         }
-        //设置编码格式
-        settings.setDefaultTextEncodingName(attr.getDefaultTextEncodingName());
-        //设置WebView的字体，默认字体为 "sans-serif"
-        settings.setStandardFontFamily(attr.getStandardFontFamily());
-        //设置WebView字体的大小，默认大小为 16
-        settings.setDefaultFontSize(attr.getDefaultFontSize());
-        //设置WebView支持的最小字体大小，默认为 8
-        settings.setMinimumFontSize(attr.getMinimumFontSize());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             //在Android 5.0上 WebView 默认不允许加载 Http 与 Https 混合内容
             settings.setMixedContentMode(attr.getMixedContentMode());
         }
-        //设置User Agent（手机版或桌面版）
-        settings.setUserAgentString(attr.getUserAgentString(attr.getUserAgent()));
-        String ua = settings.getUserAgentString();
-        CLog.Companion.i(TAG, "my user agent:" + ua);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            //支持安全浏览
+            settings.setSafeBrowsingEnabled(attr.isSafeBrowsingEnabled());
+        }
 
         //cache
         settings.setAppCachePath(MyApplication.INSTANCE.getDiskCacheDir("webview").getAbsolutePath());

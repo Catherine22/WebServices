@@ -150,22 +150,24 @@ public class P15_WebView_Settings extends LazyFragment {
         wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.EDITTEXT, wv_settings_array[11], "setMinimumFontSize()", 0, String.valueOf(attr.getMinimumFontSize())));
         wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.TEXTVIEW, wv_settings_array[12], "setDefaultTextEncodingName()", 0, attr.getDefaultTextEncodingName()));
         wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.TEXTVIEW, wv_settings_array[13], "setStandardFontFamily()", 0, attr.getStandardFontFamily()));
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-            wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.TEXTVIEW, wv_settings_array[14], "setMixedContentMode()", 0, attr.getMixedContentModeName(attr.getMixedContentMode())));
-        else
-            wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.TEXTVIEW, wv_settings_array[14], "setMixedContentMode()", -1, attr.getMixedContentModeName(attr.getMixedContentMode())));
-        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.TEXTVIEW, wv_settings_array[15], "setUserAgentString()", 0, attr.getUserAgent()));
-        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, wv_settings_array[16], "setAllowFileAccess()", attr.isAllowFileAccess() ? 1 : 0, null));
+        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.TEXTVIEW, wv_settings_array[14], "setUserAgentString()", 0, attr.getUserAgent()));
+        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, wv_settings_array[15], "setSaveFormData()", attr.isSaveFormData() ? 1 : 0, null));
+        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, wv_settings_array[16], "setAllowContentAccess()", attr.isAllowContentAccess() ? 1 : 0, null));
+        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, wv_settings_array[17], "setAllowFileAccess()", attr.isAllowFileAccess() ? 1 : 0, null));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, wv_settings_array[17], "setAllowUniversalAccessFromFileURLs()", attr.isAllowUniversalAccessFromFileURLs() ? 1 : 0, null));
+            wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, wv_settings_array[18], "setAllowUniversalAccessFromFileURLs()", attr.isAllowUniversalAccessFromFileURLs() ? 1 : 0, null));
             if (attr.isAllowUniversalAccessFromFileURLs())
-                wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, wv_settings_array[18], "setAllowFileAccessFromFileURLs()", -1, null));
+                wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, wv_settings_array[19], "setAllowFileAccessFromFileURLs()", -1, null));
             else
-                wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, wv_settings_array[18], "setAllowFileAccessFromFileURLs()", attr.isAllowFileAccessFromFileURLs() ? 1 : 0, null));
+                wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, wv_settings_array[19], "setAllowFileAccessFromFileURLs()", attr.isAllowFileAccessFromFileURLs() ? 1 : 0, null));
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, wv_settings_array[19], "setSafeBrowsingEnabled()", attr.isSafeBrowsingEnabled() ? 1 : 0, null));
-        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1)
+            wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, wv_settings_array[20], "setMediaPlaybackRequiresUserGesture()", attr.isMediaPlaybackRequiresUserGesture() ? 1 : 0, null));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+            wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.TEXTVIEW, wv_settings_array[21], "setMixedContentMode()", 0, attr.getMixedContentModeName(attr.getMixedContentMode())));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+            wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, wv_settings_array[22], "setSafeBrowsingEnabled()", attr.isSafeBrowsingEnabled() ? 1 : 0, null));
+
         caches = new ArrayList<>();
         caches.add(new MultiStyleItem(MultiStyleRVAdapter.TEXTVIEW, wv_cache_array[0], "history", 0, ""));
         caches.add(new MultiStyleItem(MultiStyleRVAdapter.TEXTVIEW, wv_cache_array[1], "setCacheMode()", 0, attr.getCacheModeName(attr.getCacheMode())));
@@ -399,30 +401,6 @@ public class P15_WebView_Settings extends LazyFragment {
                             break;
                         case 14:
                             //show selector
-                            int r = 0;
-                            String[] modes = getActivity().getResources().getStringArray(R.array.mixed_content_mode);
-                            for (int i = 0; i < modes.length; i++) {
-                                if (modes[i].equals(attr.getMixedContentModeName(attr.getMixedContentMode()))) {
-                                    r = i;
-                                    break;
-                                }
-                            }
-                            showRBDialog(modes, r, new DialogCallback() {
-                                @Override
-                                public void dismiss(String data) {
-                                    attr.setMixedContentMode(attr.getMixedContentMode(data));
-                                    adapter.updateItem(titles[1], 15, new MultiStyleItem(MultiStyleRVAdapter.TEXTVIEW, wv_settings_array[15], "setMixedContentMode()", 0, data));
-                                    new Handler().post(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            adapter.notifyDataSetChanged();
-                                        }
-                                    });
-                                }
-                            });
-                            break;
-                        case 15:
-                            //show selector
                             int s = 0;
                             String[] ua = getActivity().getResources().getStringArray(R.array.user_agent);
                             for (int i = 0; i < ua.length; i++) {
@@ -445,9 +423,16 @@ public class P15_WebView_Settings extends LazyFragment {
                                 }
                             });
                             break;
+                        case 15:
+                            attr.setSaveFormData(isSelect);
+                            break;
                         case 16:
-                            attr.setAllowFileAccess(isSelect);
+                            attr.setAllowContentAccess(isSelect);
+                            break;
                         case 17:
+                            attr.setAllowFileAccess(isSelect);
+                            break;
+                        case 18:
                             attr.setAllowUniversalAccessFromFileURLs(isSelect);
                             adapter.updateItem(titles[1], 17, new MultiStyleItem(MultiStyleRVAdapter.SWITCH, wv_settings_array[17], "setAllowUniversalAccessFromFileURLs()", isSelect ? 1 : 0, null));
                             if (isSelect) {
@@ -461,9 +446,38 @@ public class P15_WebView_Settings extends LazyFragment {
                                     adapter.notifyDataSetChanged();
                                 }
                             });
-                        case 18:
-                            attr.setAllowFileAccessFromFileURLs(isSelect);
+                            break;
                         case 19:
+                            attr.setAllowFileAccessFromFileURLs(isSelect);
+                            break;
+                        case 20:
+                            attr.setMediaPlaybackRequiresUserGesture(isSelect);
+                            break;
+                        case 21:
+                            //show selector
+                            int r = 0;
+                            String[] modes = getActivity().getResources().getStringArray(R.array.mixed_content_mode);
+                            for (int i = 0; i < modes.length; i++) {
+                                if (modes[i].equals(attr.getMixedContentModeName(attr.getMixedContentMode()))) {
+                                    r = i;
+                                    break;
+                                }
+                            }
+                            showRBDialog(modes, r, new DialogCallback() {
+                                @Override
+                                public void dismiss(String data) {
+                                    attr.setMixedContentMode(attr.getMixedContentMode(data));
+                                    adapter.updateItem(titles[1], 15, new MultiStyleItem(MultiStyleRVAdapter.TEXTVIEW, wv_settings_array[15], "setMixedContentMode()", 0, data));
+                                    new Handler().post(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            adapter.notifyDataSetChanged();
+                                        }
+                                    });
+                                }
+                            });
+                            break;
+                        case 22:
                             attr.setSafeBrowsingEnabled(isSelect);
                             break;
 
