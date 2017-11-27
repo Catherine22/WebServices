@@ -1,11 +1,8 @@
 package com.catherine.webservices.fragments;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -16,21 +13,12 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.catherine.webservices.Constants;
 import com.catherine.webservices.R;
 import com.catherine.webservices.adapters.ImageCardRVAdapter;
-import com.catherine.webservices.components.DialogManager;
 import com.catherine.webservices.entities.ImageCard;
 import com.catherine.webservices.entities.TestData;
 import com.catherine.webservices.interfaces.OnItemClickListener;
-import com.catherine.webservices.network.HttpAsyncTask;
-import com.catherine.webservices.network.HttpRequest;
-import com.catherine.webservices.network.HttpResponse;
-import com.catherine.webservices.network.HttpResponseListener;
-import com.catherine.webservices.network.MyHttpURLConnection;
-import com.catherine.webservices.network.NetworkHealthListener;
 import com.catherine.webservices.network.NetworkHelper;
-import com.catherine.webservices.security.ADID_AsyncTask;
 import com.catherine.webservices.toolkits.CLog;
 
 import org.jetbrains.annotations.NotNull;
@@ -38,12 +26,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.net.SocketTimeoutException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 
 /**
  * Created by Catherine on 2017/9/12.

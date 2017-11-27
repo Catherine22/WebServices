@@ -1,17 +1,13 @@
 package com.catherine.webservices.fragments;
 
 import android.Manifest;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DownloadManager;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -74,7 +70,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -98,8 +93,8 @@ public class P14_Full_WebView extends LazyFragment {
     private ImageView iv_menu, iv_refresh;
     private AutoCompleteTextView actv_url;
     private ProgressBar pb;
-    private String currentUrl = Constants.MY_GITHUB;
-    private String displayUrl = getShortName(currentUrl);
+    private String currentUrl;
+    private String displayUrl;
     private Client client;
     private WebViewAttr attr;
     private Dialog jsDialog;
@@ -162,6 +157,13 @@ public class P14_Full_WebView extends LazyFragment {
     }
 
     private void initComponent() {
+        Bundle b = getArguments();
+        if (b != null) {
+            currentUrl = b.getString("url", Constants.MY_GITHUB);
+        } else {
+            currentUrl = Constants.MY_GITHUB;
+        }
+        displayUrl = getShortName(currentUrl);
         sp = getActivity().getSharedPreferences("wv_history", Context.MODE_PRIVATE);
         client = new Client(getActivity(), new CustomReceiver() {
             @Override
@@ -886,8 +888,6 @@ public class P14_Full_WebView extends LazyFragment {
         settings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
         //多窗口
         settings.supportMultipleWindows();
-        //设置可以访问文件
-        settings.setAllowFileAccess(attr.isAllowFileAccess());
         //当WebView调用requestFocus时为WebView设置节点
         settings.setNeedInitialFocus(attr.isNeedInitialFocus());
         //支持JS
@@ -900,6 +900,28 @@ public class P14_Full_WebView extends LazyFragment {
         settings.setJavaScriptCanOpenWindowsAutomatically(attr.isJavaScriptCanOpenWindowsAutomatically());
         //支持自动加载图片
         settings.setLoadsImagesAutomatically(attr.isLoadsImagesAutomatically());
+        //设置可以访问文件
+        settings.setAllowFileAccess(attr.isAllowFileAccess());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            /*
+             * 是否允许Js访问任何来源的内容。包括访问file scheme的URLs。考虑到安全性，
+             * 限制Js访问范围默认禁用。注意：该方法只影响file scheme类型的资源，其他类型资源如图片类型的，
+             * 不会受到影响。ICE_CREAM_SANDWICH_MR1版本以及以下默认为true，JELLY_BEAN版本
+             * 以上默认为false
+             */
+            settings.setAllowUniversalAccessFromFileURLs(attr.isAllowUniversalAccessFromFileURLs());
+            /*
+             * 是否允许Js访问其他file scheme的URLs。包括访问file scheme的资源。考虑到安全性，
+             * 限制Js访问范围默认禁用。注意：该方法只影响file scheme类型的资源，其他类型资源如图片类型的，
+             * 不会受到影响。如果getAllowUniversalAccessFromFileURLs为true，则该方法被忽略。
+             * ICE_CREAM_SANDWICH_MR1版本以及以下默认为true，JELLY_BEAN版本以上默认为false
+             */
+            settings.setAllowFileAccessFromFileURLs(attr.isAllowFileAccessFromFileURLs());
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            //支持安全浏览
+            settings.setSafeBrowsingEnabled(attr.isSafeBrowsingEnabled());
+        }
         //设置编码格式
         settings.setDefaultTextEncodingName(attr.getDefaultTextEncodingName());
         //设置WebView的字体，默认字体为 "sans-serif"

@@ -1,7 +1,6 @@
 package com.catherine.webservices.fragments;
 
 import android.Manifest;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -140,24 +139,33 @@ public class P15_WebView_Settings extends LazyFragment {
         else
             wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.EDITTEXT, wv_settings_array[4], "setTextZoom()", 0, String.valueOf(attr.getTextZoom())));//depend on the above (BuiltInZoomControls)
         wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, wv_settings_array[5], "setDisplayZoomControls()", attr.isDisplayZoomControls() ? 1 : 0, null));
-        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, wv_settings_array[6], "setAllowFileAccess()", attr.isAllowFileAccess() ? 1 : 0, null));
-        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, wv_settings_array[7], "setNeedInitialFocus()", attr.isNeedInitialFocus() ? 1 : 0, null));
-        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, wv_settings_array[8], "setJavaScriptEnabled()", attr.isJavaScriptEnabled() ? 1 : 0, null));
+        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, wv_settings_array[6], "setNeedInitialFocus()", attr.isNeedInitialFocus() ? 1 : 0, null));
+        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, wv_settings_array[7], "setJavaScriptEnabled()", attr.isJavaScriptEnabled() ? 1 : 0, null));
         if (!attr.isJavaScriptEnabled())
-            wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, wv_settings_array[9], "setJavaScriptCanOpenWindowsAutomatically()", -1, null));
+            wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, wv_settings_array[8], "setJavaScriptCanOpenWindowsAutomatically()", -1, null));
         else
-            wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, wv_settings_array[9], "setJavaScriptCanOpenWindowsAutomatically()", attr.isJavaScriptCanOpenWindowsAutomatically() ? 1 : 0, null));
-        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, wv_settings_array[10], "setLoadsImagesAutomatically()", attr.isLoadsImagesAutomatically() ? 1 : 0, null));
-        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.EDITTEXT, wv_settings_array[11], "setDefaultFontSize()", 0, String.valueOf(attr.getDefaultFontSize())));
-        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.EDITTEXT, wv_settings_array[12], "setMinimumFontSize()", 0, String.valueOf(attr.getMinimumFontSize())));
-        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.TEXTVIEW, wv_settings_array[13], "setDefaultTextEncodingName()", 0, attr.getDefaultTextEncodingName()));
-        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.TEXTVIEW, wv_settings_array[14], "setStandardFontFamily()", 0, attr.getStandardFontFamily()));
+            wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, wv_settings_array[8], "setJavaScriptCanOpenWindowsAutomatically()", attr.isJavaScriptCanOpenWindowsAutomatically() ? 1 : 0, null));
+        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, wv_settings_array[9], "setLoadsImagesAutomatically()", attr.isLoadsImagesAutomatically() ? 1 : 0, null));
+        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.EDITTEXT, wv_settings_array[10], "setDefaultFontSize()", 0, String.valueOf(attr.getDefaultFontSize())));
+        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.EDITTEXT, wv_settings_array[11], "setMinimumFontSize()", 0, String.valueOf(attr.getMinimumFontSize())));
+        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.TEXTVIEW, wv_settings_array[12], "setDefaultTextEncodingName()", 0, attr.getDefaultTextEncodingName()));
+        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.TEXTVIEW, wv_settings_array[13], "setStandardFontFamily()", 0, attr.getStandardFontFamily()));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-            wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.TEXTVIEW, wv_settings_array[15], "setMixedContentMode()", 0, attr.getMixedContentModeName(attr.getMixedContentMode())));
+            wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.TEXTVIEW, wv_settings_array[14], "setMixedContentMode()", 0, attr.getMixedContentModeName(attr.getMixedContentMode())));
         else
-            wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.TEXTVIEW, wv_settings_array[15], "setMixedContentMode()", -1, attr.getMixedContentModeName(attr.getMixedContentMode())));
-        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.TEXTVIEW, wv_settings_array[16], "setUserAgentString()", 0, attr.getUserAgent()));
-
+            wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.TEXTVIEW, wv_settings_array[14], "setMixedContentMode()", -1, attr.getMixedContentModeName(attr.getMixedContentMode())));
+        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.TEXTVIEW, wv_settings_array[15], "setUserAgentString()", 0, attr.getUserAgent()));
+        wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, wv_settings_array[16], "setAllowFileAccess()", attr.isAllowFileAccess() ? 1 : 0, null));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, wv_settings_array[17], "setAllowUniversalAccessFromFileURLs()", attr.isAllowUniversalAccessFromFileURLs() ? 1 : 0, null));
+            if (attr.isAllowUniversalAccessFromFileURLs())
+                wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, wv_settings_array[18], "setAllowFileAccessFromFileURLs()", -1, null));
+            else
+                wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, wv_settings_array[18], "setAllowFileAccessFromFileURLs()", attr.isAllowFileAccessFromFileURLs() ? 1 : 0, null));
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            wvSettings.add(new MultiStyleItem(MultiStyleRVAdapter.SWITCH, wv_settings_array[19], "setSafeBrowsingEnabled()", attr.isSafeBrowsingEnabled() ? 1 : 0, null));
+        }
         caches = new ArrayList<>();
         caches.add(new MultiStyleItem(MultiStyleRVAdapter.TEXTVIEW, wv_cache_array[0], "history", 0, ""));
         caches.add(new MultiStyleItem(MultiStyleRVAdapter.TEXTVIEW, wv_cache_array[1], "setCacheMode()", 0, attr.getCacheModeName(attr.getCacheMode())));
@@ -286,18 +294,15 @@ public class P15_WebView_Settings extends LazyFragment {
                             attr.setDisplayZoomControls(isSelect);
                             break;
                         case 6:
-                            attr.setAllowFileAccess(isSelect);
-                            break;
-                        case 7:
                             attr.setNeedInitialFocus(isSelect);
                             break;
-                        case 8:
+                        case 7:
                             attr.setJavaScriptEnabled(isSelect);
-                            adapter.updateItem(titles[1], 8, new MultiStyleItem(MultiStyleRVAdapter.SWITCH, wv_settings_array[8], "setJavaScriptEnabled()", isSelect ? 1 : 0, null));
+                            adapter.updateItem(titles[1], 7, new MultiStyleItem(MultiStyleRVAdapter.SWITCH, wv_settings_array[7], "setJavaScriptEnabled()", isSelect ? 1 : 0, null));
                             if (isSelect) {
-                                adapter.updateItem(titles[1], 9, new MultiStyleItem(MultiStyleRVAdapter.SWITCH, wv_settings_array[9], "setJavaScriptCanOpenWindowsAutomatically()", 1, null));
+                                adapter.updateItem(titles[1], 8, new MultiStyleItem(MultiStyleRVAdapter.SWITCH, wv_settings_array[8], "setJavaScriptCanOpenWindowsAutomatically()", 1, null));
                             } else {
-                                adapter.updateItem(titles[1], 9, new MultiStyleItem(MultiStyleRVAdapter.SWITCH, wv_settings_array[9], "setJavaScriptCanOpenWindowsAutomatically()", -1, null));
+                                adapter.updateItem(titles[1], 8, new MultiStyleItem(MultiStyleRVAdapter.SWITCH, wv_settings_array[8], "setJavaScriptCanOpenWindowsAutomatically()", -1, null));
                             }
                             new Handler().post(new Runnable() {
                                 @Override
@@ -306,13 +311,13 @@ public class P15_WebView_Settings extends LazyFragment {
                                 }
                             });
                             break;
-                        case 9:
+                        case 8:
                             attr.setJavaScriptCanOpenWindowsAutomatically(isSelect);
                             break;
-                        case 10:
+                        case 9:
                             attr.setLoadsImagesAutomatically(isSelect);
                             break;
-                        case 11:
+                        case 10:
                             try {
                                 //hide soft keyboard
                                 mainInterface.hideKeyboard();
@@ -328,7 +333,7 @@ public class P15_WebView_Settings extends LazyFragment {
                                 });
                             }
                             break;
-                        case 12:
+                        case 11:
                             try {
                                 //hide soft keyboard
                                 mainInterface.hideKeyboard();
@@ -344,7 +349,7 @@ public class P15_WebView_Settings extends LazyFragment {
                                 });
                             }
                             break;
-                        case 13:
+                        case 12:
                             //show selector
                             int p = 0;
                             String[] texts = getActivity().getResources().getStringArray(R.array.text_encode);
@@ -368,7 +373,7 @@ public class P15_WebView_Settings extends LazyFragment {
                                 }
                             });
                             break;
-                        case 14:
+                        case 13:
                             //show selector
                             int q = 0;
                             String[] fonts = getActivity().getResources().getStringArray(R.array.font_array);
@@ -392,7 +397,7 @@ public class P15_WebView_Settings extends LazyFragment {
                                 }
                             });
                             break;
-                        case 15:
+                        case 14:
                             //show selector
                             int r = 0;
                             String[] modes = getActivity().getResources().getStringArray(R.array.mixed_content_mode);
@@ -416,7 +421,7 @@ public class P15_WebView_Settings extends LazyFragment {
                                 }
                             });
                             break;
-                        case 16:
+                        case 15:
                             //show selector
                             int s = 0;
                             String[] ua = getActivity().getResources().getStringArray(R.array.user_agent);
@@ -430,7 +435,7 @@ public class P15_WebView_Settings extends LazyFragment {
                                 @Override
                                 public void dismiss(String data) {
                                     attr.setUserAgent(data);
-                                    adapter.updateItem(titles[1], 16, new MultiStyleItem(MultiStyleRVAdapter.TEXTVIEW, wv_settings_array[16], "getUserAgent()", 0, data));
+                                    adapter.updateItem(titles[1], 16, new MultiStyleItem(MultiStyleRVAdapter.TEXTVIEW, wv_settings_array[16], "setUserAgentString()", 0, data));
                                     new Handler().post(new Runnable() {
                                         @Override
                                         public void run() {
@@ -440,6 +445,28 @@ public class P15_WebView_Settings extends LazyFragment {
                                 }
                             });
                             break;
+                        case 16:
+                            attr.setAllowFileAccess(isSelect);
+                        case 17:
+                            attr.setAllowUniversalAccessFromFileURLs(isSelect);
+                            adapter.updateItem(titles[1], 17, new MultiStyleItem(MultiStyleRVAdapter.SWITCH, wv_settings_array[17], "setAllowUniversalAccessFromFileURLs()", isSelect ? 1 : 0, null));
+                            if (isSelect) {
+                                adapter.updateItem(titles[1], 18, new MultiStyleItem(MultiStyleRVAdapter.SWITCH, wv_settings_array[18], "setAllowFileAccessFromFileURLs()", -1, null));
+                            } else {
+                                adapter.updateItem(titles[1], 18, new MultiStyleItem(MultiStyleRVAdapter.SWITCH, wv_settings_array[18], "setAllowFileAccessFromFileURLs()", 0, null));
+                            }
+                            new Handler().post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    adapter.notifyDataSetChanged();
+                                }
+                            });
+                        case 18:
+                            attr.setAllowFileAccessFromFileURLs(isSelect);
+                        case 19:
+                            attr.setSafeBrowsingEnabled(isSelect);
+                            break;
+
                     }
                 } else if (titles[2].equals(title)) {
                     switch (position) {

@@ -149,6 +149,12 @@ class MainActivity : BaseFragmentActivity(), MainInterface {
                 tag = "P16"
             }
 
+            Constants.P17_WEBVIEW_TEST_LIST -> {
+                title = "P17_WebView_Test_List"
+                fragment = P17_WebView_Test_List.newInstance(true)
+                tag = "P17"
+            }
+
 
         //has bundle
             Constants.P14_FULL_WEBVIEW -> {

@@ -2,9 +2,7 @@ package com.catherine.webservices.fragments;
 
 import android.Manifest;
 import android.content.DialogInterface;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -27,13 +25,7 @@ import com.catherine.webservices.interfaces.BackKeyListener;
 import com.catherine.webservices.interfaces.MainInterface;
 import com.catherine.webservices.interfaces.OnItemClickListener;
 import com.catherine.webservices.interfaces.OnRequestPermissionsListener;
-import com.catherine.webservices.network.HttpAsyncTask;
-import com.catherine.webservices.network.HttpRequest;
-import com.catherine.webservices.network.HttpResponse;
-import com.catherine.webservices.network.HttpResponseListener;
-import com.catherine.webservices.network.MyHttpURLConnection;
 import com.catherine.webservices.network.NetworkHelper;
-import com.catherine.webservices.security.ADID_AsyncTask;
 import com.catherine.webservices.toolkits.CLog;
 import com.facebook.cache.common.CacheKey;
 import com.facebook.datasource.BaseDataSubscriber;
@@ -45,14 +37,10 @@ import com.facebook.imagepipeline.core.ImagePipelineFactory;
 import com.facebook.imagepipeline.request.ImageRequest;
 
 import org.jetbrains.annotations.NotNull;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import catherine.messagecenter.Client;
 import catherine.messagecenter.CustomReceiver;

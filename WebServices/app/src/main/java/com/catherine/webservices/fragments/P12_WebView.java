@@ -100,12 +100,14 @@ public class P12_WebView extends LazyFragment {
 
     private void fillInData() {
         features = new ArrayList<>();
-        features.add("Nested webView");
-        features.add("Full screen webView");
         features.add("Launch a browser");
+        features.add("Nested WebView");
+        features.add("Full screen WebView");
+        features.add("Test WebView");
 
 
         descriptions = new ArrayList<>();
+        descriptions.add("Load a url");
         descriptions.add("Load a url");
         descriptions.add("Load a url");
         descriptions.add("Load a url");
@@ -130,6 +132,11 @@ public class P12_WebView extends LazyFragment {
             public void onItemClick(@NotNull View view, int position) {
                 switch (position) {
                     case 0:
+                        Intent intent = new Intent(Intent.ACTION_VIEW);
+                        intent.setData(Uri.parse(Constants.MY_GITHUB));
+                        startActivity(intent);
+                        break;
+                    case 1:
                         Fragment fragment = P13_Nested_WebView.newInstance(true);
                         String tag = "P13";
                         String title = "P13_Nested_WebView";
@@ -138,13 +145,11 @@ public class P12_WebView extends LazyFragment {
                         transaction.addToBackStack(title);
                         transaction.commitAllowingStateLoss();
                         break;
-                    case 1:
+                    case 2:
                         mainInterface.callFragment(Constants.P14_FULL_WEBVIEW);
                         break;
-                    case 2:
-                        Intent intent = new Intent(Intent.ACTION_VIEW);
-                        intent.setData(Uri.parse(Constants.MY_GITHUB));
-                        startActivity(intent);
+                    case 3:
+                        mainInterface.callFragment(Constants.P17_WEBVIEW_TEST_LIST);
                         break;
                 }
             }

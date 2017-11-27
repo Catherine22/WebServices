@@ -45,7 +45,6 @@ public class P16_WebView_History extends LazyFragment {
     public final static String TAG = "P16_WebView_History";
     private SwipeRefreshLayout srl_container;
     private MainInterface mainInterface;
-    private SimpleStyleRVAdapter adapter;
 
     public static P16_WebView_History newInstance(boolean isLazyLoad) {
         Bundle args = new Bundle();
@@ -115,9 +114,9 @@ public class P16_WebView_History extends LazyFragment {
             }
         });
 
-        RecyclerView rv_main_list = (RecyclerView) findViewById(R.id.rv_main_list);
+        RecyclerView rv_history = (RecyclerView) findViewById(R.id.rv_history);
 //        rv_main_list.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.Companion.getVERTICAL_LIST()));
-        rv_main_list.setLayoutManager(new LinearLayoutManager(getActivity()));
+        rv_history.setLayoutManager(new LinearLayoutManager(getActivity()));
 
 
         SharedPreferences sp = getActivity().getSharedPreferences("wv_history", Context.MODE_PRIVATE);
@@ -157,7 +156,7 @@ public class P16_WebView_History extends LazyFragment {
                     }
                 }
 
-                adapter = new SimpleStyleRVAdapter(getActivity(), null, null, new OnMultiItemClickListener() {
+                SimpleStyleRVAdapter adapter = new SimpleStyleRVAdapter(getActivity(), null, null, new OnMultiItemClickListener() {
                     @Override
                     public void onItemClick(View view, String title, int position) {
                         CLog.Companion.i(TAG, "click:" + position);
@@ -181,7 +180,7 @@ public class P16_WebView_History extends LazyFragment {
                 for (Map.Entry<String, List<ImageCardEx>> entry : data.entrySet()) {
                     adapter.mergeList(entry.getKey(), entry.getValue());
                 }
-                rv_main_list.setAdapter(adapter);
+                rv_history.setAdapter(adapter);
             } catch (JSONException e) {
                 e.printStackTrace();
                 tv_empty.setVisibility(View.VISIBLE);

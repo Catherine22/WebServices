@@ -353,6 +353,10 @@ In proguard-rules.pro
 Set attributes of WebView that includes WebViewClient and WebSettings (setAllowFileAccess(), setJavaScriptEnabled(), setSupportZoom() and so forth.)
 
 
+## HTML5
+Go to [http://html5test.com/][6] to see the browser compatibility.
+
+
 ## References
 - [Tencent bugly]
 - [HTTP 1.1 doc]
@@ -361,7 +365,8 @@ Set attributes of WebView that includes WebViewClient and WebSettings (setAllowF
 - [Socket tutorial]
 - [What are examples of TCP and UDP in real life scenario ?]
 - [Android HTTPS]
-- [WebView tutorial]
+- [WebView tutorial 1]
+- [WebView tutorial 2]
 
 
 [MainActivity]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/MainActivity.kt>
@@ -393,10 +398,12 @@ Set attributes of WebView that includes WebViewClient and WebSettings (setAllowF
 [What are examples of TCP and UDP in real life scenario ?]:<https://learningnetwork.cisco.com/thread/87103>
 [Android HTTPS]:<http://blog.csdn.net/iispring/article/details/51615631>
 [github APIs]:<https://api.github.com/>
-[WebView tutorial]:<http://www.jianshu.com/p/3fcf8ba18d7f>
+[WebView tutorial 1]:<http://www.jianshu.com/p/3fcf8ba18d7f>
+[WebView tutorial 2]:<http://blog.csdn.net/huaxun66/article/details/73179187>
 
   [1]: https://kyfw.12306.cn/otn/regist/init
   [2]: https://www.ssllabs.com/ssltest/
   [3]: https://www.javascript.com/
   [4]: https://play.google.com/store/apps/details?id=com.google.android.apps.maps&hl=en
   [5]: https://github.com/Catherine22
+  [6]: http://html5test.com/

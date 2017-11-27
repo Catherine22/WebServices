@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
+import android.media.UnsupportedSchemeException;
 import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Build;
@@ -23,7 +24,9 @@ import com.catherine.webservices.interfaces.WebViewProgressListener;
 import com.catherine.webservices.network.NetworkHelper;
 import com.catherine.webservices.toolkits.CLog;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
+import java.net.URLEncoder;
 
 /**
  * Created by Catherine on 2017/11/3.
@@ -163,6 +166,59 @@ public class MyWebView extends WebView {
      */
     public void addWebViewProgressListener(WebViewProgressListener progressListener) {
         this.progressListener = progressListener;
+    }
+
+    /**
+     * 不是用来加载整个页面文件的，而是用来加载一段代码片，不能加载图片。
+     *
+     * @param data 代码片段内容
+     */
+    public void loadData(String data) throws UnsupportedEncodingException {
+        //解决字符冲突，注意做内容encode和后面的编码方式要一样。
+        loadData(URLEncoder.encode(data, "utf-8"), "text/html", "utf-8");
+    }
+
+    /**
+     * @param data     代码片段内容，不能包括'#', '%', '\' , '?'
+     * @param mimeType 代码片段所对应的MIME类型，如果传null，则默认为text/html
+     * @param encoding 代码片段的编码方式
+     */
+    @Override
+    public void loadData(String data, String mimeType, String encoding) {
+        super.loadData(data, mimeType, encoding);
+    }
+
+    /**
+     * 所有{@link #loadData(String, String, String)}做的到的事都做得到，而且不会有字符冲突，可开启图片。
+     *
+     * @param data 代码片段内容。
+     */
+    public void loadDataWithBaseURL(String data) {
+        loadDataWithBaseURL(null, data);
+    }
+
+    /**
+     * 所有{@link #loadData(String, String, String)}做的到的事都做得到，而且不会有字符冲突，可开启图片。
+     *
+     * @param baseUrl 如果data中的url是相对地址，则就会加上基准url来拼接出完整的地址。
+     * @param data    代码片段内容。
+     */
+    public void loadDataWithBaseURL(String baseUrl, String data) {
+        loadDataWithBaseURL(baseUrl, data, "text/html", "utf-8", null);
+    }
+
+    /**
+     * 所有{@link #loadData(String, String, String)}做的到的事都做得到，而且不会有字符冲突，可开启图片。
+     *
+     * @param baseUrl    如果data中的url是相对地址，则就会加上基准url来拼接出完整的地址。
+     * @param data       代码片段内容。
+     * @param mimeType   代码片段所对应的MIME类型，如果传null，则默认为text/html
+     * @param encoding   代码片段的编码方式
+     * @param historyUrl 当前的历史记录所要存储的值。
+     */
+    @Override
+    public void loadDataWithBaseURL(String baseUrl, String data, String mimeType, String encoding, String historyUrl) {
+        super.loadDataWithBaseURL(baseUrl, data, mimeType, encoding, historyUrl);
     }
 
     @Override

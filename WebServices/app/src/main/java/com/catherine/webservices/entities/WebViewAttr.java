@@ -28,11 +28,14 @@ public class WebViewAttr {
     private boolean SupportZoom = true;
     private int TextZoom = 100;
     private boolean DisplayZoomControls = false;
-    private boolean AllowFileAccess = true;
     private boolean NeedInitialFocus = true;
     private boolean JavaScriptEnabled = true;
     private boolean JavaScriptCanOpenWindowsAutomatically = true;
     private boolean LoadsImagesAutomatically = true;
+    private boolean AllowFileAccess = true;
+    private boolean AllowUniversalAccessFromFileURLs = false;
+    private boolean AllowFileAccessFromFileURLs = false;
+    private boolean SafeBrowsingEnabled = true;
     private int DefaultFontSize = 16;
     private int MinimumFontSize = 8;
     private String DefaultTextEncodingName = "UTF-8";
@@ -56,11 +59,14 @@ public class WebViewAttr {
         BuiltInZoomControls = sp.getBoolean("BuiltInZoomControls", true);
         SupportZoom = sp.getBoolean("SupportZoom", true);
         DisplayZoomControls = sp.getBoolean("DisplayZoomControls", false);
-        AllowFileAccess = sp.getBoolean("AllowFileAccess", true);
         NeedInitialFocus = sp.getBoolean("NeedInitialFocus", true);
         JavaScriptEnabled = sp.getBoolean("JavaScriptEnabled", true);
         JavaScriptCanOpenWindowsAutomatically = sp.getBoolean("JavaScriptCanOpenWindowsAutomatically", true);
         LoadsImagesAutomatically = sp.getBoolean("LoadsImagesAutomatically", true);
+        AllowFileAccess = sp.getBoolean("AllowFileAccess", true);
+        AllowUniversalAccessFromFileURLs = sp.getBoolean("AllowUniversalAccessFromFileURLs", false);
+        AllowFileAccessFromFileURLs= sp.getBoolean("AllowFileAccessFromFileURLs", false);
+        SafeBrowsingEnabled = sp.getBoolean("SafeBrowsingEnabled", true);
         TextZoom = sp.getInt("TextZoom", 100);
         DefaultFontSize = sp.getInt("DefaultFontSize", 16);
         MinimumFontSize = sp.getInt("MinimumFontSize", 8);
@@ -106,11 +112,6 @@ public class WebViewAttr {
         return DisplayZoomControls;
     }
 
-    public boolean isAllowFileAccess() {
-        AllowFileAccess = sp.getBoolean("AllowFileAccess", true);
-        return AllowFileAccess;
-    }
-
     public boolean isNeedInitialFocus() {
         NeedInitialFocus = sp.getBoolean("NeedInitialFocus", true);
         return NeedInitialFocus;
@@ -129,6 +130,26 @@ public class WebViewAttr {
     public boolean isLoadsImagesAutomatically() {
         LoadsImagesAutomatically = sp.getBoolean("LoadsImagesAutomatically", true);
         return LoadsImagesAutomatically;
+    }
+
+    public boolean isAllowFileAccess() {
+            AllowFileAccess = sp.getBoolean("AllowFileAccess", true);
+        return AllowFileAccess;
+    }
+
+    public boolean isAllowUniversalAccessFromFileURLs() {
+        AllowUniversalAccessFromFileURLs = sp.getBoolean("AllowUniversalAccessFromFileURLs", false);
+        return AllowUniversalAccessFromFileURLs;
+    }
+
+    public boolean isAllowFileAccessFromFileURLs() {
+        AllowFileAccessFromFileURLs = sp.getBoolean("AllowFileAccessFromFileURLs", false);
+        return AllowFileAccessFromFileURLs;
+    }
+
+    public boolean isSafeBrowsingEnabled() {
+        SafeBrowsingEnabled = sp.getBoolean("SafeBrowsingEnabled", true);
+        return SafeBrowsingEnabled;
     }
 
     public int getTextZoom() {
@@ -286,11 +307,6 @@ public class WebViewAttr {
         sp.edit().putBoolean("DisplayZoomControls", DisplayZoomControls).apply();
     }
 
-    public void setAllowFileAccess(boolean AllowFileAccess) {
-        this.AllowFileAccess = AllowFileAccess;
-        sp.edit().putBoolean("AllowFileAccess", AllowFileAccess).apply();
-    }
-
     public void setNeedInitialFocus(boolean NeedInitialFocus) {
         this.NeedInitialFocus = NeedInitialFocus;
         sp.edit().putBoolean("NeedInitialFocus", NeedInitialFocus).apply();
@@ -309,6 +325,26 @@ public class WebViewAttr {
     public void setLoadsImagesAutomatically(boolean LoadsImagesAutomatically) {
         this.LoadsImagesAutomatically = LoadsImagesAutomatically;
         sp.edit().putBoolean("LoadsImagesAutomatically", LoadsImagesAutomatically).apply();
+    }
+
+    public void setAllowFileAccess(boolean AllowFileAccess) {
+        this.AllowFileAccess = AllowFileAccess;
+        sp.edit().putBoolean("AllowFileAccess", AllowFileAccess).apply();
+    }
+
+    public void setAllowUniversalAccessFromFileURLs(boolean AllowUniversalAccessFromFileURLs) {
+        this.AllowUniversalAccessFromFileURLs = AllowUniversalAccessFromFileURLs;
+        sp.edit().putBoolean("AllowUniversalAccessFromFileURLs", AllowUniversalAccessFromFileURLs).apply();
+    }
+
+    public void setAllowFileAccessFromFileURLs(boolean AllowFileAccessFromFileURLs) {
+        this.AllowFileAccessFromFileURLs = AllowFileAccessFromFileURLs;
+        sp.edit().putBoolean("AllowFileAccessFromFileURLs", AllowFileAccessFromFileURLs).apply();
+    }
+
+    public void setSafeBrowsingEnabled(boolean SafeBrowsingEnabled) {
+        this.SafeBrowsingEnabled = SafeBrowsingEnabled;
+        sp.edit().putBoolean("SafeBrowsingEnabled", SafeBrowsingEnabled).apply();
     }
 
     public void setTextZoom(int TextZoom) {

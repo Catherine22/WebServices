@@ -61,7 +61,8 @@ public class SimpleStyleRVAdapter extends RecyclerView.Adapter<SimpleStyleRVAdap
         this.ctx = ctx;
         this.listener = listener;
         handler = new Handler(MyApplication.INSTANCE.calHandlerThread.getLooper());
-        mergeList(title, items);
+        if (items != null)
+            mergeList(title, items);
     }
 
     @Override
@@ -89,7 +90,7 @@ public class SimpleStyleRVAdapter extends RecyclerView.Adapter<SimpleStyleRVAdap
         String subtitle = items.get(position).getSubtitle();
         final String icon = items.get(position).getImage();
         int style = items.get(position).getStyle();
-        CLog.Companion.i(TAG,position+":"+items.toString());
+        CLog.Companion.i(TAG, position + ":" + items.toString());
 
         //This is a title not an item
         if ((style & PLAIN_TEXT) == PLAIN_TEXT) {
@@ -222,8 +223,6 @@ public class SimpleStyleRVAdapter extends RecyclerView.Adapter<SimpleStyleRVAdap
     }
 
     public void mergeList(String title, List<ImageCardEx> list) {
-//        CLog.Companion.w(TAG, "CHECK_BOX:" + CHECK_BOX);
-//        CLog.Companion.w(TAG, "SWITCH:" + SWITCH);
 //        CLog.Companion.w(TAG, "TOP:" + TOP);
 //        CLog.Companion.w(TAG, "BOTTOM:" + BOTTOM);
 //        CLog.Companion.w(TAG, "PLAIN_TEXT:" + PLAIN_TEXT);
