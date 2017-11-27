@@ -66,7 +66,8 @@ public class P13_Nested_WebView extends LazyFragment {
     }
 
     private void init() {
-        mainInterface.getPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, new OnRequestPermissionsListener() {
+        mainInterface.getPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission_group.LOCATION}, new OnRequestPermissionsListener() {
             @Override
             public void onGranted() {
                 initComponent();
@@ -108,6 +109,16 @@ public class P13_Nested_WebView extends LazyFragment {
         client = new Client(getActivity(), new CustomReceiver() {
             @Override
             public void onBroadcastReceive(@NotNull Result result) {
+                Bundle b = result.getMBundle();
+                if (b != null) {
+                    if (b.getBoolean("clear_history", false)) {
+                        wv.clearHistory();
+                    }
+
+                    if (b.getBoolean("clear_cache", false)) {
+                        wv.clearCache(true);
+                    }
+                }
                 refresh();
             }
         });
@@ -150,7 +161,7 @@ public class P13_Nested_WebView extends LazyFragment {
         //支持内容重新布局
         settings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
         //多窗口
-        settings.supportMultipleWindows();
+        settings.setSupportMultipleWindows(false);
         //当WebView调用requestFocus时为WebView设置节点
         settings.setNeedInitialFocus(attr.isNeedInitialFocus());
         //支持JS
@@ -167,6 +178,13 @@ public class P13_Nested_WebView extends LazyFragment {
         settings.setAllowContentAccess(attr.isAllowContentAccess());
         //设置可以访问文件
         settings.setAllowFileAccess(attr.isAllowFileAccess());
+        /*
+         * 是否允许定位，默认true。注意：为了保证定位可以使用，要保证以下几点：
+         * Application 需要有android.Manifest.permission#ACCESS_COARSE_LOCATION的权限
+         * Application 需要实现WebChromeClient#onGeolocationPermissionsShowPrompt的回调，
+         * 接收Js定位请求访问地理位置的通知
+         */
+        settings.setGeolocationEnabled(attr.isGeolocationEnabled());
         //设置编码格式
         settings.setDefaultTextEncodingName(attr.getDefaultTextEncodingName());
         //设置WebView的字体，默认字体为 "sans-serif"
@@ -179,8 +197,6 @@ public class P13_Nested_WebView extends LazyFragment {
         settings.setUserAgentString(attr.getUserAgentString(attr.getUserAgent()));
         String ua = settings.getUserAgentString();
         CLog.Companion.i(TAG, "my user agent:" + ua);
-        //是否保存表单数据
-        settings.setSaveFormData(attr.isSaveFormData());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             /*
              * 是否允许Js访问任何来源的内容。包括访问file scheme的URLs。考虑到安全性，
@@ -211,9 +227,30 @@ public class P13_Nested_WebView extends LazyFragment {
         }
 
         //cache
+        //是否保存表单数据
+        settings.setSaveFormData(attr.isSaveFormData());
+        //是否存储页面DOM结构
+        settings.setDomStorageEnabled(attr.isDomStorageEnabled());
+        //是否允许数据库存储
+        settings.setDatabaseEnabled(attr.isDatabaseEnabled());
+        //是否允许Cache
+        settings.setAppCacheEnabled(attr.isAppCacheEnabled());
+        //设置存储定位数据库的位置
+        settings.setGeolocationDatabasePath(MyApplication.INSTANCE.getDiskCacheDir("webview").getAbsolutePath());
+        //设置Cache API缓存路径
         settings.setAppCachePath(MyApplication.INSTANCE.getDiskCacheDir("webview").getAbsolutePath());
-        //设置WebView中的缓存模式
+         /*
+         * 基于WebView导航的类型使用缓存：正常页面加载会加载缓存并按需判断内容是否需要重新验证。
+         * 如果是页面返回，页面内容不会重新加载，直接从缓存中恢复。setCacheMode允许客户端根据指定的模式来
+         * 使用缓存。
+         * LOAD_DEFAULT 默认加载方式
+         * LOAD_CACHE_ELSE_NETWORK 按网络情况使用缓存
+         * LOAD_NO_CACHE 不使用缓存
+         * LOAD_CACHE_ONLY 只使用缓存
+         */
         settings.setCacheMode(WebSettings.LOAD_DEFAULT);
+
+
         Bundle b = getArguments();
         if (b != null) {
             String loadData = b.getString("loadData", null);
@@ -225,6 +262,9 @@ public class P13_Nested_WebView extends LazyFragment {
                 String encoding = b.getString("encoding", null);
                 String historyUrl = b.getString("historyUrl", null);
                 wv.loadDataWithBaseURL(baseUrl, loadData, mimeType, encoding, historyUrl);
+
+                CLog.Companion.i(TAG, "baseURL:" + ((baseUrl == null) ? "null" : baseUrl));
+                CLog.Companion.i(TAG, "loadData:" + loadData);
             }
         } else {
             wv.loadUrl(NetworkHelper.Companion.formattedUrl(Constants.MY_GITHUB));

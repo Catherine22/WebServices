@@ -32,9 +32,13 @@ public class WebViewAttr {
     private boolean DisplayZoomControls = false;
     private boolean NeedInitialFocus = true;
     private boolean JavaScriptEnabled = true;
-    private boolean JavaScriptCanOpenWindowsAutomatically = true;
+    private boolean JavaScriptCanOpenWindowsAutomatically = false;
     private boolean LoadsImagesAutomatically = true;
+    private boolean GeolocationEnabled = true;
     private boolean SaveFormData = false;
+    private boolean DomStorageEnabled = false;
+    private boolean DatabaseEnabled = false;
+    private boolean AppCacheEnabled = false;
     private boolean AllowContentAccess = true;
     private boolean AllowFileAccess = true;
     private boolean AllowUniversalAccessFromFileURLs = false;
@@ -66,9 +70,13 @@ public class WebViewAttr {
         DisplayZoomControls = sp.getBoolean("DisplayZoomControls", false);
         NeedInitialFocus = sp.getBoolean("NeedInitialFocus", true);
         JavaScriptEnabled = sp.getBoolean("JavaScriptEnabled", true);
-        JavaScriptCanOpenWindowsAutomatically = sp.getBoolean("JavaScriptCanOpenWindowsAutomatically", true);
+        JavaScriptCanOpenWindowsAutomatically = sp.getBoolean("JavaScriptCanOpenWindowsAutomatically", false);
         LoadsImagesAutomatically = sp.getBoolean("LoadsImagesAutomatically", true);
+        GeolocationEnabled = sp.getBoolean("GeolocationEnabled", true);
         SaveFormData = sp.getBoolean("SaveFormData", false);
+        DomStorageEnabled = sp.getBoolean("DomStorageEnabled", false);
+        DatabaseEnabled = sp.getBoolean("DatabaseEnabled", false);
+        AppCacheEnabled = sp.getBoolean("AppCacheEnabled", false);
         AllowContentAccess = sp.getBoolean("AllowContentAccess", true);
         AllowFileAccess = sp.getBoolean("AllowFileAccess", true);
         AllowUniversalAccessFromFileURLs = sp.getBoolean("AllowUniversalAccessFromFileURLs", false);
@@ -131,8 +139,18 @@ public class WebViewAttr {
     }
 
     public boolean isJavaScriptCanOpenWindowsAutomatically() {
-        JavaScriptCanOpenWindowsAutomatically = sp.getBoolean("JavaScriptCanOpenWindowsAutomatically", true);
+        JavaScriptCanOpenWindowsAutomatically = sp.getBoolean("JavaScriptCanOpenWindowsAutomatically", false);
         return JavaScriptCanOpenWindowsAutomatically;
+    }
+
+    public boolean isAppCacheEnabled() {
+        AppCacheEnabled = sp.getBoolean("AppCacheEnabled", false);
+        return AppCacheEnabled;
+    }
+
+    public boolean isDatabaseEnabled() {
+        DatabaseEnabled = sp.getBoolean("DatabaseEnabled", false);
+        return DatabaseEnabled;
     }
 
     public boolean isSaveFormData() {
@@ -140,9 +158,19 @@ public class WebViewAttr {
         return SaveFormData;
     }
 
+    public boolean isDomStorageEnabled() {
+        DomStorageEnabled = sp.getBoolean("DomStorageEnabled", false);
+        return DomStorageEnabled;
+    }
+
     public boolean isLoadsImagesAutomatically() {
         LoadsImagesAutomatically = sp.getBoolean("LoadsImagesAutomatically", true);
         return LoadsImagesAutomatically;
+    }
+
+    public boolean isGeolocationEnabled() {
+        GeolocationEnabled = sp.getBoolean("GeolocationEnabled", true);
+        return GeolocationEnabled;
     }
 
     public boolean isAllowContentAccess() {
@@ -345,14 +373,34 @@ public class WebViewAttr {
         sp.edit().putBoolean("JavaScriptCanOpenWindowsAutomatically", JavaScriptCanOpenWindowsAutomatically).apply();
     }
 
+    public void setAppCacheEnabled(boolean AppCacheEnabled) {
+        this.AppCacheEnabled = AppCacheEnabled;
+        sp.edit().putBoolean("AppCacheEnabled", AppCacheEnabled).apply();
+    }
+
     public void setSaveFormData(boolean SaveFormData) {
         this.SaveFormData = SaveFormData;
         sp.edit().putBoolean("SaveFormData", SaveFormData).apply();
     }
 
+    public void setDomStorageEnabled(boolean DomStorageEnabled) {
+        this.DomStorageEnabled = DomStorageEnabled;
+        sp.edit().putBoolean("DomStorageEnabled", DomStorageEnabled).apply();
+    }
+
+    public void setDatabaseEnabled(boolean DatabaseEnabled) {
+        this.DatabaseEnabled = DatabaseEnabled;
+        sp.edit().putBoolean("DatabaseEnabled", DatabaseEnabled).apply();
+    }
+
     public void setLoadsImagesAutomatically(boolean LoadsImagesAutomatically) {
         this.LoadsImagesAutomatically = LoadsImagesAutomatically;
         sp.edit().putBoolean("LoadsImagesAutomatically", LoadsImagesAutomatically).apply();
+    }
+
+    public void setGeolocationEnabled(boolean GeolocationEnabled) {
+        this.GeolocationEnabled = GeolocationEnabled;
+        sp.edit().putBoolean("GeolocationEnabled", GeolocationEnabled).apply();
     }
 
     public void setAllowContentAccess(boolean AllowContentAccess) {

@@ -35,7 +35,6 @@ public class P17_WebView_Test_List extends LazyFragment {
     private SwipeRefreshLayout srl_container;
     private MainInterface mainInterface;
     private SimpleStyleRVAdapter adapter;
-    private String baseURL;
 
     private List<ImageCardEx> jsList, intentList, userDefinedSchemeList, sslList, h5List, loadDataList, others;
     private final String titleIntent = "Intent links";
@@ -136,11 +135,6 @@ public class P17_WebView_Test_List extends LazyFragment {
                     b.putString("url", others.get(position).getSubtitle());
                 } else if (titleLoadData.equals(title)) {
                     b.putString("loadData", loadDataList.get(position).getSubtitle());
-                    switch (position) {
-                        case 1:
-                            b.putString("baseURL", baseURL);
-                            break;
-                    }
                 }
 
                 callFragment(Constants.P13_NESTED_WEBVIEW, b);
@@ -202,6 +196,16 @@ public class P17_WebView_Test_List extends LazyFragment {
         imageCardEx8.setSubtitle("file:///android_asset/js_command.html");
         imageCardEx8.setStyle(0);
         jsList.add(imageCardEx8);
+        ImageCardEx imageCardEx12 = new ImageCardEx();
+        imageCardEx12.setTitle("Geo location");
+        imageCardEx12.setSubtitle("file:///android_asset/geoLocation.html");
+        imageCardEx12.setStyle(0);
+        jsList.add(imageCardEx12);
+        ImageCardEx imageCardEx13 = new ImageCardEx();
+        imageCardEx13.setTitle("Google Map");
+        imageCardEx13.setSubtitle("file:///android_asset/googleMap.html");
+        imageCardEx13.setStyle(0);
+        jsList.add(imageCardEx13);
         adapter.mergeList(titleJs, jsList);
 
         ImageCardEx imageCardEx9 = new ImageCardEx();
@@ -231,12 +235,6 @@ public class P17_WebView_Test_List extends LazyFragment {
                 "</html>");
         imageCardEx11.setStyle(0);
         loadDataList.add(imageCardEx11);
-        ImageCardEx imageCardEx12 = new ImageCardEx();
-        imageCardEx12.setTitle("Data + baseURL");
-        baseURL = "http://img.my.csdn.net";
-        imageCardEx12.setSubtitle("风景优美 <img src='/uploads/201309/01/1378037151_7904.jpg'>");
-        imageCardEx12.setStyle(0);
-        loadDataList.add(imageCardEx12);
         adapter.mergeList(titleLoadData, loadDataList);
 
         ImageCardEx imageCardEx0 = new ImageCardEx();

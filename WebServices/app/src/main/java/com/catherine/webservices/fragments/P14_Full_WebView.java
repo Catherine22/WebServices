@@ -118,7 +118,8 @@ public class P14_Full_WebView extends LazyFragment {
     }
 
     private void init() {
-        mainInterface.getPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, new OnRequestPermissionsListener() {
+        mainInterface.getPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission_group.LOCATION}, new OnRequestPermissionsListener() {
             @Override
             public void onGranted() {
                 initComponent();
@@ -169,6 +170,16 @@ public class P14_Full_WebView extends LazyFragment {
         client = new Client(getActivity(), new CustomReceiver() {
             @Override
             public void onBroadcastReceive(@NotNull Result result) {
+                Bundle b = result.getMBundle();
+                if (b != null) {
+                    if (b.getBoolean("clear_history", false)) {
+                        wv.clearHistory();
+                    }
+
+                    if (b.getBoolean("clear_cache", false)) {
+                        wv.clearCache(true);
+                    }
+                }
                 refresh();
             }
         });
@@ -276,54 +287,6 @@ public class P14_Full_WebView extends LazyFragment {
                 actv_url.setText(title);
                 actv_url.dismissDropDown();
                 super.onReceivedTitle(view, title);
-            }
-
-            @Override
-            public void onReceivedIcon(WebView view, Bitmap icon) {
-                CLog.Companion.i(TAG, "onReceivedIcon");
-                super.onReceivedIcon(view, icon);
-            }
-
-            @Override
-            public void onReceivedTouchIconUrl(WebView view, String url, boolean precomposed) {
-                CLog.Companion.i(TAG, "onReceivedTouchIconUrl:" + url);
-                super.onReceivedTouchIconUrl(view, url, precomposed);
-            }
-
-            @Override
-            public void onShowCustomView(View view, CustomViewCallback callback) {
-                CLog.Companion.i(TAG, "onShowCustomView1");
-                super.onShowCustomView(view, callback);
-            }
-
-            @Override
-            public void onShowCustomView(View view, int requestedOrientation, CustomViewCallback callback) {
-                CLog.Companion.i(TAG, "onShowCustomView2");
-                super.onShowCustomView(view, requestedOrientation, callback);
-            }
-
-            @Override
-            public void onHideCustomView() {
-                CLog.Companion.i(TAG, "onHideCustomView");
-                super.onHideCustomView();
-            }
-
-            @Override
-            public boolean onCreateWindow(WebView view, boolean isDialog, boolean isUserGesture, Message resultMsg) {
-                CLog.Companion.i(TAG, "onCreateWindow");
-                return super.onCreateWindow(view, isDialog, isUserGesture, resultMsg);
-            }
-
-            @Override
-            public void onRequestFocus(WebView view) {
-                CLog.Companion.i(TAG, "onRequestFocus");
-                super.onRequestFocus(view);
-            }
-
-            @Override
-            public void onCloseWindow(WebView window) {
-                CLog.Companion.i(TAG, "onCloseWindow");
-                super.onCloseWindow(window);
             }
 
             //处理alert弹出框，html弹框的一种方式
@@ -492,90 +455,6 @@ public class P14_Full_WebView extends LazyFragment {
                 return true;
 //                return super.onJsPrompt(view, url, message, defaultValue, result);
             }
-
-            @Override
-            public boolean onJsBeforeUnload(WebView view, String url, String message, JsResult result) {
-                CLog.Companion.i(TAG, "onJsBeforeUnload:" + message);
-                return super.onJsBeforeUnload(view, url, message, result);
-            }
-
-            @Override
-            public void onExceededDatabaseQuota(String url, String databaseIdentifier, long quota, long estimatedDatabaseSize, long totalQuota, WebStorage.QuotaUpdater quotaUpdater) {
-                CLog.Companion.i(TAG, "onExceededDatabaseQuota:" + databaseIdentifier);
-                super.onExceededDatabaseQuota(url, databaseIdentifier, quota, estimatedDatabaseSize, totalQuota, quotaUpdater);
-            }
-
-            @Override
-            public void onReachedMaxAppCacheSize(long requiredStorage, long quota, WebStorage.QuotaUpdater quotaUpdater) {
-                CLog.Companion.i(TAG, "onReachedMaxAppCacheSize:" + requiredStorage);
-                super.onReachedMaxAppCacheSize(requiredStorage, quota, quotaUpdater);
-            }
-
-            @Override
-            public void onGeolocationPermissionsShowPrompt(String origin, GeolocationPermissions.Callback callback) {
-                CLog.Companion.i(TAG, "onGeolocationPermissionsShowPrompt:" + origin);
-                super.onGeolocationPermissionsShowPrompt(origin, callback);
-            }
-
-            @Override
-            public void onGeolocationPermissionsHidePrompt() {
-                CLog.Companion.i(TAG, "onGeolocationPermissionsHidePrompt");
-                super.onGeolocationPermissionsHidePrompt();
-            }
-
-            @Override
-            public void onPermissionRequest(PermissionRequest request) {
-                CLog.Companion.i(TAG, "onPermissionRequest");
-                super.onPermissionRequest(request);
-            }
-
-            @Override
-            public void onPermissionRequestCanceled(PermissionRequest request) {
-                CLog.Companion.i(TAG, "onPermissionRequestCanceled");
-                super.onPermissionRequestCanceled(request);
-            }
-
-            @Override
-            public boolean onJsTimeout() {
-                CLog.Companion.i(TAG, "onJsTimeout");
-                return super.onJsTimeout();
-            }
-
-            @Override
-            public void onConsoleMessage(String message, int lineNumber, String sourceID) {
-                CLog.Companion.i(TAG, "onConsoleMessage:" + message);
-                super.onConsoleMessage(message, lineNumber, sourceID);
-            }
-
-            @Override
-            public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
-                CLog.Companion.i(TAG, "onConsoleMessage");
-                return super.onConsoleMessage(consoleMessage);
-            }
-
-            @Override
-            public Bitmap getDefaultVideoPoster() {
-                CLog.Companion.i(TAG, "getDefaultVideoPoster");
-                return super.getDefaultVideoPoster();
-            }
-
-            @Override
-            public View getVideoLoadingProgressView() {
-                CLog.Companion.i(TAG, "getVideoLoadingProgressView");
-                return super.getVideoLoadingProgressView();
-            }
-
-            @Override
-            public void getVisitedHistory(ValueCallback<String[]> callback) {
-                CLog.Companion.i(TAG, "getVisitedHistory");
-                super.getVisitedHistory(callback);
-            }
-
-            @Override
-            public boolean onShowFileChooser(WebView webView, ValueCallback<Uri[]> filePathCallback, FileChooserParams fileChooserParams) {
-                CLog.Companion.i(TAG, "onShowFileChooser");
-                return super.onShowFileChooser(webView, filePathCallback, fileChooserParams);
-            }
         });
         wv.setWebViewClient(
                 new WebViewClient() {
@@ -589,18 +468,6 @@ public class P14_Full_WebView extends LazyFragment {
                         actv_url.dismissDropDown();
                         wv.loadUrl(url);
                         return true;
-                    }
-
-                    @Override
-                    public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-                        CLog.Companion.i(TAG, "shouldOverrideUrlLoading2");
-                        return super.shouldOverrideUrlLoading(view, request);
-                    }
-
-                    @Override
-                    public void onPageStarted(WebView view, String url, Bitmap favicon) {
-                        CLog.Companion.i(TAG, "onPageStarted:" + url);
-                        super.onPageStarted(view, url, favicon);
                     }
 
                     @Override
@@ -638,144 +505,6 @@ public class P14_Full_WebView extends LazyFragment {
                             }
                         });
                         super.onPageFinished(view, url);
-                    }
-
-                    //在加载页面资源时会调用，每一个资源（比如图片）的加载都会调用一次。
-                    @Override
-                    public void onLoadResource(WebView view, String url) {
-                        CLog.Companion.i(TAG, "onLoadResource:" + url);
-                        super.onLoadResource(view, url);
-                    }
-
-                    @Override
-                    public void onPageCommitVisible(WebView view, String url) {
-                        CLog.Companion.i(TAG, "onPageCommitVisible:" + url);
-                        super.onPageCommitVisible(view, url);
-                    }
-
-                    //拦截替换网络请求数据,  API 11开始引入，API 21弃用
-                    @Override
-                    public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
-                        CLog.Companion.i(TAG, "shouldInterceptRequest:" + url);
-                        return super.shouldInterceptRequest(view, url);
-                    }
-
-                    //拦截替换网络请求数据,  从API 21开始引入
-                    @Override
-                    public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
-                        CLog.Companion.i(TAG, "shouldInterceptRequest2");
-                        return super.shouldInterceptRequest(view, request);
-                    }
-
-                    @Override
-                    public void onTooManyRedirects(WebView view, Message cancelMsg, Message continueMsg) {
-                        CLog.Companion.w(TAG, "onTooManyRedirects:" + continueMsg);
-                        super.onTooManyRedirects(view, cancelMsg, continueMsg);
-                    }
-
-                    @Override
-                    public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
-                        CLog.Companion.e(TAG, "onReceivedError:" + description);
-                        super.onReceivedError(view, errorCode, description, failingUrl);
-                    }
-
-                    @Override
-                    public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
-                        CLog.Companion.e(TAG, "onReceivedError2");
-                        super.onReceivedError(view, request, error);
-                    }
-
-                    @Override
-                    public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
-                        CLog.Companion.e(TAG, "onReceivedHttpError");
-                        super.onReceivedHttpError(view, request, errorResponse);
-                    }
-
-                    @Override
-                    public void onFormResubmission(WebView view, Message dontResend, Message resend) {
-                        CLog.Companion.i(TAG, "onFormResubmission:" + dontResend);
-                        super.onFormResubmission(view, dontResend, resend);
-                    }
-
-                    @Override
-                    public void doUpdateVisitedHistory(WebView view, String url, boolean isReload) {
-                        CLog.Companion.i(TAG, "doUpdateVisitedHistory:" + url);
-                        super.doUpdateVisitedHistory(view, url, isReload);
-                    }
-
-                    @Override
-                    public void onReceivedSslError(WebView view, final SslErrorHandler handler, SslError error) {
-                        CLog.Companion.e(TAG, "onReceivedSslError");
-                        String message = "SSL Certificate error.";
-                        switch (error.getPrimaryError()) {
-                            case SslError.SSL_UNTRUSTED:
-                                message = "The certificate authority is not trusted.";
-                                break;
-                            case SslError.SSL_EXPIRED:
-                                message = "The certificate has expired.";
-                                break;
-                            case SslError.SSL_IDMISMATCH:
-                                message = "The certificate Hostname mismatch.";
-                                break;
-                            case SslError.SSL_NOTYETVALID:
-                                message = "The certificate is not yet valid.";
-                                break;
-                        }
-                        message += " Do you want to continue anyway?";
-                        DialogManager.showErrorDialog(getActivity(), "SSL Error:\n" + message, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                handler.proceed();
-                            }
-                        }, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                handler.cancel();
-                            }
-                        });
-//                        super.onReceivedSslError(view, handler, error);
-                    }
-
-                    @Override
-                    public void onReceivedClientCertRequest(WebView view, ClientCertRequest request) {
-                        CLog.Companion.w(TAG, "onReceivedClientCertRequest");
-                        super.onReceivedClientCertRequest(view, request);
-                    }
-
-                    @Override
-                    public void onReceivedHttpAuthRequest(WebView view, HttpAuthHandler handler, String host, String realm) {
-                        CLog.Companion.w(TAG, "onReceivedHttpAuthRequest");
-                        super.onReceivedHttpAuthRequest(view, handler, host, realm);
-                    }
-
-                    @Override
-                    public boolean shouldOverrideKeyEvent(WebView view, KeyEvent event) {
-                        CLog.Companion.i(TAG, "shouldOverrideKeyEvent");
-                        return super.shouldOverrideKeyEvent(view, event);
-                    }
-
-                    @Override
-                    public void onUnhandledKeyEvent(WebView view, KeyEvent event) {
-                        CLog.Companion.w(TAG, "onUnhandledKeyEvent");
-                        super.onUnhandledKeyEvent(view, event);
-                    }
-
-//                    @Override
-//                    public void onScaleChanged(WebView view, float oldScale, float newScale) {
-//                        CLog.Companion.i(TAG, "onScaleChanged");
-//                        super.onScaleChanged(view, oldScale, newScale);
-//                    }
-
-                    @Override
-                    public void onReceivedLoginRequest(WebView view, String realm, String account, String args) {
-                        CLog.Companion.w(TAG, "onReceivedLoginRequest");
-                        super.onReceivedLoginRequest(view, realm, account, args);
-                    }
-
-                    @Override
-                    public boolean onRenderProcessGone(WebView view, RenderProcessGoneDetail detail) {
-                        CLog.Companion.i(TAG, "onRenderProcessGone");
-                        return super.onRenderProcessGone(view, detail);
                     }
                 }
         );
@@ -886,7 +615,7 @@ public class P14_Full_WebView extends LazyFragment {
         //支持内容重新布局
         settings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
         //多窗口
-        settings.supportMultipleWindows();
+        settings.setSupportMultipleWindows(false);
         //当WebView调用requestFocus时为WebView设置节点
         settings.setNeedInitialFocus(attr.isNeedInitialFocus());
         //支持JS
@@ -903,6 +632,14 @@ public class P14_Full_WebView extends LazyFragment {
         settings.setAllowContentAccess(attr.isAllowContentAccess());
         //设置可以访问文件
         settings.setAllowFileAccess(attr.isAllowFileAccess());
+        /*
+         * 是否允许定位，默认true。注意：为了保证定位可以使用，要保证以下几点：
+         * Application 需要有android.Manifest.permission#ACCESS_COARSE_LOCATION的权限
+         * Application 需要实现WebChromeClient#onGeolocationPermissionsShowPrompt的回调，
+         * 接收Js定位请求访问地理位置的通知
+         */
+        settings.setGeolocationEnabled(attr.isGeolocationEnabled());
+        settings.setGeolocationEnabled(attr.isGeolocationEnabled());
         //设置编码格式
         settings.setDefaultTextEncodingName(attr.getDefaultTextEncodingName());
         //设置WebView的字体，默认字体为 "sans-serif"
@@ -915,8 +652,6 @@ public class P14_Full_WebView extends LazyFragment {
         settings.setUserAgentString(attr.getUserAgentString(attr.getUserAgent()));
         String ua = settings.getUserAgentString();
         CLog.Companion.i(TAG, "my user agent:" + ua);
-        //是否保存表单数据
-        settings.setSaveFormData(attr.isSaveFormData());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             /*
              * 是否允许Js访问任何来源的内容。包括访问file scheme的URLs。考虑到安全性，
@@ -947,10 +682,28 @@ public class P14_Full_WebView extends LazyFragment {
         }
 
         //cache
+        //是否保存表单数据
+        settings.setSaveFormData(attr.isSaveFormData());
+        //是否存储页面DOM结构
+        settings.setDomStorageEnabled(attr.isDomStorageEnabled());
+        //是否允许数据库存储
+        settings.setDatabaseEnabled(attr.isDatabaseEnabled());
+        //是否允许Cache
+        settings.setAppCacheEnabled(attr.isAppCacheEnabled());
+        //设置存储定位数据库的位置
+        settings.setGeolocationDatabasePath(MyApplication.INSTANCE.getDiskCacheDir("webview").getAbsolutePath());
+        //设置Cache API缓存路径
         settings.setAppCachePath(MyApplication.INSTANCE.getDiskCacheDir("webview").getAbsolutePath());
-        //设置WebView中的缓存模式
+        /*
+         * 基于WebView导航的类型使用缓存：正常页面加载会加载缓存并按需判断内容是否需要重新验证。
+         * 如果是页面返回，页面内容不会重新加载，直接从缓存中恢复。setCacheMode允许客户端根据指定的模式来
+         * 使用缓存。
+         * LOAD_DEFAULT 默认加载方式
+         * LOAD_CACHE_ELSE_NETWORK 按网络情况使用缓存
+         * LOAD_NO_CACHE 不使用缓存
+         * LOAD_CACHE_ONLY 只使用缓存
+         */
         settings.setCacheMode(WebSettings.LOAD_DEFAULT);
-        wv.loadUrl(currentUrl);
     }
 
     @Override
