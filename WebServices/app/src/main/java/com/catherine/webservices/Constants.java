@@ -69,6 +69,7 @@ public class Constants {
     public final static String EXT_PATH = ROOT_PATH + "data/";
     public final static String FRESCO_DIR = "fresco";
     protected final static String CACHE_PATH = ROOT_PATH + "cache/";
+    protected final static String LOG_PATH = ROOT_PATH + "log/";
 
     //Fragments - sort by ViewPager
     public final static int P01_APACHE = 0;
@@ -78,8 +79,6 @@ public class Constants {
     public final static int P06_UPLOAD = 4;
     public final static int P07_SOCKET = 5;
     public final static int P12_WEBVIEW = 6;
-    public final static String[] MAIN_TABS = new String[]{
-            "HttpClient", "HttpURLConnection", "Downloader", "Cache", "Upload", "Socket", "WebView"};
 
     //Other fragments
     public final static int P05_Gallery = 7;

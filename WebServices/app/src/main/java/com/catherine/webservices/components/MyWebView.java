@@ -3,7 +3,6 @@ package com.catherine.webservices.components;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Dialog;
-import android.app.DownloadManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -15,7 +14,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Build;
-import android.os.Environment;
 import android.os.Message;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
@@ -42,14 +40,17 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
+import com.catherine.webservices.MyApplication;
 import com.catherine.webservices.R;
 import com.catherine.webservices.interfaces.WebViewProgressListener;
 import com.catherine.webservices.network.NetworkHelper;
+import com.catherine.webservices.toolkits.ApplicationConfig;
 import com.catherine.webservices.toolkits.CLog;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
+import java.util.Locale;
 
 
 /**
@@ -63,8 +64,13 @@ import java.net.URLEncoder;
 
 public class MyWebView extends WebView {
     private final static String TAG = "MyWebView";
-    private Context ctx;
     private WebViewProgressListener progressListener;
+    /**
+     * save console logs in disk
+     */
+    private final boolean keepLog = true;
+    private ApplicationConfig config;
+    private Context ctx;
 
     public MyWebView(Context context) {
         super(context);
@@ -89,16 +95,74 @@ public class MyWebView extends WebView {
 
     @SuppressLint("SetJavaScriptEnabled")
     public void initSettings(Context context) {
+        initSettings(context, false, true);
+    }
+
+    @SuppressLint("SetJavaScriptEnabled")
+    public void initSettings(Context context, boolean safer, boolean enableCache) {
         ctx = context;
+        config = new ApplicationConfig(ctx);
         WebSettings settings = getSettings();
         settings.setUseWideViewPort(true);
         settings.setLoadWithOverviewMode(true);
         settings.setSupportZoom(true);
         settings.setBuiltInZoomControls(true);
-        settings.setAllowFileAccess(true);
-        settings.setJavaScriptEnabled(true);
-        settings.setJavaScriptCanOpenWindowsAutomatically(true);
         settings.setLoadsImagesAutomatically(true);
+        settings.setDefaultTextEncodingName("utf-8");
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            settings.setUserAgentString(WebSettings.getDefaultUserAgent(ctx));
+        } else {
+            settings.setUserAgentString(System.getProperty("http.agent"));
+        }
+        String ua = settings.getUserAgentString();
+        CLog.Companion.i(TAG, "my user agent:" + ua);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            settings.setAllowUniversalAccessFromFileURLs(true);
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            settings.setMediaPlaybackRequiresUserGesture(true);
+        }
+
+        if (safer) {
+            settings.setJavaScriptEnabled(true);
+            settings.setJavaScriptCanOpenWindowsAutomatically(true);
+            settings.setAllowContentAccess(true);
+            settings.setAllowFileAccess(true);
+            settings.setGeolocationEnabled(true);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                settings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
+            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                settings.setSafeBrowsingEnabled(true);
+            }
+        } else {
+            settings.setJavaScriptEnabled(false);
+            settings.setJavaScriptCanOpenWindowsAutomatically(false);
+            settings.setAllowContentAccess(false);
+            settings.setAllowFileAccess(false);
+            settings.setGeolocationEnabled(false);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                settings.setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);
+            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                settings.setSafeBrowsingEnabled(false);
+            }
+        }
+
+        //cache
+        if (enableCache) {
+            settings.setSaveFormData(true);
+            settings.setDomStorageEnabled(true);
+            settings.setDatabaseEnabled(true);
+            settings.setAppCacheEnabled(true);
+            settings.setDatabasePath(MyApplication.INSTANCE.getDiskCacheDir("webview").getAbsolutePath());
+            settings.setGeolocationDatabasePath(MyApplication.INSTANCE.getDiskCacheDir("webview").getAbsolutePath());
+            settings.setAppCachePath(MyApplication.INSTANCE.getDiskCacheDir("webview").getAbsolutePath());
+            settings.setCacheMode(WebSettings.LOAD_DEFAULT);
+        } else {
+            settings.setCacheMode(WebSettings.LOAD_NO_CACHE);
+        }
+
         settings.setDefaultTextEncodingName("utf-8");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             // In this mode, the WebView will allow a secure origin to load content from any other origin, even if that origin is insecure.
@@ -307,12 +371,18 @@ public class MyWebView extends WebView {
             @Override
             public void onConsoleMessage(String message, int lineNumber, String sourceID) {
                 CLog.Companion.i(TAG, "onConsoleMessage:" + message);
+                if (keepLog) {
+                    config.writeWebViewLog(String.format(Locale.ENGLISH, "lineNumber(%d), sourceID(%s), message:%s", lineNumber, sourceID, message));
+                }
                 super.onConsoleMessage(message, lineNumber, sourceID);
             }
 
             @Override
             public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
                 CLog.Companion.i(TAG, "onConsoleMessage");
+                if (keepLog) {
+                    config.writeWebViewLog(String.format(Locale.ENGLISH, "lineNumber(%d), sourceID(%s), message:%s", consoleMessage.lineNumber(), consoleMessage.sourceId(), consoleMessage.message()));
+                }
                 return super.onConsoleMessage(consoleMessage);
             }
 

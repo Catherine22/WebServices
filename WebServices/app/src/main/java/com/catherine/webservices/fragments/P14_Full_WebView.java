@@ -195,6 +195,7 @@ public class P14_Full_WebView extends LazyFragment {
                 if (wv.canGoBack())
                     wv.goBack();
                 else {
+                    mainInterface.removeBackKeyListener();
                     mainInterface.backToPreviousPage();
                 }
             }

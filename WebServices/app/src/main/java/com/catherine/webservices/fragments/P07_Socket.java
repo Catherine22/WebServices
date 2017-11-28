@@ -60,6 +60,18 @@ public class P07_Socket extends LazyFragment {
         mainInterface.getPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, new OnRequestPermissionsListener() {
             @Override
             public void onGranted() {
+                mainInterface.setBackKeyListener(new BackKeyListener() {
+                    @Override
+                    public void OnKeyDown() {
+                        if (getChildFragmentManager().getBackStackEntryCount() > 0) {
+                            getChildFragmentManager().popBackStack();
+                            mainInterface.restoreBottomLayout();
+                        } else {
+                            mainInterface.removeBackKeyListener();
+                            mainInterface.backToPreviousPage();
+                        }
+                    }
+                });
                 fillInData();
                 initComponent();
             }
@@ -75,7 +87,7 @@ public class P07_Socket extends LazyFragment {
                 }
 
                 context.deleteCharAt(context.length() - 1);
-                DialogManager.showPermissionDialog( getActivity(), String.format( getActivity().getResources().getString(R.string.permission_request), context), new DialogInterface.OnClickListener() {
+                DialogManager.showPermissionDialog(getActivity(), String.format(getActivity().getResources().getString(R.string.permission_request), context), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         getActivity().finish();
@@ -144,17 +156,6 @@ public class P07_Socket extends LazyFragment {
             }
         });
         rv_main_list.setAdapter(adapter);
-
-        mainInterface.setBackKeyListener(new BackKeyListener() {
-            @Override
-            public void OnKeyDown() {
-                if (getChildFragmentManager().getBackStackEntryCount() > 0) {
-                    getChildFragmentManager().popBackStack();
-                    mainInterface.restoreBottomLayout();
-                } else
-                    mainInterface.backToPreviousPage();
-            }
-        });
     }
 
     private void callFragment(int id) {

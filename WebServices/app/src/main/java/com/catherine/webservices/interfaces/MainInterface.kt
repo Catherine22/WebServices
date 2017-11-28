@@ -19,6 +19,7 @@ interface MainInterface {
     fun backToPreviousPage()
     fun clearAllFragments()
     fun setBackKeyListener(listener: BackKeyListener)
+    fun removeBackKeyListener()
     fun addBottomLayout(id: Int)
     fun getBottomLayout(): View
     fun restoreBottomLayout()

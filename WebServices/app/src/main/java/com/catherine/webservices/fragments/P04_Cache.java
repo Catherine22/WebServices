@@ -75,14 +75,59 @@ public class P04_Cache extends LazyFragment {
     public void onCreateViewLazy(Bundle savedInstanceState) {
         super.onCreateViewLazy(savedInstanceState);
         setContentView(R.layout.f_04_cache);
+        mainInterface = (MainInterface) getActivity();
         init();
     }
 
     private void init() {
-        mainInterface = (MainInterface) getActivity();
         mainInterface.getPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, new OnRequestPermissionsListener() {
             @Override
             public void onGranted() {
+                client = new Client(getActivity(), new CustomReceiver() {
+                    @Override
+                    public void onBroadcastReceive(@NotNull Result result) {
+                        if (result.getMBoolean() != null && result.getMBoolean()) {
+                            updateView();
+                        }
+                    }
+                });
+                client.gotMessages(Commands.UPDATE_P04);
+                mainInterface.setBackKeyListener(new BackKeyListener() {
+                    @Override
+                    public void OnKeyDown() {
+                        if (getChildFragmentManager().getBackStackEntryCount() > 0) {
+                            getChildFragmentManager().popBackStack();
+                            mainInterface.restoreBottomLayout();
+                        } else {
+                            mainInterface.removeBackKeyListener();
+                            mainInterface.backToPreviousPage();
+                        }
+                    }
+                });
+                //restore bottom layout when back to this page.
+                getChildFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
+                    @Override
+                    public void onBackStackChanged() {
+                        if (getChildFragmentManager().getBackStackEntryCount() == 0) {
+                            mainInterface.restoreBottomLayout();
+                            mainInterface.addBottomLayout(R.layout.bottom_progressbar);
+                            View bottom = mainInterface.getBottomLayout();
+                            pb = bottom.findViewById(R.id.pb);
+                            tv_pb_info = bottom.findViewById(R.id.tv_pb_info);
+
+                            pb.setMax(len);
+                            pb.setProgress(succeed);
+                            pb.setSecondaryProgress(failed + succeed);
+                            double p = succeed * 100.0 / len;
+                            double e = failed * 100.0 / len;
+                            tv_pb_info.setText(String.format(Locale.ENGLISH, "Fresco Cached: %.2f%%, failed: %.2f%%", p, e));
+                            if (imageCards.size() == succeed) {
+                                CLog.Companion.i(TAG, "All the images are cached!");
+                            }
+                        }
+
+                    }
+                });
                 fillInData();
                 initComponent();
             }
@@ -146,27 +191,6 @@ public class P04_Cache extends LazyFragment {
             }
         });
 
-        client = new Client(getActivity(), new CustomReceiver() {
-            @Override
-            public void onBroadcastReceive(@NotNull Result result) {
-                if (result.getMBoolean() != null && result.getMBoolean()) {
-                    updateView();
-                }
-            }
-        });
-        client.gotMessages(Commands.UPDATE_P04);
-
-        mainInterface.setBackKeyListener(new BackKeyListener() {
-            @Override
-            public void OnKeyDown() {
-                if (getChildFragmentManager().getBackStackEntryCount() > 0) {
-                    getChildFragmentManager().popBackStack();
-                    mainInterface.restoreBottomLayout();
-                } else
-                    mainInterface.backToPreviousPage();
-            }
-        });
-
         RecyclerView rv_main_list = (RecyclerView) findViewById(R.id.rv_main_list);
 //        rv_main_list.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.Companion.getVERTICAL_LIST()));
         rv_main_list.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -219,32 +243,6 @@ public class P04_Cache extends LazyFragment {
         View bottom = mainInterface.getBottomLayout();
         pb = bottom.findViewById(R.id.pb);
         tv_pb_info = bottom.findViewById(R.id.tv_pb_info);
-
-        //restore bottom layout when back to this page.
-        getChildFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
-            @Override
-            public void onBackStackChanged() {
-                if (getChildFragmentManager().getBackStackEntryCount() == 0) {
-                    mainInterface.restoreBottomLayout();
-                    mainInterface.addBottomLayout(R.layout.bottom_progressbar);
-                    View bottom = mainInterface.getBottomLayout();
-                    pb = bottom.findViewById(R.id.pb);
-                    tv_pb_info = bottom.findViewById(R.id.tv_pb_info);
-
-                    pb.setMax(len);
-                    pb.setProgress(succeed);
-                    pb.setSecondaryProgress(failed + succeed);
-                    double p = succeed * 100.0 / len;
-                    double e = failed * 100.0 / len;
-                    tv_pb_info.setText(String.format(Locale.ENGLISH, "Fresco Cached: %.2f%%, failed: %.2f%%", p, e));
-                    if (imageCards.size() == succeed) {
-                        CLog.Companion.i(TAG, "All the images are cached!");
-                    }
-                }
-
-            }
-        });
-
         prefetchToDiskCache();
     }
 

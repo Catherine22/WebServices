@@ -225,6 +225,19 @@ public class MyApplication extends Application {
             return dir;
     }
 
+    public File getLogDir() throws NullPointerException {
+        String cachePath = (FileUtils.isExternalStorageWritable()) ? Constants.LOG_PATH : getCacheDir().getAbsolutePath();
+        File dir = new File(cachePath);
+        boolean b = true;
+        if (!dir.exists())
+            b = dir.mkdirs();
+
+        if (!b)
+            throw new NullPointerException(String.format("Failed to access external storage, isExternalStorageWritable:%s", FileUtils.isExternalStorageWritable()));
+        else
+            return dir;
+    }
+
     public File getDataCacheDir() throws NullPointerException {
         return getDataCacheDir(null);
     }

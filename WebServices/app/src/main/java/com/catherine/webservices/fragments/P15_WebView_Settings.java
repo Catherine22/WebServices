@@ -68,11 +68,11 @@ public class P15_WebView_Settings extends LazyFragment {
     public void onCreateViewLazy(Bundle savedInstanceState) {
         super.onCreateViewLazy(savedInstanceState);
         setContentView(R.layout.f_15_wv_settings);
+        mainInterface = (MainInterface) getActivity();
         init();
     }
 
     private void init() {
-        mainInterface = (MainInterface) getActivity();
         mainInterface.getPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, new OnRequestPermissionsListener() {
             @Override
             public void onGranted() {

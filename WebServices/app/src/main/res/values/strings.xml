@@ -31,6 +31,16 @@
     <string name="permission_phone">电话</string>
     <string name="permission_sms">简讯</string>
 
+    <string-array name="tab_array">
+        <item>HttpClient</item>
+        <item>HttpURLConnection</item>
+        <item>Downloader</item>
+        <item>Cache</item>
+        <item>Upload</item>
+        <item>Socket</item>
+        <item>WebView</item>
+    </string-array>
+
     <string-array name="drawer_array">
         <item>Author</item>
         <item>Settings</item>

@@ -68,6 +68,42 @@ public class P12_WebView extends LazyFragment {
         mainInterface.getPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, new OnRequestPermissionsListener() {
             @Override
             public void onGranted() {
+
+                client = new Client(getActivity(), new CustomReceiver() {
+                    @Override
+                    public void onBroadcastReceive(@NotNull Result result) {
+                        if (getChildFragmentManager().getBackStackEntryCount() > 0) {
+                            getChildFragmentManager().popBackStack();
+                            mainInterface.restoreBottomLayout();
+                        } else
+                            mainInterface.backToPreviousPage();
+                    }
+                });
+                client.gotMessages(Commands.BACK_TO_PREV);
+
+                mainInterface.setBackKeyListener(new BackKeyListener() {
+                    @Override
+                    public void OnKeyDown() {
+                        if (getChildFragmentManager().getBackStackEntryCount() > 0) {
+                            getChildFragmentManager().popBackStack();
+                            mainInterface.restoreBottomLayout();
+                        } else {
+                            mainInterface.removeBackKeyListener();
+                            mainInterface.backToPreviousPage();
+                        }
+                    }
+                });
+
+                //restore bottom layout when back to this page.
+                getChildFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
+                    @Override
+                    public void onBackStackChanged() {
+                        if (getChildFragmentManager().getBackStackEntryCount() == 0) {
+                            mainInterface.restoreBottomLayout();
+                        }
+
+                    }
+                });
                 fillInData();
                 initComponent();
             }
@@ -120,17 +156,6 @@ public class P12_WebView extends LazyFragment {
     }
 
     private void initComponent() {
-        client = new Client(getActivity(), new CustomReceiver() {
-            @Override
-            public void onBroadcastReceive(@NotNull Result result) {
-                if (getChildFragmentManager().getBackStackEntryCount() > 0) {
-                    getChildFragmentManager().popBackStack();
-                    mainInterface.restoreBottomLayout();
-                } else
-                    mainInterface.backToPreviousPage();
-            }
-        });
-        client.gotMessages(Commands.BACK_TO_PREV);
         srl_container = (SwipeRefreshLayout) findViewById(R.id.srl_container);
         srl_container.setColorSchemeResources(R.color.colorPrimary, R.color.colorAccent, R.color.colorPrimaryDark, R.color.colorAccentDark);
         srl_container.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -171,28 +196,6 @@ public class P12_WebView extends LazyFragment {
             }
         });
         rv_main_list.setAdapter(adapter);
-
-        mainInterface.setBackKeyListener(new BackKeyListener() {
-            @Override
-            public void OnKeyDown() {
-                if (getChildFragmentManager().getBackStackEntryCount() > 0) {
-                    getChildFragmentManager().popBackStack();
-                    mainInterface.restoreBottomLayout();
-                } else
-                    mainInterface.backToPreviousPage();
-            }
-        });
-
-        //restore bottom layout when back to this page.
-        getChildFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
-            @Override
-            public void onBackStackChanged() {
-                if (getChildFragmentManager().getBackStackEntryCount() == 0) {
-                    mainInterface.restoreBottomLayout();
-                }
-
-            }
-        });
     }
 
 

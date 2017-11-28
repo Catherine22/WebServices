@@ -71,6 +71,23 @@ public class P17_WebView_Test_List extends LazyFragment {
         mainInterface.getPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, new OnRequestPermissionsListener() {
             @Override
             public void onGranted() {
+                mainInterface.setBackKeyListener(new BackKeyListener() {
+                    @Override
+                    public void OnKeyDown() {
+                        if (getChildFragmentManager().getBackStackEntryCount() == 0) {
+                            Server sv = new Server(getActivity(), new AsyncResponse() {
+                                @Override
+                                public void onFailure(int errorCode) {
+                                    CLog.Companion.e(TAG, "onFailure:" + errorCode);
+                                }
+                            });
+                            mainInterface.removeBackKeyListener();
+                            sv.pushBoolean(Commands.BACK_TO_PREV, true);
+                        } else {
+                            getChildFragmentManager().popBackStack();
+                        }
+                    }
+                });
                 fillInData();
             }
 
@@ -150,22 +167,6 @@ public class P17_WebView_Test_List extends LazyFragment {
         });
         setList();
         rv_url_list.setAdapter(adapter);
-        mainInterface.setBackKeyListener(new BackKeyListener() {
-            @Override
-            public void OnKeyDown() {
-                if (getChildFragmentManager().getBackStackEntryCount() == 0) {
-                    Server sv = new Server(getActivity(), new AsyncResponse() {
-                        @Override
-                        public void onFailure(int errorCode) {
-                            CLog.Companion.e(TAG, "onFailure:" + errorCode);
-                        }
-                    });
-                    sv.pushBoolean(Commands.BACK_TO_PREV, true);
-                } else {
-                    getChildFragmentManager().popBackStack();
-                }
-            }
-        });
     }
 
     private void setList() {
