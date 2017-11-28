@@ -42,7 +42,6 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
-import com.catherine.webservices.Constants;
 import com.catherine.webservices.MyApplication;
 import com.catherine.webservices.R;
 import com.catherine.webservices.interfaces.ActivityResultListener;
@@ -107,6 +106,7 @@ public class MyWebView extends WebView {
     public void initSettings(Context context, boolean safer, boolean enableCache) {
         ctx = context;
         config = new ApplicationConfig();
+        NetworkHelper networkHelper = new NetworkHelper(ctx);
         activityResultListener = (ActivityResultListener) ctx;
         WebSettings settings = getSettings();
         settings.setUseWideViewPort(true);
@@ -164,7 +164,12 @@ public class MyWebView extends WebView {
             settings.setDatabasePath(MyApplication.INSTANCE.getDiskCacheDir("webview").getAbsolutePath());
             settings.setGeolocationDatabasePath(MyApplication.INSTANCE.getDiskCacheDir("webview").getAbsolutePath());
             settings.setAppCachePath(MyApplication.INSTANCE.getDiskCacheDir("webview").getAbsolutePath());
-            settings.setCacheMode(WebSettings.LOAD_DEFAULT);
+            if (networkHelper.isNetworkHealthy()) {
+                settings.setCacheMode(WebSettings.LOAD_DEFAULT);
+            } else {
+                settings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
+            }
+            settings.setAppCacheMaxSize(5 * 1024 * 1024);//5M
         } else {
             settings.setCacheMode(WebSettings.LOAD_NO_CACHE);
         }
@@ -278,6 +283,7 @@ public class MyWebView extends WebView {
                 super.onExceededDatabaseQuota(url, databaseIdentifier, quota, estimatedDatabaseSize, totalQuota, quotaUpdater);
             }
 
+            //扩充缓存的容量
             @Override
             public void onReachedMaxAppCacheSize(long requiredStorage, long quota, WebStorage.QuotaUpdater quotaUpdater) {
                 CLog.Companion.i(TAG, "onReachedMaxAppCacheSize:" + requiredStorage);

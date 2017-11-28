@@ -353,6 +353,7 @@ In proguard-rules.pro
 
 11. Enabled dom storage and database
 12. Launch FileChooser
+13. Cache and offline mode
 
 You could also go to **[P17_WebView_Test_List]** to test all the websites I listed.
 

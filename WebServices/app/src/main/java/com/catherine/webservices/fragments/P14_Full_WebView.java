@@ -694,6 +694,8 @@ public class P14_Full_WebView extends LazyFragment {
         settings.setGeolocationDatabasePath(MyApplication.INSTANCE.getDiskCacheDir("webview").getAbsolutePath());
         //设置Cache API缓存路径
         settings.setAppCachePath(MyApplication.INSTANCE.getDiskCacheDir("webview").getAbsolutePath());
+        //设置Cache缓存大小
+        settings.setAppCacheMaxSize(5 * 1024 * 1024);//5M
         /*
          * 基于WebView导航的类型使用缓存：正常页面加载会加载缓存并按需判断内容是否需要重新验证。
          * 如果是页面返回，页面内容不会重新加载，直接从缓存中恢复。setCacheMode允许客户端根据指定的模式来
