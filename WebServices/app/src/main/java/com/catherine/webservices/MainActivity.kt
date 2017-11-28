@@ -30,10 +30,7 @@ import catherine.messagecenter.Server
 import com.catherine.webservices.adapters.MainViewPagerAdapter
 import com.catherine.webservices.components.DialogManager
 import com.catherine.webservices.fragments.*
-import com.catherine.webservices.interfaces.BackKeyListener
-import com.catherine.webservices.interfaces.MainInterface
-import com.catherine.webservices.interfaces.OnItemClickListener
-import com.catherine.webservices.interfaces.OnRequestPermissionsListener
+import com.catherine.webservices.interfaces.*
 import com.catherine.webservices.kotlin_sample.KotlinTemplate
 import com.catherine.webservices.kotlin_sample.player.Player
 import com.catherine.webservices.network.NetworkHealthListener

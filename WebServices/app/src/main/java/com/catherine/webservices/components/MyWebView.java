@@ -2,6 +2,7 @@ package com.catherine.webservices.components;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -15,6 +16,7 @@ import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Build;
 import android.os.Message;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.View;
@@ -40,8 +42,10 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
+import com.catherine.webservices.Constants;
 import com.catherine.webservices.MyApplication;
 import com.catherine.webservices.R;
+import com.catherine.webservices.interfaces.ActivityResultListener;
 import com.catherine.webservices.interfaces.WebViewProgressListener;
 import com.catherine.webservices.network.NetworkHelper;
 import com.catherine.webservices.toolkits.ApplicationConfig;
@@ -51,6 +55,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.util.Locale;
+
+import static com.catherine.webservices.Constants.FILECHOOSER_RESULTCODE;
 
 
 /**
@@ -65,9 +71,8 @@ import java.util.Locale;
 public class MyWebView extends WebView {
     private final static String TAG = "MyWebView";
     private WebViewProgressListener progressListener;
-    /**
-     * save console logs in disk
-     */
+    private ActivityResultListener activityResultListener;
+    //save console logs in disk
     private final boolean keepLog = false;
     private ApplicationConfig config;
     private Context ctx;
@@ -102,6 +107,7 @@ public class MyWebView extends WebView {
     public void initSettings(Context context, boolean safer, boolean enableCache) {
         ctx = context;
         config = new ApplicationConfig();
+        activityResultListener = (ActivityResultListener) ctx;
         WebSettings settings = getSettings();
         settings.setUseWideViewPort(true);
         settings.setLoadWithOverviewMode(true);
@@ -404,10 +410,39 @@ public class MyWebView extends WebView {
                 super.getVisitedHistory(callback);
             }
 
+            //Android 4.1+
+            public void openFileChooser(ValueCallback<Uri> uploadMsg, String acceptType, String capture) {
+                CLog.Companion.i(TAG, "onShowFileChooser：" + acceptType + ", capture:" + capture);
+                activityResultListener.addValueCallback(uploadMsg);
+                Intent i;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
+                    i = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                else
+                    i = new Intent(Intent.ACTION_GET_CONTENT);
+                i.addCategory(Intent.CATEGORY_OPENABLE);
+                String type = TextUtils.isEmpty(acceptType) ? "*/*" : acceptType;
+                i.setType(type);
+                ((Activity) ctx).startActivityForResult(Intent.createChooser(i, "File Chooser"), FILECHOOSER_RESULTCODE);
+            }
+
+            //Android 5.0+
             @Override
+            @TargetApi(Build.VERSION_CODES.LOLLIPOP)
             public boolean onShowFileChooser(WebView webView, ValueCallback<Uri[]> filePathCallback, FileChooserParams fileChooserParams) {
-                CLog.Companion.i(TAG, "onShowFileChooser");
-                return super.onShowFileChooser(webView, filePathCallback, fileChooserParams);
+                CLog.Companion.i(TAG, "onShowFileChooser：" + fileChooserParams.getAcceptTypes()[0] + ", capture:" + fileChooserParams.isCaptureEnabled());
+                activityResultListener.addValueCallbackL(filePathCallback);
+                Intent i = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                i.addCategory(Intent.CATEGORY_OPENABLE);
+
+                String type = "*/*";
+                if (fileChooserParams != null && fileChooserParams.getAcceptTypes() != null
+                        && fileChooserParams.getAcceptTypes().length > 0) {
+                    type = fileChooserParams.getAcceptTypes()[0];
+                }
+                i.setType(type);
+                ((Activity) ctx).startActivityForResult(Intent.createChooser(i, "File Chooser"), FILECHOOSER_RESULTCODE);
+                return true;
+//                return super.onShowFileChooser(webView, filePathCallback, fileChooserParams);
             }
         });
 

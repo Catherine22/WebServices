@@ -147,6 +147,7 @@
         <item>file:///android_asset/session_storage.html</item>
         <item>file:///android_asset/session_storage_counter.html</item>
         <item>file:///android_asset/web_sql_db.html</item>
+        <item>file:///android_asset/file_chooser.html</item>
         <!--SSL test-->
         <item>https://kyfw.12306.cn/otn/regist/init</item>
         <!--H5 test-->

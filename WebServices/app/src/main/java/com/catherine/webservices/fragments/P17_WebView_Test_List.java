@@ -242,6 +242,11 @@ public class P17_WebView_Test_List extends LazyFragment {
         imageCardEx16.setSubtitle("file:///android_asset/web_sql_db.html");
         imageCardEx16.setStyle(0);
         jsList.add(imageCardEx16);
+        ImageCardEx imageCardEx17 = new ImageCardEx();
+        imageCardEx17.setTitle("File chooser");
+        imageCardEx17.setSubtitle("file:///android_asset/file_chooser.html");
+        imageCardEx17.setStyle(0);
+        jsList.add(imageCardEx17);
         adapter.mergeList(titleJs, jsList);
 
         ImageCardEx imageCardEx9 = new ImageCardEx();

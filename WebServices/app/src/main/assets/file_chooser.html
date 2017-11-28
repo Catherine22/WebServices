@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3mobile.css">
+
+<body>
+  <script>
+    function upload() {
+      document.getElementById('file-input').click();
+      document.getElementById('file-input').onchange = function() {
+        alert('Selected file: ' + this.value);
+      };
+    }
+  </script>
+
+  <button onclick="upload()">Open a file</button>
+  <input id="file-input" type="file" accept="*/*" name="name" style="display: none;" />
+  <button onclick="upload()">Open an image</button>
+  <input id="file-input" type="file" accept="image/*" name="name" style="display: none;" />
+</body>
+
+</html>

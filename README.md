@@ -351,8 +351,8 @@ In proguard-rules.pro
 10. HTML5
 >Go to [http://html5test.com/][6] to see the browser compatibility.
 
-11. Cache
->
+11. Enabled dom storage and database
+12. Launch FileChooser
 
 You could also go to **[P17_WebView_Test_List]** to test all the websites I listed.
 
