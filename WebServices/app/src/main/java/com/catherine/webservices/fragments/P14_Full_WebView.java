@@ -118,8 +118,8 @@ public class P14_Full_WebView extends LazyFragment {
     }
 
     private void init() {
-        mainInterface.getPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                Manifest.permission_group.LOCATION}, new OnRequestPermissionsListener() {
+        mainInterface.getPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION}, new OnRequestPermissionsListener() {
             @Override
             public void onGranted() {
                 initComponent();
@@ -130,9 +130,8 @@ public class P14_Full_WebView extends LazyFragment {
                 StringBuilder context = new StringBuilder();
                 if (deniedPermissions != null) {
                     for (String p : deniedPermissions) {
-                        if (Manifest.permission.WRITE_EXTERNAL_STORAGE.equals(p)) {
-                            context.append("存储、");
-                        }
+                        context.append(p);
+                        context.append(", ");
                     }
                 }
 
@@ -535,7 +534,7 @@ public class P14_Full_WebView extends LazyFragment {
                         final String saveImgUrl = result.getExtra();
 
                         final Dialog myDialog = new Dialog(getActivity());
-                        myDialog.requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
+                        myDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                         myDialog.setContentView(R.layout.dialog_text);
                         //设置dialog背景透明
                         myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));

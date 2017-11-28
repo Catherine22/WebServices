@@ -1,15 +1,24 @@
 package com.catherine.webservices.fragments;
 
 import android.Manifest;
+import android.app.Dialog;
+import android.app.DownloadManager;
 import android.content.DialogInterface;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.Window;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.catherine.webservices.Commands;
 import com.catherine.webservices.Constants;
@@ -27,12 +36,15 @@ import com.catherine.webservices.toolkits.CLog;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import catherine.messagecenter.Client;
 import catherine.messagecenter.CustomReceiver;
 import catherine.messagecenter.Result;
+
+import static android.content.Context.DOWNLOAD_SERVICE;
 
 /**
  * Created by Catherine on 2017/9/19.
@@ -66,8 +78,8 @@ public class P13_Nested_WebView extends LazyFragment {
     }
 
     private void init() {
-        mainInterface.getPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                Manifest.permission_group.LOCATION}, new OnRequestPermissionsListener() {
+        mainInterface.getPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION}, new OnRequestPermissionsListener() {
             @Override
             public void onGranted() {
                 initComponent();
@@ -78,9 +90,8 @@ public class P13_Nested_WebView extends LazyFragment {
                 StringBuilder context = new StringBuilder();
                 if (deniedPermissions != null) {
                     for (String p : deniedPermissions) {
-                        if (Manifest.permission.WRITE_EXTERNAL_STORAGE.equals(p)) {
-                            context.append("存储、");
-                        }
+                        context.append(p);
+                        context.append(", ");
                     }
                 }
 
@@ -141,6 +152,95 @@ public class P13_Nested_WebView extends LazyFragment {
                     pb.setVisibility(View.INVISIBLE);
                 else
                     pb.setVisibility(View.VISIBLE);
+            }
+        });
+        wv.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                final WebView.HitTestResult result = ((WebView) v).getHitTestResult();
+                if (null == result)
+                    return false;
+                int type = result.getType();
+                if (type == WebView.HitTestResult.UNKNOWN_TYPE)
+                    return false;
+
+                // 这里可以拦截很多类型，我们只处理图片类型就可以了
+                switch (type) {
+                    case WebView.HitTestResult.PHONE_TYPE: // 处理拨号
+                        break;
+                    case WebView.HitTestResult.EMAIL_TYPE: // 处理Email
+                        break;
+                    case WebView.HitTestResult.GEO_TYPE: // 地图类型
+                        break;
+                    case WebView.HitTestResult.SRC_ANCHOR_TYPE: // 超链接
+                        break;
+                    case WebView.HitTestResult.SRC_IMAGE_ANCHOR_TYPE:
+                        break;
+                    case WebView.HitTestResult.IMAGE_TYPE: // 处理长按图片的菜单项
+                        // 获取图片的路径
+                        final String saveImgUrl = result.getExtra();
+
+                        final Dialog myDialog = new Dialog(getActivity());
+                        myDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                        myDialog.setContentView(R.layout.dialog_text);
+                        //设置dialog背景透明
+                        myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                        myDialog.show();
+
+                        final TextView tv_title = myDialog.findViewById(R.id.tv_title);
+                        tv_title.setText("Alert!");
+                        final TextView tv_message = myDialog.findViewById(R.id.tv_message);
+                        tv_message.setText("How do you deal with this image?");
+                        final Button bt_ok = myDialog.findViewById(R.id.bt_ok);
+                        bt_ok.setText("Save");
+                        bt_ok.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                myDialog.dismiss();
+
+                                try {
+                                    String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Download/";
+                                    File dir = new File(path);
+                                    if (!dir.exists())
+                                        dir.mkdirs();
+
+                                    DownloadManager downloadManager = (DownloadManager) getActivity().getSystemService(DOWNLOAD_SERVICE);
+                                    DownloadManager.Request request = new DownloadManager.Request(Uri.parse(saveImgUrl));
+                                    int start = saveImgUrl.lastIndexOf("/") + 1;
+                                    String fileName = saveImgUrl.substring(start, saveImgUrl.length());
+                                    request.setDestinationInExternalPublicDir("/Download/", fileName);
+                                    request.setTitle("WebServices");
+                                    request.setDescription("Downloading...");
+                                    request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+                                    downloadManager.enqueue(request);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+
+                            }
+                        });
+                        final Button bt_cancel = myDialog.findViewById(R.id.bt_cancel);
+                        bt_cancel.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                myDialog.dismiss();
+                            }
+                        });
+
+                        final Button bt_copy = myDialog.findViewById(R.id.bt_copy);
+                        bt_copy.setText("Open");
+                        bt_copy.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                wv.loadUrl(saveImgUrl);
+                                myDialog.dismiss();
+                            }
+                        });
+                        return true;
+                    default:
+                        break;
+                }
+                return false;
             }
         });
 

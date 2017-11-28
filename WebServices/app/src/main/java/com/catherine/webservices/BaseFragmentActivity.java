@@ -171,22 +171,12 @@ public abstract class BaseFragmentActivity extends AppCompatActivity {
         StringBuilder context = new StringBuilder();
         if (deniedPermissions != null) {
             for (String p : deniedPermissions) {
-                if (Manifest.permission.READ_PHONE_STATE.equals(p)) {
-                    context.append(getResources().getString(R.string.permission_phone));
-                    context.append("、");
-                } else if (Manifest.permission.WRITE_EXTERNAL_STORAGE.equals(p)) {
-                    context.append(getResources().getString(R.string.permission_storage));
-                    context.append("、");
-                } else if (Manifest.permission.RECEIVE_SMS.equals(p)) {
-                    context.append(getResources().getString(R.string.permission_sms));
-                    context.append("、");
-                }
+                context.append(p);
+                context.append(", ");
             }
         }
 
-        if (context.toString().length() != 0)
-            context.replace(context.toString().length() - 1, context.toString().length(), "");
-
+        context.deleteCharAt(context.length() - 1);
         DialogManager.showPermissionDialog(BaseFragmentActivity.this, String.format(getResources().getString(R.string.permission_request), context.toString()), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {

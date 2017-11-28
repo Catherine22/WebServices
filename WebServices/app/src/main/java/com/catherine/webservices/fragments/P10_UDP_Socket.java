@@ -70,9 +70,8 @@ public class P10_UDP_Socket extends LazyFragment {
                 StringBuilder context = new StringBuilder();
                 if (deniedPermissions != null) {
                     for (String p : deniedPermissions) {
-                        if (Manifest.permission.WRITE_EXTERNAL_STORAGE.equals(p)) {
-                            context.append("存储、");
-                        }
+                        context.append(p);
+                        context.append(", ");
                     }
                 }
 

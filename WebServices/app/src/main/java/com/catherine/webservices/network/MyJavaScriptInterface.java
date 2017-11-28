@@ -62,13 +62,8 @@ public class MyJavaScriptInterface implements IgnoreProguard {
                 StringBuilder context = new StringBuilder();
                 if (deniedPermissions != null) {
                     for (String p : deniedPermissions) {
-                        if (Manifest.permission.READ_CONTACTS.equals(p)) {
-                            context.append("联络人信息、");
-                        } else if (Manifest.permission.READ_PHONE_STATE.equals(p)) {
-                            context.append("读取手机状态、");
-                        } else if (Manifest.permission.VIBRATE.equals(p)) {
-                            context.append("手机震动、");
-                        }
+                        context.append(p);
+                        context.append(", ");
                     }
                 }
 

@@ -214,12 +214,19 @@ public class MyWebView extends WebView {
                 super.onReachedMaxAppCacheSize(requiredStorage, quota, quotaUpdater);
             }
 
+            /**
+             * Note that for applications targeting Android N and later SDKs (API level > M)
+             * this method is only called for requests originating from secure origins such as https.
+             * On non-secure origins geolocation requests are automatically denied.
+             * @param origin The origin of the web content attempting to use the Geolocation API.
+             * @param callback The callback to use to set the permission state for the origin.
+             */
             @Override
             public void onGeolocationPermissionsShowPrompt(final String origin, final GeolocationPermissions.Callback callback) {
                 CLog.Companion.i(TAG, "onGeolocationPermissionsShowPrompt:" + origin);
                 //User have to grant ACCESS_FINE_LOCATION permission first.
                 final Dialog myDialog = new Dialog(ctx);
-                myDialog.requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
+                myDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 myDialog.setContentView(R.layout.dialog_checkbox);
                 //设置dialog背景透明
                 myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
