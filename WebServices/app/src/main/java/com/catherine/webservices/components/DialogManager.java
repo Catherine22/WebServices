@@ -97,6 +97,7 @@ public class DialogManager {
         alertDialog.showDialog();
     }
 
+
     public static void showErrorDialog(Context ctx, String message, DialogInterface.OnClickListener positiveButtonListener) {
         showErrorDialog(ctx, message, positiveButtonListener, null);
     }
@@ -144,4 +145,5 @@ public class DialogManager {
         }
         retryDialog.showDialog();
     }
+    
 }

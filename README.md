@@ -305,15 +305,11 @@ udpSocket();
 
 ## WebView
 
-**[P14_Full_WebView]** supports the functions of...
+**[MyWebView]**, [P14_Full_WebView] and [P13_Nested_WebView] supports the functions of...
 
 1. Going back to previous pages.
 2. Showing a ProgressBar while WebView is loading resources.
 3. Launching other apps installed in your device by url scheme.
-
-> You could type urls on [P14_Full_WebView] to try.
->  - market://details?id=com.google.android.apps.maps
->  - visit [https://play.google.com/store/apps/details?id=com.google.android.apps.maps&hl=en][4] and click the "OPEN IN PLAY STORE APP" button. Then you would redirct to a url starts from intent://play.app.goo.gl/?link=https://play.google.co...
 
 Before using JavaScript, you should have WebView enable JavaScript. Go to [P15_WebView_Settings] to set.		
 4. Handling JavaScript alert(), confirm() and prompt() and display the message with a used-defined dialog.
@@ -332,23 +328,30 @@ In proguard-rules.pro
 }
 ```
 
-> Here are some URLs would help you test. Just type them on [P14_Full_WebView]:
-> - [https://www.javascript.com/][3]
-> - file:///android_asset/js_alert.html
-> - file:///android_asset/js_confirm.html
-> - file:///android_asset/js_prompt.html
-
 6. Saving photos to your device from the Internet.
 > Save the image after long-clicking it.
 
 7. Visiting a HTTPS website and you get a SSL error.
 > Again, you could use [https://kyfw.12306.cn/otn/regist/init][1] to test.    
-> It would pop up a dialog and users decide to continue (unsafe) or stop visiting the webside.		
+> Override ```onReceivedSslError()``` and pop up a dialog to let users decide to continue (it would be unsafe maybe) or stop visiting the website.		
 
-8. Switching desktop sites or mobile sites by user-agent
-> - [https://github.com/Catherine22][5]
+8. Switching desktop style or mobile style websites by user-agent
+9. Get media and location permission
+>You need to add following permission in your AndroidManifest.xml
+>And override ```onGeolocationPermissionsShowPrompt()``` and ```onPermissionRequest()``` in WebChromeClient.
 
-You could also go to **[P17_WebView_Test_List]** to test all the webside I listed.
+```xml
+<!--getUserMedia-->
+<uses-permission android:name="android.permission.RECORD_AUDIO" />
+<uses-permission android:name="android.permission.CAMERA" />
+<uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+<!--location-->
+<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+```
+
+
+You could also go to **[P17_WebView_Test_List]** to test all the websites I listed.
 
 **[P15_WebView_Settings]**
 Set attributes of WebView that includes WebViewClient and WebSettings (setAllowFileAccess(), setJavaScriptEnabled(), setSupportZoom() and so forth.)
@@ -392,9 +395,11 @@ Go to [http://html5test.com/][6] to see the browser compatibility.
 [P08_Blocking_Socket]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/P08_Blocking_Socket.java>
 [P09_NIO_Socket]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/P09_NIO_Socket.java>
 [P10_UDP_Socket]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/P10_UDP_Socket.java>
+[P13_Nested_WebView]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/P13_Nested_WebView.java>
 [P14_Full_WebView]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/P14_Full_WebView.java>
 [P15_WebView_Settings]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/P15_WebView_Settings.java>
 [P17_WebView_Test_List]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/P17_WebView_Test_List.java>
+[MyWebView]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/components/MyWebView.java>
 [MySocket]:<https://github.com/Catherine22/WebServices/blob/master/JavaSocketServer/MySocket/src/Main.java>
 [MyJavaScriptInterface]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/network/MyJavaScriptInterface.java>
 [What are examples of TCP and UDP in real life scenario ?]:<https://learningnetwork.cisco.com/thread/87103>

@@ -2,19 +2,25 @@ package com.catherine.webservices.components;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
+import android.app.Dialog;
+import android.app.DownloadManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Build;
+import android.os.Environment;
 import android.os.Message;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.Window;
 import android.webkit.ClientCertRequest;
 import android.webkit.ConsoleMessage;
 import android.webkit.GeolocationPermissions;
@@ -32,7 +38,11 @@ import android.webkit.WebSettings;
 import android.webkit.WebStorage;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.TextView;
 
+import com.catherine.webservices.R;
 import com.catherine.webservices.interfaces.WebViewProgressListener;
 import com.catherine.webservices.network.NetworkHelper;
 import com.catherine.webservices.toolkits.CLog;
@@ -40,6 +50,7 @@ import com.catherine.webservices.toolkits.CLog;
 import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
+
 
 /**
  * Created by Catherine on 2017/11/3.
@@ -207,18 +218,35 @@ public class MyWebView extends WebView {
             public void onGeolocationPermissionsShowPrompt(final String origin, final GeolocationPermissions.Callback callback) {
                 CLog.Companion.i(TAG, "onGeolocationPermissionsShowPrompt:" + origin);
                 //User have to grant ACCESS_FINE_LOCATION permission first.
-                DialogManager.showAlertDialog(ctx, origin + " would like to use your Current Location", new DialogInterface.OnClickListener() {
+                final Dialog myDialog = new Dialog(ctx);
+                myDialog.requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
+                myDialog.setContentView(R.layout.dialog_checkbox);
+                //设置dialog背景透明
+                myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                myDialog.show();
+
+                final TextView tv_title = myDialog.findViewById(R.id.tv_title);
+                tv_title.setText(ctx.getString(R.string.dialog_title_hint));
+                final TextView tv_message = myDialog.findViewById(R.id.tv_message);
+                tv_message.setText(String.format("%s%s", origin, ctx.getString(R.string.would_like_to_use_your_current_location)));
+                final CheckBox cb = myDialog.findViewById(R.id.cb);
+                final Button bt_ok = myDialog.findViewById(R.id.bt_ok);
+                bt_ok.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        callback.invoke(origin, true, true);
-                    }
-                }, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        callback.invoke(origin, false, true);
+                    public void onClick(View v) {
+                        callback.invoke(origin, true, cb.isChecked());
+                        myDialog.dismiss();
                     }
                 });
-                super.onGeolocationPermissionsShowPrompt(origin, callback);
+                final Button bt_cancel = myDialog.findViewById(R.id.bt_cancel);
+                bt_cancel.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        callback.invoke(origin, false, cb.isChecked());
+                        myDialog.dismiss();
+                    }
+                });
+//                super.onGeolocationPermissionsShowPrompt(origin, callback);
             }
 
             @Override
@@ -228,9 +256,33 @@ public class MyWebView extends WebView {
             }
 
             @Override
-            public void onPermissionRequest(PermissionRequest request) {
+            public void onPermissionRequest(final PermissionRequest request) {
                 CLog.Companion.i(TAG, "onPermissionRequest");
-                super.onPermissionRequest(request);
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                    final String[] res = request.getResources();
+                    StringBuilder context = new StringBuilder();
+                    for (String s : res) {
+                        context.append(s);
+                        context.append(", ");
+                    }
+                    context.deleteCharAt(context.length() - 1);
+                    DialogManager.showAlertDialog(ctx, String.format("%s\n\n%s", ctx.getResources().getString(R.string.This_page_wants_to_use_following_resources), context), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                                request.grant(res);
+                            }
+                        }
+                    }, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                                request.deny();
+                            }
+                        }
+                    });
+                }
+//                super.onPermissionRequest(request);
             }
 
             @Override

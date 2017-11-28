@@ -6,9 +6,30 @@
     <string name="drawer_open">Where to?</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
+    <string name="never_ask_again">Never ask again</string>
+    <string name="would_like_to_use_your_current_location"> would like to use your current location</string>
     <string name="copy">Copy</string>
     <string name="drawer_close"/>
     <string name="et_hint">Input something here!</string>
+    <string name="This_page_wants_to_use_following_resources">This page wants to use following resources:</string>
+    <string name="dialog_title_error">错误讯息</string>
+    <string name="dialog_title_hint">提示！</string>
+    <string name="dialog_title_attention">注意！</string>
+    <string name="continue_button">继续</string>
+    <string name="yes">是</string>
+    <string name="no">否</string>
+    <string name="yes_n_open">确定开启</string>
+    <string name="no_n_close">继续关闭</string>
+    <string name="confirm_button">确定</string>
+    <string name="cancel_button">取消</string>
+    <string name="retry_button">重试</string>
+    <string name="close_button">关闭</string>
+    <string name="permission_request">您目前未授权%s存取权限，未授权将造成程式无法执行，是否开启权限</string>
+    <string name="permission_request_write_settings">此权限为出示兑换条码时控制萤幕亮度，如您关闭将造成程式无法执行,是否确定关闭</string>
+    <string name="permission_request_camera">您目前未授权相机存取权限，未授权将造成扫描功能无法开启，是否开启权限</string>
+    <string name="permission_storage">储存</string>
+    <string name="permission_phone">电话</string>
+    <string name="permission_sms">简讯</string>
 
     <string-array name="drawer_array">
         <item>Author</item>
@@ -181,23 +202,4 @@
             Safari/534.30
         </item>
     </string-array>
-
-    <string name="dialog_title_error">错误讯息</string>
-    <string name="dialog_title_hint">提示！</string>
-    <string name="dialog_title_attention">注意！</string>
-    <string name="continue_button">继续</string>
-    <string name="yes">是</string>
-    <string name="no">否</string>
-    <string name="yes_n_open">确定开启</string>
-    <string name="no_n_close">继续关闭</string>
-    <string name="confirm_button">确定</string>
-    <string name="cancel_button">取消</string>
-    <string name="retry_button">重试</string>
-    <string name="close_button">关闭</string>
-    <string name="permission_request">您目前未授权%s存取权限，未授权将造成程式无法执行，是否开启权限</string>
-    <string name="permission_request_write_settings">此权限为出示兑换条码时控制萤幕亮度，如您关闭将造成程式无法执行,是否确定关闭</string>
-    <string name="permission_request_camera">您目前未授权相机存取权限，未授权将造成扫描功能无法开启，是否开启权限</string>
-    <string name="permission_storage">储存</string>
-    <string name="permission_phone">电话</string>
-    <string name="permission_sms">简讯</string>
 </resources>

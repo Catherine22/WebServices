@@ -202,8 +202,8 @@ public class P17_WebView_Test_List extends LazyFragment {
         imageCardEx12.setStyle(0);
         jsList.add(imageCardEx12);
         ImageCardEx imageCardEx13 = new ImageCardEx();
-        imageCardEx13.setTitle("Google Map");
-        imageCardEx13.setSubtitle("file:///android_asset/googleMap.html");
+        imageCardEx13.setTitle("Get media permission");
+        imageCardEx13.setSubtitle("file:///android_asset/mediaPermission.html");
         imageCardEx13.setStyle(0);
         jsList.add(imageCardEx13);
         adapter.mergeList(titleJs, jsList);

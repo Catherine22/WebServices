@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3mobile.css">
+<body>
+
+<p>Click the button to get user media.</p>
+
+<button onclick="getPermission()">Try It</button>
+
+<p id="demo"></p>
+
+<script>
+  var errorCallback = function(e) {
+    alert('Rejected!');
+  };
+
+  function getPermission() {
+    // Not showing vendor prefixes.
+    navigator.getUserMedia({video: true, audio: true}, function(localMediaStream) {
+      var video = document.querySelector('video');
+      video.src = window.URL.createObjectURL(localMediaStream);
+
+      // Note: onloadedmetadata doesn't fire in Chrome when using it with getUserMedia.
+      // See crbug.com/110938.
+      video.onloadedmetadata = function(e) {
+        // Ready to go. Do some stuff.
+      };
+    }, errorCallback);
+  }
+</script>
+
+</body>
+</html>
