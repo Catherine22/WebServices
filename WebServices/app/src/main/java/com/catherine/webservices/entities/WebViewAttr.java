@@ -35,10 +35,6 @@ public class WebViewAttr {
     private boolean JavaScriptCanOpenWindowsAutomatically = false;
     private boolean LoadsImagesAutomatically = true;
     private boolean GeolocationEnabled = true;
-    private boolean SaveFormData = true;
-    private boolean DomStorageEnabled = true;
-    private boolean DatabaseEnabled = true;
-    private boolean AppCacheEnabled = true;
     private boolean AllowContentAccess = true;
     private boolean AllowFileAccess = true;
     private boolean AllowUniversalAccessFromFileURLs = false;
@@ -49,11 +45,16 @@ public class WebViewAttr {
     private int MinimumFontSize = 8;
     private String DefaultTextEncodingName = "UTF-8";
     private String StandardFontFamily = "sans-serif";
-    private int CacheMode = WebSettings.LOAD_DEFAULT;
     private int MixedContentMode = WebSettings.MIXED_CONTENT_COMPATIBILITY_MODE;
     private String UserAgent;
-
     private String[] user_agent, user_agent_detail;
+
+    //Cache
+    private boolean SaveFormData = true;
+    private boolean DomStorageEnabled = true;
+    private boolean DatabaseEnabled = true;
+    private boolean AppCacheEnabled = true;
+    private int CacheMode = WebSettings.LOAD_DEFAULT;
 
     public WebViewAttr(Context ctx) {
         this.ctx = ctx;
@@ -490,7 +491,11 @@ public class WebViewAttr {
                 ", JavaScriptEnabled=" + JavaScriptEnabled +
                 ", JavaScriptCanOpenWindowsAutomatically=" + JavaScriptCanOpenWindowsAutomatically +
                 ", LoadsImagesAutomatically=" + LoadsImagesAutomatically +
+                ", GeolocationEnabled=" + GeolocationEnabled +
                 ", SaveFormData=" + SaveFormData +
+                ", DomStorageEnabled=" + DomStorageEnabled +
+                ", DatabaseEnabled=" + DatabaseEnabled +
+                ", AppCacheEnabled=" + AppCacheEnabled +
                 ", AllowContentAccess=" + AllowContentAccess +
                 ", AllowFileAccess=" + AllowFileAccess +
                 ", AllowUniversalAccessFromFileURLs=" + AllowUniversalAccessFromFileURLs +

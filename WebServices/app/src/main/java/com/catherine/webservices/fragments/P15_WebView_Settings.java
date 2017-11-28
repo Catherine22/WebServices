@@ -202,21 +202,23 @@ public class P15_WebView_Settings extends LazyFragment {
         adapter = new MultiStyleRVAdapter(getActivity(), null, null, new OnMultiItemClickListener() {
             @Override
             public void onItemClick(View view, String title, int position) {
-                CLog.Companion.i(TAG, title + "[" + position + "]");
+                CLog.Companion.i(TAG, "Click: " + title + "[" + position + "]");
                 if (titles[2].equals(title)) {
+                    Bundle b = new Bundle();
                     switch (position) {
                         case 0:
                             mainInterface.callFragment(Constants.P16_WEBVIEW_HISTORY);
                             break;
-                        case 2:
+                        case 6:
                             SharedPreferences sp = getActivity().getSharedPreferences("wv_history", Context.MODE_PRIVATE);
                             sp.edit().clear().apply();
+                            b.putBoolean("clear_history", true);
                             break;
-                        case 3:
-                            File dir = new File(MyApplication.INSTANCE.getDiskCacheDir("webview").getAbsolutePath());
-                            clearFolder(dir);
+                        case 7:
+                            b.putBoolean("clear_cache", true);
                             break;
                     }
+                    sv.pushBundle(Commands.WV_SETTINGS, b);
                 }
             }
 
@@ -226,9 +228,8 @@ public class P15_WebView_Settings extends LazyFragment {
             }
         }, new OnMultiItemSelectListener() {
             @Override
-            public void onItemSelect(String title, final int position, boolean isSelect, String data) {
-                CLog.Companion.i(TAG, title + "[" + position + "], isSelect:" + isSelect + ", data: " + data);
-                Bundle b = new Bundle();
+            public void onItemSelect(final String title, final int position, boolean isSelect, String data) {
+                CLog.Companion.i(TAG, "select: "+title + "[" + position + "], isSelect:" + isSelect + ", data: " + data);
                 if (titles[0].equals(title)) {
                     switch (position) {
                         case 0:
@@ -248,15 +249,15 @@ public class P15_WebView_Settings extends LazyFragment {
                             break;
                         case 2:
                             attr.setBuiltInZoomControls(isSelect);
-                            adapter.updateItem(titles[1], position, new MultiStyleItem(MultiStyleRVAdapter.SWITCH, wv_settings_array[position], "setBuiltInZoomControls()", isSelect ? 1 : 0, null));
+                            adapter.updateItem(title, position, new MultiStyleItem(MultiStyleRVAdapter.SWITCH, wv_settings_array[position], "setBuiltInZoomControls()", isSelect ? 1 : 0, null));
                             if (isSelect) {
                                 attr.setSupportZoom(true);
-                                adapter.updateItem(titles[1], position + 1, new MultiStyleItem(MultiStyleRVAdapter.SWITCH, wv_settings_array[position + 1], "setSupportZoom()", 1, null));
-                                adapter.updateItem(titles[1], position + 2, new MultiStyleItem(MultiStyleRVAdapter.EDITTEXT, wv_settings_array[position + 2], "setTextZoom()", 0, String.valueOf(attr.getTextZoom())));
+                                adapter.updateItem(title, position + 1, new MultiStyleItem(MultiStyleRVAdapter.SWITCH, wv_settings_array[position + 1], "setSupportZoom()", 1, null));
+                                adapter.updateItem(title, position + 2, new MultiStyleItem(MultiStyleRVAdapter.EDITTEXT, wv_settings_array[position + 2], "setTextZoom()", 0, String.valueOf(attr.getTextZoom())));
                             } else {
                                 attr.setSupportZoom(false);
-                                adapter.updateItem(titles[1], position + 1, new MultiStyleItem(MultiStyleRVAdapter.SWITCH, wv_settings_array[position + 1], "setSupportZoom()", -1, null));
-                                adapter.updateItem(titles[1], position + 2, new MultiStyleItem(MultiStyleRVAdapter.EDITTEXT, wv_settings_array[position + 2], "setTextZoom()", -1, String.valueOf(attr.getTextZoom())));
+                                adapter.updateItem(title, position + 1, new MultiStyleItem(MultiStyleRVAdapter.SWITCH, wv_settings_array[position + 1], "setSupportZoom()", -1, null));
+                                adapter.updateItem(title, position + 2, new MultiStyleItem(MultiStyleRVAdapter.EDITTEXT, wv_settings_array[position + 2], "setTextZoom()", -1, String.valueOf(attr.getTextZoom())));
                             }
                             new Handler().post(new Runnable() {
                                 @Override
@@ -267,11 +268,11 @@ public class P15_WebView_Settings extends LazyFragment {
                             break;
                         case 3:
                             attr.setSupportZoom(isSelect);
-                            adapter.updateItem(titles[1], position, new MultiStyleItem(MultiStyleRVAdapter.SWITCH, wv_settings_array[position], "setSupportZoom()", isSelect ? 1 : 0, null));
+                            adapter.updateItem(title, position, new MultiStyleItem(MultiStyleRVAdapter.SWITCH, wv_settings_array[position], "setSupportZoom()", isSelect ? 1 : 0, null));
                             if (isSelect) {
-                                adapter.updateItem(titles[1], position + 1, new MultiStyleItem(MultiStyleRVAdapter.EDITTEXT, wv_settings_array[position + 1], "setTextZoom()", 0, String.valueOf(attr.getTextZoom())));
+                                adapter.updateItem(title, position + 1, new MultiStyleItem(MultiStyleRVAdapter.EDITTEXT, wv_settings_array[position + 1], "setTextZoom()", 0, String.valueOf(attr.getTextZoom())));
                             } else {
-                                adapter.updateItem(titles[1], position + 1, new MultiStyleItem(MultiStyleRVAdapter.EDITTEXT, wv_settings_array[position + 1], "setTextZoom()", -1, String.valueOf(attr.getTextZoom())));
+                                adapter.updateItem(title, position + 1, new MultiStyleItem(MultiStyleRVAdapter.EDITTEXT, wv_settings_array[position + 1], "setTextZoom()", -1, String.valueOf(attr.getTextZoom())));
                             }
                             new Handler().post(new Runnable() {
                                 @Override
@@ -304,11 +305,11 @@ public class P15_WebView_Settings extends LazyFragment {
                             break;
                         case 7:
                             attr.setJavaScriptEnabled(isSelect);
-                            adapter.updateItem(titles[1], position, new MultiStyleItem(MultiStyleRVAdapter.SWITCH, wv_settings_array[position], "setJavaScriptEnabled()", isSelect ? 1 : 0, null));
+                            adapter.updateItem(title, position, new MultiStyleItem(MultiStyleRVAdapter.SWITCH, wv_settings_array[position], "setJavaScriptEnabled()", isSelect ? 1 : 0, null));
                             if (isSelect) {
-                                adapter.updateItem(titles[1], position + 1, new MultiStyleItem(MultiStyleRVAdapter.SWITCH, wv_settings_array[position + 1], "setJavaScriptCanOpenWindowsAutomatically()", 1, null));
+                                adapter.updateItem(title, position + 1, new MultiStyleItem(MultiStyleRVAdapter.SWITCH, wv_settings_array[position + 1], "setJavaScriptCanOpenWindowsAutomatically()", 1, null));
                             } else {
-                                adapter.updateItem(titles[1], position + 1, new MultiStyleItem(MultiStyleRVAdapter.SWITCH, wv_settings_array[position + 1], "setJavaScriptCanOpenWindowsAutomatically()", -1, null));
+                                adapter.updateItem(title, position + 1, new MultiStyleItem(MultiStyleRVAdapter.SWITCH, wv_settings_array[position + 1], "setJavaScriptCanOpenWindowsAutomatically()", -1, null));
                             }
                             new Handler().post(new Runnable() {
                                 @Override
@@ -369,7 +370,7 @@ public class P15_WebView_Settings extends LazyFragment {
                                 @Override
                                 public void dismiss(String data) {
                                     attr.setDefaultTextEncodingName(data);
-                                    adapter.updateItem(titles[1], position, new MultiStyleItem(MultiStyleRVAdapter.TEXTVIEW, wv_settings_array[position], "setDefaultTextEncodingName()", 0, data));
+                                    adapter.updateItem(title, position, new MultiStyleItem(MultiStyleRVAdapter.TEXTVIEW, wv_settings_array[position], "setDefaultTextEncodingName()", 0, data));
                                     new Handler().post(new Runnable() {
                                         @Override
                                         public void run() {
@@ -393,7 +394,7 @@ public class P15_WebView_Settings extends LazyFragment {
                                 @Override
                                 public void dismiss(String data) {
                                     attr.setStandardFontFamily(data);
-                                    adapter.updateItem(titles[1], position, new MultiStyleItem(MultiStyleRVAdapter.TEXTVIEW, wv_settings_array[position], "setStandardFontFamily()", 0, data));
+                                    adapter.updateItem(title, position, new MultiStyleItem(MultiStyleRVAdapter.TEXTVIEW, wv_settings_array[position], "setStandardFontFamily()", 0, data));
                                     new Handler().post(new Runnable() {
                                         @Override
                                         public void run() {
@@ -417,7 +418,7 @@ public class P15_WebView_Settings extends LazyFragment {
                                 @Override
                                 public void dismiss(String data) {
                                     attr.setUserAgent(data);
-                                    adapter.updateItem(titles[1], position, new MultiStyleItem(MultiStyleRVAdapter.TEXTVIEW, wv_settings_array[position], "setUserAgentString()", 0, data));
+                                    adapter.updateItem(title, position, new MultiStyleItem(MultiStyleRVAdapter.TEXTVIEW, wv_settings_array[position], "setUserAgentString()", 0, data));
                                     new Handler().post(new Runnable() {
                                         @Override
                                         public void run() {
@@ -438,11 +439,11 @@ public class P15_WebView_Settings extends LazyFragment {
                             break;
                         case 18:
                             attr.setAllowUniversalAccessFromFileURLs(isSelect);
-                            adapter.updateItem(titles[1], position, new MultiStyleItem(MultiStyleRVAdapter.SWITCH, wv_settings_array[position], "setAllowUniversalAccessFromFileURLs()", isSelect ? 1 : 0, null));
+                            adapter.updateItem(title, position, new MultiStyleItem(MultiStyleRVAdapter.SWITCH, wv_settings_array[position], "setAllowUniversalAccessFromFileURLs()", isSelect ? 1 : 0, null));
                             if (isSelect) {
-                                adapter.updateItem(titles[1], position + 1, new MultiStyleItem(MultiStyleRVAdapter.SWITCH, wv_settings_array[position + 1], "setAllowFileAccessFromFileURLs()", -1, null));
+                                adapter.updateItem(title, position + 1, new MultiStyleItem(MultiStyleRVAdapter.SWITCH, wv_settings_array[position + 1], "setAllowFileAccessFromFileURLs()", -1, null));
                             } else {
-                                adapter.updateItem(titles[1], position + 1, new MultiStyleItem(MultiStyleRVAdapter.SWITCH, wv_settings_array[position + 1], "setAllowFileAccessFromFileURLs()", 0, null));
+                                adapter.updateItem(title, position + 1, new MultiStyleItem(MultiStyleRVAdapter.SWITCH, wv_settings_array[position + 1], "setAllowFileAccessFromFileURLs()", 0, null));
                             }
                             new Handler().post(new Runnable() {
                                 @Override
@@ -471,7 +472,7 @@ public class P15_WebView_Settings extends LazyFragment {
                                 @Override
                                 public void dismiss(String data) {
                                     attr.setMixedContentMode(attr.getMixedContentMode(data));
-                                    adapter.updateItem(titles[1], position, new MultiStyleItem(MultiStyleRVAdapter.TEXTVIEW, wv_settings_array[position], "setMixedContentMode()", 0, data));
+                                    adapter.updateItem(title, position, new MultiStyleItem(MultiStyleRVAdapter.TEXTVIEW, wv_settings_array[position], "setMixedContentMode()", 0, data));
                                     new Handler().post(new Runnable() {
                                         @Override
                                         public void run() {
@@ -488,9 +489,6 @@ public class P15_WebView_Settings extends LazyFragment {
                     }
                 } else if (titles[2].equals(title)) {
                     switch (position) {
-                        case 0:
-                            mainInterface.callFragment(Constants.P16_WEBVIEW_HISTORY);
-                            break;
                         case 1:
                             attr.setSaveFormData(isSelect);
                             break;
@@ -527,17 +525,8 @@ public class P15_WebView_Settings extends LazyFragment {
                                 }
                             });
                             break;
-                        case 6:
-                            SharedPreferences sp = getActivity().getSharedPreferences("wv_history", Context.MODE_PRIVATE);
-                            sp.edit().clear().apply();
-                            b.putBoolean("clear_history", true);
-                            break;
-                        case 7:
-                            b.putBoolean("clear_cache", true);
-                            break;
                     }
                 }
-                sv.pushBundle(Commands.WV_SETTINGS, b);
             }
         });
         adapter.mergeList(titles[0], wvAttr);

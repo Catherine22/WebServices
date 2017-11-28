@@ -2,33 +2,21 @@
 <html>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3mobile.css">
-
 <body>
-  <script type="text/javascript">
-    // 当页面刷新时，从sessionStorage恢复之前输入的内容
-    window.onload = function() {
-      if (window.sessionStorage) {
-        var name = window.sessionStorage.getItem("name");
-        if (name != "" || name != null) {
-          document.getElementById("name").value = name;
-        }
-      }
-    };
 
-    // 将数据保存到sessionStorage对象中
-    function saveToStorage() {
-      if (window.sessionStorage) {
-        var name = document.getElementById("name").value;
-        window.sessionStorage.setItem("name", name);
-        window.location.href = "session_storage.html";
-      }
-    }
-  </script>
+<div id="result"></div>
 
-  <form action="./session_storage.html">
-    <input type="text" name="name" id="name" />
-    <input type="button" value="Save" onclick="saveToStorage()" />
-  </form>
+<script>
+// Check browser support
+if (typeof(Storage) !== "undefined") {
+    // Store
+    sessionStorage.setItem("lastname", "Smith");
+    // Retrieve
+    document.getElementById("result").innerHTML = sessionStorage.getItem("lastname");
+} else {
+    document.getElementById("result").innerHTML = "Sorry, your browser does not support Web Storage...";
+}
+</script>
+
 </body>
-
 </html>
