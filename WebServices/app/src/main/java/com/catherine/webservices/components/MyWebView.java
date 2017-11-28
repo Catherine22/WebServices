@@ -68,7 +68,7 @@ public class MyWebView extends WebView {
     /**
      * save console logs in disk
      */
-    private final boolean keepLog = true;
+    private final boolean keepLog = false;
     private ApplicationConfig config;
     private Context ctx;
 
@@ -101,7 +101,7 @@ public class MyWebView extends WebView {
     @SuppressLint("SetJavaScriptEnabled")
     public void initSettings(Context context, boolean safer, boolean enableCache) {
         ctx = context;
-        config = new ApplicationConfig(ctx);
+        config = new ApplicationConfig();
         WebSettings settings = getSettings();
         settings.setUseWideViewPort(true);
         settings.setLoadWithOverviewMode(true);

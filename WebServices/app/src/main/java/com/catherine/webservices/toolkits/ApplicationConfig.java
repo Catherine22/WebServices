@@ -1,8 +1,5 @@
 package com.catherine.webservices.toolkits;
 
-import android.content.Context;
-import android.os.Environment;
-
 import com.catherine.webservices.MyApplication;
 
 import java.io.ByteArrayOutputStream;
@@ -11,6 +8,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -24,34 +22,13 @@ import java.util.TimeZone;
  */
 
 public class ApplicationConfig {
-    private Context ctx;
     private final String FILE_NAME = "config.dat";
     public final static String LOG_FILE_NAME = "web_logs.dat";
-
-    public ApplicationConfig(Context ctx) {
-        this.ctx = ctx;
-    }
 
     public synchronized void writeWebViewLog(String log) {
         try {
             File dir = MyApplication.INSTANCE.getLogDir();
             File file = new File(dir, LOG_FILE_NAME);
-            FileOutputStream fos = new FileOutputStream(file);
-            String content = String.format("%s%s:\n%s\n\n", readWebViewLog(), getToday(), log);
-            fos.write(content.getBytes());
-            fos.flush();
-            fos.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public String readWebViewLog() {
-        String log = "";
-        try {
-            File file = new File(MyApplication.INSTANCE.getLogDir(), LOG_FILE_NAME);
             FileInputStream fis = new FileInputStream(file);
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
             byte[] buffer = new byte[1024];
@@ -60,28 +37,40 @@ public class ApplicationConfig {
                 bos.write(buffer, 0, len);
             }
             byte[] result = bos.toByteArray();
-            log = new String(result);
+            String history = new String(result);
+
+            FileOutputStream fos = new FileOutputStream(file);
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(fos);
+            String content = String.format("%s%s:\n%s\n\n", history, getToday(), log);
+            outputStreamWriter.write(content);
+            outputStreamWriter.close();
+            fos.flush();
+            fos.close();
+
+            bos.flush();
+            bos.close();
+            fis.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return log;
     }
 
-    public synchronized void deleteConfig() {
+    public synchronized boolean deleteConfig() {
+        boolean finished = true;
         try {
             File dir = MyApplication.INSTANCE.getLogDir();
             if (dir.exists()) {
                 File file = new File(dir, FILE_NAME);
-                file.delete();
-
                 File file2 = new File(dir, LOG_FILE_NAME);
-                file2.delete();
+                finished = (file.delete() && file2.delete());
             }
         } catch (Exception e) {
+            finished = false;
             e.printStackTrace();
         }
+        return finished;
     }
 
     private String getToday() {
