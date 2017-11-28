@@ -65,7 +65,7 @@ public class Constants {
     public final static String GITHUB_API_DOMAIN = "https://api.github.com/";
     public final static String MY_GITHUB = "https://github.com/Catherine22";
 
-    public static String ROOT_PATH = Environment.getExternalStorageDirectory().getAbsolutePath() + "/WebServices/";
+    public static String ROOT_PATH = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Android/data/" + MyApplication.INSTANCE.getPackageName() + "/";
     public final static String EXT_PATH = ROOT_PATH + "data/";
     public final static String FRESCO_DIR = "fresco";
     protected final static String CACHE_PATH = ROOT_PATH + "cache/";

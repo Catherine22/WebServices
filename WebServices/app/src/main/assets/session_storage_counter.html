@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3mobile.css">
+
+<body>
+  <script>
+    //通过localStorage直接引用key, 另一种写法，等价于：
+    //localStorage.getItem("pageLoadCount");
+    //localStorage.setItem("pageLoadCount", value);
+    if (!localStorage.pageLoadCount)
+      localStorage.pageLoadCount = 0;
+    localStorage.pageLoadCount = parseInt(localStorage.pageLoadCount) + 1;
+    document.getElementById('count').textContent = localStorage.pageLoadCount;
+  </script>
+
+  <p>
+    You have viewed this page
+    <span id="count">an untold number of</span> time(s).
+  </p>
+</body>
+
+</html>

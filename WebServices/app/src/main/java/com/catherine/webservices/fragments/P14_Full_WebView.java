@@ -708,6 +708,8 @@ public class P14_Full_WebView extends LazyFragment {
     @Override
     public void onDestroy() {
         client.release();
+        wv.removeAllViews();
+        wv.destroy();
         super.onDestroy();
     }
 
@@ -721,5 +723,4 @@ public class P14_Full_WebView extends LazyFragment {
         }
         return temp;
     }
-
 }

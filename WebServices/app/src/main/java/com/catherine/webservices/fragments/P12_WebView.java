@@ -14,6 +14,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import com.catherine.webservices.Commands;
 import com.catherine.webservices.Constants;
 import com.catherine.webservices.R;
 import com.catherine.webservices.adapters.TextCardRVAdapter;
@@ -29,6 +30,10 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
+import catherine.messagecenter.Client;
+import catherine.messagecenter.CustomReceiver;
+import catherine.messagecenter.Result;
+
 /**
  * Created by Catherine on 2017/9/19.
  * Soft-World Inc.
@@ -41,6 +46,7 @@ public class P12_WebView extends LazyFragment {
     private List<String> descriptions;
     private SwipeRefreshLayout srl_container;
     private MainInterface mainInterface;
+    private Client client;
 
     public static P12_WebView newInstance(boolean isLazyLoad) {
         Bundle args = new Bundle();
@@ -114,6 +120,17 @@ public class P12_WebView extends LazyFragment {
     }
 
     private void initComponent() {
+        client = new Client(getActivity(), new CustomReceiver() {
+            @Override
+            public void onBroadcastReceive(@NotNull Result result) {
+                if (getChildFragmentManager().getBackStackEntryCount() > 0) {
+                    getChildFragmentManager().popBackStack();
+                    mainInterface.restoreBottomLayout();
+                } else
+                    mainInterface.backToPreviousPage();
+            }
+        });
+        client.gotMessages(Commands.BACK_TO_PREV);
         srl_container = (SwipeRefreshLayout) findViewById(R.id.srl_container);
         srl_container.setColorSchemeResources(R.color.colorPrimary, R.color.colorAccent, R.color.colorPrimaryDark, R.color.colorAccentDark);
         srl_container.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -200,5 +217,11 @@ public class P12_WebView extends LazyFragment {
         transaction.add(R.id.fl_container, fragment, tag);
         transaction.addToBackStack(title);
         transaction.commitAllowingStateLoss();
+    }
+
+    @Override
+    public void onDestroy() {
+        client.release();
+        super.onDestroy();
     }
 }

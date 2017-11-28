@@ -335,6 +335,8 @@ public class P13_Nested_WebView extends LazyFragment {
         settings.setDatabaseEnabled(attr.isDatabaseEnabled());
         //是否允许Cache
         settings.setAppCacheEnabled(attr.isAppCacheEnabled());
+        //设置存储数据库的位置
+        settings.setDatabasePath(MyApplication.INSTANCE.getDiskCacheDir("webview").getAbsolutePath());
         //设置存储定位数据库的位置
         settings.setGeolocationDatabasePath(MyApplication.INSTANCE.getDiskCacheDir("webview").getAbsolutePath());
         //设置Cache API缓存路径
@@ -371,10 +373,11 @@ public class P13_Nested_WebView extends LazyFragment {
         }
     }
 
-
     @Override
     public void onDestroy() {
         client.release();
+        wv.removeAllViews();
+        wv.destroy();
         super.onDestroy();
     }
 }

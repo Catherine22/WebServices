@@ -35,10 +35,10 @@ public class WebViewAttr {
     private boolean JavaScriptCanOpenWindowsAutomatically = false;
     private boolean LoadsImagesAutomatically = true;
     private boolean GeolocationEnabled = true;
-    private boolean SaveFormData = false;
-    private boolean DomStorageEnabled = false;
-    private boolean DatabaseEnabled = false;
-    private boolean AppCacheEnabled = false;
+    private boolean SaveFormData = true;
+    private boolean DomStorageEnabled = true;
+    private boolean DatabaseEnabled = true;
+    private boolean AppCacheEnabled = true;
     private boolean AllowContentAccess = true;
     private boolean AllowFileAccess = true;
     private boolean AllowUniversalAccessFromFileURLs = false;
@@ -73,10 +73,10 @@ public class WebViewAttr {
         JavaScriptCanOpenWindowsAutomatically = sp.getBoolean("JavaScriptCanOpenWindowsAutomatically", false);
         LoadsImagesAutomatically = sp.getBoolean("LoadsImagesAutomatically", true);
         GeolocationEnabled = sp.getBoolean("GeolocationEnabled", true);
-        SaveFormData = sp.getBoolean("SaveFormData", false);
-        DomStorageEnabled = sp.getBoolean("DomStorageEnabled", false);
-        DatabaseEnabled = sp.getBoolean("DatabaseEnabled", false);
-        AppCacheEnabled = sp.getBoolean("AppCacheEnabled", false);
+        SaveFormData = sp.getBoolean("SaveFormData", true);
+        DomStorageEnabled = sp.getBoolean("DomStorageEnabled", true);
+        DatabaseEnabled = sp.getBoolean("DatabaseEnabled", true);
+        AppCacheEnabled = sp.getBoolean("AppCacheEnabled", true);
         AllowContentAccess = sp.getBoolean("AllowContentAccess", true);
         AllowFileAccess = sp.getBoolean("AllowFileAccess", true);
         AllowUniversalAccessFromFileURLs = sp.getBoolean("AllowUniversalAccessFromFileURLs", false);
@@ -144,22 +144,22 @@ public class WebViewAttr {
     }
 
     public boolean isAppCacheEnabled() {
-        AppCacheEnabled = sp.getBoolean("AppCacheEnabled", false);
+        AppCacheEnabled = sp.getBoolean("AppCacheEnabled", true);
         return AppCacheEnabled;
     }
 
     public boolean isDatabaseEnabled() {
-        DatabaseEnabled = sp.getBoolean("DatabaseEnabled", false);
+        DatabaseEnabled = sp.getBoolean("DatabaseEnabled", true);
         return DatabaseEnabled;
     }
 
     public boolean isSaveFormData() {
-        SaveFormData = sp.getBoolean("SaveFormData", false);
+        SaveFormData = sp.getBoolean("SaveFormData", true);
         return SaveFormData;
     }
 
     public boolean isDomStorageEnabled() {
-        DomStorageEnabled = sp.getBoolean("DomStorageEnabled", false);
+        DomStorageEnabled = sp.getBoolean("DomStorageEnabled", true);
         return DomStorageEnabled;
     }
 

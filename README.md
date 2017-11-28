@@ -65,10 +65,6 @@ android {
 
 ## OkHttp
 
-
-## Volley
-
-
 ## Multiple-threading download
 - Download a single file with multiple threads
 - Show the progressbar
@@ -149,7 +145,7 @@ And next time, your request headers contain
 ```html
 Last-Modified: Mon, 03 Jan 2011 17:45:57 GMT
 ```
-
+Your request must contain ```If-Modified-Since``` so that the server will check the timestamp.    
 If the resource hasn't changed since ```Mon, 03 Jan 2011 17:45:57 GMT```, the server'll return **304** with an empty body.
 
 
@@ -171,7 +167,6 @@ If-None-Match: "751F63A30AB5F98F855D1D90D217B356"
 If the resource hasn't changed, the server'll return **304** with an empty body.
 
 
-
 Even if your cache is up, it doesn't mean your cache is not working. Your response might contain an ETag which instructs the client to cache it for up to a specific period and provides a validation token ( MD5 or something ) that can be used after the response has expired to check if the resource has been modified.		
 If the token hasn't been changed, the server returns a "304 Not Modified" response.
 
@@ -190,8 +185,12 @@ or
 Cache-Control: max-age=(0)
 ```
 
-If your cache is not available, then you request ETag (with If-None-Match) or Last-Modified (with If-Modified-Since) to your server.
+If your cache is not available, then you request ETag (with If-None-Match) or Last-Modified (with If-Modified-Since) to your server (Of course you could alse use both of them to double-check).
 Your server would return 304 when it's okay to use the cache that has been stored or you get 200 with new resources.
+
+- **Force to refresh**
+F5: ```Cache-Control:max-age=0```
+Ctrl + F5: ```Cache-Control:no-cache``` or ```Pragma:no-cache```
 
 - **No cache**
 
@@ -349,7 +348,11 @@ In proguard-rules.pro
 <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
 ```
+10. HTML5
+>Go to [http://html5test.com/][6] to see the browser compatibility.
 
+11. Cache
+>
 
 You could also go to **[P17_WebView_Test_List]** to test all the websites I listed.
 
@@ -357,13 +360,10 @@ You could also go to **[P17_WebView_Test_List]** to test all the websites I list
 Set attributes of WebView that includes WebViewClient and WebSettings (setAllowFileAccess(), setJavaScriptEnabled(), setSupportZoom() and so forth.)
 
 
-## HTML5
-Go to [http://html5test.com/][6] to see the browser compatibility.
-
-
 ## References
 - [Tencent bugly]
 - [HTTP 1.1 doc]
+- [HTTP cache cn]
 - [Google Web Fundamentals]
 - [increasing-application-performance-with-http-cache-headers]
 - [Socket tutorial]
@@ -405,6 +405,7 @@ Go to [http://html5test.com/][6] to see the browser compatibility.
 [What are examples of TCP and UDP in real life scenario ?]:<https://learningnetwork.cisco.com/thread/87103>
 [Android HTTPS]:<http://blog.csdn.net/iispring/article/details/51615631>
 [github APIs]:<https://api.github.com/>
+[HTTP cache cn]:<https://segmentfault.com/a/1190000004132566#articleHeader3>
 [WebView tutorial 1]:<http://www.jianshu.com/p/3fcf8ba18d7f>
 [WebView tutorial 2]:<http://blog.csdn.net/huaxun66/article/details/73179187>
 

@@ -11,11 +11,13 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import com.catherine.webservices.Commands;
 import com.catherine.webservices.Constants;
 import com.catherine.webservices.R;
 import com.catherine.webservices.adapters.SimpleStyleRVAdapter;
 import com.catherine.webservices.components.DialogManager;
 import com.catherine.webservices.entities.ImageCardEx;
+import com.catherine.webservices.interfaces.BackKeyListener;
 import com.catherine.webservices.interfaces.MainInterface;
 import com.catherine.webservices.interfaces.OnMultiItemClickListener;
 import com.catherine.webservices.interfaces.OnRequestPermissionsListener;
@@ -23,6 +25,9 @@ import com.catherine.webservices.toolkits.CLog;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import catherine.messagecenter.AsyncResponse;
+import catherine.messagecenter.Server;
 
 /**
  * Created by Catherine on 2017/9/19.
@@ -145,6 +150,22 @@ public class P17_WebView_Test_List extends LazyFragment {
         });
         setList();
         rv_url_list.setAdapter(adapter);
+        mainInterface.setBackKeyListener(new BackKeyListener() {
+            @Override
+            public void OnKeyDown() {
+                if (getChildFragmentManager().getBackStackEntryCount() == 0) {
+                    Server sv = new Server(getActivity(), new AsyncResponse() {
+                        @Override
+                        public void onFailure(int errorCode) {
+                            CLog.Companion.e(TAG, "onFailure:" + errorCode);
+                        }
+                    });
+                    sv.pushBoolean(Commands.BACK_TO_PREV, true);
+                } else {
+                    getChildFragmentManager().popBackStack();
+                }
+            }
+        });
     }
 
     private void setList() {
@@ -197,14 +218,29 @@ public class P17_WebView_Test_List extends LazyFragment {
         jsList.add(imageCardEx8);
         ImageCardEx imageCardEx12 = new ImageCardEx();
         imageCardEx12.setTitle("Geo location");
-        imageCardEx12.setSubtitle("file:///android_asset/geoLocation.html");
+        imageCardEx12.setSubtitle("file:///android_asset/geo_location.html");
         imageCardEx12.setStyle(0);
         jsList.add(imageCardEx12);
         ImageCardEx imageCardEx13 = new ImageCardEx();
         imageCardEx13.setTitle("Get media permission");
-        imageCardEx13.setSubtitle("file:///android_asset/mediaPermission.html");
+        imageCardEx13.setSubtitle("file:///android_asset/media_permission.html");
         imageCardEx13.setStyle(0);
         jsList.add(imageCardEx13);
+        ImageCardEx imageCardEx14 = new ImageCardEx();
+        imageCardEx14.setTitle("Session storage");
+        imageCardEx14.setSubtitle("file:///android_asset/session_storage.html");
+        imageCardEx14.setStyle(0);
+        jsList.add(imageCardEx14);
+        ImageCardEx imageCardEx15 = new ImageCardEx();
+        imageCardEx15.setTitle("Counter");
+        imageCardEx15.setSubtitle("file:///android_asset/session_storage_counter.html");
+        imageCardEx15.setStyle(0);
+        jsList.add(imageCardEx15);
+        ImageCardEx imageCardEx16 = new ImageCardEx();
+        imageCardEx16.setTitle("SQL database");
+        imageCardEx16.setSubtitle("file:///android_asset/web_sql_db.html");
+        imageCardEx16.setStyle(0);
+        jsList.add(imageCardEx16);
         adapter.mergeList(titleJs, jsList);
 
         ImageCardEx imageCardEx9 = new ImageCardEx();
