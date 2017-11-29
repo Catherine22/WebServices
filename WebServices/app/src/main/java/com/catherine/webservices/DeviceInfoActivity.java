@@ -21,6 +21,7 @@ import android.text.TextUtils;
 import android.view.View;
 
 import com.catherine.webservices.adapters.TextCardRVAdapter;
+import com.catherine.webservices.interfaces.ADID_Callback;
 import com.catherine.webservices.interfaces.OnItemClickListener;
 import com.catherine.webservices.network.NetworkHelper;
 import com.catherine.webservices.security.ADID_AsyncTask;
@@ -44,7 +45,6 @@ public class DeviceInfoActivity extends BaseFragmentActivity {
     private List<String> features, contents, desc;
     private TextCardRVAdapter adapter;
     private SwipeRefreshLayout srl_container;
-    private ADID_AsyncTask adid_asyncTask;
     private Handler handler;
 
     @Override
@@ -69,7 +69,7 @@ public class DeviceInfoActivity extends BaseFragmentActivity {
 
         desc.add("");//ADID
         features.add("ADID");
-        adid_asyncTask = new ADID_AsyncTask(new ADID_AsyncTask.ADID_Callback() {
+        ADID_AsyncTask adid_asyncTask = new ADID_AsyncTask(new ADID_Callback() {
             @Override
             public void onResponse(@NotNull String ADID) {
                 desc.set(0, ADID);
@@ -179,7 +179,7 @@ public class DeviceInfoActivity extends BaseFragmentActivity {
         }
         features.add("IMSI (GSM)");
 
-        NetworkHelper networkHelper = new NetworkHelper(this);
+        NetworkHelper networkHelper = new NetworkHelper();
         desc.add(networkHelper.isNetworkHealthy() + "");
         features.add("Network Health");
 
@@ -400,7 +400,6 @@ public class DeviceInfoActivity extends BaseFragmentActivity {
             }
         });
         RecyclerView rv_main_list = findViewById(R.id.rv_main_list);
-//        rv_main_list.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.Companion.getVERTICAL_LIST()));
         rv_main_list.setLayoutManager(new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL));
         adapter = new TextCardRVAdapter(this, null, features, desc, new OnItemClickListener() {
             @Override

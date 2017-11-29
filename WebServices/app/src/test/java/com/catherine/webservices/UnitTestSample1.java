@@ -16,10 +16,10 @@ import static org.junit.Assert.assertThat;
 public class UnitTestSample1 {
     @Test
     public void stringValidator_CorrectStringSimple_ReturnsTrue1() {
-        assertThat(Utils.Companion.junitTestSample1(), is("CSOp40c"));
+        assertThat(Utils.junitTestSample1(), is("CSOp40c"));
     }
     @Test
     public void stringValidator_CorrectStringSimple_ReturnsTrue2() {
-        assertThat(Utils.Companion.junitTestSample1(), is("AC0VSVk"));
+        assertThat(Utils.junitTestSample1(), is("AC0VSVk"));
     }
 }

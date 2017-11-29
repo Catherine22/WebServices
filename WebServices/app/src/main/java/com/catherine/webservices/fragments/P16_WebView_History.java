@@ -114,13 +114,12 @@ public class P16_WebView_History extends LazyFragment {
         });
 
         RecyclerView rv_history = (RecyclerView) findViewById(R.id.rv_history);
-//        rv_main_list.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.Companion.getVERTICAL_LIST()));
         rv_history.setLayoutManager(new LinearLayoutManager(getActivity()));
 
 
         SharedPreferences sp = getActivity().getSharedPreferences("wv_history", Context.MODE_PRIVATE);
         String h = sp.getString("data", "");
-        CLog.Companion.i(TAG, h);
+        CLog.i(TAG, h);
         if (TextUtils.isEmpty(h)) {
             tv_empty.setVisibility(View.VISIBLE);
         } else {
@@ -158,7 +157,7 @@ public class P16_WebView_History extends LazyFragment {
                 SimpleStyleRVAdapter adapter = new SimpleStyleRVAdapter(getActivity(), null, null, new OnMultiItemClickListener() {
                     @Override
                     public void onItemClick(View view, String title, int position) {
-                        CLog.Companion.i(TAG, "click:" + position);
+                        CLog.i(TAG, "click:" + position);
                     }
 
                     @Override

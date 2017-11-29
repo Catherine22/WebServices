@@ -122,7 +122,7 @@ public class P04_Cache extends LazyFragment {
                             double e = failed * 100.0 / len;
                             tv_pb_info.setText(String.format(Locale.ENGLISH, "Fresco Cached: %.2f%%, failed: %.2f%%", p, e));
                             if (imageCards.size() == succeed) {
-                                CLog.Companion.i(TAG, "All the images are cached!");
+                                CLog.i(TAG, "All the images are cached!");
                             }
                         }
 
@@ -192,7 +192,6 @@ public class P04_Cache extends LazyFragment {
         });
 
         RecyclerView rv_main_list = (RecyclerView) findViewById(R.id.rv_main_list);
-//        rv_main_list.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.Companion.getVERTICAL_LIST()));
         rv_main_list.setLayoutManager(new LinearLayoutManager(getActivity()));
         adapter = new TextCardRVAdapter(getActivity(), null, features, descriptions, new OnItemClickListener() {
             @Override
@@ -248,7 +247,7 @@ public class P04_Cache extends LazyFragment {
 
 
     private void callFragment(int id, Bundle bundle) {
-        CLog.Companion.d(TAG, "call " + id);
+        CLog.d(TAG, "call " + id);
         Fragment fragment = null;
         String tag = "";
         String title = "";
@@ -292,7 +291,7 @@ public class P04_Cache extends LazyFragment {
         pb.setMax(TestData.IMAGES1.length);
         for (int i = 0; i < TestData.IMAGES1.length; i++) {
             String url = TestData.IMAGES1[i];
-            ImageCard ic = new ImageCard(NetworkHelper.Companion.getFileNameFromUrl(url), "fresh", url);
+            ImageCard ic = new ImageCard(NetworkHelper.getFileNameFromUrl(url), "fresh", url);
             imageCards.add(ic);
         }
         //cache
@@ -317,7 +316,7 @@ public class P04_Cache extends LazyFragment {
                 tv_pb_info.setText(String.format(Locale.ENGLISH, "Fresco Cached: %.2f%%, failed: %.2f%%", p, e));
             }
         } catch (Exception e) {
-            CLog.Companion.e(TAG, "Cache error:" + e.getMessage());
+            CLog.e(TAG, "Cache error:" + e.getMessage());
         }
     }
 
@@ -325,7 +324,7 @@ public class P04_Cache extends LazyFragment {
 
         @Override
         protected void onNewResultImpl(DataSource<Void> dataSource) {
-            CLog.Companion.i(TAG, "observer, succeed:" + succeed);
+            CLog.i(TAG, "observer, succeed:" + succeed);
             ++succeed;
             getActivity().runOnUiThread(new Runnable() {
                 @Override
@@ -336,7 +335,7 @@ public class P04_Cache extends LazyFragment {
                     double e = failed * 100.0 / len;
                     tv_pb_info.setText(String.format(Locale.ENGLISH, "Fresco Cached: %.2f%%, failed: %.2f%%", p, e));
                     if (imageCards.size() == succeed) {
-                        CLog.Companion.i(TAG, "All the images are cached!");
+                        CLog.i(TAG, "All the images are cached!");
                     }
                 }
             });
@@ -345,7 +344,7 @@ public class P04_Cache extends LazyFragment {
 
         @Override
         protected void onFailureImpl(DataSource<Void> dataSource) {
-            CLog.Companion.e(TAG, "observer, failed:" + failed);
+            CLog.e(TAG, "observer, failed:" + failed);
             ++failed;
             getActivity().runOnUiThread(new Runnable() {
                 @Override

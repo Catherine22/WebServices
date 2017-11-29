@@ -105,7 +105,7 @@ public class P11_Fresco extends LazyFragment {
             for (int i = 0; i < pics.length(); i++) {
                 ImageCard imageCard = new ImageCard();
                 imageCard.image = pics.getString(i);
-                imageCard.title = NetworkHelper.Companion.getFileNameFromUrl(pics.getString(i));
+                imageCard.title = NetworkHelper.getFileNameFromUrl(pics.getString(i));
                 imageCard.subtitle = "fresh";//not cache
                 entities.add(imageCard);
             }
@@ -133,7 +133,7 @@ public class P11_Fresco extends LazyFragment {
                 }
             } catch (Exception e) {
                 pb.setVisibility(View.INVISIBLE);
-                CLog.Companion.e(TAG, "Cache error:" + e.getMessage());
+                CLog.e(TAG, "Cache error:" + e.getMessage());
                 tv_offline.setText(String.format(Locale.ENGLISH, "connectFailure JSON error:%s", e.getMessage()));
                 tv_offline.setVisibility(View.VISIBLE);
             }
@@ -147,7 +147,7 @@ public class P11_Fresco extends LazyFragment {
         srl_container.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                CLog.Companion.d(TAG, "refresh");
+                CLog.d(TAG, "refresh");
                 pb.setVisibility(View.VISIBLE);
                 succeed = 0;
                 failed = 0;
@@ -194,7 +194,7 @@ public class P11_Fresco extends LazyFragment {
         @Override
         protected void onNewResultImpl(DataSource<Void> dataSource) {
             ++succeed;
-            CLog.Companion.i(TAG, "observer, succeed:" + succeed);
+            CLog.i(TAG, "observer, succeed:" + succeed);
             if (entities.size() == succeed) {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
@@ -208,7 +208,7 @@ public class P11_Fresco extends LazyFragment {
         @Override
         protected void onFailureImpl(DataSource<Void> dataSource) {
             ++failed;
-            CLog.Companion.e(TAG, "observer, failed:" + failed);
+            CLog.e(TAG, "observer, failed:" + failed);
         }
     }
 }

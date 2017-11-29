@@ -110,13 +110,13 @@ public class P05_Gallery extends LazyFragment {
     }
 
     private void loadResponse(JSONObject jo, boolean shrinkList) throws JSONException {
-        CLog.Companion.i(TAG, jo.toString());
+        CLog.i(TAG, jo.toString());
         tv_offline.setVisibility(View.GONE);
         JSONArray pics = jo.getJSONArray("pics");
         for (int i = 0; i < pics.length(); i++) {
             ImageCard imageCard = new ImageCard();
             imageCard.image = pics.getString(i);
-            imageCard.title = NetworkHelper.Companion.getFileNameFromUrl(pics.getString(i));
+            imageCard.title = NetworkHelper.getFileNameFromUrl(pics.getString(i));
             imageCard.subtitle = "fresh";//not cache
             entities.add(imageCard);
         }
@@ -132,7 +132,7 @@ public class P05_Gallery extends LazyFragment {
             @Override
             public void onRefresh() {
                 pb.setVisibility(View.VISIBLE);
-                CLog.Companion.d(TAG, "refresh");
+                CLog.d(TAG, "refresh");
                 fillInData();
                 srl_container.setRefreshing(false);
             }

@@ -13,23 +13,16 @@ import android.provider.MediaStore;
 
 import com.catherine.webservices.MyApplication;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
-import java.util.Set;
-import java.util.StringTokenizer;
 
 /**
  * Created by Catherine on 2017/9/20.
@@ -51,7 +44,7 @@ public class FileUtils {
         try {
             files = assetManager.list("");
         } catch (IOException e) {
-            CLog.Companion.e(TAG, e.getMessage() + "\nFailed to get asset file list.");
+            CLog.e(TAG, e.getMessage() + "\nFailed to get asset file list.");
         }
         if (files != null) {
             for (String filename : files) {
@@ -64,7 +57,7 @@ public class FileUtils {
                         out = new FileOutputStream(outFile);
                         copyFile(in, out);
                     } catch (IOException e) {
-                        CLog.Companion.e(TAG, e.getMessage() + "\nFailed to copy asset file: " + filename);
+                        CLog.e(TAG, e.getMessage() + "\nFailed to copy asset file: " + filename);
                     } finally {
                         if (in != null) {
                             try {

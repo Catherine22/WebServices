@@ -310,7 +310,7 @@ public class P13_Nested_WebView extends LazyFragment {
         //设置User Agent（手机版或桌面版）
         settings.setUserAgentString(attr.getUserAgentString(attr.getUserAgent()));
         String ua = settings.getUserAgentString();
-        CLog.Companion.i(TAG, "my user agent:" + ua);
+        CLog.i(TAG, "my user agent:" + ua);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             /*
              * 是否允许Js访问任何来源的内容。包括访问file scheme的URLs。考虑到安全性，
@@ -373,7 +373,7 @@ public class P13_Nested_WebView extends LazyFragment {
         if (b != null) {
             String loadData = b.getString("loadData", null);
             if (TextUtils.isEmpty(loadData))
-                wv.loadUrl(NetworkHelper.Companion.formattedUrl(b.getString("url", Constants.MY_GITHUB)));
+                wv.loadUrl(NetworkHelper.formattedUrl(b.getString("url", Constants.MY_GITHUB)));
             else {
                 String baseUrl = b.getString("baseURL", null);
                 String mimeType = b.getString("mimeType", null);
@@ -381,11 +381,11 @@ public class P13_Nested_WebView extends LazyFragment {
                 String historyUrl = b.getString("historyUrl", null);
                 wv.loadDataWithBaseURL(baseUrl, loadData, mimeType, encoding, historyUrl);
 
-                CLog.Companion.i(TAG, "baseURL:" + ((baseUrl == null) ? "null" : baseUrl));
-                CLog.Companion.i(TAG, "loadData:" + loadData);
+                CLog.i(TAG, "baseURL:" + ((baseUrl == null) ? "null" : baseUrl));
+                CLog.i(TAG, "loadData:" + loadData);
             }
         } else {
-            wv.loadUrl(NetworkHelper.Companion.formattedUrl(Constants.MY_GITHUB));
+            wv.loadUrl(NetworkHelper.formattedUrl(Constants.MY_GITHUB));
         }
     }
 

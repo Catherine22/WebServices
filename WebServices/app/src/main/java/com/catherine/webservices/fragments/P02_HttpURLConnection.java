@@ -99,11 +99,11 @@ public class P02_HttpURLConnection extends LazyFragment {
     }
 
     private void initComponent() {
-        helper = new NetworkHelper(getActivity());
+        helper = new NetworkHelper();
         helper.listenToNetworkState(new NetworkHealthListener() {
             @Override
             public void networkConnected(@NotNull String type) {
-                CLog.Companion.i(TAG, "network connected:" + type);
+                CLog.i(TAG, "network connected:" + type);
                 if (retry) {
                     retry = false;
                     connect(step);
@@ -112,7 +112,7 @@ public class P02_HttpURLConnection extends LazyFragment {
 
             @Override
             public void networkDisable() {
-                CLog.Companion.e(TAG, "network disable");
+                CLog.e(TAG, "network disable");
             }
         });
         srl_container = (SwipeRefreshLayout) findViewById(R.id.srl_container);
@@ -127,7 +127,6 @@ public class P02_HttpURLConnection extends LazyFragment {
         });
 
         RecyclerView rv_main_list = (RecyclerView) findViewById(R.id.rv_main_list);
-//        rv_main_list.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.Companion.getVERTICAL_LIST()));
         rv_main_list.setLayoutManager(new LinearLayoutManager(getActivity()));
         adapter = new TextCardRVAdapter(getActivity(), null, features, descriptions, new OnItemClickListener() {
             @Override
@@ -269,7 +268,7 @@ public class P02_HttpURLConnection extends LazyFragment {
             public void connectSuccess(HttpResponse response) {
                 srl_container.setRefreshing(false);
                 String body = response.getBody();
-                CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), body));
+                CLog.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), body));
                 contents.set(position, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), body));
                 adapter.setContents(contents);
                 adapter.notifyDataSetChanged();
@@ -290,11 +289,11 @@ public class P02_HttpURLConnection extends LazyFragment {
                     retry = true;
                 } else {
                     sb.append(String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getErrorMessage()));
-                    CLog.Companion.e(TAG, sb.toString());
+                    CLog.e(TAG, sb.toString());
                     if (e != null) {
                         sb.append("\n");
                         sb.append(e.getMessage());
-                        CLog.Companion.e(TAG, e.getMessage());
+                        CLog.e(TAG, e.getMessage());
 
                         if (e instanceof SocketTimeoutException) {
                             DialogManager.showAlertDialog(getActivity(), "Connection timeout. Please check your server.", new DialogInterface.OnClickListener() {

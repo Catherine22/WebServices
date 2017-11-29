@@ -42,14 +42,14 @@ public class MyJavaScriptInterface implements IgnoreProguard {
         sv = new Server(ctx, new AsyncResponse() {
             @Override
             public void onFailure(int errorCode) {
-                CLog.Companion.e(TAG, "onFailure:" + errorCode);
+                CLog.e(TAG, "onFailure:" + errorCode);
             }
         });
     }
 
     @JavascriptInterface
     public void getPermission(final String[] permissions) {
-        CLog.Companion.i(TAG, "getPermission()");
+        CLog.i(TAG, "getPermission()");
         mainInterface.getPermissions(permissions, new OnRequestPermissionsListener() {
             @Override
             public void onGranted() {
@@ -90,7 +90,7 @@ public class MyJavaScriptInterface implements IgnoreProguard {
 
     @JavascriptInterface
     public void showDialog(String message) {
-        CLog.Companion.i(TAG, "showDialog()");
+        CLog.i(TAG, "showDialog()");
         DialogManager.showAlertDialog(ctx, "You received a message from JS:\n" + message, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {

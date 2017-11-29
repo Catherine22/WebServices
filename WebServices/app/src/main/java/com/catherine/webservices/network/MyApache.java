@@ -66,7 +66,7 @@ public class MyApache {
             HttpResponse r;
             if (nameValuePairs == null) {
                 //GET
-                CLog.Companion.i(TAG, "GET");
+                CLog.i(TAG, "GET");
                 HttpGet request = new HttpGet(httpRequest.getUrl());
                 //设置标头
                 if (httpRequest.getHeaders() != null) {
@@ -79,7 +79,7 @@ public class MyApache {
                 r = MyApplication.INSTANCE.httpClient.execute(request);
             } else {
                 //POST
-                CLog.Companion.i(TAG, "POST");
+                CLog.i(TAG, "POST");
                 HttpPost request = new HttpPost(httpRequest.getUrl());
 
                 //设置标头
@@ -104,21 +104,21 @@ public class MyApache {
 
 
             String contentEncoding = "";
-            CLog.Companion.i(TAG, "------Header------");
+            CLog.i(TAG, "------Header------");
             for (Header header : r.getAllHeaders()) {
                 StringBuilder sb = new StringBuilder();
                 sb.append(header.getName());
                 sb.append(": ");
                 sb.append(header.getValue());
                 sb.append(",");
-                CLog.Companion.i(TAG, sb.toString());
+                CLog.i(TAG, sb.toString());
 
                 if ("Content-Encoding".equals(header.getName())) {
                     contentEncoding = header.getValue();
 
                 }
             }
-            CLog.Companion.i(TAG, "------Header------");
+            CLog.i(TAG, "------Header------");
 
             InputStream is = r.getEntity().getContent();
             if (is != null) {

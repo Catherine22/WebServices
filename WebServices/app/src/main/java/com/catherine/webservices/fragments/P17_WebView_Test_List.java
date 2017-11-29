@@ -78,7 +78,7 @@ public class P17_WebView_Test_List extends LazyFragment {
                             Server sv = new Server(getActivity(), new AsyncResponse() {
                                 @Override
                                 public void onFailure(int errorCode) {
-                                    CLog.Companion.e(TAG, "onFailure:" + errorCode);
+                                    CLog.e(TAG, "onFailure:" + errorCode);
                                 }
                             });
                             mainInterface.removeBackKeyListener();
@@ -135,12 +135,11 @@ public class P17_WebView_Test_List extends LazyFragment {
         });
 
         RecyclerView rv_url_list = (RecyclerView) findViewById(R.id.rv_url_list);
-//        rv_main_list.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.Companion.getVERTICAL_LIST()));
         rv_url_list.setLayoutManager(new LinearLayoutManager(getActivity()));
         adapter = new SimpleStyleRVAdapter(getActivity(), null, null, new OnMultiItemClickListener() {
             @Override
             public void onItemClick(View view, String title, int position) {
-                CLog.Companion.i(TAG, "title:" + title + ",click:" + position);
+                CLog.i(TAG, "title:" + title + ",click:" + position);
                 Bundle b = new Bundle();
                 if (titleIntent.equals(title)) {
                     b.putString("url", intentList.get(position).getSubtitle());
@@ -302,7 +301,7 @@ public class P17_WebView_Test_List extends LazyFragment {
     }
 
     private void callFragment(int id, Bundle bundle) {
-        CLog.Companion.d(TAG, "call " + id);
+        CLog.d(TAG, "call " + id);
         Fragment fragment = null;
         String tag = "";
         String title = "";

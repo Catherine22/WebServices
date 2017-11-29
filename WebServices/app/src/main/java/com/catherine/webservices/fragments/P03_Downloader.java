@@ -152,7 +152,7 @@ public class P03_Downloader extends LazyFragment {
                                 adapter.notifyDataSetChanged();
                                 periods[position0] = System.currentTimeMillis() - time0;
                                 if (total == LENGTH) {
-                                    CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess downloadedLength:%d, LENGTH:%d \n Spent %d (sec)", total, LENGTH, TimeUnit.MILLISECONDS.toSeconds(periods[position0])));
+                                    CLog.i(TAG, String.format(Locale.ENGLISH, "connectSuccess downloadedLength:%d, LENGTH:%d \n Spent %d (sec)", total, LENGTH, TimeUnit.MILLISECONDS.toSeconds(periods[position0])));
                                     updateView(position0, IDLE);
                                 }
                             }
@@ -167,11 +167,11 @@ public class P03_Downloader extends LazyFragment {
                             public void run() {
                                 StringBuilder sb = new StringBuilder();
                                 sb.append(String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getErrorMessage()));
-                                CLog.Companion.e(TAG, sb.toString());
+                                CLog.e(TAG, sb.toString());
                                 if (e != null) {
                                     sb.append("\n");
                                     sb.append(e.getMessage());
-                                    CLog.Companion.e(TAG, e.getMessage());
+                                    CLog.e(TAG, e.getMessage());
 
                                     if (e instanceof SocketTimeoutException) {
                                         DialogManager.showAlertDialog(getActivity(), "Connection timeout. Please check your server.", new DialogInterface.OnClickListener() {
@@ -209,7 +209,7 @@ public class P03_Downloader extends LazyFragment {
                                 adapter.notifyDataSetChanged();
                                 periods[position1] = System.currentTimeMillis() - time1;
                                 if (total == LENGTH) {
-                                    CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess downloadedLength:%d, LENGTH:%d \n Spent %d (sec)", total, LENGTH, TimeUnit.MILLISECONDS.toSeconds(periods[position1])));
+                                    CLog.i(TAG, String.format(Locale.ENGLISH, "connectSuccess downloadedLength:%d, LENGTH:%d \n Spent %d (sec)", total, LENGTH, TimeUnit.MILLISECONDS.toSeconds(periods[position1])));
                                     updateView(position1, IDLE);
                                 }
                             }
@@ -223,11 +223,11 @@ public class P03_Downloader extends LazyFragment {
                             public void run() {
                                 StringBuilder sb = new StringBuilder();
                                 sb.append(String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getErrorMessage()));
-                                CLog.Companion.e(TAG, sb.toString());
+                                CLog.e(TAG, sb.toString());
                                 if (e != null) {
                                     sb.append("\n");
                                     sb.append(e.getMessage());
-                                    CLog.Companion.e(TAG, e.getMessage());
+                                    CLog.e(TAG, e.getMessage());
 
                                     if (e instanceof SocketTimeoutException) {
                                         DialogManager.showAlertDialog(getActivity(), "Connection timeout. Please check your server.", new DialogInterface.OnClickListener() {
@@ -266,7 +266,6 @@ public class P03_Downloader extends LazyFragment {
         });
 
         RecyclerView rv_main_list = (RecyclerView) findViewById(R.id.rv_main_list);
-//        rv_main_list.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.Companion.getVERTICAL_LIST()));
         rv_main_list.setLayoutManager(new LinearLayoutManager(getActivity()));
         adapter = new ProgressCardRVAdapter(getActivity(), null, features, descriptions, null);
         adapter.setOnItemClickListener(new OnItemClickListener() {

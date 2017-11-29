@@ -75,9 +75,9 @@ class MainActivity : BaseFragmentActivity(), MainInterface {
 
         val checkStateWork = Handler(MyApplication.INSTANCE.calHandlerThread.looper)
         checkStateWork.post {
-            val networkHelper = NetworkHelper(this@MainActivity)
-            CLog.d(TAG, "isNetworkHealthy:${networkHelper.isNetworkHealthy()}")
-            CLog.d(TAG, "isWifi:${networkHelper.isWifi()}")
+            val networkHelper = NetworkHelper()
+            CLog.d(TAG, "isNetworkHealthy:${networkHelper.isNetworkHealthy}")
+            CLog.d(TAG, "isWifi:${networkHelper.isWifi}")
             networkHelper.listenToNetworkState(object : NetworkHealthListener {
                 override fun networkConnected(type: String) {
                     CLog.i(TAG, "network connected, type:$type")

@@ -22,7 +22,6 @@ import android.widget.RadioGroup;
 
 import com.catherine.webservices.Commands;
 import com.catherine.webservices.Constants;
-import com.catherine.webservices.MyApplication;
 import com.catherine.webservices.R;
 import com.catherine.webservices.adapters.MultiStyleRVAdapter;
 import com.catherine.webservices.components.DialogManager;
@@ -183,7 +182,7 @@ public class P15_WebView_Settings extends LazyFragment {
         sv = new Server(getActivity(), new AsyncResponse() {
             @Override
             public void onFailure(int errorCode) {
-                CLog.Companion.e(TAG, "LocalBroadCast error:" + errorCode);
+                CLog.e(TAG, "LocalBroadCast error:" + errorCode);
             }
         });
         srl_container = (SwipeRefreshLayout) findViewById(R.id.srl_container);
@@ -197,12 +196,11 @@ public class P15_WebView_Settings extends LazyFragment {
         });
         srl_container.setRefreshing(true);
         RecyclerView rv_main_list = (RecyclerView) findViewById(R.id.rv_main_list);
-//        rv_main_list.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.Companion.getVERTICAL_LIST()));
         rv_main_list.setLayoutManager(new LinearLayoutManager(getActivity()));
         adapter = new MultiStyleRVAdapter(getActivity(), null, null, new OnMultiItemClickListener() {
             @Override
             public void onItemClick(View view, String title, int position) {
-                CLog.Companion.i(TAG, "Click: " + title + "[" + position + "]");
+                CLog.i(TAG, "Click: " + title + "[" + position + "]");
                 if (titles[2].equals(title)) {
                     Bundle b = new Bundle();
                     switch (position) {
@@ -229,7 +227,7 @@ public class P15_WebView_Settings extends LazyFragment {
         }, new OnMultiItemSelectListener() {
             @Override
             public void onItemSelect(final String title, final int position, boolean isSelect, String data) {
-                CLog.Companion.i(TAG, "select: "+title + "[" + position + "], isSelect:" + isSelect + ", data: " + data);
+                CLog.i(TAG, "select: "+title + "[" + position + "], isSelect:" + isSelect + ", data: " + data);
                 if (titles[0].equals(title)) {
                     switch (position) {
                         case 0:
@@ -584,12 +582,12 @@ public class P15_WebView_Settings extends LazyFragment {
             rb.setLayoutParams(params);
             rg.addView(rb);
         }
-        CLog.Companion.d(TAG, "count:" + rg.getChildCount());
+        CLog.d(TAG, "count:" + rg.getChildCount());
         rg.check(rg.getChildAt(selected).getId());
         rg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
-                CLog.Companion.d(TAG, "check:" + i);
+                CLog.d(TAG, "check:" + i);
                 selected = i;
             }
         });

@@ -51,7 +51,7 @@ public class P08_Blocking_Socket extends LazyFragment {
     public void onCreateViewLazy(Bundle savedInstanceState) {
         super.onCreateViewLazy(savedInstanceState);
         setContentView(R.layout.f_socket);
-        helper = new NetworkHelper(getActivity());
+        helper = new NetworkHelper();
         mainInterface = (MainInterface) getActivity();
         init();
     }

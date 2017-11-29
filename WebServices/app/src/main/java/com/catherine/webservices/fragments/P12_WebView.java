@@ -167,7 +167,6 @@ public class P12_WebView extends LazyFragment {
         });
 
         RecyclerView rv_main_list = (RecyclerView) findViewById(R.id.rv_main_list);
-//        rv_main_list.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.Companion.getVERTICAL_LIST()));
         rv_main_list.setLayoutManager(new LinearLayoutManager(getActivity()));
         TextCardRVAdapter adapter = new TextCardRVAdapter(getActivity(), null, features, descriptions, new OnItemClickListener() {
             @Override
@@ -200,7 +199,7 @@ public class P12_WebView extends LazyFragment {
 
 
     private void callFragment(int id) {
-        CLog.Companion.d(TAG, "call " + id);
+        CLog.d(TAG, "call " + id);
         Fragment fragment = null;
         String tag = "";
         String title = "";

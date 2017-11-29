@@ -12,7 +12,6 @@ import com.catherine.webservices.toolkits.StreamUtils;
 
 import org.apache.http.protocol.HTTP;
 
-import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -20,8 +19,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.security.KeyStore;
 import java.security.SecureRandom;
-import java.security.cert.CertificateFactory;
-import java.security.cert.X509Certificate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -173,7 +170,7 @@ public class MyHttpURLConnection {
             msg = conn.getResponseMessage();
 
             String contentEncoding = "";
-            CLog.Companion.i(TAG, "------Header------");
+            CLog.i(TAG, "------Header------");
             for (Map.Entry<String, List<String>> entries : conn.getHeaderFields().entrySet()) {
                 StringBuilder values = new StringBuilder();
                 for (String value : entries.getValue()) {
@@ -186,9 +183,9 @@ public class MyHttpURLConnection {
 
                 values.deleteCharAt(values.length() - 1);
                 responseHeaders.put(entries.getKey(), values.toString());
-                CLog.Companion.i(TAG, entries.getKey() + ": " + values);
+                CLog.i(TAG, entries.getKey() + ": " + values);
             }
-            CLog.Companion.i(TAG, "------Header------");
+            CLog.i(TAG, "------Header------");
 
             InputStream is = conn.getInputStream();
             if (is != null) {

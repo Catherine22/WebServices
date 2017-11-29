@@ -145,9 +145,9 @@ public class P14_Full_WebView extends LazyFragment {
     private void initComponent() {
         Bundle b = getArguments();
         if (b != null) {
-            currentUrl = NetworkHelper.Companion.formattedUrl(b.getString("url", Constants.MY_GITHUB));
+            currentUrl = NetworkHelper.formattedUrl(b.getString("url", Constants.MY_GITHUB));
         } else {
-            currentUrl = NetworkHelper.Companion.formattedUrl(Constants.MY_GITHUB);
+            currentUrl = NetworkHelper.formattedUrl(Constants.MY_GITHUB);
         }
         displayUrl = getShortName(currentUrl);
 
@@ -185,11 +185,11 @@ public class P14_Full_WebView extends LazyFragment {
         mainInterface.setBackKeyListener(new BackKeyListener() {
             @Override
             public void OnKeyDown() {
-                CLog.Companion.i(TAG, "back");
+                CLog.i(TAG, "back");
 //                //history
 //                WebBackForwardList history = wv.copyBackForwardList();
 //                for (int i = 0; i < history.getSize(); i++) {
-//                    CLog.Companion.d(TAG, history.getItemAtIndex(i).getOriginalUrl());
+//                    CLog.d(TAG, history.getItemAtIndex(i).getOriginalUrl());
 //                }
                 if (wv.canGoBack())
                     wv.goBack();
@@ -281,7 +281,7 @@ public class P14_Full_WebView extends LazyFragment {
         wv.setWebChromeClient(new WebChromeClient() {
             @Override
             public void onReceivedTitle(WebView view, String title) {
-                CLog.Companion.i(TAG, "onReceivedTitle:" + title);
+                CLog.i(TAG, "onReceivedTitle:" + title);
                 displayUrl = title;
                 actv_url.setText(title);
                 actv_url.dismissDropDown();
@@ -291,7 +291,7 @@ public class P14_Full_WebView extends LazyFragment {
             //处理alert弹出框，html弹框的一种方式
             @Override
             public boolean onJsAlert(WebView view, final String url, final String message, final JsResult result) {
-                CLog.Companion.i(TAG, "onJsAlert:" + message);
+                CLog.i(TAG, "onJsAlert:" + message);
 
                 //处理JS的弹窗，改成以自定义style实现
                 if (jsDialog != null && jsDialog.isShowing())
@@ -340,7 +340,7 @@ public class P14_Full_WebView extends LazyFragment {
             //处理confirm弹出框
             @Override
             public boolean onJsConfirm(WebView view, final String url, final String message, final JsResult result) {
-                CLog.Companion.i(TAG, "onJsConfirm:" + message);
+                CLog.i(TAG, "onJsConfirm:" + message);
 
                 //处理JS的弹窗，改成以自定义style实现
                 if (jsDialog != null && jsDialog.isShowing())
@@ -395,7 +395,7 @@ public class P14_Full_WebView extends LazyFragment {
 
             @Override
             public boolean onJsPrompt(WebView view, final String url, final String message, final String defaultValue, final JsPromptResult result) {
-                CLog.Companion.i(TAG, "onJsPrompt:" + message);
+                CLog.i(TAG, "onJsPrompt:" + message);
 
                 //处理JS的弹窗，改成以自定义style实现
                 if (jsDialog != null && jsDialog.isShowing())
@@ -460,7 +460,7 @@ public class P14_Full_WebView extends LazyFragment {
                     //打开网页时不调用系统浏览器， 而是在此WebView中显示，返回上一页时并不会呼叫
                     @Override
                     public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                        CLog.Companion.i(TAG, "shouldOverrideUrlLoading:" + url);
+                        CLog.i(TAG, "shouldOverrideUrlLoading:" + url);
                         currentUrl = url;
                         displayUrl = getShortName(currentUrl);
                         actv_url.setText(displayUrl);
@@ -471,9 +471,9 @@ public class P14_Full_WebView extends LazyFragment {
 
                     @Override
                     public void onPageFinished(WebView view, String url) {
-                        CLog.Companion.i(TAG, "onPageFinished:" + url);
+                        CLog.i(TAG, "onPageFinished:" + url);
                         String cookies = CookieManager.getInstance().getCookie(url);
-                        CLog.Companion.i(TAG, "Eat a cookie:" + cookies);
+                        CLog.i(TAG, "Eat a cookie:" + cookies);
 
                         Handler handler = new Handler(MyApplication.INSTANCE.calHandlerThread.getLooper());
                         handler.post(new Runnable() {
@@ -650,7 +650,7 @@ public class P14_Full_WebView extends LazyFragment {
         //设置User Agent（手机版或桌面版）
         settings.setUserAgentString(attr.getUserAgentString(attr.getUserAgent()));
         String ua = settings.getUserAgentString();
-        CLog.Companion.i(TAG, "my user agent:" + ua);
+        CLog.i(TAG, "my user agent:" + ua);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             /*
              * 是否允许Js访问任何来源的内容。包括访问file scheme的URLs。考虑到安全性，

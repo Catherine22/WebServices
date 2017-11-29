@@ -97,11 +97,11 @@ public class P01_Apache extends LazyFragment {
     }
 
     private void initComponent() {
-        helper = new NetworkHelper(getActivity());
+        helper = new NetworkHelper();
         helper.listenToNetworkState(new NetworkHealthListener() {
             @Override
             public void networkConnected(@NotNull String type) {
-                CLog.Companion.i(TAG, "network connected:" + type);
+                CLog.i(TAG, "network connected:" + type);
                 if (retry) {
                     retry = false;
                     connect(step);
@@ -110,7 +110,7 @@ public class P01_Apache extends LazyFragment {
 
             @Override
             public void networkDisable() {
-                CLog.Companion.e(TAG, "network disable");
+                CLog.e(TAG, "network disable");
             }
         });
         myApache = new MyApache();
@@ -132,7 +132,6 @@ public class P01_Apache extends LazyFragment {
             }
         });
         RecyclerView rv_main_list = (RecyclerView) findViewById(R.id.rv_main_list);
-//        rv_main_list.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.Companion.getVERTICAL_LIST()));
         rv_main_list.setLayoutManager(new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL));
         adapter = new TextCardRVAdapter(getActivity(), null, features, desc, new OnItemClickListener() {
             @Override
@@ -275,7 +274,7 @@ public class P01_Apache extends LazyFragment {
         @Override
         public void connectSuccess(HttpResponse response) {
             //Running in a non-UI thread right now.
-            CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
+            CLog.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
             contents.set(position, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
             adapter.setContents(contents);
             getActivity().runOnUiThread(new Runnable() {
@@ -302,11 +301,11 @@ public class P01_Apache extends LazyFragment {
                 retry = true;
             } else {
                 sb.append(String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getErrorMessage()));
-                CLog.Companion.e(TAG, sb.toString());
+                CLog.e(TAG, sb.toString());
                 if (e != null) {
                     sb.append("\n");
                     sb.append(e.getMessage());
-                    CLog.Companion.e(TAG, e.getMessage());
+                    CLog.e(TAG, e.getMessage());
 
                     if (e instanceof SocketTimeoutException) {
                         DialogManager.showAlertDialog(getActivity(), "Connection timeout. Please check your server.", new DialogInterface.OnClickListener() {

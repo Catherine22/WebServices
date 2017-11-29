@@ -13,7 +13,6 @@ import android.widget.TextView;
 import com.catherine.webservices.R;
 import com.catherine.webservices.entities.ImageCard;
 import com.catherine.webservices.interfaces.OnItemClickListener;
-import com.catherine.webservices.toolkits.CLog;
 import com.facebook.binaryresource.BinaryResource;
 import com.facebook.binaryresource.FileBinaryResource;
 import com.facebook.cache.common.CacheKey;

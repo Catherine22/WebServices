@@ -14,7 +14,6 @@ import com.catherine.webservices.fragments.P04_Cache;
 import com.catherine.webservices.fragments.P06_Upload;
 import com.catherine.webservices.fragments.P07_Socket;
 import com.catherine.webservices.fragments.P12_WebView;
-import com.catherine.webservices.toolkits.CLog;
 
 /**
  * Created by Catherine on 2017/8/25.

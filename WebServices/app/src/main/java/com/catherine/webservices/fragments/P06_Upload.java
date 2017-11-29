@@ -15,6 +15,7 @@ import com.catherine.webservices.MyApplication;
 import com.catherine.webservices.R;
 import com.catherine.webservices.adapters.TextCardRVAdapter;
 import com.catherine.webservices.components.DialogManager;
+import com.catherine.webservices.interfaces.ADID_Callback;
 import com.catherine.webservices.interfaces.MainInterface;
 import com.catherine.webservices.interfaces.OnItemClickListener;
 import com.catherine.webservices.interfaces.OnRequestPermissionsListener;
@@ -135,14 +136,13 @@ public class P06_Upload extends LazyFragment {
         });
 
         RecyclerView rv_main_list = (RecyclerView) findViewById(R.id.rv_main_list);
-//        rv_main_list.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.Companion.getVERTICAL_LIST()));
         rv_main_list.setLayoutManager(new LinearLayoutManager(getActivity()));
         adapter = new TextCardRVAdapter(getActivity(), null, features, descriptions, new OnItemClickListener() {
             @Override
             public void onItemClick(@NotNull View view, final int position) {
                 switch (position) {
                     case 0:
-                        adid_asyncTask = new ADID_AsyncTask(new ADID_AsyncTask.ADID_Callback() {
+                        adid_asyncTask = new ADID_AsyncTask(new ADID_Callback() {
                             @Override
                             public void onResponse(@NotNull String ADID) {
                                 try {
@@ -152,7 +152,7 @@ public class P06_Upload extends LazyFragment {
                                             .listener(new UploaderListener() {
                                                 @Override
                                                 public void connectSuccess(@NotNull HttpResponse response) {
-                                                    CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
+                                                    CLog.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
                                                     contents.set(position, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
                                                     adapter.setContents(contents);
                                                     adapter.notifyDataSetChanged();
@@ -162,11 +162,11 @@ public class P06_Upload extends LazyFragment {
                                                 public void connectFailure(@NotNull HttpResponse response, @org.jetbrains.annotations.Nullable Exception e) {
                                                     StringBuilder sb = new StringBuilder();
                                                     sb.append(String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getErrorMessage()));
-                                                    CLog.Companion.e(TAG, sb.toString());
+                                                    CLog.e(TAG, sb.toString());
                                                     if (e != null) {
                                                         sb.append("\n");
                                                         sb.append(e.getMessage());
-                                                        CLog.Companion.e(TAG, e.getMessage());
+                                                        CLog.e(TAG, e.getMessage());
 
                                                         if (e instanceof SocketTimeoutException) {
                                                             DialogManager.showAlertDialog(getActivity(), "Connection timeout. Please check your server.", new DialogInterface.OnClickListener() {
@@ -190,7 +190,7 @@ public class P06_Upload extends LazyFragment {
 
                             @Override
                             public void onError(@NotNull Exception ex) {
-                                CLog.Companion.e(TAG, ex.getMessage());
+                                CLog.e(TAG, ex.getMessage());
                                 try {
                                     UploadRequest request = new UploadRequest.Builder()
                                             .file(new File(MyApplication.INSTANCE.getDataCacheDir() + "/big_o_cheat_sheet_poster.jpg"))
@@ -198,7 +198,7 @@ public class P06_Upload extends LazyFragment {
                                             .listener(new UploaderListener() {
                                                 @Override
                                                 public void connectSuccess(@NotNull HttpResponse response) {
-                                                    CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
+                                                    CLog.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
                                                     contents.set(position, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
                                                     adapter.setContents(contents);
                                                     adapter.notifyDataSetChanged();
@@ -208,11 +208,11 @@ public class P06_Upload extends LazyFragment {
                                                 public void connectFailure(@NotNull HttpResponse response, @org.jetbrains.annotations.Nullable Exception e) {
                                                     StringBuilder sb = new StringBuilder();
                                                     sb.append(String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getErrorMessage()));
-                                                    CLog.Companion.e(TAG, sb.toString());
+                                                    CLog.e(TAG, sb.toString());
                                                     if (e != null) {
                                                         sb.append("\n");
                                                         sb.append(e.getMessage());
-                                                        CLog.Companion.e(TAG, e.getMessage());
+                                                        CLog.e(TAG, e.getMessage());
 
                                                         if (e instanceof SocketTimeoutException) {
                                                             DialogManager.showAlertDialog(getActivity(), "Connection timeout. Please check your server.", new DialogInterface.OnClickListener() {
@@ -238,7 +238,7 @@ public class P06_Upload extends LazyFragment {
                         break;
 
                     case 1:
-                        adid_asyncTask = new ADID_AsyncTask(new ADID_AsyncTask.ADID_Callback() {
+                        adid_asyncTask = new ADID_AsyncTask(new ADID_Callback() {
                             @Override
                             public void onResponse(@NotNull String ADID) {
                                 try {
@@ -251,7 +251,7 @@ public class P06_Upload extends LazyFragment {
                                             .listener(new UploaderListener() {
                                                 @Override
                                                 public void connectSuccess(@NotNull HttpResponse response) {
-                                                    CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
+                                                    CLog.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
                                                     contents.set(position, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
                                                     adapter.setContents(contents);
                                                     adapter.notifyDataSetChanged();
@@ -262,11 +262,11 @@ public class P06_Upload extends LazyFragment {
                                                 public void connectFailure(@NotNull HttpResponse response, Exception e) {
                                                     StringBuilder sb = new StringBuilder();
                                                     sb.append(String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getErrorMessage()));
-                                                    CLog.Companion.e(TAG, sb.toString());
+                                                    CLog.e(TAG, sb.toString());
                                                     if (e != null) {
                                                         sb.append("\n");
                                                         sb.append(e.getMessage());
-                                                        CLog.Companion.e(TAG, e.getMessage());
+                                                        CLog.e(TAG, e.getMessage());
 
                                                         if (e instanceof SocketTimeoutException) {
                                                             DialogManager.showAlertDialog(getActivity(), "Connection timeout. Please check your server.", new DialogInterface.OnClickListener() {
@@ -290,7 +290,7 @@ public class P06_Upload extends LazyFragment {
 
                             @Override
                             public void onError(@NotNull Exception ex) {
-                                CLog.Companion.e(TAG, ex.getMessage());
+                                CLog.e(TAG, ex.getMessage());
                                 try {
                                     Map<String, String> body = new HashMap<>();
                                     body.put("ADID", "UNKNOWN");
@@ -301,7 +301,7 @@ public class P06_Upload extends LazyFragment {
                                             .listener(new UploaderListener() {
                                                 @Override
                                                 public void connectSuccess(@NotNull HttpResponse response) {
-                                                    CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
+                                                    CLog.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
                                                     contents.set(position, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
                                                     adapter.setContents(contents);
                                                     adapter.notifyDataSetChanged();
@@ -312,11 +312,11 @@ public class P06_Upload extends LazyFragment {
                                                 public void connectFailure(@NotNull HttpResponse response, Exception e) {
                                                     StringBuilder sb = new StringBuilder();
                                                     sb.append(String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getErrorMessage()));
-                                                    CLog.Companion.e(TAG, sb.toString());
+                                                    CLog.e(TAG, sb.toString());
                                                     if (e != null) {
                                                         sb.append("\n");
                                                         sb.append(e.getMessage());
-                                                        CLog.Companion.e(TAG, e.getMessage());
+                                                        CLog.e(TAG, e.getMessage());
 
                                                         if (e instanceof SocketTimeoutException) {
                                                             DialogManager.showAlertDialog(getActivity(), "Connection timeout. Please check your server.", new DialogInterface.OnClickListener() {
@@ -341,7 +341,7 @@ public class P06_Upload extends LazyFragment {
                         adid_asyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                         break;
                     case 2:
-                        adid_asyncTask = new ADID_AsyncTask(new ADID_AsyncTask.ADID_Callback() {
+                        adid_asyncTask = new ADID_AsyncTask(new ADID_Callback() {
                             @Override
                             public void onResponse(@NotNull String ADID) {
                                 try {
@@ -354,7 +354,7 @@ public class P06_Upload extends LazyFragment {
                                             .listener(new UploaderListener() {
                                                 @Override
                                                 public void connectSuccess(@NotNull HttpResponse response) {
-                                                    CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
+                                                    CLog.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
                                                     contents.set(position, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
                                                     adapter.setContents(contents);
                                                     adapter.notifyDataSetChanged();
@@ -365,11 +365,11 @@ public class P06_Upload extends LazyFragment {
                                                 public void connectFailure(@NotNull HttpResponse response, Exception e) {
                                                     StringBuilder sb = new StringBuilder();
                                                     sb.append(String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getErrorMessage()));
-                                                    CLog.Companion.e(TAG, sb.toString());
+                                                    CLog.e(TAG, sb.toString());
                                                     if (e != null) {
                                                         sb.append("\n");
                                                         sb.append(e.getMessage());
-                                                        CLog.Companion.e(TAG, e.getMessage());
+                                                        CLog.e(TAG, e.getMessage());
 
                                                         if (e instanceof SocketTimeoutException) {
                                                             DialogManager.showAlertDialog(getActivity(), "Connection timeout. Please check your server.", new DialogInterface.OnClickListener() {
@@ -404,7 +404,7 @@ public class P06_Upload extends LazyFragment {
                                             .listener(new UploaderListener() {
                                                 @Override
                                                 public void connectSuccess(@NotNull HttpResponse response) {
-                                                    CLog.Companion.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
+                                                    CLog.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
                                                     contents.set(position, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
                                                     adapter.setContents(contents);
                                                     adapter.notifyDataSetChanged();
@@ -415,11 +415,11 @@ public class P06_Upload extends LazyFragment {
                                                 public void connectFailure(@NotNull HttpResponse response, @org.jetbrains.annotations.Nullable Exception e) {
                                                     StringBuilder sb = new StringBuilder();
                                                     sb.append(String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getErrorMessage()));
-                                                    CLog.Companion.e(TAG, sb.toString());
+                                                    CLog.e(TAG, sb.toString());
                                                     if (e != null) {
                                                         sb.append("\n");
                                                         sb.append(e.getMessage());
-                                                        CLog.Companion.e(TAG, e.getMessage());
+                                                        CLog.e(TAG, e.getMessage());
 
                                                         if (e instanceof SocketTimeoutException) {
                                                             DialogManager.showAlertDialog(getActivity(), "Connection timeout. Please check your server.", new DialogInterface.OnClickListener() {

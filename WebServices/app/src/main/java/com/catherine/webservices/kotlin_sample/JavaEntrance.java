@@ -26,7 +26,7 @@ public class JavaEntrance {
         diana.setAge(15);
         diana.setName("Diana");
         diana.setId(0);
-        CLog.Companion.v(TAG, diana.toString());
+        CLog.v(TAG, diana.toString());
     }
 
     //允许null
@@ -35,7 +35,7 @@ public class JavaEntrance {
         lavender.setName(null);
         lavender.setName("Lavender");
         lavender.setId(1);
-        CLog.Companion.v(TAG, lavender.toString());
+        CLog.v(TAG, lavender.toString());
     }
 
     //泛型1
@@ -46,7 +46,7 @@ public class JavaEntrance {
         composite.add(false);
         composite.add(12);
         for (int i = 0; i < composite.size(); i++)
-            CLog.Companion.v(TAG, composite.get(i).toString());
+            CLog.v(TAG, composite.get(i).toString());
 
         //Kotlin泛型
         KotlinEntrance.INSTANCE.printGenerics();
@@ -79,19 +79,19 @@ public class JavaEntrance {
         FunctionSetKt.printFunInPackage();
 
         //调用扩展方法
-        CLog.Companion.v(TAG, FunctionSetKt.isEmpty("test") + "");
-        CLog.Companion.v(TAG, FunctionSetKt.isEmpty("") + "");
+        CLog.v(TAG, FunctionSetKt.isEmpty("test") + "");
+        CLog.v(TAG, FunctionSetKt.isEmpty("") + "");
     }
 
     private final static List<Runnable> runnables = new ArrayList<>();
 
     public void addRunnable(Runnable r) {
         runnables.add(r);
-        CLog.Companion.v(TAG, "Added " + r + ", now you've got " + runnables.size() + " runnables");
+        CLog.v(TAG, "Added " + r + ", now you've got " + runnables.size() + " runnables");
     }
 
     public void removeRunnable(Runnable r) {
         runnables.remove(r);
-        CLog.Companion.v(TAG, "Removed " + r + ", now you've got " + runnables.size() + " runnables");
+        CLog.v(TAG, "Removed " + r + ", now you've got " + runnables.size() + " runnables");
     }
 }

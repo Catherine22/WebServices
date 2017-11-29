@@ -295,11 +295,11 @@ public class MultiStyleRVAdapter extends RecyclerView.Adapter<MultiStyleRVAdapte
     }
 
     public void mergeList(String title, List<MultiStyleItem> list) {
-//        CLog.Companion.w(TAG, "CHECK_BOX:" + CHECK_BOX);
-//        CLog.Companion.w(TAG, "SWITCH:" + SWITCH);
-//        CLog.Companion.w(TAG, "TOP:" + TOP);
-//        CLog.Companion.w(TAG, "BOTTOM:" + BOTTOM);
-//        CLog.Companion.w(TAG, "PLAIN_TEXT:" + PLAIN_TEXT);
+//        CLog.w(TAG, "CHECK_BOX:" + CHECK_BOX);
+//        CLog.w(TAG, "SWITCH:" + SWITCH);
+//        CLog.w(TAG, "TOP:" + TOP);
+//        CLog.w(TAG, "BOTTOM:" + BOTTOM);
+//        CLog.w(TAG, "PLAIN_TEXT:" + PLAIN_TEXT);
         if (list != null && list.size() > 0) {
             if (!TextUtils.isEmpty(title)) {
                 titles++;
@@ -362,7 +362,7 @@ public class MultiStyleRVAdapter extends RecyclerView.Adapter<MultiStyleRVAdapte
         //Debug
         for (int i = 0; i < items.size(); i++) {
             MultiStyleItem item = items.get(i);
-            CLog.Companion.i(TAG, item.getTitle() + ":" + item.getStyle());
+            CLog.i(TAG, item.getTitle() + ":" + item.getStyle());
         }
 
     }
