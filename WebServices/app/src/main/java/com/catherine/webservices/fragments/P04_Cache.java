@@ -21,6 +21,7 @@ import com.catherine.webservices.adapters.TextCardRVAdapter;
 import com.catherine.webservices.components.DialogManager;
 import com.catherine.webservices.entities.ImageCard;
 import com.catherine.webservices.entities.TestData;
+import com.catherine.webservices.entities.TextCard;
 import com.catherine.webservices.interfaces.BackKeyListener;
 import com.catherine.webservices.interfaces.MainInterface;
 import com.catherine.webservices.interfaces.OnItemClickListener;
@@ -54,8 +55,7 @@ import catherine.messagecenter.Result;
 
 public class P04_Cache extends LazyFragment {
     public final static String TAG = "P04_Cache";
-    private List<String> features;
-    private List<String> descriptions;
+    private List<TextCard> entities;
     private SwipeRefreshLayout srl_container;
     private MainInterface mainInterface;
     private TextCardRVAdapter adapter;
@@ -133,7 +133,7 @@ public class P04_Cache extends LazyFragment {
             }
 
             @Override
-            public void onDenied(@org.jetbrains.annotations.Nullable List<String> deniedPermissions) {
+            public void onDenied(@Nullable List<String> deniedPermissions) {
                 StringBuilder context = new StringBuilder();
                 if (deniedPermissions != null) {
                     for (String p : deniedPermissions) {
@@ -165,19 +165,12 @@ public class P04_Cache extends LazyFragment {
 
 
     private void fillInData() {
-        features = new ArrayList<>();
-        features.add("ImageView + DiskLruCache");
-        features.add("ImageView + DiskLruCache");
-        features.add("(Fresco) SimpleDraweeView + Non-cached");
-        features.add("(Fresco) SimpleDraweeView + Cache");
-        features.add("(Fresco) SimpleDraweeView + Prefetch To Disk Cache");
-
-        descriptions = new ArrayList<>();
-        descriptions.add("Download images from the Internet and cache them.");
-        descriptions.add("Download images from the Internet and cache them, or show cache when the network not works.");
-        descriptions.add("Show images from the Internet.");
-        descriptions.add("Download images from the Internet and cache them.");
-        descriptions.add("Download and cache images then show caches.");
+        entities = new ArrayList<>();
+        entities.add(new TextCard("ImageView + DiskLruCache", "Download images from the Internet and cache them.", null));
+        entities.add(new TextCard("ImageView + DiskLruCache", "Download images from the Internet and cache them, or show cache when the network not works.", null));
+        entities.add(new TextCard("(Fresco) SimpleDraweeView + Non-cached", "Show images from the Internet.", null));
+        entities.add(new TextCard("(Fresco) SimpleDraweeView + Cache", "Download images from the Internet and cache them.", null));
+        entities.add(new TextCard("(Fresco) SimpleDraweeView + Prefetch To Disk Cache", "Download and cache images then show caches.", null));
     }
 
     private void initComponent() {
@@ -193,7 +186,7 @@ public class P04_Cache extends LazyFragment {
 
         RecyclerView rv_main_list = (RecyclerView) findViewById(R.id.rv_main_list);
         rv_main_list.setLayoutManager(new LinearLayoutManager(getActivity()));
-        adapter = new TextCardRVAdapter(getActivity(), null, features, descriptions, new OnItemClickListener() {
+        adapter = new TextCardRVAdapter(getActivity(), entities, new OnItemClickListener() {
             @Override
             public void onItemClick(@NotNull View view, int position) {
                 mainInterface.restoreBottomLayout();

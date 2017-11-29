@@ -85,7 +85,7 @@ public class P13_Nested_WebView extends LazyFragment {
             }
 
             @Override
-            public void onDenied(@org.jetbrains.annotations.Nullable List<String> deniedPermissions) {
+            public void onDenied(@Nullable List<String> deniedPermissions) {
                 StringBuilder context = new StringBuilder();
                 if (deniedPermissions != null) {
                     for (String p : deniedPermissions) {

@@ -92,7 +92,7 @@ public class P17_WebView_Test_List extends LazyFragment {
             }
 
             @Override
-            public void onDenied(@org.jetbrains.annotations.Nullable List<String> deniedPermissions) {
+            public void onDenied(@Nullable List<String> deniedPermissions) {
                 StringBuilder context = new StringBuilder();
                 if (deniedPermissions != null) {
                     for (String p : deniedPermissions) {

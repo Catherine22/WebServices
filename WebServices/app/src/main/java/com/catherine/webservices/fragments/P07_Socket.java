@@ -15,6 +15,7 @@ import com.catherine.webservices.Constants;
 import com.catherine.webservices.R;
 import com.catherine.webservices.adapters.TextCardRVAdapter;
 import com.catherine.webservices.components.DialogManager;
+import com.catherine.webservices.entities.TextCard;
 import com.catherine.webservices.interfaces.BackKeyListener;
 import com.catherine.webservices.interfaces.MainInterface;
 import com.catherine.webservices.interfaces.OnItemClickListener;
@@ -34,8 +35,7 @@ import java.util.List;
 
 public class P07_Socket extends LazyFragment {
     public final static String TAG = "P07_Socket";
-    private List<String> features;
-    private List<String> descriptions;
+    private List<TextCard> entities;
     private SwipeRefreshLayout srl_container;
     private MainInterface mainInterface;
     private TextCardRVAdapter adapter;
@@ -77,7 +77,7 @@ public class P07_Socket extends LazyFragment {
             }
 
             @Override
-            public void onDenied(@org.jetbrains.annotations.Nullable List<String> deniedPermissions) {
+            public void onDenied(@Nullable List<String> deniedPermissions) {
                 StringBuilder context = new StringBuilder();
                 if (deniedPermissions != null) {
                     for (String p : deniedPermissions) {
@@ -109,15 +109,10 @@ public class P07_Socket extends LazyFragment {
 
 
     private void fillInData() {
-        features = new ArrayList<>();
-        features.add("TCP Socket");
-        features.add("NIO Socket");
-        features.add("UDP Socket");
-
-        descriptions = new ArrayList<>();
-        descriptions.add("TCP socket transmission on blocking thread.");
-        descriptions.add("TCP socket transmission on non-blocking thread (channel).");
-        descriptions.add("UDP socket transmission on non-blocking thread.");
+        entities = new ArrayList<>();
+        entities.add(new TextCard("TCP Socket", "TCP socket transmission on blocking thread.", null));
+        entities.add(new TextCard("NIO Socket", "TCP socket transmission on non-blocking thread (channel).", null));
+        entities.add(new TextCard("UDP Socket", "UDP socket transmission on non-blocking thread.", null));
     }
 
     private void initComponent() {
@@ -133,7 +128,7 @@ public class P07_Socket extends LazyFragment {
 
         RecyclerView rv_main_list = (RecyclerView) findViewById(R.id.rv_main_list);
         rv_main_list.setLayoutManager(new LinearLayoutManager(getActivity()));
-        adapter = new TextCardRVAdapter(getActivity(), null, features, descriptions, new OnItemClickListener() {
+        adapter = new TextCardRVAdapter(getActivity(), entities, new OnItemClickListener() {
             @Override
             public void onItemClick(@NotNull View view, int position) {
                 switch (position) {

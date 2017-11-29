@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.catherine.webservices.R;
+import com.catherine.webservices.entities.TextCard;
 import com.catherine.webservices.interfaces.OnItemClickListener;
 
 import java.util.List;
@@ -23,15 +24,13 @@ import java.util.List;
 
 public class TextCardRVAdapter extends RecyclerView.Adapter<TextCardRVAdapter.MainRvHolder> {
     private Context ctx;
-    private List<String> contents, titles, subtitles;
+    private List<TextCard> entities;
     private OnItemClickListener listener;
     private boolean fromHtml = false;
 
-    public TextCardRVAdapter(Context ctx, List<String> contents, List<String> titles, List<String> subtitles, OnItemClickListener listener) {
+    public TextCardRVAdapter(Context ctx, List<TextCard> entities, OnItemClickListener listener) {
         this.ctx = ctx;
-        this.contents = contents;
-        this.titles = titles;
-        this.subtitles = subtitles;
+        this.entities = entities;
         this.listener = listener;
     }
 
@@ -42,40 +41,46 @@ public class TextCardRVAdapter extends RecyclerView.Adapter<TextCardRVAdapter.Ma
 
     @Override
     public void onBindViewHolder(final MainRvHolder mainRvHolder, final int position) {
-        mainRvHolder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                listener.onItemClick(view, position);
-            }
-        });
-        mainRvHolder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                listener.onItemLongClick(view, position);
-                return false;
-            }
-        });
-        if (titles != null && titles.get(position) != null) {
+        if (listener != null) {
+            mainRvHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    listener.onItemClick(view, position);
+                }
+            });
+            mainRvHolder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    listener.onItemLongClick(view, position);
+                    return false;
+                }
+            });
+        }
+        if (entities == null || entities.size() == 0)
+            return;
+
+        TextCard tc = entities.get(position);
+        if (tc.title != null) {
             mainRvHolder.tv_title.setVisibility(View.VISIBLE);
-            mainRvHolder.tv_title.setText(titles.get(position));
+            mainRvHolder.tv_title.setText(tc.title);
         }
-        if (subtitles != null && subtitles.get(position) != null) {
+        if (tc.subtitle != null) {
             mainRvHolder.tv_subtitle.setVisibility(View.VISIBLE);
-            mainRvHolder.tv_subtitle.setText(subtitles.get(position));
+            mainRvHolder.tv_subtitle.setText(tc.subtitle);
         }
-        if (contents != null && contents.get(position) != null) {
+        if (tc.contents != null) {
             mainRvHolder.tv_main.setVisibility(View.VISIBLE);
             //Enable TextView open url links
             mainRvHolder.tv_main.setMovementMethod(LinkMovementMethod.getInstance());
             if (fromHtml) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    mainRvHolder.tv_main.setText(Html.fromHtml(contents.get(position),
+                    mainRvHolder.tv_main.setText(Html.fromHtml(tc.contents,
                             Html.FROM_HTML_MODE_COMPACT));
                 } else {
-                    mainRvHolder.tv_main.setText(Html.fromHtml(contents.get(position)));
+                    mainRvHolder.tv_main.setText(Html.fromHtml(tc.contents));
                 }
             }
-            mainRvHolder.tv_main.setText(subtitles.get(position));
+            mainRvHolder.tv_main.setText(tc.contents);
         } else {
             mainRvHolder.tv_main.setVisibility(View.GONE);
         }
@@ -83,19 +88,15 @@ public class TextCardRVAdapter extends RecyclerView.Adapter<TextCardRVAdapter.Ma
 
     @Override
     public int getItemCount() {
-        return titles.size();
+        return entities.size();
     }
 
     public void setFromHtml(boolean fromHtml) {
         this.fromHtml = fromHtml;
     }
 
-    public void setContents(List<String> contents) {
-        this.contents = contents;
-    }
-
-    public void setSubtitles(List<String> subtitles) {
-        this.subtitles = subtitles;
+    public void setEntities(List<TextCard> entities) {
+        this.entities = entities;
     }
 
     class MainRvHolder extends RecyclerView.ViewHolder {

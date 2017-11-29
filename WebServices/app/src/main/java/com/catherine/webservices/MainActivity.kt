@@ -2,25 +2,14 @@ package com.catherine.webservices
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.annotation.TargetApi
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
-import android.os.StrictMode
 import android.support.design.widget.TabLayout
-import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentActivity
 import android.support.v4.view.GravityCompat
-import android.support.v7.app.AlertDialog
 import android.view.KeyEvent
-import android.view.Menu
-import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
@@ -28,7 +17,6 @@ import android.widget.ArrayAdapter
 import catherine.messagecenter.AsyncResponse
 import catherine.messagecenter.Server
 import com.catherine.webservices.adapters.MainViewPagerAdapter
-import com.catherine.webservices.components.DialogManager
 import com.catherine.webservices.fragments.*
 import com.catherine.webservices.interfaces.*
 import com.catherine.webservices.kotlin_sample.KotlinTemplate
@@ -152,12 +140,24 @@ class MainActivity : BaseFragmentActivity(), MainInterface {
                 tag = "P17"
             }
 
+            Constants.P18_NETWORK_ANALYTICS -> {
+                title = "P18_NetworkAnalytics"
+                fragment = P18_NetworkAnalytics.newInstance(true)
+                tag = "P18"
+            }
+
 
         //has bundle
             Constants.P14_FULL_WEBVIEW -> {
                 title = "P14_Full_WebView"
                 fragment = P14_Full_WebView.newInstance(true)
                 tag = "P14"
+            }
+
+            Constants.P19_NETWORK_INFO_ANALYTICS -> {
+                title = "P19_NetworkInfoAnalytics"
+                fragment = P19_NetworkInfoAnalytics.newInstance(true)
+                tag = "P19"
             }
         }
 
@@ -258,6 +258,9 @@ class MainActivity : BaseFragmentActivity(), MainInterface {
             when (pos) {
                 0 -> {
                     callFragment(Constants.P14_FULL_WEBVIEW)
+                }
+                1 -> {
+                    callFragment(Constants.P18_NETWORK_ANALYTICS)
                 }
                 2 -> {
                     callFragment(Constants.P15_WEBVIEW_SETTINGS)

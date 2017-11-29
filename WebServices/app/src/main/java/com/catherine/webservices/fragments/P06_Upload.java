@@ -15,6 +15,7 @@ import com.catherine.webservices.MyApplication;
 import com.catherine.webservices.R;
 import com.catherine.webservices.adapters.TextCardRVAdapter;
 import com.catherine.webservices.components.DialogManager;
+import com.catherine.webservices.entities.TextCard;
 import com.catherine.webservices.interfaces.ADID_Callback;
 import com.catherine.webservices.interfaces.MainInterface;
 import com.catherine.webservices.interfaces.OnItemClickListener;
@@ -44,7 +45,7 @@ import java.util.Map;
 
 public class P06_Upload extends LazyFragment {
     public final static String TAG = "P06_Upload";
-    private List<String> features, descriptions, contents;
+    private List<TextCard> entities;
     private MainInterface mainInterface;
     private SwipeRefreshLayout srl_container;
     private TextCardRVAdapter adapter;
@@ -75,7 +76,7 @@ public class P06_Upload extends LazyFragment {
             }
 
             @Override
-            public void onDenied(@org.jetbrains.annotations.Nullable List<String> deniedPermissions) {
+            public void onDenied(@Nullable List<String> deniedPermissions) {
                 StringBuilder context = new StringBuilder();
                 if (deniedPermissions != null) {
                     for (String p : deniedPermissions) {
@@ -85,7 +86,7 @@ public class P06_Upload extends LazyFragment {
                 }
 
                 context.deleteCharAt(context.length() - 1);
-                DialogManager.showPermissionDialog( getActivity(), String.format( getActivity().getResources().getString(R.string.permission_request), context), new DialogInterface.OnClickListener() {
+                DialogManager.showPermissionDialog(getActivity(), String.format(getActivity().getResources().getString(R.string.permission_request), context), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         getActivity().finish();
@@ -107,21 +108,10 @@ public class P06_Upload extends LazyFragment {
 
 
     private void fillInData() {
-        features = new ArrayList<>();
-        features.add("Upload an image from assets");
-        features.add("Upload an image from assets");
-        features.add("Upload a large file from assets");
-
-        descriptions = new ArrayList<>();
-        descriptions.add("GET");
-        descriptions.add("POST");
-        descriptions.add("POST");
-
-
-        contents = new ArrayList<>();
-        for (int i = 0; i < features.size(); i++) {
-            contents.add("");
-        }
+        entities = new ArrayList<>();
+        entities.add(new TextCard("Upload an image from assets", "GET", ""));
+        entities.add(new TextCard("Upload an image from assets", "POST", ""));
+        entities.add(new TextCard("Upload a large file from assets", "POST", ""));
     }
 
     private void initComponent() {
@@ -137,7 +127,7 @@ public class P06_Upload extends LazyFragment {
 
         RecyclerView rv_main_list = (RecyclerView) findViewById(R.id.rv_main_list);
         rv_main_list.setLayoutManager(new LinearLayoutManager(getActivity()));
-        adapter = new TextCardRVAdapter(getActivity(), null, features, descriptions, new OnItemClickListener() {
+        adapter = new TextCardRVAdapter(getActivity(), entities, new OnItemClickListener() {
             @Override
             public void onItemClick(@NotNull View view, final int position) {
                 switch (position) {
@@ -153,13 +143,16 @@ public class P06_Upload extends LazyFragment {
                                                 @Override
                                                 public void connectSuccess(@NotNull HttpResponse response) {
                                                     CLog.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
-                                                    contents.set(position, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
-                                                    adapter.setContents(contents);
+                                                    String content = String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody());
+                                                    TextCard tc = entities.get(position);
+                                                    tc.contents = content;
+                                                    entities.set(position, tc);
+                                                    adapter.setEntities(entities);
                                                     adapter.notifyDataSetChanged();
                                                 }
 
                                                 @Override
-                                                public void connectFailure(@NotNull HttpResponse response, @org.jetbrains.annotations.Nullable Exception e) {
+                                                public void connectFailure(@NotNull HttpResponse response, @Nullable Exception e) {
                                                     StringBuilder sb = new StringBuilder();
                                                     sb.append(String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getErrorMessage()));
                                                     CLog.e(TAG, sb.toString());
@@ -177,8 +170,11 @@ public class P06_Upload extends LazyFragment {
                                                             });
                                                         }
                                                     }
-                                                    contents.set(position, sb.toString());
-                                                    adapter.setContents(contents);
+                                                    String content = sb.toString();
+                                                    TextCard tc = entities.get(position);
+                                                    tc.contents = content;
+                                                    entities.set(position, tc);
+                                                    adapter.setEntities(entities);
                                                     adapter.notifyDataSetChanged();
                                                 }
                                             }).build();
@@ -199,13 +195,16 @@ public class P06_Upload extends LazyFragment {
                                                 @Override
                                                 public void connectSuccess(@NotNull HttpResponse response) {
                                                     CLog.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
-                                                    contents.set(position, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
-                                                    adapter.setContents(contents);
+                                                    String content = String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody());
+                                                    TextCard tc = entities.get(position);
+                                                    tc.contents = content;
+                                                    entities.set(position, tc);
+                                                    adapter.setEntities(entities);
                                                     adapter.notifyDataSetChanged();
                                                 }
 
                                                 @Override
-                                                public void connectFailure(@NotNull HttpResponse response, @org.jetbrains.annotations.Nullable Exception e) {
+                                                public void connectFailure(@NotNull HttpResponse response, @Nullable Exception e) {
                                                     StringBuilder sb = new StringBuilder();
                                                     sb.append(String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getErrorMessage()));
                                                     CLog.e(TAG, sb.toString());
@@ -223,8 +222,11 @@ public class P06_Upload extends LazyFragment {
                                                             });
                                                         }
                                                     }
-                                                    contents.set(position, sb.toString());
-                                                    adapter.setContents(contents);
+                                                    String content = sb.toString();
+                                                    TextCard tc = entities.get(position);
+                                                    tc.contents = content;
+                                                    entities.set(position, tc);
+                                                    adapter.setEntities(entities);
                                                     adapter.notifyDataSetChanged();
                                                 }
                                             }).build();
@@ -252,8 +254,11 @@ public class P06_Upload extends LazyFragment {
                                                 @Override
                                                 public void connectSuccess(@NotNull HttpResponse response) {
                                                     CLog.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
-                                                    contents.set(position, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
-                                                    adapter.setContents(contents);
+                                                    String content = String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody());
+                                                    TextCard tc = entities.get(position);
+                                                    tc.contents = content;
+                                                    entities.set(position, tc);
+                                                    adapter.setEntities(entities);
                                                     adapter.notifyDataSetChanged();
 
                                                 }
@@ -277,8 +282,11 @@ public class P06_Upload extends LazyFragment {
                                                             });
                                                         }
                                                     }
-                                                    contents.set(position, sb.toString());
-                                                    adapter.setContents(contents);
+                                                    String content = sb.toString();
+                                                    TextCard tc = entities.get(position);
+                                                    tc.contents = content;
+                                                    entities.set(position, tc);
+                                                    adapter.setEntities(entities);
                                                     adapter.notifyDataSetChanged();
                                                 }
                                             }).build();
@@ -301,9 +309,11 @@ public class P06_Upload extends LazyFragment {
                                             .listener(new UploaderListener() {
                                                 @Override
                                                 public void connectSuccess(@NotNull HttpResponse response) {
-                                                    CLog.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
-                                                    contents.set(position, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
-                                                    adapter.setContents(contents);
+                                                    String content = String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody());
+                                                    TextCard tc = entities.get(position);
+                                                    tc.contents = content;
+                                                    entities.set(position, tc);
+                                                    adapter.setEntities(entities);
                                                     adapter.notifyDataSetChanged();
 
                                                 }
@@ -327,8 +337,11 @@ public class P06_Upload extends LazyFragment {
                                                             });
                                                         }
                                                     }
-                                                    contents.set(position, sb.toString());
-                                                    adapter.setContents(contents);
+                                                    String content = sb.toString();
+                                                    TextCard tc = entities.get(position);
+                                                    tc.contents = content;
+                                                    entities.set(position, tc);
+                                                    adapter.setEntities(entities);
                                                     adapter.notifyDataSetChanged();
                                                 }
                                             }).build();
@@ -355,8 +368,11 @@ public class P06_Upload extends LazyFragment {
                                                 @Override
                                                 public void connectSuccess(@NotNull HttpResponse response) {
                                                     CLog.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
-                                                    contents.set(position, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
-                                                    adapter.setContents(contents);
+                                                    String content = String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody());
+                                                    TextCard tc = entities.get(position);
+                                                    tc.contents = content;
+                                                    entities.set(position, tc);
+                                                    adapter.setEntities(entities);
                                                     adapter.notifyDataSetChanged();
 
                                                 }
@@ -380,8 +396,11 @@ public class P06_Upload extends LazyFragment {
                                                             });
                                                         }
                                                     }
-                                                    contents.set(position, sb.toString());
-                                                    adapter.setContents(contents);
+                                                    String content = sb.toString();
+                                                    TextCard tc = entities.get(position);
+                                                    tc.contents = content;
+                                                    entities.set(position, tc);
+                                                    adapter.setEntities(entities);
                                                     adapter.notifyDataSetChanged();
                                                 }
                                             }).build();
@@ -405,14 +424,17 @@ public class P06_Upload extends LazyFragment {
                                                 @Override
                                                 public void connectSuccess(@NotNull HttpResponse response) {
                                                     CLog.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
-                                                    contents.set(position, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
-                                                    adapter.setContents(contents);
+                                                    String content = String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody());
+                                                    TextCard tc = entities.get(position);
+                                                    tc.contents = content;
+                                                    entities.set(position, tc);
+                                                    adapter.setEntities(entities);
                                                     adapter.notifyDataSetChanged();
 
                                                 }
 
                                                 @Override
-                                                public void connectFailure(@NotNull HttpResponse response, @org.jetbrains.annotations.Nullable Exception e) {
+                                                public void connectFailure(@NotNull HttpResponse response, @Nullable Exception e) {
                                                     StringBuilder sb = new StringBuilder();
                                                     sb.append(String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getErrorMessage()));
                                                     CLog.e(TAG, sb.toString());
@@ -430,8 +452,11 @@ public class P06_Upload extends LazyFragment {
                                                             });
                                                         }
                                                     }
-                                                    contents.set(position, sb.toString());
-                                                    adapter.setContents(contents);
+                                                    String content = sb.toString();
+                                                    TextCard tc = entities.get(position);
+                                                    tc.contents = content;
+                                                    entities.set(position, tc);
+                                                    adapter.setEntities(entities);
                                                     adapter.notifyDataSetChanged();
                                                 }
                                             }).build();

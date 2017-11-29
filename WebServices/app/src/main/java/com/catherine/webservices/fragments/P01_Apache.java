@@ -15,6 +15,7 @@ import com.catherine.webservices.MyApplication;
 import com.catherine.webservices.R;
 import com.catherine.webservices.adapters.TextCardRVAdapter;
 import com.catherine.webservices.components.DialogManager;
+import com.catherine.webservices.entities.TextCard;
 import com.catherine.webservices.interfaces.OnItemClickListener;
 import com.catherine.webservices.network.HttpRequest;
 import com.catherine.webservices.network.HttpResponse;
@@ -42,7 +43,7 @@ import java.util.Map;
 
 public class P01_Apache extends LazyFragment {
     public final static String TAG = "P01_Apache";
-    private List<String> features, contents, desc;
+    private List<TextCard> entities;
     private SwipeRefreshLayout srl_container;
     private Handler networkTask;
     private MyApache myApache;
@@ -76,24 +77,13 @@ public class P01_Apache extends LazyFragment {
     }
 
     private void fillInData() {
-        features = new ArrayList<>();
-        contents = new ArrayList<>();
-        desc = new ArrayList<>();
-        features.add("GET " + Constants.HOST + " in looper A");
-        features.add("POST " + Constants.HOST + " in looper A");
-        features.add("POST " + Constants.HOST + " in looper A");
-        features.add("POST " + Constants.HOST + " in looper B");
-        features.add("GET http://dictionary.cambridge.org/ in looper C");
-        features.add("GET " + Constants.GITHUB_API_DOMAIN + " in looper C");
-        desc.add("Connect to the server with user-defined headers");
-        desc.add("Connect to the server with correct account");
-        desc.add("Connect to the server with false Authorization");
-        desc.add("Connect to the server with false account");
-        desc.add("Connect to Cambridge dictionary server");
-        desc.add("Connect to GitHub api with gzip encoding");
-        for (int i = 0; i < features.size(); i++) {
-            contents.add("");
-        }
+        entities = new ArrayList<>();
+        entities.add(new TextCard("GET " + Constants.HOST + " in looper A","Connect to the server with user-defined headers",null));
+        entities.add(new TextCard("POST " + Constants.HOST + " in looper A","Connect to the server with correct account",null));
+        entities.add(new TextCard("POST " + Constants.HOST + " in looper A","Connect to the server with false Authorization",null));
+        entities.add(new TextCard("POST " + Constants.HOST + " in looper B","Connect to the server with false account",null));
+        entities.add(new TextCard("GET http://dictionary.cambridge.org/ in looper C","Connect to Cambridge dictionary server",null));
+        entities.add(new TextCard("GET " + Constants.GITHUB_API_DOMAIN + " in looper C","Connect to GitHub api with gzip encoding",null));
     }
 
     private void initComponent() {
@@ -133,7 +123,7 @@ public class P01_Apache extends LazyFragment {
         });
         RecyclerView rv_main_list = (RecyclerView) findViewById(R.id.rv_main_list);
         rv_main_list.setLayoutManager(new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL));
-        adapter = new TextCardRVAdapter(getActivity(), null, features, desc, new OnItemClickListener() {
+        adapter = new TextCardRVAdapter(getActivity(), entities, new OnItemClickListener() {
             @Override
             public void onItemClick(View view, final int position) {
                 connect(position);
@@ -275,8 +265,10 @@ public class P01_Apache extends LazyFragment {
         public void connectSuccess(HttpResponse response) {
             //Running in a non-UI thread right now.
             CLog.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
-            contents.set(position, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody()));
-            adapter.setContents(contents);
+            TextCard tc = entities.get(position);
+            tc.contents = String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getBody());
+            entities.set(position, tc);
+            adapter.setEntities(entities);
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -317,9 +309,11 @@ public class P01_Apache extends LazyFragment {
                     }
                 }
             }
+            TextCard tc = entities.get(position);
+            tc.contents = sb.toString();
+            entities.set(position, tc);
+            adapter.setEntities(entities);
 
-            contents.set(position, sb.toString());
-            adapter.setContents(contents);
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {

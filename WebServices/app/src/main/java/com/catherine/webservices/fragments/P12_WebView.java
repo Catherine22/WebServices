@@ -19,6 +19,7 @@ import com.catherine.webservices.Constants;
 import com.catherine.webservices.R;
 import com.catherine.webservices.adapters.TextCardRVAdapter;
 import com.catherine.webservices.components.DialogManager;
+import com.catherine.webservices.entities.TextCard;
 import com.catherine.webservices.interfaces.BackKeyListener;
 import com.catherine.webservices.interfaces.MainInterface;
 import com.catherine.webservices.interfaces.OnItemClickListener;
@@ -42,8 +43,7 @@ import catherine.messagecenter.Result;
 
 public class P12_WebView extends LazyFragment {
     public final static String TAG = "P12_WebView";
-    private List<String> features;
-    private List<String> descriptions;
+    private List<TextCard> entities;
     private SwipeRefreshLayout srl_container;
     private MainInterface mainInterface;
     private Client client;
@@ -109,7 +109,7 @@ public class P12_WebView extends LazyFragment {
             }
 
             @Override
-            public void onDenied(@org.jetbrains.annotations.Nullable List<String> deniedPermissions) {
+            public void onDenied(@Nullable List<String> deniedPermissions) {
                 StringBuilder context = new StringBuilder();
                 if (deniedPermissions != null) {
                     for (String p : deniedPermissions) {
@@ -141,18 +141,11 @@ public class P12_WebView extends LazyFragment {
 
 
     private void fillInData() {
-        features = new ArrayList<>();
-        features.add("Launch a browser");
-        features.add("Nested WebView");
-        features.add("Full screen WebView");
-        features.add("Test WebView");
-
-
-        descriptions = new ArrayList<>();
-        descriptions.add("Load a url");
-        descriptions.add("Load a url");
-        descriptions.add("Load a url");
-        descriptions.add("Load a url");
+        entities = new ArrayList<>();
+        entities.add(new TextCard("Launch a browser","Load a url",null));
+        entities.add(new TextCard("Nested WebView","Load a url",null));
+        entities.add(new TextCard("Full screen WebView","Load a url",null));
+        entities.add(new TextCard("Test WebView","Load a url",null));
     }
 
     private void initComponent() {
@@ -168,7 +161,7 @@ public class P12_WebView extends LazyFragment {
 
         RecyclerView rv_main_list = (RecyclerView) findViewById(R.id.rv_main_list);
         rv_main_list.setLayoutManager(new LinearLayoutManager(getActivity()));
-        TextCardRVAdapter adapter = new TextCardRVAdapter(getActivity(), null, features, descriptions, new OnItemClickListener() {
+        TextCardRVAdapter adapter = new TextCardRVAdapter(getActivity(), entities, new OnItemClickListener() {
             @Override
             public void onItemClick(@NotNull View view, int position) {
                 switch (position) {

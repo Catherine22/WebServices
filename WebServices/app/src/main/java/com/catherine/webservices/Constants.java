@@ -92,5 +92,7 @@ public class Constants {
     public final static int P15_WEBVIEW_SETTINGS = 15;
     public final static int P16_WEBVIEW_HISTORY = 16;
     public final static int P17_WEBVIEW_TEST_LIST = 17;
+    public final static int P18_NETWORK_ANALYTICS = 18;
+    public final static int P19_NETWORK_INFO_ANALYTICS = 19;
 
 }

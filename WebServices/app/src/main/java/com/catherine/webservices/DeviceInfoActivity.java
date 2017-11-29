@@ -21,6 +21,7 @@ import android.text.TextUtils;
 import android.view.View;
 
 import com.catherine.webservices.adapters.TextCardRVAdapter;
+import com.catherine.webservices.entities.TextCard;
 import com.catherine.webservices.interfaces.ADID_Callback;
 import com.catherine.webservices.interfaces.OnItemClickListener;
 import com.catherine.webservices.network.NetworkHelper;
@@ -42,7 +43,7 @@ import java.util.UUID;
 
 public class DeviceInfoActivity extends BaseFragmentActivity {
     public final static String TAG = "P00_DeviceInfo";
-    private List<String> features, contents, desc;
+    private List<TextCard> entities;
     private TextCardRVAdapter adapter;
     private SwipeRefreshLayout srl_container;
     private Handler handler;
@@ -62,36 +63,31 @@ public class DeviceInfoActivity extends BaseFragmentActivity {
 
     @SuppressLint("HardwareIds")
     private void fillInData() {
-        features = new ArrayList<>();
-        contents = new ArrayList<>();
-        desc = new ArrayList<>();
+        entities = new ArrayList<>();
 
-
-        desc.add("");//ADID
-        features.add("ADID");
+        entities.add(new TextCard("ADID", "", null));
         ADID_AsyncTask adid_asyncTask = new ADID_AsyncTask(new ADID_Callback() {
             @Override
             public void onResponse(@NotNull String ADID) {
-                desc.set(0, ADID);
-                adapter.setSubtitles(desc);
+                entities.set(0, new TextCard("ADID", ADID, null));
+                adapter.setEntities(entities);
                 adapter.notifyDataSetChanged();
             }
 
             @Override
             public void onError(@NotNull Exception e) {
-                desc.set(0, "Error:" + e.getMessage());
-                adapter.setSubtitles(desc);
+                entities.set(0, new TextCard("ADID", "Error:" + e.getMessage(), null));
+                adapter.setEntities(entities);
                 adapter.notifyDataSetChanged();
             }
         });
         adid_asyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
+        //Host Name
+        entities.add(new TextCard("Host Name", "", null));
 
-        desc.add("");//Host Name
-        features.add("Host Name");
-
-        desc.add("");//IP Address
-        features.add("IP Address");
+        //IP Address
+        entities.add(new TextCard("IP Address", "", null));
         handler.post(new Runnable() {
             @Override
             public void run() {
@@ -116,9 +112,8 @@ public class DeviceInfoActivity extends BaseFragmentActivity {
                 if (TextUtils.isEmpty(ip))
                     ip = "N/A";
 
-                desc.set(1, hostName);
-
-                desc.set(2, ip);
+                entities.set(1, new TextCard("Host Name", hostName, null));
+                entities.set(2, new TextCard("IP Address", ip, null));
             }
         });
 
@@ -128,68 +123,62 @@ public class DeviceInfoActivity extends BaseFragmentActivity {
         String macAddress = wifi.getMacAddress();
         if (TextUtils.isEmpty(macAddress))
             macAddress = "N/A";
-        desc.add(macAddress);
-        features.add("MAC Address");
+        entities.add(new TextCard("MAC Address", macAddress, null));
 
 
         String androidId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
         if (TextUtils.isEmpty(androidId))
             androidId = "N/A";
-        desc.add(androidId);
-        features.add("Android ID");
+        entities.add(new TextCard("Android ID", androidId, null));
 
 
         String uuid = UUID.randomUUID().toString();
         if (TextUtils.isEmpty(uuid))
             uuid = "N/A";
-        desc.add(uuid);
-        features.add("UUID, 每次都不一样");
+        entities.add(new TextCard("UUID, 每次都不一样", uuid, null));
 
 
+        String IMEI;
         try {
             TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-            String IMEI = tm.getDeviceId();
+            IMEI = tm.getDeviceId();
             if (TextUtils.isEmpty(IMEI))
                 IMEI = "N/A";
-            desc.add(IMEI);
         } catch (SecurityException e) {
             e.printStackTrace();
-            desc.add("Error: " + e.getMessage());
+            IMEI = "Error: " + e.getMessage();
         }
-        features.add("IMEI/MEID/ESN");
+        entities.add(new TextCard("IMEI/MEID/ESN", IMEI, null));
 
 
         BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
         String btAddress = (btAdapter != null) ? btAdapter.getAddress() : "N/A";
         if (TextUtils.isEmpty(btAddress))
             btAddress = "N/A";
-        desc.add(btAddress);
-        features.add("Bluetooth Address");
+        entities.add(new TextCard("Bluetooth Address", btAddress, null));
 
-
+        String imsi;
         try {
             TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-            String imsi = tm.getSubscriberId();
+            imsi = tm.getSubscriberId();
             if (TextUtils.isEmpty(imsi))
                 imsi = "N/A";
-            desc.add(imsi);
         } catch (SecurityException e) {
             e.printStackTrace();
-            desc.add("Error: " + e.getMessage());
+            imsi = "Error: " + e.getMessage();
         }
-        features.add("IMSI (GSM)");
+        entities.add(new TextCard("IMSI (GSM)", imsi, null));
 
         NetworkHelper networkHelper = new NetworkHelper();
-        desc.add(networkHelper.isNetworkHealthy() + "");
-        features.add("Network Health");
+        entities.add(new TextCard("Network Health", networkHelper.isNetworkHealthy() + "", null));
+
 
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = cm.getActiveNetworkInfo();
         String networkType = networkInfo.getTypeName();
         if (TextUtils.isEmpty(networkType))
             networkType = "N/A";
-        desc.add(networkType);
-        features.add("Network Type");
+        entities.add(new TextCard("Network Type", networkType, null));
 
 
         NetworkInfo.State networkState = networkInfo.getState();
@@ -209,183 +198,39 @@ public class DeviceInfoActivity extends BaseFragmentActivity {
 
         if (TextUtils.isEmpty(ns))
             ns = "N/A";
-        desc.add(ns);
-        features.add("Network state");
+        entities.add(new TextCard("Network state", ns, null));
 
+        String mPhoneNumber;
         try {
             TelephonyManager tMgr = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-            String mPhoneNumber = tMgr.getLine1Number();
+            mPhoneNumber = tMgr.getLine1Number();
             if (TextUtils.isEmpty(mPhoneNumber))
                 mPhoneNumber = "N/A";
-            desc.add(mPhoneNumber);
         } catch (SecurityException e) {
             e.printStackTrace();
-            desc.add("Error: " + e.getMessage());
+            mPhoneNumber = "Error: " + e.getMessage();
         }
-        features.add("Phone number");
-
-
-        String p10 = Build.BRAND;
-        if (TextUtils.isEmpty(p10))
-            p10 = "N/A";
-        desc.add(p10);
-        features.add("Brand, 系统定制商");
-
-
-        String p11 = Build.BOOTLOADER;
-        if (TextUtils.isEmpty(p11))
-            p11 = "N/A";
-        desc.add(p11);
-        features.add("The system bootloader version number, 系统启动程序版本号");
-
-
-        //board
-        String p12 = Build.BOARD;
-        if (TextUtils.isEmpty(p12))
-            p12 = "N/A";
-        desc.add(p12);
-        features.add("Board, 主板");
-
-
-        //CPU_ABI
-        String p13 = Build.CPU_ABI;
-        if (TextUtils.isEmpty(p13))
-            p13 = "N/A";
-        desc.add(p13);
-        features.add("CPU_ABI, cpu指令集");
-
-
-        //CPU_ABI2
-        String p14 = Build.CPU_ABI;
-        if (TextUtils.isEmpty(p14))
-            p14 = "N/A";
-        desc.add(p14);
-        features.add("CPU_ABI2, cpu指令集2");
-
-
-        //DEVICE
-        String p15 = Build.DEVICE;
-        if (TextUtils.isEmpty(p15))
-            p15 = "N/A";
-        desc.add(p15);
-        features.add("DEVICE, 设置参数");
-
-
-        //DISPLAY
-        String p16 = Build.DISPLAY;
-        if (TextUtils.isEmpty(p16))
-            p16 = "N/A";
-        desc.add(p16);
-        features.add("DISPLAY, 显示屏参数");
-
-
-        //Radio Version
-        String p17 = Build.RADIO;
-        if (TextUtils.isEmpty(p17))
-            p17 = "N/A";
-        desc.add(p17);
-        features.add("Radio Version, 无线电固件版本");
-
-
-        //FINGERPRINT
-        String p18 = Build.FINGERPRINT;
-        if (TextUtils.isEmpty(p18))
-            p18 = "N/A";
-        desc.add(p18);
-        features.add("FINGERPRINT, 硬件识别码");
-
-
-        //HARDWARE
-        String p19 = Build.HARDWARE;
-        if (TextUtils.isEmpty(p19))
-            p19 = "N/A";
-        desc.add(p19);
-        features.add("HARDWARE, 硬件名");
-
-
-        //Build.HOST
-        String p20 = Build.HOST;
-        if (TextUtils.isEmpty(p20))
-            p20 = "N/A";
-        desc.add(p20);
-        features.add("HOST, 主机名");
-
-
-        //Build.ID
-        String p21 = Build.ID;
-        if (TextUtils.isEmpty(p21))
-            p21 = "N/A";
-        desc.add(p21);
-        features.add("Build.ID, 修订版本列表");
-
-
-        //MANUFACTURER
-        String p22 = Build.MANUFACTURER;
-        if (TextUtils.isEmpty(p22))
-            p22 = "N/A";
-        desc.add(p22);
-        features.add("MANUFACTURER, 硬件制造商");
-
-
-        //Build.MODEL
-        String p23 = Build.MODEL;
-        if (TextUtils.isEmpty(p23))
-            p23 = "N/A";
-        desc.add(p23);
-        features.add("Build.MODEL, 版本");
-
-
-        //Build.SERIAL
-        String p24 = Build.SERIAL;
-        if (TextUtils.isEmpty(p24))
-            p24 = "N/A";
-        desc.add(p24);
-        features.add("Build.SERIAL, 硬件序列号");
-
-
-        //Build.PRODUCT
-        String p25 = Build.PRODUCT;
-        if (TextUtils.isEmpty(p25))
-            p25 = "N/A";
-        desc.add(p25);
-        features.add("PRODUCT, 手机制造商");
-
-
-        //Build.TAGS
-        String p26 = Build.TAGS;
-        if (TextUtils.isEmpty(p26))
-            p26 = "N/A";
-        desc.add(p26);
-        features.add("Build.TAGS, Build的标签");
-
-
-        //Build.TIME
-        String p27 = Build.TIME + "";
-        if (TextUtils.isEmpty(p27))
-            p27 = "N/A";
-        desc.add(p27);
-        features.add("Build.TIME, 时间？");
-
-
-        //Build.TYPE
-        String p28 = Build.TYPE;
-        if (TextUtils.isEmpty(p28))
-            p28 = "N/A";
-        desc.add(p28);
-        features.add("Build.TYPE, 类型");
-
-
-        //Build.PRODUCT
-        String p29 = Build.USER;
-        if (TextUtils.isEmpty(p29))
-            p29 = "N/A";
-        desc.add(p29);
-        features.add("Build.USER, 用户");
-
-
-        for (int i = 0; i < features.size(); i++) {
-            contents.add("");
-        }
+        entities.add(new TextCard("Phone number", mPhoneNumber, null));
+        entities.add(new TextCard("Brand, 系统定制商", (TextUtils.isEmpty(Build.BRAND) ? "N/A" : Build.BRAND), null));
+        entities.add(new TextCard("The system bootloader version number, 系统启动程序版本号", (TextUtils.isEmpty(Build.BOOTLOADER) ? "N/A" : Build.BOOTLOADER), null));
+        entities.add(new TextCard("Board, 主板", (TextUtils.isEmpty(Build.BOARD) ? "N/A" : Build.BOARD), null));
+        entities.add(new TextCard("CPU_ABI, cpu指令集", (TextUtils.isEmpty(Build.CPU_ABI) ? "N/A" : Build.CPU_ABI), null));
+        entities.add(new TextCard("CPU_ABI2, cpu指令集2", (TextUtils.isEmpty(Build.CPU_ABI) ? "N/A" : Build.CPU_ABI), null));
+        entities.add(new TextCard("DEVICE, 设置参数", (TextUtils.isEmpty(Build.DEVICE) ? "N/A" : Build.DEVICE), null));
+        entities.add(new TextCard("DISPLAY, 显示屏参数", (TextUtils.isEmpty(Build.DISPLAY) ? "N/A" : Build.DISPLAY), null));
+        entities.add(new TextCard("Radio Version, 无线电固件版本", (TextUtils.isEmpty(Build.RADIO) ? "N/A" : Build.RADIO), null));
+        entities.add(new TextCard("FINGERPRINT, 硬件识别码", (TextUtils.isEmpty(Build.FINGERPRINT) ? "N/A" : Build.FINGERPRINT), null));
+        entities.add(new TextCard("HARDWARE, 硬件名", (TextUtils.isEmpty(Build.HARDWARE) ? "N/A" : Build.HARDWARE), null));
+        entities.add(new TextCard("HOST, 主机名", (TextUtils.isEmpty(Build.HOST) ? "N/A" : Build.HOST), null));
+        entities.add(new TextCard("Build.ID, 修订版本列表", (TextUtils.isEmpty(Build.ID) ? "N/A" : Build.ID), null));
+        entities.add(new TextCard("MANUFACTURER, 硬件制造商", (TextUtils.isEmpty(Build.MANUFACTURER) ? "N/A" : Build.MANUFACTURER), null));
+        entities.add(new TextCard("Build.MODEL, 版本", (TextUtils.isEmpty(Build.MODEL) ? "N/A" : Build.MODEL), null));
+        entities.add(new TextCard("Build.SERIAL, 硬件序列号", (TextUtils.isEmpty(Build.SERIAL) ? "N/A" : Build.SERIAL), null));
+        entities.add(new TextCard("PRODUCT, 手机制造商", (TextUtils.isEmpty(Build.PRODUCT) ? "N/A" : Build.PRODUCT), null));
+        entities.add(new TextCard("Build.TAGS, Build的标签", (TextUtils.isEmpty(Build.TAGS) ? "N/A" : Build.TAGS), null));
+        entities.add(new TextCard("Build.TIME, 时间？", (TextUtils.isEmpty(Build.TIME + "") ? "N/A" : Build.TIME + ""), null));
+        entities.add(new TextCard("Build.TYPE, 类型", (TextUtils.isEmpty(Build.TYPE) ? "N/A" : Build.TYPE), null));
+        entities.add(new TextCard("Build.USER, 用户", (TextUtils.isEmpty(Build.USER) ? "N/A" : Build.USER), null));
     }
 
     private void initComponent() {
@@ -401,20 +246,21 @@ public class DeviceInfoActivity extends BaseFragmentActivity {
         });
         RecyclerView rv_main_list = findViewById(R.id.rv_main_list);
         rv_main_list.setLayoutManager(new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL));
-        adapter = new TextCardRVAdapter(this, null, features, desc, new OnItemClickListener() {
+        adapter = new TextCardRVAdapter(this, entities, new OnItemClickListener() {
             @Override
             public void onItemClick(View view, final int position) {
+                TextCard tc = entities.get(position);
                 try {
                     int sdk = android.os.Build.VERSION.SDK_INT;
                     if (sdk < android.os.Build.VERSION_CODES.HONEYCOMB) {
                         android.text.ClipboardManager clipboard = (android.text.ClipboardManager)
                                 getSystemService(CLIPBOARD_SERVICE);
-                        clipboard.setText(desc.get(position));
+                        clipboard.setText(tc.subtitle);
                     } else {
                         android.content.ClipboardManager clipboard = (android.content.ClipboardManager)
                                 getSystemService(CLIPBOARD_SERVICE);
                         android.content.ClipData clip = android.content.ClipData
-                                .newPlainText(features.get(position), desc.get(position));
+                                .newPlainText(tc.title, tc.subtitle);
                         clipboard.setPrimaryClip(clip);
                     }
                 } catch (Exception e) {

@@ -13,6 +13,7 @@ import com.catherine.webservices.Constants;
 import com.catherine.webservices.R;
 import com.catherine.webservices.adapters.TextCardRVAdapter;
 import com.catherine.webservices.components.DialogManager;
+import com.catherine.webservices.entities.TextCard;
 import com.catherine.webservices.interfaces.OnItemClickListener;
 import com.catherine.webservices.network.HttpAsyncTask;
 import com.catherine.webservices.network.HttpRequest;
@@ -45,7 +46,7 @@ import java.util.Map;
 
 public class P02_HttpURLConnection extends LazyFragment {
     public final static String TAG = "P02_HttpURLConnection";
-    private List<String> features, descriptions, contents;
+    private List<TextCard> entities;
     private SwipeRefreshLayout srl_container;
     private TextCardRVAdapter adapter;
     private NetworkHelper helper;
@@ -76,26 +77,14 @@ public class P02_HttpURLConnection extends LazyFragment {
     }
 
     private void fillInData() {
-        features = new ArrayList<>();
-        contents = new ArrayList<>();
-        descriptions = new ArrayList<>();
-        features.add("GET " + Constants.HOST);
-        features.add("POST " + Constants.HOST);
-        features.add("POST " + Constants.HOST);
-        features.add("POST " + Constants.HOST);
-        features.add("GET http://dictionary.cambridge.org/");
-        features.add("GET " + Constants.GITHUB_API_DOMAIN);
-        features.add("https://kyfw.12306.cn/otn/regist/init");
-        descriptions.add("Connect to the server with user-defined headers");
-        descriptions.add("Connect to the server with correct account");
-        descriptions.add("Connect to the server with false Authorization");
-        descriptions.add("Connect to the server with false account");
-        descriptions.add("Connect to Cambridge dictionary and return a html formatted response");
-        descriptions.add("Connect to GitHub api with gzip encoding");
-        descriptions.add("Connect to untrusted url with imported certificate");
-        for (int i = 0; i < features.size(); i++) {
-            contents.add("");
-        }
+        entities = new ArrayList<>();
+        entities.add(new TextCard("GET " + Constants.HOST, "Connect to the server with user-defined headers", null));
+        entities.add(new TextCard("POST " + Constants.HOST, "Connect to the server with correct account", null));
+        entities.add(new TextCard("POST " + Constants.HOST, "Connect to the server with false Authorization", null));
+        entities.add(new TextCard("POST " + Constants.HOST, "Connect to the server with false account", null));
+        entities.add(new TextCard("GET http://dictionary.cambridge.org/", "Connect to Cambridge dictionary server", null));
+        entities.add(new TextCard("GET " + Constants.GITHUB_API_DOMAIN, "Connect to GitHub api with gzip encoding", null));
+        entities.add(new TextCard("https://kyfw.12306.cn/otn/regist/init", "Connect to untrusted url with imported certificate", null));
     }
 
     private void initComponent() {
@@ -128,7 +117,7 @@ public class P02_HttpURLConnection extends LazyFragment {
 
         RecyclerView rv_main_list = (RecyclerView) findViewById(R.id.rv_main_list);
         rv_main_list.setLayoutManager(new LinearLayoutManager(getActivity()));
-        adapter = new TextCardRVAdapter(getActivity(), null, features, descriptions, new OnItemClickListener() {
+        adapter = new TextCardRVAdapter(getActivity(), entities, new OnItemClickListener() {
             @Override
             public void onItemClick(View view, final int position) {
                 connect(position);
@@ -230,8 +219,10 @@ public class P02_HttpURLConnection extends LazyFragment {
                 } catch (Exception e) {
                     e.printStackTrace();
                     srl_container.setRefreshing(false);
-                    contents.set(position, String.format(Locale.ENGLISH, "connectFailure Exception:%s", e.toString()));
-                    adapter.setContents(contents);
+                    TextCard tc = entities.get(position);
+                    tc.contents = String.format(Locale.ENGLISH, "connectFailure Exception:%s", e.toString());
+                    entities.set(position, tc);
+                    adapter.setEntities(entities);
                     adapter.notifyDataSetChanged();
                 }
                 break;
@@ -254,8 +245,10 @@ public class P02_HttpURLConnection extends LazyFragment {
                 } catch (Exception e) {
                     e.printStackTrace();
                     srl_container.setRefreshing(false);
-                    contents.set(position, String.format(Locale.ENGLISH, "connectFailure Exception:%s", e.toString()));
-                    adapter.setContents(contents);
+                    TextCard tc = entities.get(position);
+                    tc.contents = String.format(Locale.ENGLISH, "connectFailure Exception:%s", e.toString());
+                    entities.set(position, tc);
+                    adapter.setEntities(entities);
                     adapter.notifyDataSetChanged();
                 }
                 break;
@@ -269,8 +262,12 @@ public class P02_HttpURLConnection extends LazyFragment {
                 srl_container.setRefreshing(false);
                 String body = response.getBody();
                 CLog.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), body));
-                contents.set(position, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), body));
-                adapter.setContents(contents);
+
+                TextCard tc = entities.get(position);
+                tc.contents = String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), body);
+                entities.set(position, tc);
+                adapter.setEntities(entities);
+
                 adapter.notifyDataSetChanged();
             }
 
@@ -305,8 +302,10 @@ public class P02_HttpURLConnection extends LazyFragment {
                         }
                     }
                 }
-                contents.set(position, sb.toString());
-                adapter.setContents(contents);
+                TextCard tc = entities.get(position);
+                tc.contents = sb.toString();
+                entities.set(position, tc);
+                adapter.setEntities(entities);
                 adapter.notifyDataSetChanged();
             }
         };
