@@ -73,6 +73,7 @@ public class MyWebView extends WebView {
     private ActivityResultListener activityResultListener;
     //save console logs in disk
     private final boolean keepLog = false;
+    private boolean jsTimeout;
     private ApplicationConfig config;
     private Context ctx;
 
@@ -332,6 +333,9 @@ public class MyWebView extends WebView {
 //                super.onGeolocationPermissionsShowPrompt(origin, callback);
             }
 
+            /**
+             * 通知程序有定位权限请求。如果onGeolocationPermissionsShowPrompt权限申请操作被取消，则隐藏相关的UI界面。
+             */
             @Override
             public void onGeolocationPermissionsHidePrompt() {
                 CLog.Companion.i(TAG, "onGeolocationPermissionsHidePrompt");
@@ -368,16 +372,34 @@ public class MyWebView extends WebView {
 //                super.onPermissionRequest(request);
             }
 
+            /**
+             * 通知主程序相关权限被取消。任何相关UI都应该隐藏掉。
+             */
             @Override
             public void onPermissionRequestCanceled(PermissionRequest request) {
                 CLog.Companion.i(TAG, "onPermissionRequestCanceled");
                 super.onPermissionRequestCanceled(request);
             }
 
+            /**
+             * 通知主程序 执行的Js操作超时。客户端决定是否中断JavaScript继续执行。如果客户端返回true，JavaScript中断执行。如果客户端返回false，则执行继续。注意：如果继续执行，重置JavaScript超时计时器。如果Js下一次检查点仍没有结束，则再次提示。
+             */
             @Override
             public boolean onJsTimeout() {
                 CLog.Companion.i(TAG, "onJsTimeout");
-                return super.onJsTimeout();
+                DialogManager.showErrorDialog(ctx, "JavaScript timeout. Do you want to retry?", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        jsTimeout = true;
+                    }
+                }, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        jsTimeout = false;
+                    }
+                });
+                return jsTimeout;
+//                super.onJsTimeout();
             }
 
             @Override
@@ -481,6 +503,9 @@ public class MyWebView extends WebView {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         handler.cancel();
+                        if (canGoBack()) {
+                            goBack();
+                        }
                     }
                 });
 //                        super.onReceivedSslError(view, handler, error);
@@ -548,13 +573,30 @@ public class MyWebView extends WebView {
             @Override
             public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
                 CLog.Companion.e(TAG, "onReceivedError:" + description);
-                super.onReceivedError(view, errorCode, description, failingUrl);
+                String message = String.format(Locale.ENGLISH, "%s\nError code:%d\n%s", failingUrl, errorCode, description);
+                DialogManager.showErrorDialog(ctx, message, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (canGoBack())
+                            goBack();
+                    }
+                });
+//                super.onReceivedError(view, errorCode, description, failingUrl);
             }
 
             @Override
+            @TargetApi(Build.VERSION_CODES.M)
             public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
                 CLog.Companion.e(TAG, "onReceivedError2");
-                super.onReceivedError(view, request, error);
+                String message = String.format(Locale.ENGLISH, "%s\nError code:%d\n%s", request.getUrl(), error.getErrorCode(), error.getDescription());
+                DialogManager.showErrorDialog(ctx, message, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (canGoBack())
+                            goBack();
+                    }
+                });
+//                super.onReceivedError(view, request, error);
             }
 
             @Override
@@ -563,6 +605,9 @@ public class MyWebView extends WebView {
                 super.onReceivedHttpError(view, request, errorResponse);
             }
 
+            /**
+             * 是否重发POST请求数据，默认不重发。
+             */
             @Override
             public void onFormResubmission(WebView view, Message dontResend, Message resend) {
                 CLog.Companion.i(TAG, "onFormResubmission:" + dontResend);
@@ -581,6 +626,9 @@ public class MyWebView extends WebView {
                 super.onReceivedClientCertRequest(view, request);
             }
 
+            /**
+             * 通知主程序：WebView接收HTTP认证请求，主程序可以使用HttpAuthHandler为请求设置WebView响应。默认取消请求。
+             */
             @Override
             public void onReceivedHttpAuthRequest(WebView view, HttpAuthHandler handler, String host, String realm) {
                 CLog.Companion.w(TAG, "onReceivedHttpAuthRequest");
@@ -605,6 +653,9 @@ public class MyWebView extends WebView {
 //                        super.onScaleChanged(view, oldScale, newScale);
 //                    }
 
+            /**
+             * 通知主程序执行了自动登录请求。
+             */
             @Override
             public void onReceivedLoginRequest(WebView view, String realm, String account, String args) {
                 CLog.Companion.w(TAG, "onReceivedLoginRequest");
