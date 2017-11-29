@@ -61,10 +61,10 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="P17_WebView_Test_List.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="P17_WebView_Test_List.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P17_WebView_Test_List.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="866">
+            <state relative-caret-position="3136">
               <caret line="297" column="107" lean-forward="false" selection-start-line="297" selection-start-column="35" selection-end-line="297" selection-end-column="107" />
               <folding>
                 <element signature="imports" expanded="true" />
@@ -157,11 +157,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="MyWebView.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="MyWebView.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/components/MyWebView.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="697">
-              <caret line="584" column="13" lean-forward="false" selection-start-line="584" selection-start-column="13" selection-end-line="584" selection-end-column="13" />
+            <state relative-caret-position="97">
+              <caret line="476" column="42" lean-forward="false" selection-start-line="476" selection-start-column="29" selection-end-line="476" selection-end-column="42" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#17190#17418#0" expanded="true" />
@@ -5302,9 +5302,9 @@
         <option value="$PROJECT_DIR$/app/src/main/res/layout/f_13_nested_webview.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P14_Full_WebView.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P13_Nested_WebView.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P17_WebView_Test_List.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/components/MyWebView.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P17_WebView_Test_List.java" />
       </list>
     </option>
   </component>
@@ -5754,7 +5754,7 @@
       <option name="DEEP_LINK" value="" />
       <option name="ACTIVITY_CLASS" value="" />
       <method>
-        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="false" clearCache="false" clearProvisionedDevices="false" myTimestamp="1511927802440" />
+        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="false" clearCache="false" clearProvisionedDevices="false" myTimestamp="1511928386594" />
         <option name="Android.Gradle.BeforeRunTask" enabled="true" />
       </method>
     </configuration>
@@ -5802,7 +5802,7 @@
         <option name="ADVANCED_PROFILING_ENABLED" value="false" />
       </Profilers>
       <method>
-        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="false" clearCache="false" clearProvisionedDevices="false" myTimestamp="1511927802440" />
+        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="false" clearCache="false" clearProvisionedDevices="false" myTimestamp="1511928386594" />
         <option name="Android.Gradle.BeforeRunTask" enabled="true" />
       </method>
     </configuration>
@@ -5964,7 +5964,7 @@
       <option name="DEEP_LINK" value="" />
       <option name="ACTIVITY_CLASS" value="" />
       <method>
-        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="true" clearCache="false" clearProvisionedDevices="false" myTimestamp="1511927802442" />
+        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="true" clearCache="false" clearProvisionedDevices="false" myTimestamp="1511928386595" />
       </method>
     </configuration>
     <list size="6">
@@ -6391,6 +6391,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="4573">
           <caret line="298" column="55" lean-forward="false" selection-start-line="298" selection-start-column="55" selection-end-line="303" selection-end-column="17" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -6584,26 +6585,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/components/MyWebView.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="697">
-          <caret line="584" column="13" lean-forward="false" selection-start-line="584" selection-start-column="13" selection-end-line="584" selection-end-column="13" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#17190#17418#0" expanded="true" />
-            <element signature="e#17417#17418#0" expanded="true" />
-            <element signature="e#17420#17649#0" expanded="true" />
-            <element signature="e#17648#17649#0" expanded="true" />
-            <element signature="e#22748#23083#0" expanded="true" />
-            <element signature="e#23082#23083#0" expanded="true" />
-            <element signature="e#25952#26217#0" expanded="true" />
-            <element signature="e#26216#26217#0" expanded="true" />
-            <element signature="e#26766#27031#0" expanded="true" />
-            <element signature="e#27030#27031#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-152">
@@ -6638,10 +6619,30 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/fragments/P17_WebView_Test_List.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="866">
+        <state relative-caret-position="3136">
           <caret line="297" column="107" lean-forward="false" selection-start-line="297" selection-start-column="35" selection-end-line="297" selection-end-column="107" />
           <folding>
             <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/catherine/webservices/components/MyWebView.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="97">
+          <caret line="476" column="42" lean-forward="false" selection-start-line="476" selection-start-column="29" selection-end-line="476" selection-end-column="42" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#17190#17418#0" expanded="true" />
+            <element signature="e#17417#17418#0" expanded="true" />
+            <element signature="e#17420#17649#0" expanded="true" />
+            <element signature="e#17648#17649#0" expanded="true" />
+            <element signature="e#22748#23083#0" expanded="true" />
+            <element signature="e#23082#23083#0" expanded="true" />
+            <element signature="e#25952#26217#0" expanded="true" />
+            <element signature="e#26216#26217#0" expanded="true" />
+            <element signature="e#26766#27031#0" expanded="true" />
+            <element signature="e#27030#27031#0" expanded="true" />
           </folding>
         </state>
       </provider>

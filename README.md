@@ -76,7 +76,6 @@ android {
 
 
 ## Cache
-
 >Under normal usage, the starting point for any developer should be to add as an aggressive caching strategy to the files in the application that will not change. 		
 >Normally this will include static files that are served by the application such as **images**, **CSS file** and **Javascript files**. 		
 >As these files are typically re-requested on each page, a large performance improvement can be had with little effort.		
@@ -203,7 +202,6 @@ Cache-Control:no-cache, no-store
 - WebView cache
 
 ## HTTPS
-
 [![HTTPS workflos](https://raw.githubusercontent.com/Catherine22/WebServices/master/https_workflow.png)](http://limboy.me/tech/2011/02/19/https-workflow.html)
 
  1. Client requests a https url
@@ -221,7 +219,6 @@ Cache-Control:no-cache, no-store
 > There are hundreds of CAs in the world. Which CA you can trust depends on a CAs list in client. (Normally, your mobile phone had been saved a list of trusted CAs before you bought it.)
 
 ### Android HTTPS
-
 ***DO NOT IMPLEMENT "X509TrustManager" TO SKIP VALIDATION***        
 That means man-in-the-middle attacks are allowed.
 
@@ -260,7 +257,6 @@ Another example - request to [github APIs]
 Check SSL certificates here : [https://www.ssllabs.com/ssltest/][2]
 
 ## Download and cache images
-
 **ImageView + DiskLruCache**
 1. Download a url list.		
 2. Check internal or external storage of the device. If the images have had been cached, skip step 3 and show them.
@@ -279,7 +275,6 @@ Three ways to deal with images:
 Here is the example: [P11_Fresco], [FrescoRVAdapter]
 
 ## TCP Sockets
-
 **Blocking socket**
 - Server : Run [MySocket] with eclipse
 ```java
@@ -303,17 +298,15 @@ udpSocket();
 - Client : Run WebServices and open [P10_UDP_Socket] fragment on Android devices.
 
 ## WebView
-
 **[MyWebView]**, [P14_Full_WebView] and [P13_Nested_WebView] supports the functions of...
 
 1. Going back to previous pages.
 2. Showing a ProgressBar while WebView is loading resources.
 3. Launching other apps installed in your device by url scheme.
-
-4. Handling JavaScript alert(), confirm() and prompt() and display the message with a used-defined dialog.
+4. Handling JavaScript alert(), confirm() and prompt() and displaying the message with a used-defined dialog.
 >Before using JavaScript, you should have WebView enable JavaScript. Go to [P15_WebView_Settings] to set.		
 
-5. Calling Java function from JavaScript
+5. Calling Java functions from JavaScript
 > Two tips:
 >  1. Don't forget to ignore your JavaScriptInterface with Android proguard
 >  2. Add @JavascriptInterface Annotation and you can go to [MyJavaScriptInterface] to see more
@@ -327,8 +320,7 @@ In proguard-rules.pro
     <methods>;
 }
 ```
-
-6. Calling JavaScript function from Java.
+6. Calling JavaScript functions from Java.
 7. Saving photos to your device from the Internet.
 > Save the image after long-clicking it.
 
@@ -337,7 +329,7 @@ In proguard-rules.pro
 > Override ```onReceivedSslError()``` and pop up a dialog to let users decide to continue (it would be unsafe maybe) or stop visiting the website.		
 
 9. Switching desktop style or mobile style websites by user-agent
-10. Get media and location permission
+10. Getting media and location permission
 >You need to add following permission in your AndroidManifest.xml
 >And override ```onGeolocationPermissionsShowPrompt()``` and ```onPermissionRequest()``` in WebChromeClient.
 
@@ -353,17 +345,18 @@ In proguard-rules.pro
 11. HTML5
 >Go to [http://html5test.com/][6] to see the browser compatibility.
 
-12. Enabled Dom storage
-13. Web SQL database and IndexedDB
+12. Supporting Dom storage
+13. Supporting Web SQL database and IndexedDB
 >Web SQL has been deprecated by W3C
 >IndexedDB is available on Android 4.4+
 
-14. Launch FileChooser
-
+14. Launching FileChooser
 You could also go to **[P17_WebView_Test_List]** to test all the websites I listed.
 
 **[P15_WebView_Settings]**
 Set attributes of WebView that includes WebViewClient and WebSettings (setAllowFileAccess(), setJavaScriptEnabled(), setSupportZoom() and so forth.)
+
+## Wi-Fi
 
 
 ## References
