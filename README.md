@@ -359,7 +359,6 @@ In proguard-rules.pro
 >IndexedDB is available on Android 4.4+
 
 14. Launch FileChooser
-15. Cache and offline mode
 
 You could also go to **[P17_WebView_Test_List]** to test all the websites I listed.
 
