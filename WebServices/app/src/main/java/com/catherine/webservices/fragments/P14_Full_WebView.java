@@ -8,38 +8,23 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
-import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
-import android.webkit.ClientCertRequest;
-import android.webkit.ConsoleMessage;
 import android.webkit.CookieManager;
-import android.webkit.GeolocationPermissions;
-import android.webkit.HttpAuthHandler;
 import android.webkit.JsPromptResult;
 import android.webkit.JsResult;
-import android.webkit.PermissionRequest;
-import android.webkit.RenderProcessGoneDetail;
-import android.webkit.SslErrorHandler;
-import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
-import android.webkit.WebResourceError;
-import android.webkit.WebResourceRequest;
-import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
-import android.webkit.WebStorage;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ArrayAdapter;
@@ -61,6 +46,7 @@ import com.catherine.webservices.entities.WebViewAttr;
 import com.catherine.webservices.interfaces.BackKeyListener;
 import com.catherine.webservices.interfaces.MainInterface;
 import com.catherine.webservices.interfaces.OnRequestPermissionsListener;
+import com.catherine.webservices.interfaces.WebViewProgressListener;
 import com.catherine.webservices.network.MyJavaScriptInterface;
 import com.catherine.webservices.network.NetworkHelper;
 import com.catherine.webservices.toolkits.CLog;
@@ -95,7 +81,7 @@ public class P14_Full_WebView extends LazyFragment {
     private ProgressBar pb;
     private String currentUrl;
     private String displayUrl;
-    private Client client;
+    private Client client0, client1;
     private WebViewAttr attr;
     private Dialog jsDialog;
     private SharedPreferences sp;
@@ -166,7 +152,7 @@ public class P14_Full_WebView extends LazyFragment {
         displayUrl = getShortName(currentUrl);
 
         sp = getActivity().getSharedPreferences("wv_history", Context.MODE_PRIVATE);
-        client = new Client(getActivity(), new CustomReceiver() {
+        client0 = new Client(getActivity(), new CustomReceiver() {
             @Override
             public void onBroadcastReceive(@NotNull Result result) {
                 Bundle b = result.getMBundle();
@@ -182,7 +168,20 @@ public class P14_Full_WebView extends LazyFragment {
                 refresh();
             }
         });
-        client.gotMessages(Commands.WV_SETTINGS);
+        client0.gotMessages(Commands.WV_SETTINGS);
+        client1 = new Client(getActivity(), new CustomReceiver() {
+            @Override
+            public void onBroadcastReceive(@NotNull Result result) {
+                String message = String.format("%s\nPress OK to call JavaScript.", result.getMString());
+                DialogManager.showAlertDialog(getActivity(), message, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        wv.loadUrl("javascript:showJsAlertDialog(\"Hi, I am a message from Android!\")");
+                    }
+                });
+            }
+        });
+        client1.gotMessages(Commands.JS_CALLBACK);
         mainInterface.setBackKeyListener(new BackKeyListener() {
             @Override
             public void OnKeyDown() {
@@ -264,12 +263,7 @@ public class P14_Full_WebView extends LazyFragment {
     }
 
     private void refresh() {
-        attr = new WebViewAttr(getActivity());
-        //可滑动，默认为true
-        wv.setVerticalScrollBarEnabled(attr.isVerticalScrollBarEnabled());
-        //可滑动，默认为true
-        wv.setHorizontalScrollBarEnabled(attr.isHorizontalScrollBarEnabled());
-        wv.setWebChromeClient(new WebChromeClient() {
+        wv.addWebViewProgressListener(new WebViewProgressListener() {
             @Override
             public void onProgressChanged(WebView view, int newProgress) {
                 pb.setProgress(newProgress);
@@ -277,9 +271,14 @@ public class P14_Full_WebView extends LazyFragment {
                     pb.setVisibility(View.GONE);
                 else
                     pb.setVisibility(View.VISIBLE);
-                super.onProgressChanged(view, newProgress);
             }
-
+        });
+        attr = new WebViewAttr(getActivity());
+        //可滑动，默认为true
+        wv.setVerticalScrollBarEnabled(attr.isVerticalScrollBarEnabled());
+        //可滑动，默认为true
+        wv.setHorizontalScrollBarEnabled(attr.isHorizontalScrollBarEnabled());
+        wv.setWebChromeClient(new WebChromeClient() {
             @Override
             public void onReceivedTitle(WebView view, String title) {
                 CLog.Companion.i(TAG, "onReceivedTitle:" + title);
@@ -710,7 +709,8 @@ public class P14_Full_WebView extends LazyFragment {
 
     @Override
     public void onDestroy() {
-        client.release();
+        client0.release();
+        client1.release();
         wv.removeAllViews();
         wv.destroy();
         super.onDestroy();

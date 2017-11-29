@@ -310,9 +310,10 @@ udpSocket();
 2. Showing a ProgressBar while WebView is loading resources.
 3. Launching other apps installed in your device by url scheme.
 
-Before using JavaScript, you should have WebView enable JavaScript. Go to [P15_WebView_Settings] to set.		
 4. Handling JavaScript alert(), confirm() and prompt() and display the message with a used-defined dialog.
-5. Calling Java function from JavaScript with WebView.
+>Before using JavaScript, you should have WebView enable JavaScript. Go to [P15_WebView_Settings] to set.		
+
+5. Calling Java function from JavaScript
 > Two tips:
 >  1. Don't forget to ignore your JavaScriptInterface with Android proguard
 >  2. Add @JavascriptInterface Annotation and you can go to [MyJavaScriptInterface] to see more
@@ -327,15 +328,16 @@ In proguard-rules.pro
 }
 ```
 
-6. Saving photos to your device from the Internet.
+6. Calling JavaScript function from Java.
+7. Saving photos to your device from the Internet.
 > Save the image after long-clicking it.
 
-7. Visiting a HTTPS website and you get a SSL error.
+8. Visiting a HTTPS website and you get a SSL error.
 > Again, you could use [https://kyfw.12306.cn/otn/regist/init][1] to test.    
 > Override ```onReceivedSslError()``` and pop up a dialog to let users decide to continue (it would be unsafe maybe) or stop visiting the website.		
 
-8. Switching desktop style or mobile style websites by user-agent
-9. Get media and location permission
+9. Switching desktop style or mobile style websites by user-agent
+10. Get media and location permission
 >You need to add following permission in your AndroidManifest.xml
 >And override ```onGeolocationPermissionsShowPrompt()``` and ```onPermissionRequest()``` in WebChromeClient.
 
@@ -348,12 +350,16 @@ In proguard-rules.pro
 <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
 ```
-10. HTML5
+11. HTML5
 >Go to [http://html5test.com/][6] to see the browser compatibility.
 
-11. Enabled dom storage and database
-12. Launch FileChooser
-13. Cache and offline mode
+12. Enabled Dom storage
+13. Web SQL database and IndexedDB
+>Web SQL has been deprecated by W3C
+>IndexedDB is available on Android 4.4+
+
+14. Launch FileChooser
+15. Cache and offline mode
 
 You could also go to **[P17_WebView_Test_List]** to test all the websites I listed.
 

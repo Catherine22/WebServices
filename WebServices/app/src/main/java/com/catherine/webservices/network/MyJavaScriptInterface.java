@@ -1,17 +1,12 @@
 package com.catherine.webservices.network;
 
-import android.Manifest;
-import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Vibrator;
 import android.webkit.JavascriptInterface;
 
-import com.catherine.webservices.Constants;
+import com.catherine.webservices.Commands;
 import com.catherine.webservices.R;
 import com.catherine.webservices.components.DialogManager;
 import com.catherine.webservices.interfaces.MainInterface;
@@ -23,6 +18,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
+import catherine.messagecenter.AsyncResponse;
+import catherine.messagecenter.Server;
+
 /**
  * Created by Catherine on 2017/10/25.
  * Soft-World Inc.
@@ -33,13 +31,20 @@ import java.util.List;
  */
 public class MyJavaScriptInterface implements IgnoreProguard {
     private final static String TAG = "MyJavaScriptInterface";
-    private Context ctx;
     private MainInterface mainInterface;
+    private Context ctx;
+    private Server sv;
 
     public MyJavaScriptInterface(Context mainActivity) {
         ctx = mainActivity;
         //this ctx should be MainActivity or you can't do any functions of MainInterface
         mainInterface = (MainInterface) ctx;
+        sv = new Server(ctx, new AsyncResponse() {
+            @Override
+            public void onFailure(int errorCode) {
+                CLog.Companion.e(TAG, "onFailure:" + errorCode);
+            }
+        });
     }
 
     @JavascriptInterface
@@ -116,5 +121,10 @@ public class MyJavaScriptInterface implements IgnoreProguard {
     public String loadPreferences(String key) {
         SharedPreferences sp = ctx.getSharedPreferences("wv_js", Context.MODE_PRIVATE);
         return sp.getString(key, "");
+    }
+
+    @JavascriptInterface
+    public void dial(String message) {
+        sv.pushString(Commands.JS_CALLBACK, message);
     }
 }

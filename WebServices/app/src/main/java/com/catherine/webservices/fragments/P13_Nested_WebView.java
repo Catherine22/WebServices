@@ -37,7 +37,6 @@ import com.catherine.webservices.toolkits.CLog;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
-import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import catherine.messagecenter.Client;
@@ -59,7 +58,7 @@ public class P13_Nested_WebView extends LazyFragment {
     private MainInterface mainInterface;
     private MyNestedWebView wv;
     private ProgressBar pb;
-    private Client client;
+    private Client client0, client1;
 
     public static P13_Nested_WebView newInstance(boolean isLazyLoad) {
         Bundle args = new Bundle();
@@ -117,7 +116,7 @@ public class P13_Nested_WebView extends LazyFragment {
     }
 
     private void initComponent() {
-        client = new Client(getActivity(), new CustomReceiver() {
+        client0 = new Client(getActivity(), new CustomReceiver() {
             @Override
             public void onBroadcastReceive(@NotNull Result result) {
                 Bundle b = result.getMBundle();
@@ -133,27 +132,42 @@ public class P13_Nested_WebView extends LazyFragment {
                 refresh();
             }
         });
-        client.gotMessages(Commands.WV_SETTINGS);
+        client0.gotMessages(Commands.WV_SETTINGS);
+        client1 = new Client(getActivity(), new CustomReceiver() {
+            @Override
+            public void onBroadcastReceive(@NotNull Result result) {
+                String message = String.format("%s\nPress OK to call JavaScript.", result.getMString());
+                DialogManager.showAlertDialog(getActivity(), message, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        wv.loadUrl("javascript:showJsAlertDialog(\"Hi, I am a message from Android!\")");
+                    }
+                });
+            }
+        });
+        client1.gotMessages(Commands.JS_CALLBACK);
         wv = (MyNestedWebView) findViewById(R.id.wv);
         pb = (ProgressBar) findViewById(R.id.pb);
+        pb.setMax(100);
         refresh();
     }
 
     private void refresh() {
+        wv.addWebViewProgressListener(new WebViewProgressListener() {
+            @Override
+            public void onProgressChanged(WebView view, int newProgress) {
+                pb.setProgress(newProgress);
+                if (pb.getProgress() == 100)
+                    pb.setVisibility(View.GONE);
+                else
+                    pb.setVisibility(View.VISIBLE);
+            }
+        });
         WebViewAttr attr = new WebViewAttr(getActivity());
         //可滑动，默认为true
         wv.setVerticalScrollBarEnabled(attr.isVerticalScrollBarEnabled());
         //可滑动，默认为true
         wv.setHorizontalScrollBarEnabled(attr.isHorizontalScrollBarEnabled());
-        wv.addWebViewProgressListener(new WebViewProgressListener() {
-            @Override
-            public void onProgressChanged(WebView view, int newProgress) {
-                if (newProgress == 100)
-                    pb.setVisibility(View.INVISIBLE);
-                else
-                    pb.setVisibility(View.VISIBLE);
-            }
-        });
         wv.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -377,7 +391,8 @@ public class P13_Nested_WebView extends LazyFragment {
 
     @Override
     public void onDestroy() {
-        client.release();
+        client0.release();
+        client1.release();
         wv.removeAllViews();
         wv.destroy();
         super.onDestroy();

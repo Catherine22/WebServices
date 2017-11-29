@@ -279,10 +279,15 @@ public class P17_WebView_Test_List extends LazyFragment {
         imageCardEx15.setStyle(0);
         others.add(imageCardEx15);
         ImageCardEx imageCardEx16 = new ImageCardEx();
-        imageCardEx16.setTitle("SQL database");
+        imageCardEx16.setTitle("Web SQL database");
         imageCardEx16.setSubtitle("file:///android_asset/web_sql_db.html");
         imageCardEx16.setStyle(0);
         others.add(imageCardEx16);
+        ImageCardEx imageCardEx21 = new ImageCardEx();
+        imageCardEx21.setTitle("Indexed database");
+        imageCardEx21.setSubtitle("file:///android_asset/indexed_db.html");
+        imageCardEx21.setStyle(0);
+        others.add(imageCardEx21);
         ImageCardEx imageCardEx17 = new ImageCardEx();
         imageCardEx17.setTitle("File chooser");
         imageCardEx17.setSubtitle("file:///android_asset/file_chooser.html");

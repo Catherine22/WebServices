@@ -686,7 +686,7 @@ public class MyWebView extends WebView {
     public void loadUrl(String urlString) {
         String url = NetworkHelper.Companion.formattedUrl(urlString);
         CLog.Companion.i(TAG, "Load " + url);
-        if (url.startsWith("http://") || url.startsWith("https://") || url.startsWith("file:///") || url.startsWith("content://")) {
+        if (url.startsWith("http://") || url.startsWith("https://") || url.startsWith("file:///") || url.startsWith("content://") || url.startsWith("javascript:")) {
             super.loadUrl(url);
         } else if (url.startsWith("intent://")) {
             try {
