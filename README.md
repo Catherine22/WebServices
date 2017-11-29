@@ -65,10 +65,6 @@ android {
 
 ## OkHttp
 
-
-## Volley
-
-
 ## Multiple-threading download
 - Download a single file with multiple threads
 - Show the progressbar
@@ -149,7 +145,7 @@ And next time, your request headers contain
 ```html
 Last-Modified: Mon, 03 Jan 2011 17:45:57 GMT
 ```
-
+Your request must contain ```If-Modified-Since``` so that the server will check the timestamp.    
 If the resource hasn't changed since ```Mon, 03 Jan 2011 17:45:57 GMT```, the server'll return **304** with an empty body.
 
 
@@ -171,7 +167,6 @@ If-None-Match: "751F63A30AB5F98F855D1D90D217B356"
 If the resource hasn't changed, the server'll return **304** with an empty body.
 
 
-
 Even if your cache is up, it doesn't mean your cache is not working. Your response might contain an ETag which instructs the client to cache it for up to a specific period and provides a validation token ( MD5 or something ) that can be used after the response has expired to check if the resource has been modified.		
 If the token hasn't been changed, the server returns a "304 Not Modified" response.
 
@@ -190,8 +185,12 @@ or
 Cache-Control: max-age=(0)
 ```
 
-If your cache is not available, then you request ETag (with If-None-Match) or Last-Modified (with If-Modified-Since) to your server.
+If your cache is not available, then you request ETag (with If-None-Match) or Last-Modified (with If-Modified-Since) to your server (Of course you could alse use both of them to double-check).
 Your server would return 304 when it's okay to use the cache that has been stored or you get 200 with new resources.
+
+- **Force to refresh**
+F5: ```Cache-Control:max-age=0```
+Ctrl + F5: ```Cache-Control:no-cache``` or ```Pragma:no-cache```
 
 - **No cache**
 
@@ -305,24 +304,21 @@ udpSocket();
 
 ## WebView
 
-**[P14_Full_WebView]** supports the functions of...
+**[MyWebView]**, [P14_Full_WebView] and [P13_Nested_WebView] supports the functions of...
 
 1. Going back to previous pages.
 2. Showing a ProgressBar while WebView is loading resources.
 3. Launching other apps installed in your device by url scheme.
 
-> You could type urls on [P14_Full_WebView] to try.
->  - market://details?id=com.google.android.apps.maps
->  - visit [https://play.google.com/store/apps/details?id=com.google.android.apps.maps&hl=en][4] and click the "OPEN IN PLAY STORE APP" button. Then you would redirct to a url starts from intent://play.app.goo.gl/?link=https://play.google.co...
-
-Before using JavaScript, you should have WebView enable JavaScript. Go to [P15_WebView_Settings] to set.		
 4. Handling JavaScript alert(), confirm() and prompt() and display the message with a used-defined dialog.
-5. Calling Java function from JavaScript with WebView.
+>Before using JavaScript, you should have WebView enable JavaScript. Go to [P15_WebView_Settings] to set.		
+
+5. Calling Java function from JavaScript
 > Two tips:
 >  1. Don't forget to ignore your JavaScriptInterface with Android proguard
 >  2. Add @JavascriptInterface Annotation and you can go to [MyJavaScriptInterface] to see more
 
-In this project, every class that should not be obfuscated implements IgnoreProguard interface.     
+In this project, all classes that can not be obfuscated implement IgnoreProguard interface.     
 In proguard-rules.pro
 ```gradle
 -keep public class com.catherine.webservices.toolkits.IgnoreProguard
@@ -332,43 +328,55 @@ In proguard-rules.pro
 }
 ```
 
-> Here are some URLs would help you test. Just type them on [P14_Full_WebView]:
-> - [https://www.javascript.com/][3]
-> - file:///android_asset/js_alert.html
-> - file:///android_asset/js_confirm.html
-> - file:///android_asset/js_prompt.html
-
-6. Saving photos to your device from the Internet.
+6. Calling JavaScript function from Java.
+7. Saving photos to your device from the Internet.
 > Save the image after long-clicking it.
 
-7. Visiting a HTTPS website and you get a SSL error.
+8. Visiting a HTTPS website and you get a SSL error.
 > Again, you could use [https://kyfw.12306.cn/otn/regist/init][1] to test.    
-> It would pop up a dialog and users decide to continue (unsafe) or stop visiting the webside.		
+> Override ```onReceivedSslError()``` and pop up a dialog to let users decide to continue (it would be unsafe maybe) or stop visiting the website.		
 
-8. Switching desktop sites or mobile sites by user-agent
-> - [https://github.com/Catherine22][5]
+9. Switching desktop style or mobile style websites by user-agent
+10. Get media and location permission
+>You need to add following permission in your AndroidManifest.xml
+>And override ```onGeolocationPermissionsShowPrompt()``` and ```onPermissionRequest()``` in WebChromeClient.
 
+```xml
+<!--getUserMedia-->
+<uses-permission android:name="android.permission.RECORD_AUDIO" />
+<uses-permission android:name="android.permission.CAMERA" />
+<uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+<!--location-->
+<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+```
+11. HTML5
+>Go to [http://html5test.com/][6] to see the browser compatibility.
 
+12. Enabled Dom storage
+13. Web SQL database and IndexedDB
+>Web SQL has been deprecated by W3C
+>IndexedDB is available on Android 4.4+
 
-**I list all of the test links on [WebView test links]. You could open this page on [P14_Full_WebView].**
+14. Launch FileChooser
 
-Still not work...   
-6. Synchronize cookie
-9. Visit a HTML5 website
-10. Visit a website offline if it's available to be cached
+You could also go to **[P17_WebView_Test_List]** to test all the websites I listed.
 
 **[P15_WebView_Settings]**
 Set attributes of WebView that includes WebViewClient and WebSettings (setAllowFileAccess(), setJavaScriptEnabled(), setSupportZoom() and so forth.)
 
+
 ## References
 - [Tencent bugly]
 - [HTTP 1.1 doc]
+- [HTTP cache cn]
 - [Google Web Fundamentals]
 - [increasing-application-performance-with-http-cache-headers]
 - [Socket tutorial]
 - [What are examples of TCP and UDP in real life scenario ?]
 - [Android HTTPS]
-- [WebView tutorial]
+- [WebView tutorial 1]
+- [WebView tutorial 2]
 
 
 [MainActivity]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/MainActivity.kt>
@@ -393,18 +401,23 @@ Set attributes of WebView that includes WebViewClient and WebSettings (setAllowF
 [P08_Blocking_Socket]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/P08_Blocking_Socket.java>
 [P09_NIO_Socket]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/P09_NIO_Socket.java>
 [P10_UDP_Socket]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/P10_UDP_Socket.java>
+[P13_Nested_WebView]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/P13_Nested_WebView.java>
 [P14_Full_WebView]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/P14_Full_WebView.java>
 [P15_WebView_Settings]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/P15_WebView_Settings.java>
+[P17_WebView_Test_List]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/P17_WebView_Test_List.java>
+[MyWebView]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/components/MyWebView.java>
 [MySocket]:<https://github.com/Catherine22/WebServices/blob/master/JavaSocketServer/MySocket/src/Main.java>
 [MyJavaScriptInterface]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/network/MyJavaScriptInterface.java>
 [What are examples of TCP and UDP in real life scenario ?]:<https://learningnetwork.cisco.com/thread/87103>
 [Android HTTPS]:<http://blog.csdn.net/iispring/article/details/51615631>
 [github APIs]:<https://api.github.com/>
-[WebView tutorial]:<http://www.jianshu.com/p/3fcf8ba18d7f>
-[WebView test links]:<https://github.com/Catherine22/WebServices/blob/master/LINKS.md>
+[HTTP cache cn]:<https://segmentfault.com/a/1190000004132566#articleHeader3>
+[WebView tutorial 1]:<http://www.jianshu.com/p/3fcf8ba18d7f>
+[WebView tutorial 2]:<http://blog.csdn.net/huaxun66/article/details/73179187>
 
   [1]: https://kyfw.12306.cn/otn/regist/init
   [2]: https://www.ssllabs.com/ssltest/
   [3]: https://www.javascript.com/
   [4]: https://play.google.com/store/apps/details?id=com.google.android.apps.maps&hl=en
   [5]: https://github.com/Catherine22
+  [6]: http://html5test.com/

@@ -12,10 +12,15 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
+import android.webkit.ValueCallback;
 
 import com.catherine.webservices.components.DialogManager;
+import com.catherine.webservices.interfaces.ActivityResultListener;
 import com.catherine.webservices.interfaces.OnRequestPermissionsListener;
+import com.catherine.webservices.toolkits.FileUtils;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -26,7 +31,7 @@ import java.util.List;
  * catherine919@soft-world.com.tw
  */
 
-public abstract class BaseFragmentActivity extends AppCompatActivity {
+public abstract class BaseFragmentActivity extends AppCompatActivity implements ActivityResultListener {
     private final int GRANTED_SAW = 0x0001;
     private final int GRANTED_WS = 0x0010;
     private int requestSpec = 0x0000;
@@ -34,7 +39,8 @@ public abstract class BaseFragmentActivity extends AppCompatActivity {
     private int confirmedSpec = 0x0000;
     private List<String> deniedPermissionsList;
     private OnRequestPermissionsListener listener;
-
+    private ValueCallback<Uri> addValueCallback;
+    private ValueCallback<Uri[]> addValueCallbackL;
 
     protected void onCreate(Bundle savedInstanceState, int layoutResID) {
         super.onCreate(savedInstanceState);
@@ -171,22 +177,12 @@ public abstract class BaseFragmentActivity extends AppCompatActivity {
         StringBuilder context = new StringBuilder();
         if (deniedPermissions != null) {
             for (String p : deniedPermissions) {
-                if (Manifest.permission.READ_PHONE_STATE.equals(p)) {
-                    context.append(getResources().getString(R.string.permission_phone));
-                    context.append("、");
-                } else if (Manifest.permission.WRITE_EXTERNAL_STORAGE.equals(p)) {
-                    context.append(getResources().getString(R.string.permission_storage));
-                    context.append("、");
-                } else if (Manifest.permission.RECEIVE_SMS.equals(p)) {
-                    context.append(getResources().getString(R.string.permission_sms));
-                    context.append("、");
-                }
+                context.append(p);
+                context.append(", ");
             }
         }
 
-        if (context.toString().length() != 0)
-            context.replace(context.toString().length() - 1, context.toString().length(), "");
-
+        context.deleteCharAt(context.length() - 1);
         DialogManager.showPermissionDialog(BaseFragmentActivity.this, String.format(getResources().getString(R.string.permission_request), context.toString()), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -276,6 +272,47 @@ public abstract class BaseFragmentActivity extends AppCompatActivity {
                 deniedPermissionsList = null;
                 listener.onRetry();
                 break;
+            case Constants.FILECHOOSER_RESULTCODE:
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    if (addValueCallbackL == null) return;
+                } else {
+                    if (addValueCallback == null) return;
+                }
+                Uri result = data == null || resultCode != RESULT_OK ? null : data.getData();
+                if (result == null) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        addValueCallbackL.onReceiveValue(null);
+                    } else {
+                        addValueCallback.onReceiveValue(null);
+                    }
+                    return;
+                }
+                String path = FileUtils.getPath(this, result);
+                if (TextUtils.isEmpty(path)) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        addValueCallbackL.onReceiveValue(null);
+                    } else {
+                        addValueCallback.onReceiveValue(null);
+                    }
+                    return;
+                }
+                Uri uri = Uri.fromFile(new File(path));
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    addValueCallbackL.onReceiveValue(new Uri[]{uri});
+                } else {
+                    addValueCallback.onReceiveValue(uri);
+                }
+                break;
         }
+    }
+
+    @Override
+    public void addValueCallback(ValueCallback<Uri> filePathCallback) {
+        addValueCallback = filePathCallback;
+    }
+
+    @Override
+    public void addValueCallbackL(ValueCallback<Uri[]> filePathCallback) {
+        addValueCallbackL = filePathCallback;
     }
 }

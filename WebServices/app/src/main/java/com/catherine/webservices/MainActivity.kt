@@ -30,10 +30,7 @@ import catherine.messagecenter.Server
 import com.catherine.webservices.adapters.MainViewPagerAdapter
 import com.catherine.webservices.components.DialogManager
 import com.catherine.webservices.fragments.*
-import com.catherine.webservices.interfaces.BackKeyListener
-import com.catherine.webservices.interfaces.MainInterface
-import com.catherine.webservices.interfaces.OnItemClickListener
-import com.catherine.webservices.interfaces.OnRequestPermissionsListener
+import com.catherine.webservices.interfaces.*
 import com.catherine.webservices.kotlin_sample.KotlinTemplate
 import com.catherine.webservices.kotlin_sample.player.Player
 import com.catherine.webservices.network.NetworkHealthListener
@@ -102,7 +99,7 @@ class MainActivity : BaseFragmentActivity(), MainInterface {
      * @param position position of tabLayout
      */
     override fun switchTab(position: Int) {
-        if (position < Constants.MAIN_TABS.size) {
+        if (position < resources.getStringArray(R.array.tab_array).size) {
             vp_content.currentItem = position
         }
     }
@@ -147,6 +144,12 @@ class MainActivity : BaseFragmentActivity(), MainInterface {
                 title = "P16_WebView_History"
                 fragment = P16_WebView_History.newInstance(true)
                 tag = "P16"
+            }
+
+            Constants.P17_WEBVIEW_TEST_LIST -> {
+                title = "P17_WebView_Test_List"
+                fragment = P17_WebView_Test_List.newInstance(true)
+                tag = "P17"
             }
 
 
@@ -215,6 +218,10 @@ class MainActivity : BaseFragmentActivity(), MainInterface {
         backKeyEventListener?.set(vp_content.currentItem, listener)
     }
 
+    override fun removeBackKeyListener() {
+        backKeyEventListener?.set(vp_content.currentItem, null)
+    }
+
     override fun hideKeyboard() {
         val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         if (imm.isActive) {
@@ -263,7 +270,7 @@ class MainActivity : BaseFragmentActivity(), MainInterface {
             drawer_layout.closeDrawer(left_drawer)
         }
 
-        vp_content.adapter = MainViewPagerAdapter(supportFragmentManager)
+        vp_content.adapter = MainViewPagerAdapter(MainActivity@ this, supportFragmentManager)
         tabLayout.setupWithViewPager(vp_content)
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
@@ -299,7 +306,7 @@ class MainActivity : BaseFragmentActivity(), MainInterface {
 
 
         backKeyEventListener = ArrayList()
-        for (i in 0 until tabLayout.tabCount) {
+        for (i in 0 until vp_content.adapter.count) {
             backKeyEventListener?.add(null)
         }
 

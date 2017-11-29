@@ -1,15 +1,24 @@
 package com.catherine.webservices.fragments;
 
 import android.Manifest;
+import android.app.Dialog;
+import android.app.DownloadManager;
 import android.content.DialogInterface;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.View;
-import android.webkit.WebChromeClient;
+import android.view.Window;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.catherine.webservices.Commands;
 import com.catherine.webservices.Constants;
@@ -17,21 +26,24 @@ import com.catherine.webservices.MyApplication;
 import com.catherine.webservices.R;
 import com.catherine.webservices.components.DialogManager;
 import com.catherine.webservices.components.MyNestedWebView;
-import com.catherine.webservices.components.NestedWebView;
 import com.catherine.webservices.entities.WebViewAttr;
 import com.catherine.webservices.interfaces.MainInterface;
 import com.catherine.webservices.interfaces.OnRequestPermissionsListener;
 import com.catherine.webservices.interfaces.WebViewProgressListener;
+import com.catherine.webservices.network.MyJavaScriptInterface;
 import com.catherine.webservices.network.NetworkHelper;
 import com.catherine.webservices.toolkits.CLog;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
 import java.util.List;
 
 import catherine.messagecenter.Client;
 import catherine.messagecenter.CustomReceiver;
 import catherine.messagecenter.Result;
+
+import static android.content.Context.DOWNLOAD_SERVICE;
 
 /**
  * Created by Catherine on 2017/9/19.
@@ -46,8 +58,7 @@ public class P13_Nested_WebView extends LazyFragment {
     private MainInterface mainInterface;
     private MyNestedWebView wv;
     private ProgressBar pb;
-    private Client client;
-    private WebViewAttr attr;
+    private Client client0, client1;
 
     public static P13_Nested_WebView newInstance(boolean isLazyLoad) {
         Bundle args = new Bundle();
@@ -66,7 +77,8 @@ public class P13_Nested_WebView extends LazyFragment {
     }
 
     private void init() {
-        mainInterface.getPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, new OnRequestPermissionsListener() {
+        mainInterface.getPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION}, new OnRequestPermissionsListener() {
             @Override
             public void onGranted() {
                 initComponent();
@@ -77,9 +89,8 @@ public class P13_Nested_WebView extends LazyFragment {
                 StringBuilder context = new StringBuilder();
                 if (deniedPermissions != null) {
                     for (String p : deniedPermissions) {
-                        if (Manifest.permission.WRITE_EXTERNAL_STORAGE.equals(p)) {
-                            context.append("存储、");
-                        }
+                        context.append(p);
+                        context.append(", ");
                     }
                 }
 
@@ -105,31 +116,145 @@ public class P13_Nested_WebView extends LazyFragment {
     }
 
     private void initComponent() {
-        client = new Client(getActivity(), new CustomReceiver() {
+        client0 = new Client(getActivity(), new CustomReceiver() {
             @Override
             public void onBroadcastReceive(@NotNull Result result) {
+                Bundle b = result.getMBundle();
+                if (b != null) {
+                    if (b.getBoolean("clear_history", false)) {
+                        wv.clearHistory();
+                    }
+
+                    if (b.getBoolean("clear_cache", false)) {
+                        wv.clearCache(true);
+                    }
+                }
                 refresh();
             }
         });
-        client.gotMessages(Commands.WV_SETTINGS);
+        client0.gotMessages(Commands.WV_SETTINGS);
+        client1 = new Client(getActivity(), new CustomReceiver() {
+            @Override
+            public void onBroadcastReceive(@NotNull Result result) {
+                String message = String.format("%s\nPress OK to call JavaScript.", result.getMString());
+                DialogManager.showAlertDialog(getActivity(), message, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        wv.loadUrl("javascript:showJsAlertDialog(\"Hi, I am a message from Android!\")");
+                    }
+                });
+            }
+        });
+        client1.gotMessages(Commands.JS_CALLBACK);
         wv = (MyNestedWebView) findViewById(R.id.wv);
         pb = (ProgressBar) findViewById(R.id.pb);
+        pb.setMax(100);
         refresh();
     }
 
     private void refresh() {
-        attr = new WebViewAttr(getActivity());
+        wv.addWebViewProgressListener(new WebViewProgressListener() {
+            @Override
+            public void onProgressChanged(WebView view, int newProgress) {
+                pb.setProgress(newProgress);
+                if (pb.getProgress() == 100)
+                    pb.setVisibility(View.GONE);
+                else
+                    pb.setVisibility(View.VISIBLE);
+            }
+        });
+        WebViewAttr attr = new WebViewAttr(getActivity());
         //可滑动，默认为true
         wv.setVerticalScrollBarEnabled(attr.isVerticalScrollBarEnabled());
         //可滑动，默认为true
         wv.setHorizontalScrollBarEnabled(attr.isHorizontalScrollBarEnabled());
-        wv.addWebViewProgressListener(new WebViewProgressListener() {
+        wv.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
-            public void onProgressChanged(WebView view, int newProgress) {
-                if (newProgress == 100)
-                    pb.setVisibility(View.INVISIBLE);
-                else
-                    pb.setVisibility(View.VISIBLE);
+            public boolean onLongClick(View v) {
+                final WebView.HitTestResult result = ((WebView) v).getHitTestResult();
+                if (null == result)
+                    return false;
+                int type = result.getType();
+                if (type == WebView.HitTestResult.UNKNOWN_TYPE)
+                    return false;
+
+                // 这里可以拦截很多类型，我们只处理图片类型就可以了
+                switch (type) {
+                    case WebView.HitTestResult.PHONE_TYPE: // 处理拨号
+                        break;
+                    case WebView.HitTestResult.EMAIL_TYPE: // 处理Email
+                        break;
+                    case WebView.HitTestResult.GEO_TYPE: // 地图类型
+                        break;
+                    case WebView.HitTestResult.SRC_ANCHOR_TYPE: // 超链接
+                        break;
+                    case WebView.HitTestResult.SRC_IMAGE_ANCHOR_TYPE:
+                        break;
+                    case WebView.HitTestResult.IMAGE_TYPE: // 处理长按图片的菜单项
+                        // 获取图片的路径
+                        final String saveImgUrl = result.getExtra();
+
+                        final Dialog myDialog = new Dialog(getActivity());
+                        myDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                        myDialog.setContentView(R.layout.dialog_text);
+                        //设置dialog背景透明
+                        myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                        myDialog.show();
+
+                        final TextView tv_title = myDialog.findViewById(R.id.tv_title);
+                        tv_title.setText("Alert!");
+                        final TextView tv_message = myDialog.findViewById(R.id.tv_message);
+                        tv_message.setText("How do you deal with this image?");
+                        final Button bt_ok = myDialog.findViewById(R.id.bt_ok);
+                        bt_ok.setText("Save");
+                        bt_ok.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                myDialog.dismiss();
+
+                                try {
+                                    String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Download/";
+                                    File dir = new File(path);
+                                    if (!dir.exists())
+                                        dir.mkdirs();
+
+                                    DownloadManager downloadManager = (DownloadManager) getActivity().getSystemService(DOWNLOAD_SERVICE);
+                                    DownloadManager.Request request = new DownloadManager.Request(Uri.parse(saveImgUrl));
+                                    int start = saveImgUrl.lastIndexOf("/") + 1;
+                                    String fileName = saveImgUrl.substring(start, saveImgUrl.length());
+                                    request.setDestinationInExternalPublicDir("/Download/", fileName);
+                                    request.setTitle("WebServices");
+                                    request.setDescription("Downloading...");
+                                    request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+                                    downloadManager.enqueue(request);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+
+                            }
+                        });
+                        final Button bt_cancel = myDialog.findViewById(R.id.bt_cancel);
+                        bt_cancel.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                myDialog.dismiss();
+                            }
+                        });
+
+                        final Button bt_copy = myDialog.findViewById(R.id.bt_copy);
+                        bt_copy.setText("Open");
+                        bt_copy.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                wv.loadUrl(saveImgUrl);
+                                myDialog.dismiss();
+                            }
+                        });
+                        return true;
+                    default:
+                        break;
+                }
+                return false;
             }
         });
 
@@ -150,19 +275,30 @@ public class P13_Nested_WebView extends LazyFragment {
         //支持内容重新布局
         settings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
         //多窗口
-        settings.supportMultipleWindows();
-        //关闭WebView中缓存
-        settings.setCacheMode(WebSettings.LOAD_NO_CACHE);
-        //设置可以访问文件
-        settings.setAllowFileAccess(attr.isAllowFileAccess());
+        settings.setSupportMultipleWindows(false);
         //当WebView调用requestFocus时为WebView设置节点
         settings.setNeedInitialFocus(attr.isNeedInitialFocus());
         //支持JS
         settings.setJavaScriptEnabled(attr.isJavaScriptEnabled());
+        //支持JS呼叫MyJavaScriptInterface提供的方法
+        MyJavaScriptInterface javaScriptInterface = new MyJavaScriptInterface(getActivity());
+        //In JS, your code would be name.function_of_your_javaScriptInterface(). For example, AndroidFunction.vibrate(500)
+        wv.addJavascriptInterface(javaScriptInterface, "AndroidFunction");
         //支持通过JS打开新窗口
         settings.setJavaScriptCanOpenWindowsAutomatically(attr.isJavaScriptCanOpenWindowsAutomatically());
         //支持自动加载图片
         settings.setLoadsImagesAutomatically(attr.isLoadsImagesAutomatically());
+        //是否允许获取WebView的内容URL ，可以让WebView访问ContentProvider存储的内容。
+        settings.setAllowContentAccess(attr.isAllowContentAccess());
+        //设置可以访问文件
+        settings.setAllowFileAccess(attr.isAllowFileAccess());
+        /*
+         * 是否允许定位，默认true。注意：为了保证定位可以使用，要保证以下几点：
+         * Application 需要有android.Manifest.permission#ACCESS_COARSE_LOCATION的权限
+         * Application 需要实现WebChromeClient#onGeolocationPermissionsShowPrompt的回调，
+         * 接收Js定位请求访问地理位置的通知
+         */
+        settings.setGeolocationEnabled(attr.isGeolocationEnabled());
         //设置编码格式
         settings.setDefaultTextEncodingName(attr.getDefaultTextEncodingName());
         //设置WebView的字体，默认字体为 "sans-serif"
@@ -171,26 +307,94 @@ public class P13_Nested_WebView extends LazyFragment {
         settings.setDefaultFontSize(attr.getDefaultFontSize());
         //设置WebView支持的最小字体大小，默认为 8
         settings.setMinimumFontSize(attr.getMinimumFontSize());
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            //在Android 5.0上 WebView 默认不允许加载 Http 与 Https 混合内容
-            settings.setMixedContentMode(attr.getMixedContentMode());
-        }
         //设置User Agent（手机版或桌面版）
         settings.setUserAgentString(attr.getUserAgentString(attr.getUserAgent()));
         String ua = settings.getUserAgentString();
         CLog.Companion.i(TAG, "my user agent:" + ua);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            /*
+             * 是否允许Js访问任何来源的内容。包括访问file scheme的URLs。考虑到安全性，
+             * 限制Js访问范围默认禁用。注意：该方法只影响file scheme类型的资源，其他类型资源如图片类型的，
+             * 不会受到影响。ICE_CREAM_SANDWICH_MR1版本以及以下默认为true，JELLY_BEAN版本
+             * 以上默认为false
+             */
+            settings.setAllowUniversalAccessFromFileURLs(attr.isAllowUniversalAccessFromFileURLs());
+            /*
+             * 是否允许Js访问其他file scheme的URLs。包括访问file scheme的资源。考虑到安全性，
+             * 限制Js访问范围默认禁用。注意：该方法只影响file scheme类型的资源，其他类型资源如图片类型的，
+             * 不会受到影响。如果getAllowUniversalAccessFromFileURLs为true，则该方法被忽略。
+             * ICE_CREAM_SANDWICH_MR1版本以及以下默认为true，JELLY_BEAN版本以上默认为false
+             */
+            settings.setAllowFileAccessFromFileURLs(attr.isAllowFileAccessFromFileURLs());
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            //是否需要用户手势来播放Media，默认true
+            settings.setMediaPlaybackRequiresUserGesture(attr.isMediaPlaybackRequiresUserGesture());
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            //在Android 5.0上 WebView 默认不允许加载 Http 与 Https 混合内容
+            settings.setMixedContentMode(attr.getMixedContentMode());
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            //支持安全浏览
+            settings.setSafeBrowsingEnabled(attr.isSafeBrowsingEnabled());
+        }
 
         //cache
+        //是否保存表单数据
+        settings.setSaveFormData(attr.isSaveFormData());
+        //是否存储页面DOM结构
+        settings.setDomStorageEnabled(attr.isDomStorageEnabled());
+        //是否允许数据库存储
+        settings.setDatabaseEnabled(attr.isDatabaseEnabled());
+        //是否允许Cache
+        settings.setAppCacheEnabled(attr.isAppCacheEnabled());
+        //设置存储数据库的位置
+        settings.setDatabasePath(MyApplication.INSTANCE.getDiskCacheDir("webview").getAbsolutePath());
+        //设置存储定位数据库的位置
+        settings.setGeolocationDatabasePath(MyApplication.INSTANCE.getDiskCacheDir("webview").getAbsolutePath());
+        //设置Cache API缓存路径
         settings.setAppCachePath(MyApplication.INSTANCE.getDiskCacheDir("webview").getAbsolutePath());
-        //设置WebView中的缓存模式
+        //设置Cache缓存大小
+        settings.setAppCacheMaxSize(5 * 1024 * 1024);//5M
+        /*
+         * 基于WebView导航的类型使用缓存：正常页面加载会加载缓存并按需判断内容是否需要重新验证。
+         * 如果是页面返回，页面内容不会重新加载，直接从缓存中恢复。setCacheMode允许客户端根据指定的模式来
+         * 使用缓存。
+         * LOAD_DEFAULT 默认加载方式
+         * LOAD_CACHE_ELSE_NETWORK 按网络情况使用缓存
+         * LOAD_NO_CACHE 不使用缓存
+         * LOAD_CACHE_ONLY 只使用缓存
+         */
         settings.setCacheMode(WebSettings.LOAD_DEFAULT);
-        wv.loadUrl(NetworkHelper.Companion.formattedUrl(Constants.MY_GITHUB));
-    }
 
+
+        Bundle b = getArguments();
+        if (b != null) {
+            String loadData = b.getString("loadData", null);
+            if (TextUtils.isEmpty(loadData))
+                wv.loadUrl(NetworkHelper.Companion.formattedUrl(b.getString("url", Constants.MY_GITHUB)));
+            else {
+                String baseUrl = b.getString("baseURL", null);
+                String mimeType = b.getString("mimeType", null);
+                String encoding = b.getString("encoding", null);
+                String historyUrl = b.getString("historyUrl", null);
+                wv.loadDataWithBaseURL(baseUrl, loadData, mimeType, encoding, historyUrl);
+
+                CLog.Companion.i(TAG, "baseURL:" + ((baseUrl == null) ? "null" : baseUrl));
+                CLog.Companion.i(TAG, "loadData:" + loadData);
+            }
+        } else {
+            wv.loadUrl(NetworkHelper.Companion.formattedUrl(Constants.MY_GITHUB));
+        }
+    }
 
     @Override
     public void onDestroy() {
-        client.release();
+        client0.release();
+        client1.release();
+        wv.removeAllViews();
+        wv.destroy();
         super.onDestroy();
     }
 }

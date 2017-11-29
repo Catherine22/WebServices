@@ -13,6 +13,7 @@ public class Constants {
     public final static int PERMISSION_WRITE_SETTINGS = 2;
     public final static int OPEN_SETTINGS = 3;
     public final static int ACCESS_PERMISSION = 4;
+    public final static int FILECHOOSER_RESULTCODE = 5;
 
     public final static int THREAD_POOL_TIMEOUT = 2000;
     public final static int TIMEOUT = 10000;
@@ -65,10 +66,11 @@ public class Constants {
     public final static String GITHUB_API_DOMAIN = "https://api.github.com/";
     public final static String MY_GITHUB = "https://github.com/Catherine22";
 
-    public static String ROOT_PATH = Environment.getExternalStorageDirectory().getAbsolutePath() + "/WebServices/";
+    public static String ROOT_PATH = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Android/data/" + MyApplication.INSTANCE.getPackageName() + "/";
     public final static String EXT_PATH = ROOT_PATH + "data/";
     public final static String FRESCO_DIR = "fresco";
     protected final static String CACHE_PATH = ROOT_PATH + "cache/";
+    protected final static String LOG_PATH = ROOT_PATH + "log/";
 
     //Fragments - sort by ViewPager
     public final static int P01_APACHE = 0;
@@ -78,8 +80,6 @@ public class Constants {
     public final static int P06_UPLOAD = 4;
     public final static int P07_SOCKET = 5;
     public final static int P12_WEBVIEW = 6;
-    public final static String[] MAIN_TABS = new String[]{
-            "HttpClient", "HttpURLConnection", "Downloader", "Cache", "Upload", "Socket", "WebView"};
 
     //Other fragments
     public final static int P05_Gallery = 7;
@@ -91,5 +91,6 @@ public class Constants {
     public final static int P14_FULL_WEBVIEW = 14;
     public final static int P15_WEBVIEW_SETTINGS = 15;
     public final static int P16_WEBVIEW_HISTORY = 16;
+    public final static int P17_WEBVIEW_TEST_LIST = 17;
 
 }

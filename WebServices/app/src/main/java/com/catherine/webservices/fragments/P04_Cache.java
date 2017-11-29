@@ -2,9 +2,7 @@ package com.catherine.webservices.fragments;
 
 import android.Manifest;
 import android.content.DialogInterface;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -27,13 +25,7 @@ import com.catherine.webservices.interfaces.BackKeyListener;
 import com.catherine.webservices.interfaces.MainInterface;
 import com.catherine.webservices.interfaces.OnItemClickListener;
 import com.catherine.webservices.interfaces.OnRequestPermissionsListener;
-import com.catherine.webservices.network.HttpAsyncTask;
-import com.catherine.webservices.network.HttpRequest;
-import com.catherine.webservices.network.HttpResponse;
-import com.catherine.webservices.network.HttpResponseListener;
-import com.catherine.webservices.network.MyHttpURLConnection;
 import com.catherine.webservices.network.NetworkHelper;
-import com.catherine.webservices.security.ADID_AsyncTask;
 import com.catherine.webservices.toolkits.CLog;
 import com.facebook.cache.common.CacheKey;
 import com.facebook.datasource.BaseDataSubscriber;
@@ -45,14 +37,10 @@ import com.facebook.imagepipeline.core.ImagePipelineFactory;
 import com.facebook.imagepipeline.request.ImageRequest;
 
 import org.jetbrains.annotations.NotNull;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import catherine.messagecenter.Client;
 import catherine.messagecenter.CustomReceiver;
@@ -87,14 +75,59 @@ public class P04_Cache extends LazyFragment {
     public void onCreateViewLazy(Bundle savedInstanceState) {
         super.onCreateViewLazy(savedInstanceState);
         setContentView(R.layout.f_04_cache);
+        mainInterface = (MainInterface) getActivity();
         init();
     }
 
     private void init() {
-        mainInterface = (MainInterface) getActivity();
         mainInterface.getPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, new OnRequestPermissionsListener() {
             @Override
             public void onGranted() {
+                client = new Client(getActivity(), new CustomReceiver() {
+                    @Override
+                    public void onBroadcastReceive(@NotNull Result result) {
+                        if (result.getMBoolean() != null && result.getMBoolean()) {
+                            updateView();
+                        }
+                    }
+                });
+                client.gotMessages(Commands.UPDATE_P04);
+                mainInterface.setBackKeyListener(new BackKeyListener() {
+                    @Override
+                    public void OnKeyDown() {
+                        if (getChildFragmentManager().getBackStackEntryCount() > 0) {
+                            getChildFragmentManager().popBackStack();
+                            mainInterface.restoreBottomLayout();
+                        } else {
+                            mainInterface.removeBackKeyListener();
+                            mainInterface.backToPreviousPage();
+                        }
+                    }
+                });
+                //restore bottom layout when back to this page.
+                getChildFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
+                    @Override
+                    public void onBackStackChanged() {
+                        if (getChildFragmentManager().getBackStackEntryCount() == 0) {
+                            mainInterface.restoreBottomLayout();
+                            mainInterface.addBottomLayout(R.layout.bottom_progressbar);
+                            View bottom = mainInterface.getBottomLayout();
+                            pb = bottom.findViewById(R.id.pb);
+                            tv_pb_info = bottom.findViewById(R.id.tv_pb_info);
+
+                            pb.setMax(len);
+                            pb.setProgress(succeed);
+                            pb.setSecondaryProgress(failed + succeed);
+                            double p = succeed * 100.0 / len;
+                            double e = failed * 100.0 / len;
+                            tv_pb_info.setText(String.format(Locale.ENGLISH, "Fresco Cached: %.2f%%, failed: %.2f%%", p, e));
+                            if (imageCards.size() == succeed) {
+                                CLog.Companion.i(TAG, "All the images are cached!");
+                            }
+                        }
+
+                    }
+                });
                 fillInData();
                 initComponent();
             }
@@ -104,9 +137,8 @@ public class P04_Cache extends LazyFragment {
                 StringBuilder context = new StringBuilder();
                 if (deniedPermissions != null) {
                     for (String p : deniedPermissions) {
-                        if (Manifest.permission.WRITE_EXTERNAL_STORAGE.equals(p)) {
-                            context.append("存储、");
-                        }
+                        context.append(p);
+                        context.append(", ");
                     }
                 }
 
@@ -156,27 +188,6 @@ public class P04_Cache extends LazyFragment {
             public void onRefresh() {
                 init();
                 srl_container.setRefreshing(false);
-            }
-        });
-
-        client = new Client(getActivity(), new CustomReceiver() {
-            @Override
-            public void onBroadcastReceive(@NotNull Result result) {
-                if (result.getMBoolean() != null && result.getMBoolean()) {
-                    updateView();
-                }
-            }
-        });
-        client.gotMessages(Commands.UPDATE_P04);
-
-        mainInterface.setBackKeyListener(new BackKeyListener() {
-            @Override
-            public void OnKeyDown() {
-                if (getChildFragmentManager().getBackStackEntryCount() > 0) {
-                    getChildFragmentManager().popBackStack();
-                    mainInterface.restoreBottomLayout();
-                } else
-                    mainInterface.backToPreviousPage();
             }
         });
 
@@ -232,32 +243,6 @@ public class P04_Cache extends LazyFragment {
         View bottom = mainInterface.getBottomLayout();
         pb = bottom.findViewById(R.id.pb);
         tv_pb_info = bottom.findViewById(R.id.tv_pb_info);
-
-        //restore bottom layout when back to this page.
-        getChildFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
-            @Override
-            public void onBackStackChanged() {
-                if (getChildFragmentManager().getBackStackEntryCount() == 0) {
-                    mainInterface.restoreBottomLayout();
-                    mainInterface.addBottomLayout(R.layout.bottom_progressbar);
-                    View bottom = mainInterface.getBottomLayout();
-                    pb = bottom.findViewById(R.id.pb);
-                    tv_pb_info = bottom.findViewById(R.id.tv_pb_info);
-
-                    pb.setMax(len);
-                    pb.setProgress(succeed);
-                    pb.setSecondaryProgress(failed + succeed);
-                    double p = succeed * 100.0 / len;
-                    double e = failed * 100.0 / len;
-                    tv_pb_info.setText(String.format(Locale.ENGLISH, "Fresco Cached: %.2f%%, failed: %.2f%%", p, e));
-                    if (imageCards.size() == succeed) {
-                        CLog.Companion.i(TAG, "All the images are cached!");
-                    }
-                }
-
-            }
-        });
-
         prefetchToDiskCache();
     }
 

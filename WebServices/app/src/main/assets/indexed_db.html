@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3mobile.css">
+
+<body>
+  <script type="text/javascript">
+    var db;
+
+    window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
+
+    //浏览器是否支持IndexedDB
+    if (window.indexedDB) {
+      //打开数据库，如果没有，则创建
+      var openRequest = window.indexedDB.open("people_db", 1);
+
+      //DB版本设置或升级时回调
+      openRequest.onupgradeneeded = function(e) {
+        console.log("Upgrading...");
+
+        var thisDB = e.target.result;
+        if (!thisDB.objectStoreNames.contains("people")) {
+          console.log("Create Object Store: people.");
+
+          //创建存储对象，类似于关系数据库的表
+          thisDB.createObjectStore("people", {
+            autoIncrement: true
+          });
+
+          //创建存储对象， 还创建索引
+          //var objectStore = thisDB.createObjectStore("people",{ autoIncrement:true });
+          // //first arg is name of index, second is the path (col);
+          //objectStore.createIndex("name","name", {unique:false});
+          //objectStore.createIndex("email","email", {unique:true});
+        }
+      }
+
+      //DB成功打开回调
+      openRequest.onsuccess = function(e) {
+        console.log("Success!");
+
+        //保存全局的数据库对象，后面会用到
+        db = e.target.result;
+
+        //绑定按钮点击事件
+        document.querySelector("#addButton").addEventListener("click", addPerson, false);
+
+        document.querySelector("#getButton").addEventListener("click", getPerson, false);
+
+        document.querySelector("#getAllButton").addEventListener("click", getPeople, false);
+
+        document.querySelector("#getByName").addEventListener("click", getPeopleByNameIndex1, false);
+      }
+
+      //DB打开失败回调
+      openRequest.onerror = function(e) {
+        console.log("Error");
+        console.dir(e);
+      }
+
+    } else {
+      alert('Sorry! Your browser doesn\'t support the IndexedDB.');
+    }
+
+    //添加一条记录
+    function addPerson(e) {
+      var name = document.querySelector("#name").value;
+      var email = document.querySelector("#email").value;
+
+      console.log("About to add " + name + "/" + email);
+
+      var transaction = db.transaction(["people"], "readwrite");
+      var store = transaction.objectStore("people");
+
+      //Define a person
+      var person = {
+        name: name,
+        email: email,
+        created: new Date()
+      }
+
+      //Perform the add
+      var request = store.add(person);
+      //var request = store.put(person, 2);
+
+      request.onerror = function(e) {
+        console.log("Error", e.target.error.name);
+        //some type of error handler
+      }
+
+      request.onsuccess = function(e) {
+        console.log("Woot! Did it.");
+      }
+    }
+
+    //通过KEY查询记录
+    function getPerson(e) {
+      var key = document.querySelector("#key").value;
+      if (key === "" || isNaN(key)) return;
+
+      var transaction = db.transaction(["people"], "readonly");
+      var store = transaction.objectStore("people");
+
+      var request = store.get(Number(key));
+
+      request.onsuccess = function(e) {
+        var result = e.target.result;
+        console.dir(result);
+        if (result) {
+          var s = "<p><h2>Key " + key + "</h2></p>";
+          for (var field in result) {
+            s += field + "=" + result[field] + "<br/>";
+          }
+          document.querySelector("#status").innerHTML = s;
+        } else {
+          document.querySelector("#status").innerHTML = "<h2>No match!</h2>";
+        }
+      }
+    }
+
+    //获取所有记录
+    function getPeople(e) {
+
+      var s = "";
+
+      db.transaction(["people"], "readonly").objectStore("people").openCursor().onsuccess = function(e) {
+        var cursor = e.target.result;
+        if (cursor) {
+          s += "<p><h2>Key " + cursor.key + "</h2></p>";
+          for (var field in cursor.value) {
+            s += field + "=" + cursor.value[field] + "<br/>";
+          }
+          s += "</p>";
+          cursor.continue();
+        }
+        document.querySelector("#status2").innerHTML = s;
+      }
+    }
+
+    //通过索引查询记录
+    function getPeopleByNameIndex(e) {
+      var name = document.querySelector("#name1").value;
+
+      var transaction = db.transaction(["people"], "readonly");
+      var store = transaction.objectStore("people");
+      var index = store.index("name");
+
+      //name is some value
+      var request = index.get(name);
+
+      request.onsuccess = function(e) {
+        var result = e.target.result;
+        if (result) {
+          var s = "<p><h2>Name " + name + "</h2><p>";
+          for (var field in result) {
+            s += field + "=" + result[field] + "<br/>";
+          }
+          s += "</p>";
+        } else {
+          document.querySelector("#status3").innerHTML = "<h2>No match!</h2>";
+        }
+      }
+    }
+
+    //通过索引查询记录
+    function getPeopleByNameIndex1(e) {
+      var s = "";
+
+      var name = document.querySelector("#name1").value;
+
+      var transaction = db.transaction(["people"], "readonly");
+      var store = transaction.objectStore("people");
+      var index = store.index("name");
+
+      //name is some value
+      index.openCursor().onsuccess = function(e) {
+        var cursor = e.target.result;
+        if (cursor) {
+          s += "<p><h2>Key " + cursor.key + "</h2></p>";
+          for (var field in cursor.value) {
+            s += field + "=" + cursor.value[field] + "<br/>";
+          }
+          s += "</p>";
+          cursor.continue();
+        }
+        document.querySelector("#status3").innerHTML = s;
+      }
+    }
+  </script>
+
+  <p>添加数据<br/>
+    <input type="text" id="name" placeholder="Name"><br/>
+    <input type="email" id="email" placeholder="Email"><br/>
+    <button id="addButton">Add Data</button>
+  </p>
+
+  <p>根据Key查询数据<br/>
+    <input type="text" id="key" placeholder="Key"><br/>
+    <button id="getButton">Get Data</button>
+  </p>
+  <div id="status" name="status"></div>
+
+  <p>获取所有数据<br/>
+    <button id="getAllButton">Get EveryOne</button>
+  </p>
+  <div id="status2" name="status2"></div>
+
+  <p>根据索引:Name查询数据<br/>
+    <input type="text" id="name1" placeholder="Name"><br/>
+    <button id="getByName">Get ByName</button>
+  </p>
+  <div id="status3" name="status3"></div>
+</body>
+
+</html>

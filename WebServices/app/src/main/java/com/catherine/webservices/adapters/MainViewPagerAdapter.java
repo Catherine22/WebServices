@@ -1,10 +1,12 @@
 package com.catherine.webservices.adapters;
 
+import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import com.catherine.webservices.Constants;
+import com.catherine.webservices.R;
 import com.catherine.webservices.fragments.P01_Apache;
 import com.catherine.webservices.fragments.P02_HttpURLConnection;
 import com.catherine.webservices.fragments.P03_Downloader;
@@ -21,8 +23,11 @@ import com.catherine.webservices.toolkits.CLog;
  */
 
 public class MainViewPagerAdapter extends FragmentPagerAdapter {
-    public MainViewPagerAdapter(FragmentManager fm) {
+    private String[] tabs;
+
+    public MainViewPagerAdapter(Context ctx, FragmentManager fm) {
         super(fm);
+        tabs = ctx.getResources().getStringArray(R.array.tab_array);
     }
 
     @Override
@@ -47,11 +52,11 @@ public class MainViewPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        return Constants.MAIN_TABS.length;
+        return tabs.length;
     }
 
     @Override
     public CharSequence getPageTitle(int position) {
-        return Constants.MAIN_TABS[position];
+        return tabs[position];
     }
 }

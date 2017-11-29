@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>AAA</title>
+        <link type="text/css" rel="stylesheet" media="screen" href="jqtouch/jqtouch.css">
+        <link type="text/css" rel="stylesheet" media="screen" href="themes/jqt/theme.css">
+        <script type="text/javascript" src="jqtouch/jquery.js"></script>
+        <script type="text/javascript" src="jqtouch/jqtouch.js"></script>
+        <script type="text/javascript">
+            var jQT = $.jQTouch({
+                icon: 'kilo.png'
+            });
+        </script>
+    </head>
+    <body>
+<div id="about" class="selectable">
+   <ul>
+   <p><strong>William Shakespeare</strong><br /></p>
+   <p><em>William Shakespeare (baptised 26 April 1564; died 23 April 1616) was an English poet and playwright, widely regarded as the greatest writer in the English language and the world's pre-eminent dramatist. He is often called England's national poet and the "Bard of Avon". <br /></em></p>
+   </ul>
+   <br /><a href="#">Close</a>
+</div>
+
+<div id="quotes">
+  <div class="toolbar">
+    <h1>Quotes</h1>
+    <a href="#">Home</a>
+  </div>
+<ul >
+    <li><a href="#quote">Slide</a></li>
+    <li><a href="#quote">Slide Up</a></li>
+    <li><a href="#quote">Dissolve</a></li>
+    <li><a href="#quote">Fade</a></li>
+    <li><a href="#quote">Flip</a></li>
+    <li><a href="#quote">Pop</a></li>
+    <li><a href="#quote">Swap</a></li>
+    <li><a href="#quote">Cube</a></li>
+</ul>
+</div>    
+<div id="quote">
+<div class="toolbar">
+    <h1>Quote</h1>
+    <a href="#">Home</a>
+</div>
+<div class="info">
+    Better a witty fool than a foolish wit.
+</div>
+</div>
+
+<div id="forms">
+<div >
+    <h1>Contact Us</h1>
+    <a href="#" >Back</a>
+</div>
+<form>
+  <ul>
+  <li><input type="text" name="search" placeholder="Name" id="some_name" /></li>
+  <li><input type="text" name="phone" placeholder="Phone" id="some_name"  /></li>
+  <li><textarea placeholder="Comments" ></textarea></li>
+  <li>Do you want us to contact you?<span class="toggle"><input type="checkbox" /></span></li>
+  <li>What is your favorite play</li>
+<select id="lol">
+  <optgroup label="Comedies">
+  <option value ="Much Ado About Nothing">Much Ado About Nothing</option>
+  <option value ="As You Like It">As You Like It</option>
+    </optgroup>
+    <optgroup label="Tragedies">
+  <option value ="Hamlet">Hamlet</option>
+  <option value ="Othello">Othello</option>
+    </optgroup>
+</select>
+  </li>
+  </ul>
+</form>
+</div>
+
+<div id="home">
+<div>
+    <h1>Shakespeare</h1>
+    <a id="infoButton" href="#about">Quote Shakespeare</a>
+</div>
+<ul >
+    <li><a href="#about">About Shakespeare</a></li>
+    <li><a href="#quotes">Quotes</a></li>
+    <li><a href="#forms">Contact Us</a></li>
+</ul>
+<h2>External Links</h2>
+<ul >
+    <li><a href="http://www.insideria.com/" target="_blank">InsideRIA.com</a></li>
+</ul>
+<ul>
+    <li><a href="mailto:mdavid@matthewdavid.ws" target="_blank">Email Me</a></li>
+    <li><a href="tel:920-389-1212" target="_blank">Call Me</a></li>
+</ul>
+
+<div>
+    <p>Add this page to your home screen to view the custom icon, startup screen, and full screen mode.</p>
+</div>
+</div>
+    </body>
+</html>

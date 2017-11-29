@@ -14,6 +14,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import com.catherine.webservices.Commands;
 import com.catherine.webservices.Constants;
 import com.catherine.webservices.R;
 import com.catherine.webservices.adapters.TextCardRVAdapter;
@@ -22,11 +23,16 @@ import com.catherine.webservices.interfaces.BackKeyListener;
 import com.catherine.webservices.interfaces.MainInterface;
 import com.catherine.webservices.interfaces.OnItemClickListener;
 import com.catherine.webservices.interfaces.OnRequestPermissionsListener;
+import com.catherine.webservices.toolkits.CLog;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import catherine.messagecenter.Client;
+import catherine.messagecenter.CustomReceiver;
+import catherine.messagecenter.Result;
 
 /**
  * Created by Catherine on 2017/9/19.
@@ -40,6 +46,7 @@ public class P12_WebView extends LazyFragment {
     private List<String> descriptions;
     private SwipeRefreshLayout srl_container;
     private MainInterface mainInterface;
+    private Client client;
 
     public static P12_WebView newInstance(boolean isLazyLoad) {
         Bundle args = new Bundle();
@@ -61,6 +68,42 @@ public class P12_WebView extends LazyFragment {
         mainInterface.getPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, new OnRequestPermissionsListener() {
             @Override
             public void onGranted() {
+
+                client = new Client(getActivity(), new CustomReceiver() {
+                    @Override
+                    public void onBroadcastReceive(@NotNull Result result) {
+                        if (getChildFragmentManager().getBackStackEntryCount() > 0) {
+                            getChildFragmentManager().popBackStack();
+                            mainInterface.restoreBottomLayout();
+                        } else
+                            mainInterface.backToPreviousPage();
+                    }
+                });
+                client.gotMessages(Commands.BACK_TO_PREV);
+
+                mainInterface.setBackKeyListener(new BackKeyListener() {
+                    @Override
+                    public void OnKeyDown() {
+                        if (getChildFragmentManager().getBackStackEntryCount() > 0) {
+                            getChildFragmentManager().popBackStack();
+                            mainInterface.restoreBottomLayout();
+                        } else {
+                            mainInterface.removeBackKeyListener();
+                            mainInterface.backToPreviousPage();
+                        }
+                    }
+                });
+
+                //restore bottom layout when back to this page.
+                getChildFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
+                    @Override
+                    public void onBackStackChanged() {
+                        if (getChildFragmentManager().getBackStackEntryCount() == 0) {
+                            mainInterface.restoreBottomLayout();
+                        }
+
+                    }
+                });
                 fillInData();
                 initComponent();
             }
@@ -70,14 +113,13 @@ public class P12_WebView extends LazyFragment {
                 StringBuilder context = new StringBuilder();
                 if (deniedPermissions != null) {
                     for (String p : deniedPermissions) {
-                        if (Manifest.permission.WRITE_EXTERNAL_STORAGE.equals(p)) {
-                            context.append("存储、");
-                        }
+                        context.append(p);
+                        context.append(", ");
                     }
                 }
 
                 context.deleteCharAt(context.length() - 1);
-                DialogManager.showPermissionDialog( getActivity(), String.format( getActivity().getResources().getString(R.string.permission_request), context), new DialogInterface.OnClickListener() {
+                DialogManager.showPermissionDialog(getActivity(), String.format(getActivity().getResources().getString(R.string.permission_request), context), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         getActivity().finish();
@@ -100,12 +142,14 @@ public class P12_WebView extends LazyFragment {
 
     private void fillInData() {
         features = new ArrayList<>();
-        features.add("Nested webView");
-        features.add("Full screen webView");
         features.add("Launch a browser");
+        features.add("Nested WebView");
+        features.add("Full screen WebView");
+        features.add("Test WebView");
 
 
         descriptions = new ArrayList<>();
+        descriptions.add("Load a url");
         descriptions.add("Load a url");
         descriptions.add("Load a url");
         descriptions.add("Load a url");
@@ -130,21 +174,18 @@ public class P12_WebView extends LazyFragment {
             public void onItemClick(@NotNull View view, int position) {
                 switch (position) {
                     case 0:
-                        Fragment fragment = P13_Nested_WebView.newInstance(true);
-                        String tag = "P13";
-                        String title = "P13_Nested_WebView";
-                        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-                        transaction.add(R.id.fl_container, fragment, tag);
-                        transaction.addToBackStack(title);
-                        transaction.commitAllowingStateLoss();
-                        break;
-                    case 1:
-                        mainInterface.callFragment(Constants.P14_FULL_WEBVIEW);
-                        break;
-                    case 2:
                         Intent intent = new Intent(Intent.ACTION_VIEW);
                         intent.setData(Uri.parse(Constants.MY_GITHUB));
                         startActivity(intent);
+                        break;
+                    case 1:
+                        callFragment(Constants.P13_NESTED_WEBVIEW);
+                        break;
+                    case 2:
+                        mainInterface.callFragment(Constants.P14_FULL_WEBVIEW);
+                        break;
+                    case 3:
+                        callFragment(Constants.P17_WEBVIEW_TEST_LIST);
                         break;
                 }
             }
@@ -155,27 +196,35 @@ public class P12_WebView extends LazyFragment {
             }
         });
         rv_main_list.setAdapter(adapter);
+    }
 
-        mainInterface.setBackKeyListener(new BackKeyListener() {
-            @Override
-            public void OnKeyDown() {
-                if (getChildFragmentManager().getBackStackEntryCount() > 0) {
-                    getChildFragmentManager().popBackStack();
-                    mainInterface.restoreBottomLayout();
-                } else
-                    mainInterface.backToPreviousPage();
-            }
-        });
 
-        //restore bottom layout when back to this page.
-        getChildFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
-            @Override
-            public void onBackStackChanged() {
-                if (getChildFragmentManager().getBackStackEntryCount() == 0) {
-                    mainInterface.restoreBottomLayout();
-                }
+    private void callFragment(int id) {
+        CLog.Companion.d(TAG, "call " + id);
+        Fragment fragment = null;
+        String tag = "";
+        String title = "";
+        switch (id) {
+            case Constants.P13_NESTED_WEBVIEW:
+                title = "P13_Nested_WebView";
+                fragment = P13_Nested_WebView.newInstance(true);
+                tag = "P13";
+                break;
+            case Constants.P17_WEBVIEW_TEST_LIST:
+                title = "P17_WebView_Test_List";
+                fragment = P17_WebView_Test_List.newInstance(true);
+                tag = "P17";
+                break;
+        }
+        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+        transaction.add(R.id.fl_container, fragment, tag);
+        transaction.addToBackStack(title);
+        transaction.commitAllowingStateLoss();
+    }
 
-            }
-        });
+    @Override
+    public void onDestroy() {
+        client.release();
+        super.onDestroy();
     }
 }
