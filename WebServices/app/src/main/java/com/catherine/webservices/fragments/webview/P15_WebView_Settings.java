@@ -1,4 +1,4 @@
-package com.catherine.webservices.fragments;
+package com.catherine.webservices.fragments.webview;
 
 import android.Manifest;
 import android.app.Dialog;
@@ -27,6 +27,7 @@ import com.catherine.webservices.adapters.MultiStyleRVAdapter;
 import com.catherine.webservices.components.DialogManager;
 import com.catherine.webservices.entities.MultiStyleItem;
 import com.catherine.webservices.entities.WebViewAttr;
+import com.catherine.webservices.fragments.LazyFragment;
 import com.catherine.webservices.interfaces.MainInterface;
 import com.catherine.webservices.interfaces.OnMultiItemClickListener;
 import com.catherine.webservices.interfaces.OnMultiItemSelectListener;

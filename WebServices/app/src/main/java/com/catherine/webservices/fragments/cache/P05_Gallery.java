@@ -1,4 +1,4 @@
-package com.catherine.webservices.fragments;
+package com.catherine.webservices.fragments.cache;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -17,6 +17,7 @@ import com.catherine.webservices.R;
 import com.catherine.webservices.adapters.ImageCardRVAdapter;
 import com.catherine.webservices.entities.ImageCard;
 import com.catherine.webservices.entities.TestData;
+import com.catherine.webservices.fragments.LazyFragment;
 import com.catherine.webservices.interfaces.OnItemClickListener;
 import com.catherine.webservices.network.NetworkHelper;
 import com.catherine.webservices.toolkits.CLog;

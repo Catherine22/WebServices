@@ -6,8 +6,12 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.support.annotation.RequiresPermission;
 
 import com.catherine.webservices.MyApplication;
 import com.catherine.webservices.services.NetworkHealthService;
@@ -180,6 +184,37 @@ public class NetworkHelper {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void closeWifi() {
+        try {
+            //using MyApplication.INSTANCE to get WIFI_SERVICE
+            WifiManager wm = (WifiManager) ctx.getSystemService(Context.WIFI_SERVICE);
+            if (wm.isWifiEnabled()) {
+                wm.setWifiEnabled(false);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Run on another thread
+     * @return List<ScanResults>
+     */
+    public List<ScanResult> scanWifi() {
+        List<ScanResult> results = null;
+        openWifi();
+        try {
+            //using MyApplication.INSTANCE to get WIFI_SERVICE
+            WifiManager wm = (WifiManager) ctx.getSystemService(Context.WIFI_SERVICE);
+            if (wm.startScan()) {
+                results = wm.getScanResults();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return results;
     }
 
     public boolean isNetworkHealthy() {

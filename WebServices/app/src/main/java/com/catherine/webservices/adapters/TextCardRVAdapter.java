@@ -95,6 +95,7 @@ public class TextCardRVAdapter extends RecyclerView.Adapter<TextCardRVAdapter.Ma
         this.fromHtml = fromHtml;
     }
 
+
     public void setEntities(List<TextCard> entities) {
         this.entities = entities;
     }
@@ -106,7 +107,6 @@ public class TextCardRVAdapter extends RecyclerView.Adapter<TextCardRVAdapter.Ma
 
         MainRvHolder(View itemView) {
             super(itemView);
-
             tv_title = itemView.findViewById(R.id.tv_title);
             tv_subtitle = itemView.findViewById(R.id.tv_subtitle);
             tv_main = itemView.findViewById(R.id.tv_main);

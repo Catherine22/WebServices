@@ -17,7 +17,13 @@ import android.widget.ArrayAdapter
 import catherine.messagecenter.AsyncResponse
 import catherine.messagecenter.Server
 import com.catherine.webservices.adapters.MainViewPagerAdapter
+import com.catherine.webservices.components.MyDialogFragment
 import com.catherine.webservices.fragments.*
+import com.catherine.webservices.fragments.cache.P05_Gallery
+import com.catherine.webservices.fragments.webview.P14_Full_WebView
+import com.catherine.webservices.fragments.webview.P15_WebView_Settings
+import com.catherine.webservices.fragments.webview.P16_WebView_History
+import com.catherine.webservices.fragments.webview.P17_WebView_Test_List
 import com.catherine.webservices.interfaces.*
 import com.catherine.webservices.kotlin_sample.KotlinTemplate
 import com.catherine.webservices.kotlin_sample.player.Player
@@ -159,6 +165,12 @@ class MainActivity : BaseFragmentActivity(), MainInterface {
                 fragment = P19_NetworkInfoAnalytics.newInstance(true)
                 tag = "P19"
             }
+
+            Constants.P20_WIFI_CONFIGURATION_ANALYTICS -> {
+                title = "P20_WifiConfigurationAnalytics"
+                fragment = P20_WifiConfigurationAnalytics.newInstance(true)
+                tag = "P20"
+            }
         }
 
         //Avoid to launch duplicated fragments
@@ -174,6 +186,44 @@ class MainActivity : BaseFragmentActivity(), MainInterface {
         transaction.add(R.id.fl_main_container, fragment, tag)
         transaction.addToBackStack(title)
         transaction.commitAllowingStateLoss()
+    }
+
+    /**
+     * 开启fragment dialog
+     *
+     * @param id Tag of the Fragment Dialog
+     */
+    override fun callFragmentDialog(id: Int) {
+        callFragmentDialog(id, null)
+    }
+
+    /**
+     * 开启fragment dialog
+     *
+     * @param id Tag of the Fragment Dialog
+     * @param bundle argument of the Fragment Dialog
+     */
+    override fun callFragmentDialog(id: Int, bundle: Bundle?) {
+        CLog.d(TAG, "call " + id + " with bundle? " + (bundle != null))
+        var fragment: MyDialogFragment? = null
+        val tag = id.toString() + ""
+        when (id) {
+            Constants.P21_D_SCAN_RESULT->{
+                fragment = P21_D_ScanResult()
+            }
+            Constants.P22_D_WIFI_CONFIGURATIONS->{
+                fragment = P22_D_WifiConfigurations()
+            }
+        }
+
+        if (bundle != null)
+            fragment?.arguments = bundle
+
+        if (fragment != null) {
+            val trans = supportFragmentManager.beginTransaction()
+            trans.addToBackStack(null)
+            fragment.show(trans, tag)
+        }
     }
 
 

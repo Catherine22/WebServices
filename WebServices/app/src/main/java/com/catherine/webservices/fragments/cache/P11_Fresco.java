@@ -1,4 +1,4 @@
-package com.catherine.webservices.fragments;
+package com.catherine.webservices.fragments.cache;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -9,12 +9,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.catherine.webservices.R;
 import com.catherine.webservices.adapters.FrescoRVAdapter;
 import com.catherine.webservices.entities.ImageCard;
 import com.catherine.webservices.entities.TestData;
+import com.catherine.webservices.fragments.LazyFragment;
 import com.catherine.webservices.interfaces.OnItemClickListener;
 import com.catherine.webservices.network.NetworkHelper;
 import com.catherine.webservices.toolkits.CLog;

@@ -1,4 +1,4 @@
-package com.catherine.webservices.fragments;
+package com.catherine.webservices.fragments.webview;
 
 import android.Manifest;
 import android.content.DialogInterface;
@@ -17,6 +17,7 @@ import com.catherine.webservices.R;
 import com.catherine.webservices.adapters.SimpleStyleRVAdapter;
 import com.catherine.webservices.components.DialogManager;
 import com.catherine.webservices.entities.ImageCardEx;
+import com.catherine.webservices.fragments.LazyFragment;
 import com.catherine.webservices.interfaces.BackKeyListener;
 import com.catherine.webservices.interfaces.MainInterface;
 import com.catherine.webservices.interfaces.OnMultiItemClickListener;

@@ -1,4 +1,4 @@
-package com.catherine.webservices.fragments;
+package com.catherine.webservices.fragments.socket;
 
 import android.Manifest;
 import android.content.DialogInterface;
@@ -13,14 +13,14 @@ import android.widget.TextView;
 import com.catherine.webservices.Constants;
 import com.catherine.webservices.R;
 import com.catherine.webservices.components.DialogManager;
+import com.catherine.webservices.fragments.LazyFragment;
 import com.catherine.webservices.interfaces.MainInterface;
 import com.catherine.webservices.interfaces.OnRequestPermissionsListener;
-import com.catherine.webservices.network.MyUDPSocket;
+import com.catherine.webservices.network.MyTCPSocket;
 import com.catherine.webservices.network.NetworkHelper;
 import com.catherine.webservices.network.SocketListener;
 
 import java.net.ConnectException;
-import java.net.SocketException;
 import java.util.List;
 
 /**
@@ -29,8 +29,8 @@ import java.util.List;
  * catherine919@soft-world.com.tw
  */
 
-public class P10_UDP_Socket extends LazyFragment {
-    public final static String TAG = "P10_UDP_Socket";
+public class P08_Blocking_Socket extends LazyFragment {
+    public final static String TAG = "P08_Blocking_Socket";
     private MainInterface mainInterface;
     private TextView tv_history, tv_state;
     private EditText et_input;
@@ -38,12 +38,12 @@ public class P10_UDP_Socket extends LazyFragment {
     private FloatingActionButton fab_disconnect, fab_settings;
     private boolean isFABOpen;
     private NetworkHelper helper;
-    private MyUDPSocket myUDPSocket;
+    private MyTCPSocket myTCPSocket;
 
-    public static P10_UDP_Socket newInstance(boolean isLazyLoad) {
+    public static P08_Blocking_Socket newInstance(boolean isLazyLoad) {
         Bundle args = new Bundle();
         args.putBoolean(LazyFragment.INTENT_BOOLEAN_LAZYLOAD, isLazyLoad);
-        P10_UDP_Socket fragment = new P10_UDP_Socket();
+        P08_Blocking_Socket fragment = new P08_Blocking_Socket();
         fragment.setArguments(args);
         return fragment;
     }
@@ -76,7 +76,7 @@ public class P10_UDP_Socket extends LazyFragment {
                 }
 
                 context.deleteCharAt(context.length() - 1);
-                DialogManager.showPermissionDialog(getActivity(), String.format(getActivity().getResources().getString(R.string.permission_request), context), new DialogInterface.OnClickListener() {
+                DialogManager.showPermissionDialog( getActivity(), String.format( getActivity().getResources().getString(R.string.permission_request), context), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         getActivity().finish();
@@ -98,9 +98,10 @@ public class P10_UDP_Socket extends LazyFragment {
 
 
     private void initSocket() {
-        myUDPSocket = new MyUDPSocket.Builder()
+        myTCPSocket = new MyTCPSocket.Builder()
                 .host(Constants.SOCKET_HOST)
-                .port(Constants.UDP_SOCKET_PORT)
+                .port(Constants.TCP_SOCKET_PORT)
+                .initListener(new InitListener())
                 .inputListener(new InputListener())
                 .outputListener(new OutputListener())
                 .build();
@@ -120,15 +121,15 @@ public class P10_UDP_Socket extends LazyFragment {
         bt_send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                myUDPSocket.send(et_input.getText().toString());
+                myTCPSocket.send(et_input.getText().toString());
             }
         });
 
         fab_disconnect.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                myUDPSocket.send("*#DISCONNECT12435#*");
+                myTCPSocket.send("*#DISCONNECT11223#*");
                 tv_state.setText(Constants.SOCKET_HOST + " disconnected.");
-                myUDPSocket.release();
+                myTCPSocket.release();
             }
         });
 
@@ -145,13 +146,48 @@ public class P10_UDP_Socket extends LazyFragment {
         });
     }
 
+    private class InitListener implements SocketListener {
+
+        @Override
+        public void connectSuccess(String message) {
+            tv_state.setText(message);
+        }
+
+        @Override
+        public void connectFailure(Exception e) {
+            e.printStackTrace();
+            if (e instanceof ConnectException) {
+                if (!helper.isNetworkHealthy()) {
+                    tv_state.setText(getResources().getString(R.string.offline));
+                }
+            } else if (e instanceof NullPointerException) {
+                //Server error
+                tv_state.setText(e.getMessage());
+            }
+        }
+    }
+
+    private class OutputListener implements SocketListener {
+
+        @Override
+        public void connectSuccess(String message) {
+            et_input.setText("");
+            tv_history.setText(String.format("%s\nYou sent: %s", tv_history.getText(), message));
+        }
+
+        @Override
+        public void connectFailure(Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private class InputListener implements SocketListener {
 
         @Override
         public void connectSuccess(String message) {
-            if ("*#DISCONNECT12435#*".equals(message)) {
+            if ("*#DISCONNECT11223#*".equals(message)) {
                 tv_state.setText(Constants.SOCKET_HOST + " disconnected.");
-                myUDPSocket.release();
+                myTCPSocket.release();
             } else {
                 // 读取socket输入流的内容并打印
                 tv_history.setText(String.format("%s\nYou got: %s", tv_history.getText(), message));
@@ -170,24 +206,7 @@ public class P10_UDP_Socket extends LazyFragment {
                         }
                     });
                 }
-            } else if (e instanceof SocketException) {
-                tv_state.setText("Server error");
             }
-        }
-    }
-
-    private class OutputListener implements SocketListener {
-
-
-        @Override
-        public void connectSuccess(String message) {
-            et_input.setText("");
-            tv_history.setText(String.format("%s\nYou sent: %s", tv_history.getText(), message));
-        }
-
-        @Override
-        public void connectFailure(Exception e) {
-            e.printStackTrace();
         }
     }
 

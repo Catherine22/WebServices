@@ -10,10 +10,10 @@ import com.catherine.webservices.R;
 import com.catherine.webservices.fragments.P01_Apache;
 import com.catherine.webservices.fragments.P02_HttpURLConnection;
 import com.catherine.webservices.fragments.P03_Downloader;
-import com.catherine.webservices.fragments.P04_Cache;
+import com.catherine.webservices.fragments.cache.P04_Cache;
 import com.catherine.webservices.fragments.P06_Upload;
-import com.catherine.webservices.fragments.P07_Socket;
-import com.catherine.webservices.fragments.P12_WebView;
+import com.catherine.webservices.fragments.socket.P07_Socket;
+import com.catherine.webservices.fragments.webview.P12_WebView;
 
 /**
  * Created by Catherine on 2017/8/25.

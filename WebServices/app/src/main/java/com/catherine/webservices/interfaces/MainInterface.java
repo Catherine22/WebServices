@@ -18,6 +18,10 @@ public interface MainInterface {
 
     void callFragment(int id, Bundle bundle);
 
+    void callFragmentDialog(int id);
+
+    void callFragmentDialog(int id, Bundle bundle);
+
     void hideKeyboard();
 
     void openSlideMenu();

@@ -94,5 +94,8 @@ public class Constants {
     public final static int P17_WEBVIEW_TEST_LIST = 17;
     public final static int P18_NETWORK_ANALYTICS = 18;
     public final static int P19_NETWORK_INFO_ANALYTICS = 19;
+    public final static int P20_WIFI_CONFIGURATION_ANALYTICS = 20;
+    public final static int P21_D_SCAN_RESULT = 21;
+    public final static int P22_D_WIFI_CONFIGURATIONS = 22;
 
 }

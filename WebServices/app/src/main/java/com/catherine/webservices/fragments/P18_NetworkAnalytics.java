@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.ProxyInfo;
+import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -25,6 +26,8 @@ import com.catherine.webservices.entities.TextCard;
 import com.catherine.webservices.interfaces.MainInterface;
 import com.catherine.webservices.interfaces.OnItemClickListener;
 import com.catherine.webservices.interfaces.OnRequestPermissionsListener;
+import com.catherine.webservices.network.NetworkHelper;
+import com.catherine.webservices.toolkits.CLog;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -40,11 +43,14 @@ import java.util.List;
 public class P18_NetworkAnalytics extends LazyFragment {
     public final static String TAG = P18_NetworkAnalytics.class.getSimpleName();
     private List<TextCard> entities;
+    private TextCardRVAdapter adapter;
     private SwipeRefreshLayout srl_container;
     private MainInterface mainInterface;
     private ConnectivityManager cm;
     private NetworkInfo networkInfo;
     private WifiManager wm;
+    private WifiManager.WifiLock wl;
+    private NetworkHelper helper;
 
     public static P18_NetworkAnalytics newInstance(boolean isLazyLoad) {
         Bundle args = new Bundle();
@@ -59,11 +65,12 @@ public class P18_NetworkAnalytics extends LazyFragment {
         super.onCreateViewLazy(savedInstanceState);
         setContentView(R.layout.f_19_network_info_analytics);
         mainInterface = (MainInterface) getActivity();
+        helper = new NetworkHelper();
         init();
     }
 
     private void init() {
-        mainInterface.getPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, new OnRequestPermissionsListener() {
+        mainInterface.getPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.WAKE_LOCK}, new OnRequestPermissionsListener() {
             @Override
             public void onGranted() {
                 fillInData();
@@ -104,7 +111,6 @@ public class P18_NetworkAnalytics extends LazyFragment {
 
     private void fillInData() {
         entities = new ArrayList<>();
-
         cm = (ConnectivityManager) MyApplication.INSTANCE.getSystemService(Context.CONNECTIVITY_SERVICE);
         wm = (WifiManager) MyApplication.INSTANCE.getSystemService(Context.WIFI_SERVICE);
         networkInfo = cm.getActiveNetworkInfo();
@@ -114,7 +120,7 @@ public class P18_NetworkAnalytics extends LazyFragment {
         } else if (networkInfo == null) {
             errorSb.append("NetworkInfo is null!\n");
         } else {
-            entities.add(new TextCard("查看当前网络", "ConnectivityManager.getActiveNetworkInfo()", ""));
+            entities.add(new TextCard("查看当前网络", "ConnectivityManager.getActiveNetworkInfo()", null));
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 ProxyInfo proxyInfo = cm.getDefaultProxy();
@@ -134,6 +140,25 @@ public class P18_NetworkAnalytics extends LazyFragment {
                 entities.add(new TextCard("关闭Wi-Fi", "Close Wi-Fi", null));
             } else {
                 entities.add(new TextCard("开启Wi-Fi", "Open Wi-Fi", null));
+            }
+
+            wl = wm.createWifiLock(WifiManager.WIFI_MODE_FULL, "myWifiLock");
+            if (wl == null)
+                errorSb.append("WifiManager.WifiLock is null!\n");
+            else {
+                if (wl.isHeld()) {
+                    entities.add(new TextCard("解除Wi-Fi锁定", "Release Wi-Fi lock", null));
+                } else {
+                    entities.add(new TextCard("锁定Wi-Fi", "Held Wi-Fi lock", null));
+                }
+            }
+
+            entities.add(new TextCard("扫描Wi-Fi", "Scan Wi-Fi", null));
+            List<WifiConfiguration> wifiConfigurations = wm.getConfiguredNetworks();
+            if (wifiConfigurations == null) {
+                errorSb.append("WifiManager.wifiConfigurations is null!\n");
+            } else {
+                entities.add(new TextCard("查看网络配置", "wifiConfigurations", null));
             }
         }
 
@@ -162,21 +187,37 @@ public class P18_NetworkAnalytics extends LazyFragment {
 
         RecyclerView rv_main_list = (RecyclerView) findViewById(R.id.rv_main_list);
         rv_main_list.setLayoutManager(new LinearLayoutManager(getActivity()));
-        TextCardRVAdapter adapter = new TextCardRVAdapter(getActivity(), entities, new OnItemClickListener() {
+        adapter = new TextCardRVAdapter(getActivity(), entities, new OnItemClickListener() {
             @Override
             public void onItemClick(@NotNull View view, int position) {
                 TextCard tc = entities.get(position);
+                CLog.i(TAG, tc.title);
                 if ("查看当前网络".equals(tc.title)) {
                     Bundle b = new Bundle();
                     b.putParcelable("NetworkInfo", networkInfo);
                     mainInterface.callFragment(Constants.P19_NETWORK_INFO_ANALYTICS, b);
                 } else if ("开启Wi-Fi".equals(tc.title)) {
-                    wm.setWifiEnabled(true);
-                    entities.set(position,new TextCard("关闭Wi-Fi", "Close Wi-Fi", null));
-
+                    helper.openWifi();
+                    entities.set(position, new TextCard("关闭Wi-Fi", "Close Wi-Fi", null));
+                    adapter.notifyDataSetChanged();
                 } else if ("关闭Wi-Fi".equals(tc.title)) {
-                    wm.setWifiEnabled(false);
-                    entities.set(position,new TextCard("开启Wi-Fi", "Open Wi-Fi", null));
+                    helper.closeWifi();
+                    entities.set(position, new TextCard("开启Wi-Fi", "Open Wi-Fi", null));
+                    adapter.notifyDataSetChanged();
+                } else if ("解除Wi-Fi锁定".equals(tc.title)) {
+                    if (wl.isHeld())
+                        wl.release();
+                    entities.set(position, new TextCard("锁定Wi-Fi", "Held Wi-Fi lock", null));
+                    adapter.notifyDataSetChanged();
+                } else if ("锁定Wi-Fi".equals(tc.title)) {
+                    if (!wl.isHeld())
+                        wl.acquire();
+                    entities.set(position, new TextCard("解除Wi-Fi锁定", "Release Wi-Fi lock", null));
+                    adapter.notifyDataSetChanged();
+                } else if ("扫描Wi-Fi".equals(tc.title)) {
+                    mainInterface.callFragmentDialog(Constants.P21_D_SCAN_RESULT);
+                } else if ("查看网络配置".equals(tc.title)) {
+                    mainInterface.callFragmentDialog(Constants.P22_D_WIFI_CONFIGURATIONS);
                 } else {
                     try {
                         int sdk = android.os.Build.VERSION.SDK_INT;

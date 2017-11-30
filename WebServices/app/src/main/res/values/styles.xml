@@ -14,7 +14,7 @@
         <item name="android:layout_marginLeft">5dp</item>
         <item name="android:layout_marginRight">5dp</item>
         <item name="android:textColor">@color/grey700</item>
-        <item name="android:textSize">16sp</item>
+        <item name="android:textSize">18sp</item>
     </style>
 
 
@@ -23,8 +23,30 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginLeft">5dp</item>
         <item name="android:layout_marginRight">5dp</item>
-        <item name="android:textColor">@color/checker_board_dark</item>
+        <item name="android:textColor">@color/grey700</item>
         <item name="android:textSize">14sp</item>
+    </style>
+
+
+    <style name="item_content" parent="AppTheme">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginLeft">5dp</item>
+        <item name="android:layout_marginRight">5dp</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:linksClickable">true</item>
+    </style>
+
+    <style name="close_button_in_frame_layout" parent="AppTheme">
+        <item name="android:layout_width">30dp</item>
+        <item name="android:layout_height">30dp</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:layout_margin">10dp</item>
+        <item name="android:adjustViewBounds">true</item>
+        <item name="android:scaleType">fitCenter</item>
+        <item name="android:src">@drawable/x_button</item>
+        <item name="android:layout_gravity">right|top</item>
     </style>
 
 </resources>

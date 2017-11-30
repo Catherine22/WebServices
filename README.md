@@ -391,16 +391,16 @@ Set attributes of WebView that includes WebViewClient and WebSettings (setAllowF
 [P01_Apache]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/P01_Apache.java>
 [P02_HttpURLConnection]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/P02_HttpURLConnection.java>
 [P03_Downloader]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/P03_Downloader.java>
-[P05_Gallery]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/P05_Gallery.java>
+[P05_Gallery]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/cache/P05_Gallery.java>
 [P06_Upload]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/P06_Upload.java>
-[P08_Blocking_Socket]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/P08_Blocking_Socket.java>
-[P09_NIO_Socket]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/P09_NIO_Socket.java>
-[P10_UDP_Socket]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/P10_UDP_Socket.java>
-[P11_Fresco]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/P11_Fresco.java>
-[P13_Nested_WebView]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/P13_Nested_WebView.java>
-[P14_Full_WebView]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/P14_Full_WebView.java>
-[P15_WebView_Settings]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/P15_WebView_Settings.java>
-[P17_WebView_Test_List]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/P17_WebView_Test_List.java>
+[P08_Blocking_Socket]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/socket/P08_Blocking_Socket.java>
+[P09_NIO_Socket]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/socket/P09_NIO_Socket.java>
+[P10_UDP_Socket]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/socket/P10_UDP_Socket.java>
+[P11_Fresco]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/cache/P11_Fresco.java>
+[P13_Nested_WebView]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/webview/P13_Nested_WebView.java>
+[P14_Full_WebView]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/webview/P14_Full_WebView.java>
+[P15_WebView_Settings]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/webview/P15_WebView_Settings.java>
+[P17_WebView_Test_List]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/webview/P17_WebView_Test_List.java>
 
 
 [Tencent bugly]:<https://mp.weixin.qq.com/s/qOMO0LIdA47j3RjhbCWUEQ>

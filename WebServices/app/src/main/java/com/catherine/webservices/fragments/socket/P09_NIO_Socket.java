@@ -1,10 +1,11 @@
-package com.catherine.webservices.fragments;
+package com.catherine.webservices.fragments.socket;
 
 import android.Manifest;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -13,13 +14,15 @@ import android.widget.TextView;
 import com.catherine.webservices.Constants;
 import com.catherine.webservices.R;
 import com.catherine.webservices.components.DialogManager;
+import com.catherine.webservices.fragments.LazyFragment;
 import com.catherine.webservices.interfaces.MainInterface;
 import com.catherine.webservices.interfaces.OnRequestPermissionsListener;
-import com.catherine.webservices.network.MyTCPSocket;
+import com.catherine.webservices.network.MyNIOSocket;
 import com.catherine.webservices.network.NetworkHelper;
 import com.catherine.webservices.network.SocketListener;
 
 import java.net.ConnectException;
+import java.net.SocketException;
 import java.util.List;
 
 /**
@@ -28,8 +31,8 @@ import java.util.List;
  * catherine919@soft-world.com.tw
  */
 
-public class P08_Blocking_Socket extends LazyFragment {
-    public final static String TAG = "P08_Blocking_Socket";
+public class P09_NIO_Socket extends LazyFragment {
+    public final static String TAG = "P09_NIO_Socket";
     private MainInterface mainInterface;
     private TextView tv_history, tv_state;
     private EditText et_input;
@@ -37,12 +40,12 @@ public class P08_Blocking_Socket extends LazyFragment {
     private FloatingActionButton fab_disconnect, fab_settings;
     private boolean isFABOpen;
     private NetworkHelper helper;
-    private MyTCPSocket myTCPSocket;
+    private MyNIOSocket nioSocket;
 
-    public static P08_Blocking_Socket newInstance(boolean isLazyLoad) {
+    public static P09_NIO_Socket newInstance(boolean isLazyLoad) {
         Bundle args = new Bundle();
         args.putBoolean(LazyFragment.INTENT_BOOLEAN_LAZYLOAD, isLazyLoad);
-        P08_Blocking_Socket fragment = new P08_Blocking_Socket();
+        P09_NIO_Socket fragment = new P09_NIO_Socket();
         fragment.setArguments(args);
         return fragment;
     }
@@ -95,14 +98,12 @@ public class P08_Blocking_Socket extends LazyFragment {
         super.onViewCreated(view, savedInstanceState);
     }
 
-
     private void initSocket() {
-        myTCPSocket = new MyTCPSocket.Builder()
+        nioSocket = new MyNIOSocket.Builder()
                 .host(Constants.SOCKET_HOST)
-                .port(Constants.TCP_SOCKET_PORT)
-                .initListener(new InitListener())
-                .inputListener(new InputListener())
-                .outputListener(new OutputListener())
+                .port(Constants.NIO_SOCKET_PORT)
+                .inputListener(new Input())
+                .outputListener(new Output())
                 .build();
     }
 
@@ -120,15 +121,14 @@ public class P08_Blocking_Socket extends LazyFragment {
         bt_send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                myTCPSocket.send(et_input.getText().toString());
+                send(et_input.getText().toString());
             }
         });
 
         fab_disconnect.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                myTCPSocket.send("*#DISCONNECT11223#*");
-                tv_state.setText(Constants.SOCKET_HOST + " disconnected.");
-                myTCPSocket.release();
+                tv_state.setText("Stop");
+                release();
             }
         });
 
@@ -145,29 +145,7 @@ public class P08_Blocking_Socket extends LazyFragment {
         });
     }
 
-    private class InitListener implements SocketListener {
-
-        @Override
-        public void connectSuccess(String message) {
-            tv_state.setText(message);
-        }
-
-        @Override
-        public void connectFailure(Exception e) {
-            e.printStackTrace();
-            if (e instanceof ConnectException) {
-                if (!helper.isNetworkHealthy()) {
-                    tv_state.setText(getResources().getString(R.string.offline));
-                }
-            } else if (e instanceof NullPointerException) {
-                //Server error
-                tv_state.setText(e.getMessage());
-            }
-        }
-    }
-
-    private class OutputListener implements SocketListener {
-
+    class Output implements SocketListener {
         @Override
         public void connectSuccess(String message) {
             et_input.setText("");
@@ -177,20 +155,24 @@ public class P08_Blocking_Socket extends LazyFragment {
         @Override
         public void connectFailure(Exception e) {
             e.printStackTrace();
+            if (e instanceof ConnectException) {
+                if (!helper.isNetworkHealthy()) {
+                    tv_state.setText(getResources().getString(R.string.offline));
+                }
+            } else if (e instanceof SocketException) {
+                tv_state.setText("Server error");
+            }
+
+            et_input.setText("");
+            tv_history.setText(String.format("%s\n%s", tv_history.getText(), "Failed to send."));
         }
     }
 
-    private class InputListener implements SocketListener {
-
+    class Input implements SocketListener {
         @Override
         public void connectSuccess(String message) {
-            if ("*#DISCONNECT11223#*".equals(message)) {
-                tv_state.setText(Constants.SOCKET_HOST + " disconnected.");
-                myTCPSocket.release();
-            } else {
-                // 读取socket输入流的内容并打印
-                tv_history.setText(String.format("%s\nYou got: %s", tv_history.getText(), message));
-            }
+            tv_history.setText(String.format("%s\nYou got: %s", tv_history.getText(), message));
+
         }
 
         @Override
@@ -198,16 +180,22 @@ public class P08_Blocking_Socket extends LazyFragment {
             e.printStackTrace();
             if (e instanceof ConnectException) {
                 if (!helper.isNetworkHealthy()) {
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            tv_state.setText(getResources().getString(R.string.offline));
-                        }
-                    });
+                    tv_state.setText(getResources().getString(R.string.offline));
                 }
+            } else if (e instanceof SocketException) {
+                tv_state.setText("Server error");
             }
         }
     }
 
 
+    private void send(final String message) {
+        if (TextUtils.isEmpty(message))
+            return;
+        nioSocket.write(message);
+    }
+
+    private void release() {
+        nioSocket.release();
+    }
 }
