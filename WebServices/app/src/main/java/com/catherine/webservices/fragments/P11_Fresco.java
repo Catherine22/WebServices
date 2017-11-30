@@ -196,12 +196,7 @@ public class P11_Fresco extends LazyFragment {
             ++succeed;
             CLog.i(TAG, "observer, succeed:" + succeed);
             if (entities.size() == succeed) {
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(getActivity(), "All the images are cached!", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                CLog.w(TAG, "All the images are cached!");
             }
         }
 

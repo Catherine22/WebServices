@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.catherine.webservices.MyApplication;
@@ -22,6 +23,7 @@ import com.catherine.webservices.network.MyHttpURLConnection;
 import com.catherine.webservices.network.NetworkHelper;
 import com.catherine.webservices.security.Encryption;
 import com.catherine.webservices.toolkits.CLog;
+import com.catherine.webservices.toolkits.MyDisplay;
 import com.jakewharton.disklrucache.DiskLruCache;
 
 import java.io.BufferedInputStream;
@@ -329,6 +331,10 @@ public class ImageCardRVAdapter extends RecyclerView.Adapter<ImageCardRVAdapter.
             tv_title = itemView.findViewById(R.id.tv_title);
             tv_subtitle = itemView.findViewById(R.id.tv_subtitle);
             iv_main = itemView.findViewById(R.id.iv_main);
+            //aspect ratio = 2.5
+            float w = (MyDisplay.getScreenSize().x * 1.0f) / 2.5f;
+            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) w);
+            iv_main.setLayoutParams(params);
             cv = itemView.findViewById(R.id.cv);
         }
     }

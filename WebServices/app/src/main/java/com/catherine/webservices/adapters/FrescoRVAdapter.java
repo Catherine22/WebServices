@@ -144,6 +144,7 @@ public class FrescoRVAdapter extends RecyclerView.Adapter<FrescoRVAdapter.MainRv
             tv_title = itemView.findViewById(R.id.tv_title);
             tv_subtitle = itemView.findViewById(R.id.tv_subtitle);
             sdv_main = itemView.findViewById(R.id.sdv_main);
+            sdv_main.setAspectRatio(2.5f);
             cv = itemView.findViewById(R.id.cv);
         }
     }
