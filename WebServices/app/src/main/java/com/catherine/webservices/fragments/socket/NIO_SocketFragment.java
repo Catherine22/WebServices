@@ -31,8 +31,8 @@ import java.util.List;
  * catherine919@soft-world.com.tw
  */
 
-public class P09_NIO_Socket extends LazyFragment {
-    public final static String TAG = "P09_NIO_Socket";
+public class NIO_SocketFragment extends LazyFragment {
+    public final static String TAG = NIO_SocketFragment.class.getSimpleName();
     private MainInterface mainInterface;
     private TextView tv_history, tv_state;
     private EditText et_input;
@@ -42,10 +42,10 @@ public class P09_NIO_Socket extends LazyFragment {
     private NetworkHelper helper;
     private MyNIOSocket nioSocket;
 
-    public static P09_NIO_Socket newInstance(boolean isLazyLoad) {
+    public static NIO_SocketFragment newInstance(boolean isLazyLoad) {
         Bundle args = new Bundle();
         args.putBoolean(LazyFragment.INTENT_BOOLEAN_LAZYLOAD, isLazyLoad);
-        P09_NIO_Socket fragment = new P09_NIO_Socket();
+        NIO_SocketFragment fragment = new NIO_SocketFragment();
         fragment.setArguments(args);
         return fragment;
     }
@@ -53,7 +53,7 @@ public class P09_NIO_Socket extends LazyFragment {
     @Override
     public void onCreateViewLazy(Bundle savedInstanceState) {
         super.onCreateViewLazy(savedInstanceState);
-        setContentView(R.layout.f_socket);
+        setContentView(R.layout.f_common_socket);
         helper = new NetworkHelper();
         mainInterface = (MainInterface) getActivity();
         init();
@@ -78,7 +78,7 @@ public class P09_NIO_Socket extends LazyFragment {
                 }
 
                 context.deleteCharAt(context.length() - 1);
-                DialogManager.showPermissionDialog( getActivity(), String.format( getActivity().getResources().getString(R.string.permission_request), context), new DialogInterface.OnClickListener() {
+                DialogManager.showPermissionDialog(getActivity(), String.format(getActivity().getResources().getString(R.string.permission_request), context), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         getActivity().finish();

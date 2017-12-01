@@ -34,17 +34,17 @@ import java.util.List;
  * catherine919@soft-world.com.tw
  */
 
-public class P07_Socket extends LazyFragment {
-    public final static String TAG = "P07_Socket";
+public class SocketFragment extends LazyFragment {
+    public final static String TAG = SocketFragment.class.getSimpleName();
     private List<TextCard> entities;
     private SwipeRefreshLayout srl_container;
     private MainInterface mainInterface;
     private TextCardRVAdapter adapter;
 
-    public static P07_Socket newInstance(boolean isLazyLoad) {
+    public static SocketFragment newInstance(boolean isLazyLoad) {
         Bundle args = new Bundle();
         args.putBoolean(LazyFragment.INTENT_BOOLEAN_LAZYLOAD, isLazyLoad);
-        P07_Socket fragment = new P07_Socket();
+        SocketFragment fragment = new SocketFragment();
         fragment.setArguments(args);
         return fragment;
     }
@@ -52,7 +52,7 @@ public class P07_Socket extends LazyFragment {
     @Override
     public void onCreateViewLazy(Bundle savedInstanceState) {
         super.onCreateViewLazy(savedInstanceState);
-        setContentView(R.layout.f_07_socket);
+        setContentView(R.layout.f_common_socket);
         mainInterface = (MainInterface) getActivity();
         init();
     }
@@ -134,13 +134,13 @@ public class P07_Socket extends LazyFragment {
             public void onItemClick(@NotNull View view, int position) {
                 switch (position) {
                     case 0:
-                        callFragment(Constants.P08_BLOCKING_SOCKET);
+                        callFragment(Constants.Fragments.F_BLOCKING_SOCKET);
                         break;
                     case 1:
-                        callFragment(Constants.P09_NIO_SOCKET);
+                        callFragment(Constants.Fragments.F_NIO_SOCKET);
                         break;
                     case 2:
-                        callFragment(Constants.P10_UDP_SOCKET);
+                        callFragment(Constants.Fragments.F_UDP_SOCKET);
                         break;
                 }
             }
@@ -159,19 +159,19 @@ public class P07_Socket extends LazyFragment {
         String tag = "";
         String title = "";
         switch (id) {
-            case Constants.P08_BLOCKING_SOCKET:
-                title = "P08_BLOCKING_SOCKET";
-                fragment = P08_Blocking_Socket.newInstance(true);
+            case Constants.Fragments.F_BLOCKING_SOCKET:
+                title = "F_BLOCKING_SOCKET";
+                fragment = BlockingSocketFragment.newInstance(true);
                 tag = "P08";
                 break;
-            case Constants.P09_NIO_SOCKET:
-                title = "P09_NIO_SOCKET";
-                fragment = P09_NIO_Socket.newInstance(true);
+            case Constants.Fragments.F_NIO_SOCKET:
+                title = "F_NIO_SOCKET";
+                fragment = NIO_SocketFragment.newInstance(true);
                 tag = "P09";
                 break;
-            case Constants.P10_UDP_SOCKET:
-                title = "P10_UDP_SOCKET";
-                fragment = P10_UDP_Socket.newInstance(true);
+            case Constants.Fragments.F_UDP_SOCKET:
+                title = "F_UDP_SOCKET";
+                fragment = UDP_SocketFragment.newInstance(true);
                 tag = "P10";
                 break;
         }

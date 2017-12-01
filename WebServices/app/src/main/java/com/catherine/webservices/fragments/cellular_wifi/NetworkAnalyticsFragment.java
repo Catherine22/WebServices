@@ -1,4 +1,4 @@
-package com.catherine.webservices.fragments;
+package com.catherine.webservices.fragments.cellular_wifi;
 
 import android.Manifest;
 import android.content.Context;
@@ -23,6 +23,7 @@ import com.catherine.webservices.R;
 import com.catherine.webservices.adapters.TextCardRVAdapter;
 import com.catherine.webservices.components.DialogManager;
 import com.catherine.webservices.entities.TextCard;
+import com.catherine.webservices.fragments.LazyFragment;
 import com.catherine.webservices.interfaces.MainInterface;
 import com.catherine.webservices.interfaces.OnItemClickListener;
 import com.catherine.webservices.interfaces.OnRequestPermissionsListener;
@@ -40,8 +41,8 @@ import java.util.List;
  * catherine919@soft-world.com.tw
  */
 
-public class P18_NetworkAnalytics extends LazyFragment {
-    public final static String TAG = P18_NetworkAnalytics.class.getSimpleName();
+public class NetworkAnalyticsFragment extends LazyFragment {
+    public final static String TAG = NetworkAnalyticsFragment.class.getSimpleName();
     private List<TextCard> entities;
     private TextCardRVAdapter adapter;
     private SwipeRefreshLayout srl_container;
@@ -52,10 +53,10 @@ public class P18_NetworkAnalytics extends LazyFragment {
     private WifiManager.WifiLock wl;
     private NetworkHelper helper;
 
-    public static P18_NetworkAnalytics newInstance(boolean isLazyLoad) {
+    public static NetworkAnalyticsFragment newInstance(boolean isLazyLoad) {
         Bundle args = new Bundle();
         args.putBoolean(LazyFragment.INTENT_BOOLEAN_LAZYLOAD, isLazyLoad);
-        P18_NetworkAnalytics fragment = new P18_NetworkAnalytics();
+        NetworkAnalyticsFragment fragment = new NetworkAnalyticsFragment();
         fragment.setArguments(args);
         return fragment;
     }
@@ -63,7 +64,7 @@ public class P18_NetworkAnalytics extends LazyFragment {
     @Override
     public void onCreateViewLazy(Bundle savedInstanceState) {
         super.onCreateViewLazy(savedInstanceState);
-        setContentView(R.layout.f_19_network_info_analytics);
+        setContentView(R.layout.f_network_info_analytics);
         mainInterface = (MainInterface) getActivity();
         helper = new NetworkHelper();
         init();
@@ -195,7 +196,7 @@ public class P18_NetworkAnalytics extends LazyFragment {
                 if ("查看当前网络".equals(tc.title)) {
                     Bundle b = new Bundle();
                     b.putParcelable("NetworkInfo", networkInfo);
-                    mainInterface.callFragment(Constants.P19_NETWORK_INFO_ANALYTICS, b);
+                    mainInterface.callFragment(Constants.Fragments.F_NETWORK_INFO_ANALYTICS, b);
                 } else if ("开启Wi-Fi".equals(tc.title)) {
                     helper.openWifi();
                     entities.set(position, new TextCard("关闭Wi-Fi", "Close Wi-Fi", null));
@@ -215,9 +216,9 @@ public class P18_NetworkAnalytics extends LazyFragment {
                     entities.set(position, new TextCard("解除Wi-Fi锁定", "Release Wi-Fi lock", null));
                     adapter.notifyDataSetChanged();
                 } else if ("扫描Wi-Fi".equals(tc.title)) {
-                    mainInterface.callFragmentDialog(Constants.P21_D_SCAN_RESULT);
+                    mainInterface.callFragmentDialog(Constants.Fragments.F_D_SCAN_RESULT);
                 } else if ("查看网络配置".equals(tc.title)) {
-                    mainInterface.callFragmentDialog(Constants.P22_D_WIFI_CONFIGURATIONS);
+                    mainInterface.callFragmentDialog(Constants.Fragments.F_D_WIFI_CONFIGURATIONS);
                 } else {
                     try {
                         int sdk = android.os.Build.VERSION.SDK_INT;

@@ -42,8 +42,8 @@ import java.util.Locale;
  * catherine919@soft-world.com.tw
  */
 
-public class P11_Fresco extends LazyFragment {
-    public final static String TAG = "P11_Fresco";
+public class FrescoFragment extends LazyFragment {
+    public final static String TAG = FrescoFragment.class.getSimpleName();
     private SwipeRefreshLayout srl_container;
     private List<ImageCard> entities;
     private FrescoRVAdapter adapter;
@@ -53,10 +53,10 @@ public class P11_Fresco extends LazyFragment {
     private PrefetchSubscriber subscriber;
     private int succeed, failed;
 
-    public static P11_Fresco newInstance(boolean isLazyLoad) {
+    public static FrescoFragment newInstance(boolean isLazyLoad) {
         Bundle args = new Bundle();
         args.putBoolean(LazyFragment.INTENT_BOOLEAN_LAZYLOAD, isLazyLoad);
-        P11_Fresco fragment = new P11_Fresco();
+        FrescoFragment fragment = new FrescoFragment();
         fragment.setArguments(args);
         return fragment;
     }
@@ -64,7 +64,7 @@ public class P11_Fresco extends LazyFragment {
     @Override
     public void onCreateViewLazy(Bundle savedInstanceState) {
         super.onCreateViewLazy(savedInstanceState);
-        setContentView(R.layout.f_11_fresco);
+        setContentView(R.layout.f_fresco);
 
         if (getArguments() != null)
             cacheable = getArguments().getBoolean("cacheable", false);

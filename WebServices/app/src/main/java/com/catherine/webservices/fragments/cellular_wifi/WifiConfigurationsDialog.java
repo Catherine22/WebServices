@@ -1,7 +1,6 @@
-package com.catherine.webservices.fragments;
+package com.catherine.webservices.fragments.cellular_wifi;
 
 import android.content.Context;
-import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
@@ -21,7 +20,6 @@ import com.catherine.webservices.components.MyDialogFragment;
 import com.catherine.webservices.entities.TextCard;
 import com.catherine.webservices.interfaces.MainInterface;
 import com.catherine.webservices.interfaces.OnItemClickListener;
-import com.catherine.webservices.network.NetworkHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,14 +30,14 @@ import java.util.List;
  * catherine919@soft-world.com.tw
  */
 
-public class P22_D_WifiConfigurations extends MyDialogFragment {
+public class WifiConfigurationsDialog extends MyDialogFragment {
     private MainInterface mainInterface;
     private  List<TextCard> entities;
     private TextView tv_error;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.f_22_d_wifi_configurations, container, false);
+        View view = inflater.inflate(R.layout.f_d_wifi_configurations, container, false);
         mainInterface = (MainInterface) getActivity();
         tv_error = view.findViewById(R.id.tv_error);
         ImageButton xButton = view.findViewById(R.id.xButton);
@@ -71,7 +69,7 @@ public class P22_D_WifiConfigurations extends MyDialogFragment {
                 dismiss();
                 Bundle b = new Bundle();
                 b.putParcelable("WifiConfiguration", wifiConfigurations.get(position));
-                mainInterface.callFragment(Constants.P20_WIFI_CONFIGURATION_ANALYTICS, b);
+                mainInterface.callFragment(Constants.Fragments.F_WIFI_CONFIGURATION_ANALYTICS, b);
             }
 
             @Override

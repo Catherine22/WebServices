@@ -37,8 +37,8 @@ import java.util.concurrent.TimeUnit;
  * catherine919@soft-world.com.tw
  */
 
-public class P03_Downloader extends LazyFragment {
-    public final static String TAG = "P03_Downloader";
+public class DownloaderFragment extends LazyFragment {
+    public final static String TAG = DownloaderFragment.class.getSimpleName();
     private FloatingActionButton fab_stop;
     private List<String> features, descriptions, infos;
     private SwipeRefreshLayout srl_container;
@@ -60,10 +60,10 @@ public class P03_Downloader extends LazyFragment {
     private final int DOWNLOADING = 2;
     //--Debug--
 
-    public static P03_Downloader newInstance(boolean isLazyLoad) {
+    public static DownloaderFragment newInstance(boolean isLazyLoad) {
         Bundle args = new Bundle();
         args.putBoolean(LazyFragment.INTENT_BOOLEAN_LAZYLOAD, isLazyLoad);
-        P03_Downloader fragment = new P03_Downloader();
+        DownloaderFragment fragment = new DownloaderFragment();
         fragment.setArguments(args);
         return fragment;
     }
@@ -71,7 +71,7 @@ public class P03_Downloader extends LazyFragment {
     @Override
     public void onCreateViewLazy(Bundle savedInstanceState) {
         super.onCreateViewLazy(savedInstanceState);
-        setContentView(R.layout.f_03_download);
+        setContentView(R.layout.f_download);
         mainInterface = (MainInterface) getActivity();
         init();
     }
@@ -95,7 +95,7 @@ public class P03_Downloader extends LazyFragment {
                 }
 
                 context.deleteCharAt(context.length() - 1);
-                DialogManager.showPermissionDialog( getActivity(), String.format( getActivity().getResources().getString(R.string.permission_request), context), new DialogInterface.OnClickListener() {
+                DialogManager.showPermissionDialog(getActivity(), String.format(getActivity().getResources().getString(R.string.permission_request), context), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         getActivity().finish();

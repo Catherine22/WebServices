@@ -42,17 +42,17 @@ import catherine.messagecenter.Result;
  * catherine919@soft-world.com.tw
  */
 
-public class P12_WebView extends LazyFragment {
-    public final static String TAG = "P12_WebView";
+public class WebViewFragment extends LazyFragment {
+    public final static String TAG = WebViewFragment.class.getSimpleName();
     private List<TextCard> entities;
     private SwipeRefreshLayout srl_container;
     private MainInterface mainInterface;
     private Client client;
 
-    public static P12_WebView newInstance(boolean isLazyLoad) {
+    public static WebViewFragment newInstance(boolean isLazyLoad) {
         Bundle args = new Bundle();
         args.putBoolean(LazyFragment.INTENT_BOOLEAN_LAZYLOAD, isLazyLoad);
-        P12_WebView fragment = new P12_WebView();
+        WebViewFragment fragment = new WebViewFragment();
         fragment.setArguments(args);
         return fragment;
     }
@@ -60,7 +60,7 @@ public class P12_WebView extends LazyFragment {
     @Override
     public void onCreateViewLazy(Bundle savedInstanceState) {
         super.onCreateViewLazy(savedInstanceState);
-        setContentView(R.layout.f_12_webview);
+        setContentView(R.layout.f_webview);
         mainInterface = (MainInterface) getActivity();
         init();
     }
@@ -143,10 +143,10 @@ public class P12_WebView extends LazyFragment {
 
     private void fillInData() {
         entities = new ArrayList<>();
-        entities.add(new TextCard("Launch a browser","Load a url",null));
-        entities.add(new TextCard("Nested WebView","Load a url",null));
-        entities.add(new TextCard("Full screen WebView","Load a url",null));
-        entities.add(new TextCard("Test WebView","Load a url",null));
+        entities.add(new TextCard("Launch a browser", "Load a url", null));
+        entities.add(new TextCard("Nested WebView", "Load a url", null));
+        entities.add(new TextCard("Full screen WebView", "Load a url", null));
+        entities.add(new TextCard("Test WebView", "Load a url", null));
     }
 
     private void initComponent() {
@@ -172,13 +172,13 @@ public class P12_WebView extends LazyFragment {
                         startActivity(intent);
                         break;
                     case 1:
-                        callFragment(Constants.P13_NESTED_WEBVIEW);
+                        callFragment(Constants.Fragments.F_NESTED_WEBVIEW);
                         break;
                     case 2:
-                        mainInterface.callFragment(Constants.P14_FULL_WEBVIEW);
+                        mainInterface.callFragment(Constants.Fragments.F_FULL_WEBVIEW);
                         break;
                     case 3:
-                        callFragment(Constants.P17_WEBVIEW_TEST_LIST);
+                        callFragment(Constants.Fragments.F_WEBVIEW_TEST_LIST);
                         break;
                 }
             }
@@ -198,14 +198,14 @@ public class P12_WebView extends LazyFragment {
         String tag = "";
         String title = "";
         switch (id) {
-            case Constants.P13_NESTED_WEBVIEW:
+            case Constants.Fragments.F_NESTED_WEBVIEW:
                 title = "P13_Nested_WebView";
-                fragment = P13_Nested_WebView.newInstance(true);
+                fragment = NestedWebViewFragment.newInstance(true);
                 tag = "P13";
                 break;
-            case Constants.P17_WEBVIEW_TEST_LIST:
+            case Constants.Fragments.F_WEBVIEW_TEST_LIST:
                 title = "P17_WebView_Test_List";
-                fragment = P17_WebView_Test_List.newInstance(true);
+                fragment = WebViewTestListFragment.newInstance(true);
                 tag = "P17";
                 break;
         }

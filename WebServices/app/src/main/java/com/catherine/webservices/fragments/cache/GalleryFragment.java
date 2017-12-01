@@ -36,8 +36,8 @@ import java.util.List;
  * catherine919@soft-world.com.tw
  */
 
-public class P05_Gallery extends LazyFragment {
-    private final static String TAG = "P05_Gallery";
+public class GalleryFragment extends LazyFragment {
+    private final static String TAG = GalleryFragment.class.getSimpleName();
     private List<ImageCard> entities;
     private SwipeRefreshLayout srl_container;
     private ImageCardRVAdapter adapter;
@@ -46,10 +46,10 @@ public class P05_Gallery extends LazyFragment {
     private boolean showPicOffline;
     private SharedPreferences sp;
 
-    public static P05_Gallery newInstance(boolean isLazyLoad) {
+    public static GalleryFragment newInstance(boolean isLazyLoad) {
         Bundle args = new Bundle();
         args.putBoolean(LazyFragment.INTENT_BOOLEAN_LAZYLOAD, isLazyLoad);
-        P05_Gallery fragment = new P05_Gallery();
+        GalleryFragment fragment = new GalleryFragment();
         fragment.setArguments(args);
         return fragment;
     }
@@ -57,7 +57,7 @@ public class P05_Gallery extends LazyFragment {
     @Override
     public void onCreateViewLazy(Bundle savedInstanceState) {
         super.onCreateViewLazy(savedInstanceState);
-        setContentView(R.layout.f_05_gallery);
+        setContentView(R.layout.f_gallery);
 
         if (getArguments() != null) {
             showPicOffline = getArguments().getBoolean("show_pic_offline", false);

@@ -1,25 +1,22 @@
-package com.catherine.webservices.fragments;
+package com.catherine.webservices.fragments.cellular_wifi;
 
 import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.net.NetworkInfo;
-import android.net.ProxyInfo;
-import android.net.wifi.WifiConfiguration;
-import android.net.wifi.WifiEnterpriseConfig;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.View;
 
 import com.catherine.webservices.R;
 import com.catherine.webservices.adapters.TextCardRVAdapter;
 import com.catherine.webservices.components.DialogManager;
 import com.catherine.webservices.entities.TextCard;
+import com.catherine.webservices.fragments.LazyFragment;
 import com.catherine.webservices.interfaces.MainInterface;
 import com.catherine.webservices.interfaces.OnItemClickListener;
 import com.catherine.webservices.interfaces.OnRequestPermissionsListener;
@@ -36,16 +33,16 @@ import java.util.Locale;
  * catherine919@soft-world.com.tw
  */
 
-public class P20_WifiConfigurationAnalytics extends LazyFragment {
-    public final static String TAG = P20_WifiConfigurationAnalytics.class.getSimpleName();
+public class NetworkInfoAnalyticsFragment extends LazyFragment {
+    public final static String TAG = NetworkInfoAnalyticsFragment.class.getSimpleName();
     private List<TextCard> entities;
     private SwipeRefreshLayout srl_container;
     private MainInterface mainInterface;
 
-    public static P20_WifiConfigurationAnalytics newInstance(boolean isLazyLoad) {
+    public static NetworkInfoAnalyticsFragment newInstance(boolean isLazyLoad) {
         Bundle args = new Bundle();
         args.putBoolean(LazyFragment.INTENT_BOOLEAN_LAZYLOAD, isLazyLoad);
-        P20_WifiConfigurationAnalytics fragment = new P20_WifiConfigurationAnalytics();
+        NetworkInfoAnalyticsFragment fragment = new NetworkInfoAnalyticsFragment();
         fragment.setArguments(args);
         return fragment;
     }
@@ -53,7 +50,7 @@ public class P20_WifiConfigurationAnalytics extends LazyFragment {
     @Override
     public void onCreateViewLazy(Bundle savedInstanceState) {
         super.onCreateViewLazy(savedInstanceState);
-        setContentView(R.layout.f_20_wifi_configuration_analytics);
+        setContentView(R.layout.f_network_info_analytics);
         mainInterface = (MainInterface) getActivity();
         init();
     }
@@ -100,50 +97,22 @@ public class P20_WifiConfigurationAnalytics extends LazyFragment {
 
     private void fillInData() {
         entities = new ArrayList<>();
+
         Bundle b = getArguments();
-        StringBuilder errorSb = new StringBuilder();
-        WifiConfiguration wifiConfiguration = b.getParcelable("WifiConfiguration");
-        entities.add(new TextCard("热点名称", "SSID", (TextUtils.isEmpty(wifiConfiguration.SSID) ? "" : wifiConfiguration.SSID)));
-        entities.add(new TextCard("BSSID", "BSSID", (TextUtils.isEmpty(wifiConfiguration.BSSID) ? "" : wifiConfiguration.BSSID)));
-        entities.add(new TextCard("WPA-PSK使用的预共享密钥", "preSharedKey", (TextUtils.isEmpty(wifiConfiguration.preSharedKey) ? "" : wifiConfiguration.preSharedKey)));
-        entities.add(new TextCard("网络配置的ID", "networkId", wifiConfiguration.networkId + ""));
-        entities.add(new TextCard("访问的优先级", "priority", wifiConfiguration.priority + ""));
-        entities.add(new TextCard("隐藏SSID（只能扫描）", "hiddenSSID", wifiConfiguration.hiddenSSID + ""));
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            entities.add(new TextCard("Fully qualified domain name", "FQDN", (TextUtils.isEmpty(wifiConfiguration.FQDN) ? "" : wifiConfiguration.FQDN)));
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            entities.add(new TextCard("是否为Passpoint", "isPasspoint", wifiConfiguration.isPasspoint() + ""));
-            entities.add(new TextCard("Name of Passpoint credential provider", "providerFriendlyName", wifiConfiguration.providerFriendlyName));
+        NetworkInfo networkInfo = b.getParcelable("NetworkInfo");
+        entities.add(new TextCard("网络是否有效可用", "networkInfo.isAvailable()", null));
+        entities.add(new TextCard("是否已连线", "networkInfo.isConnected()", networkInfo.isConnected() + ""));
+        entities.add(new TextCard("正在连线或已连线", "networkInfo.isConnectedOrConnecting()", networkInfo.isConnectedOrConnecting() + ""));
 
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            entities.add(new TextCard("是否为家庭Passpoint", "isHomeProviderNetwork", wifiConfiguration.isHomeProviderNetwork + ""));
-            ProxyInfo proxyInfo = wifiConfiguration.getHttpProxy();
-            if (proxyInfo == null) {
-                errorSb.append("ProxyInfo is null!\n");
-            } else {
-                entities.add(new TextCard("查看当前代理主机", "proxyInfo.getHost()", proxyInfo.getHost()));
-                entities.add(new TextCard("查看当前代理端口", "proxyInfo.getPort()", proxyInfo.getPort() + ""));
-            }
-        }
-        entities.add(new TextCard("状态", "status", WifiConfiguration.Status.strings[wifiConfiguration.status]));
-        String[] wepKeys = wifiConfiguration.wepKeys;
-        for (int i = 0; i < wepKeys.length; i++)
-            entities.add(new TextCard("WEP key(最多有四组)", "wepKeys", wepKeys[i]));
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            WifiEnterpriseConfig enterpriseConfig = wifiConfiguration.enterpriseConfig;
-        }
 
-        String message = errorSb.toString();
-        if (!TextUtils.isEmpty(message)) {
-            DialogManager.showErrorDialog(getActivity(), message, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-
-                }
-            });
-        }
+        entities.add(new TextCard("返回当前粗略的网络状态", "networkInfo.getState()", getStateName(networkInfo.getState())));
+        entities.add(new TextCard("返回当前详细的网络状态", "networkInfo.getDetailedState()", getDetailStateName(networkInfo.getDetailedState())));
+        entities.add(new TextCard("网络类型", "networkInfo.getType()", String.format(Locale.ENGLISH, "(%d) %s", networkInfo.getType(), networkInfo.getTypeName())));
+        entities.add(new TextCard("特定网络类型", "networkInfo.getSubtype()", String.format(Locale.ENGLISH, "(%d) %s", networkInfo.getSubtype(), networkInfo.getSubtypeName())));
+        entities.add(new TextCard("如果有，尝试连线失败的原因", "networkInfo.getReason()", networkInfo.getReason()));
+        entities.add(new TextCard("网络是否有问题", "networkInfo.isFailover()", networkInfo.isFailover() + ""));
+        entities.add(new TextCard("是否漫游", "networkInfo.isRoaming()", networkInfo.isRoaming() + ""));
+        entities.add(new TextCard("其他网络信息", "nnetworkInfo.getExtraInfo()", networkInfo.getExtraInfo()));
     }
 
     private void initComponent() {
@@ -164,8 +133,8 @@ public class P20_WifiConfigurationAnalytics extends LazyFragment {
             public void onItemClick(@NotNull View view, int position) {
                 try {
                     TextCard tc = entities.get(position);
-                    int sdk = Build.VERSION.SDK_INT;
-                    if (sdk < Build.VERSION_CODES.HONEYCOMB) {
+                    int sdk = android.os.Build.VERSION.SDK_INT;
+                    if (sdk < android.os.Build.VERSION_CODES.HONEYCOMB) {
                         android.text.ClipboardManager clipboard = (android.text.ClipboardManager)
                                 getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
                         clipboard.setText(tc.contents);
@@ -187,6 +156,58 @@ public class P20_WifiConfigurationAnalytics extends LazyFragment {
             }
         });
         rv_main_list.setAdapter(adapter);
+    }
+
+    private String getStateName(NetworkInfo.State state) {
+        if (state == NetworkInfo.State.CONNECTING)
+            return "CONNECTING";
+        else if (state == NetworkInfo.State.CONNECTED)
+            return "CONNECTED";
+        else if (state == NetworkInfo.State.SUSPENDED)
+            return "SUSPENDED";
+        else if (state == NetworkInfo.State.DISCONNECTING)
+            return "DISCONNECTING";
+        else if (state == NetworkInfo.State.DISCONNECTED)
+            return "DISCONNECTED";
+        else if (state == NetworkInfo.State.UNKNOWN)
+            return "UNKNOWN";
+        else
+            return "???";
+    }
+
+    private String getDetailStateName(NetworkInfo.DetailedState state) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            if (state == NetworkInfo.DetailedState.VERIFYING_POOR_LINK)
+                return "VERIFYING_POOR_LINK";
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            if (state == NetworkInfo.DetailedState.CAPTIVE_PORTAL_CHECK)
+                return "CAPTIVE_PORTAL_CHECK";
+        }
+        if (state == NetworkInfo.DetailedState.IDLE)
+            return "IDLE";
+        else if (state == NetworkInfo.DetailedState.SCANNING)
+            return "SCANNING";
+        else if (state == NetworkInfo.DetailedState.CONNECTING)
+            return "CONNECTING";
+        else if (state == NetworkInfo.DetailedState.AUTHENTICATING)
+            return "AUTHENTICATING";
+        else if (state == NetworkInfo.DetailedState.OBTAINING_IPADDR)
+            return "OBTAINING_IPADDR";
+        else if (state == NetworkInfo.DetailedState.CONNECTED)
+            return "CONNECTED";
+        else if (state == NetworkInfo.DetailedState.SUSPENDED)
+            return "SUSPENDED";
+        else if (state == NetworkInfo.DetailedState.DISCONNECTING)
+            return "DISCONNECTING";
+        else if (state == NetworkInfo.DetailedState.DISCONNECTED)
+            return "DISCONNECTED";
+        else if (state == NetworkInfo.DetailedState.FAILED)
+            return "FAILED";
+        else if (state == NetworkInfo.DetailedState.BLOCKED)
+            return "BLOCKED";
+        else
+            return "???";
     }
 
     @Override

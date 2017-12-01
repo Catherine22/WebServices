@@ -36,8 +36,8 @@ import catherine.messagecenter.Server;
  * catherine919@soft-world.com.tw
  */
 
-public class P17_WebView_Test_List extends LazyFragment {
-    public final static String TAG = "P17_WebView_Test_List";
+public class WebViewTestListFragment extends LazyFragment {
+    public final static String TAG = WebViewTestListFragment.class.getSimpleName();
     private SwipeRefreshLayout srl_container;
     private MainInterface mainInterface;
     private SimpleStyleRVAdapter adapter;
@@ -51,10 +51,10 @@ public class P17_WebView_Test_List extends LazyFragment {
     private final String titleLoadData = "Load Data With Base URL";
     private final String titleOthers = "Others";
 
-    public static P17_WebView_Test_List newInstance(boolean isLazyLoad) {
+    public static WebViewTestListFragment newInstance(boolean isLazyLoad) {
         Bundle args = new Bundle();
         args.putBoolean(LazyFragment.INTENT_BOOLEAN_LAZYLOAD, isLazyLoad);
-        P17_WebView_Test_List fragment = new P17_WebView_Test_List();
+        WebViewTestListFragment fragment = new WebViewTestListFragment();
         fragment.setArguments(args);
         return fragment;
     }
@@ -62,7 +62,7 @@ public class P17_WebView_Test_List extends LazyFragment {
     @Override
     public void onCreateViewLazy(Bundle savedInstanceState) {
         super.onCreateViewLazy(savedInstanceState);
-        setContentView(R.layout.f_17_webview_test_list);
+        setContentView(R.layout.f_webview_test_list);
         mainInterface = (MainInterface) getActivity();
         init();
     }
@@ -158,7 +158,7 @@ public class P17_WebView_Test_List extends LazyFragment {
                     b.putString("loadData", loadDataList.get(position).getSubtitle());
                 }
 
-                callFragment(Constants.P13_NESTED_WEBVIEW, b);
+                callFragment(Constants.Fragments.F_NESTED_WEBVIEW, b);
             }
 
             @Override
@@ -307,9 +307,9 @@ public class P17_WebView_Test_List extends LazyFragment {
         String tag = "";
         String title = "";
         switch (id) {
-            case Constants.P13_NESTED_WEBVIEW:
+            case Constants.Fragments.F_NESTED_WEBVIEW:
                 title = "P13_Nested_WebView";
-                fragment = P13_Nested_WebView.newInstance(true);
+                fragment = NestedWebViewFragment.newInstance(true);
                 fragment.setArguments(bundle);
                 tag = "P13";
                 break;

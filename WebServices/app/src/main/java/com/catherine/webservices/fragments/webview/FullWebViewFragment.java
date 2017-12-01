@@ -73,8 +73,8 @@ import static android.content.Context.DOWNLOAD_SERVICE;
  * catherine919@soft-world.com.tw
  */
 
-public class P14_Full_WebView extends LazyFragment {
-    public final static String TAG = "P14_Full_WebView";
+public class FullWebViewFragment extends LazyFragment {
+    public final static String TAG = FullWebViewFragment.class.getSimpleName();
     private MainInterface mainInterface;
     private MyWebView wv;
     private ImageView iv_menu, iv_refresh;
@@ -88,10 +88,10 @@ public class P14_Full_WebView extends LazyFragment {
     private SharedPreferences sp;
     //test js -> https://www.javascript.com/
 
-    public static P14_Full_WebView newInstance(boolean isLazyLoad) {
+    public static FullWebViewFragment newInstance(boolean isLazyLoad) {
         Bundle args = new Bundle();
         args.putBoolean(LazyFragment.INTENT_BOOLEAN_LAZYLOAD, isLazyLoad);
-        P14_Full_WebView fragment = new P14_Full_WebView();
+        FullWebViewFragment fragment = new FullWebViewFragment();
         fragment.setArguments(args);
         return fragment;
     }
@@ -99,7 +99,7 @@ public class P14_Full_WebView extends LazyFragment {
     @Override
     public void onCreateViewLazy(Bundle savedInstanceState) {
         super.onCreateViewLazy(savedInstanceState);
-        setContentView(R.layout.f_14_full_webview);
+        setContentView(R.layout.f_full_webview);
         mainInterface = (MainInterface) getActivity();
         init();
     }

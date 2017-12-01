@@ -47,8 +47,8 @@ import catherine.messagecenter.Server;
  * catherine919@soft-world.com.tw
  */
 
-public class P15_WebView_Settings extends LazyFragment {
-    public final static String TAG = "P15_WebView_Settings";
+public class WebViewSettingsFragment extends LazyFragment {
+    public final static String TAG = WebViewSettingsFragment.class.getSimpleName();
     private List<MultiStyleItem> wvAttr, wvSettings, caches;
     private String[] titles;
     private SwipeRefreshLayout srl_container;
@@ -56,10 +56,10 @@ public class P15_WebView_Settings extends LazyFragment {
     private MultiStyleRVAdapter adapter;
     private Server sv;
 
-    public static P15_WebView_Settings newInstance(boolean isLazyLoad) {
+    public static WebViewSettingsFragment newInstance(boolean isLazyLoad) {
         Bundle args = new Bundle();
         args.putBoolean(LazyFragment.INTENT_BOOLEAN_LAZYLOAD, isLazyLoad);
-        P15_WebView_Settings fragment = new P15_WebView_Settings();
+        WebViewSettingsFragment fragment = new WebViewSettingsFragment();
         fragment.setArguments(args);
         return fragment;
     }
@@ -67,7 +67,7 @@ public class P15_WebView_Settings extends LazyFragment {
     @Override
     public void onCreateViewLazy(Bundle savedInstanceState) {
         super.onCreateViewLazy(savedInstanceState);
-        setContentView(R.layout.f_15_wv_settings);
+        setContentView(R.layout.f_wv_settings);
         mainInterface = (MainInterface) getActivity();
         init();
     }
@@ -206,7 +206,7 @@ public class P15_WebView_Settings extends LazyFragment {
                     Bundle b = new Bundle();
                     switch (position) {
                         case 0:
-                            mainInterface.callFragment(Constants.P16_WEBVIEW_HISTORY);
+                            mainInterface.callFragment(Constants.Fragments.F_WEBVIEW_HISTORY);
                             break;
                         case 6:
                             SharedPreferences sp = getActivity().getSharedPreferences("wv_history", Context.MODE_PRIVATE);
@@ -228,7 +228,7 @@ public class P15_WebView_Settings extends LazyFragment {
         }, new OnMultiItemSelectListener() {
             @Override
             public void onItemSelect(final String title, final int position, boolean isSelect, String data) {
-                CLog.i(TAG, "select: "+title + "[" + position + "], isSelect:" + isSelect + ", data: " + data);
+                CLog.i(TAG, "select: " + title + "[" + position + "], isSelect:" + isSelect + ", data: " + data);
                 if (titles[0].equals(title)) {
                     switch (position) {
                         case 0:

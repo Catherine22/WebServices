@@ -54,17 +54,17 @@ import static android.content.Context.DOWNLOAD_SERVICE;
  * Go to P14_Full_WebView to see more
  */
 
-public class P13_Nested_WebView extends LazyFragment {
-    public final static String TAG = "P13_Nested_WebView";
+public class NestedWebViewFragment extends LazyFragment {
+    public final static String TAG = NestedWebViewFragment.class.getSimpleName();
     private MainInterface mainInterface;
     private MyNestedWebView wv;
     private ProgressBar pb;
     private Client client0, client1;
 
-    public static P13_Nested_WebView newInstance(boolean isLazyLoad) {
+    public static NestedWebViewFragment newInstance(boolean isLazyLoad) {
         Bundle args = new Bundle();
         args.putBoolean(LazyFragment.INTENT_BOOLEAN_LAZYLOAD, isLazyLoad);
-        P13_Nested_WebView fragment = new P13_Nested_WebView();
+        NestedWebViewFragment fragment = new NestedWebViewFragment();
         fragment.setArguments(args);
         return fragment;
     }
@@ -72,7 +72,7 @@ public class P13_Nested_WebView extends LazyFragment {
     @Override
     public void onCreateViewLazy(Bundle savedInstanceState) {
         super.onCreateViewLazy(savedInstanceState);
-        setContentView(R.layout.f_13_nested_webview);
+        setContentView(R.layout.f_nested_webview);
         mainInterface = (MainInterface) getActivity();
         init();
     }

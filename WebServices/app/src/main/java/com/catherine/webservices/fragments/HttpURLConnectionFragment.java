@@ -44,8 +44,8 @@ import java.util.Map;
  * catherine919@soft-world.com.tw
  */
 
-public class P02_HttpURLConnection extends LazyFragment {
-    public final static String TAG = "P02_HttpURLConnection";
+public class HttpURLConnectionFragment extends LazyFragment {
+    public final static String TAG = HttpURLConnectionFragment.class.getSimpleName();
     private List<TextCard> entities;
     private SwipeRefreshLayout srl_container;
     private TextCardRVAdapter adapter;
@@ -53,10 +53,10 @@ public class P02_HttpURLConnection extends LazyFragment {
     private boolean retry;
     private int step;
 
-    public static P02_HttpURLConnection newInstance(boolean isLazyLoad) {
+    public static HttpURLConnectionFragment newInstance(boolean isLazyLoad) {
         Bundle args = new Bundle();
         args.putBoolean(LazyFragment.INTENT_BOOLEAN_LAZYLOAD, isLazyLoad);
-        P02_HttpURLConnection fragment = new P02_HttpURLConnection();
+        HttpURLConnectionFragment fragment = new HttpURLConnectionFragment();
         fragment.setArguments(args);
         return fragment;
     }
@@ -65,7 +65,7 @@ public class P02_HttpURLConnection extends LazyFragment {
     @Override
     public void onCreateViewLazy(Bundle savedInstanceState) {
         super.onCreateViewLazy(savedInstanceState);
-        setContentView(R.layout.f_02_http_url_connection);
+        setContentView(R.layout.f_http_url_connection);
         fillInData();
         initComponent();
     }

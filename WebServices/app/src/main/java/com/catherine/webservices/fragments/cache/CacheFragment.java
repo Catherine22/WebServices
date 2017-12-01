@@ -54,8 +54,8 @@ import catherine.messagecenter.Result;
  * catherine919@soft-world.com.tw
  */
 
-public class P04_Cache extends LazyFragment {
-    public final static String TAG = "P04_Cache";
+public class CacheFragment extends LazyFragment {
+    public final static String TAG = CacheFragment.class.getSimpleName();
     private List<TextCard> entities;
     private SwipeRefreshLayout srl_container;
     private MainInterface mainInterface;
@@ -64,10 +64,10 @@ public class P04_Cache extends LazyFragment {
     private TextView tv_pb_info;
     private Client client;
 
-    public static P04_Cache newInstance(boolean isLazyLoad) {
+    public static CacheFragment newInstance(boolean isLazyLoad) {
         Bundle args = new Bundle();
         args.putBoolean(LazyFragment.INTENT_BOOLEAN_LAZYLOAD, isLazyLoad);
-        P04_Cache fragment = new P04_Cache();
+        CacheFragment fragment = new CacheFragment();
         fragment.setArguments(args);
         return fragment;
     }
@@ -75,7 +75,7 @@ public class P04_Cache extends LazyFragment {
     @Override
     public void onCreateViewLazy(Bundle savedInstanceState) {
         super.onCreateViewLazy(savedInstanceState);
-        setContentView(R.layout.f_04_cache);
+        setContentView(R.layout.f_cache);
         mainInterface = (MainInterface) getActivity();
         init();
     }
@@ -195,28 +195,28 @@ public class P04_Cache extends LazyFragment {
                     case 0:
                         Bundle b0 = new Bundle();
                         b0.putBoolean("show_pic_offline", false);
-                        callFragment(Constants.P05_Gallery, b0);
+                        callFragment(Constants.Fragments.F_Gallery, b0);
                         break;
                     case 1:
                         Bundle b1 = new Bundle();
                         b1.putBoolean("show_pic_offline", true);
-                        callFragment(Constants.P05_Gallery, b1);
+                        callFragment(Constants.Fragments.F_Gallery, b1);
                         break;
                     case 2:
                         Bundle b2 = new Bundle();
                         b2.putBoolean("cacheable", false);
-                        callFragment(Constants.P11_FRESCO, b2);
+                        callFragment(Constants.Fragments.F_FRESCO, b2);
                         break;
                     case 3:
                         Bundle b3 = new Bundle();
                         b3.putBoolean("cacheable", true);
-                        callFragment(Constants.P11_FRESCO, b3);
+                        callFragment(Constants.Fragments.F_FRESCO, b3);
                         break;
                     case 4:
                         Bundle b4 = new Bundle();
                         b4.putBoolean("cacheable", true);
                         b4.putParcelableArrayList("imageCards", (ArrayList<ImageCard>) imageCards);
-                        callFragment(Constants.P11_FRESCO, b4);
+                        callFragment(Constants.Fragments.F_FRESCO, b4);
                         break;
                 }
             }
@@ -246,15 +246,15 @@ public class P04_Cache extends LazyFragment {
         String tag = "";
         String title = "";
         switch (id) {
-            case Constants.P05_Gallery:
-                title = "P05_Gallery";
-                fragment = P05_Gallery.newInstance(true);
+            case Constants.Fragments.F_Gallery:
+                title = "F_Gallery";
+                fragment = GalleryFragment.newInstance(true);
                 fragment.setArguments(bundle);
                 tag = "P05";
                 break;
-            case Constants.P11_FRESCO:
+            case Constants.Fragments.F_FRESCO:
                 title = "P11_Fresco";
-                fragment = P11_Fresco.newInstance(true);
+                fragment = FrescoFragment.newInstance(true);
                 fragment.setArguments(bundle);
                 tag = "P11";
                 break;

@@ -1,65 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@android:color/white"
-    android:clickable="true" android:focusable="true">
+<FrameLayout android:id="@+id/fl_container"
+             xmlns:android="http://schemas.android.com/apk/res/android"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:background="@android:color/white"
+             android:clickable="true"
+             android:focusable="true">
 
-    <RelativeLayout
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/srl_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <TextView
-            android:id="@+id/tv_state"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:gravity="center"
-            android:textColor="@color/colorPrimary"/>
 
-        <ScrollView
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_main_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/tv_state"
-            android:layout_margin="10dp">
+            android:nestedScrollingEnabled="true"/>
 
-            <TextView
-                android:id="@+id/tv_history"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/grey900"
-                android:textSize="14sp"/>
-
-        </ScrollView>
-
-    </RelativeLayout>
-
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_disconnect"
-        android:layout_width="@dimen/fab_01"
-        android:layout_height="@dimen/fab_01"
-        android:layout_gravity="bottom|end"
-        android:layout_marginBottom="@dimen/fab_item_m_b"
-        android:layout_marginEnd="@dimen/fab_item_m"
-        android:layout_marginRight="@dimen/fab_item_m"
-        android:scaleType="center"
-        app:backgroundTint="@color/colorPrimary"
-        app:fabSize="mini"
-        app:srcCompat="@drawable/close_selector"/>
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_settings"
-        android:layout_width="@dimen/fab_00"
-        android:layout_height="@dimen/fab_00"
-        android:layout_gravity="bottom|end"
-        android:layout_marginBottom="@dimen/fab_00_m_b"
-        android:layout_marginEnd="@dimen/fab_m"
-        android:layout_marginRight="@dimen/fab_m"
-        android:scaleType="center"
-        app:backgroundTint="@color/colorPrimary"
-        app:fabSize="normal"
-        app:srcCompat="@drawable/settings_selector"/>
-
+    </android.support.v4.widget.SwipeRefreshLayout>
 </FrameLayout>

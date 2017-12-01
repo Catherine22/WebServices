@@ -41,8 +41,8 @@ import java.util.Map;
  * catherine919@soft-world.com.tw
  */
 
-public class P01_Apache extends LazyFragment {
-    public final static String TAG = "P01_Apache";
+public class ApacheFragment extends LazyFragment {
+    public final static String TAG = ApacheFragment.class.getSimpleName();
     private List<TextCard> entities;
     private SwipeRefreshLayout srl_container;
     private Handler networkTask;
@@ -54,10 +54,10 @@ public class P01_Apache extends LazyFragment {
     private boolean retry;
     private int step;
 
-    public static P01_Apache newInstance(boolean isLazyLoad) {
+    public static ApacheFragment newInstance(boolean isLazyLoad) {
         Bundle args = new Bundle();
         args.putBoolean(LazyFragment.INTENT_BOOLEAN_LAZYLOAD, isLazyLoad);
-        P01_Apache fragment = new P01_Apache();
+        ApacheFragment fragment = new ApacheFragment();
         fragment.setArguments(args);
         return fragment;
     }
@@ -66,7 +66,7 @@ public class P01_Apache extends LazyFragment {
     @Override
     public void onCreateViewLazy(Bundle savedInstanceState) {
         super.onCreateViewLazy(savedInstanceState);
-        setContentView(R.layout.f_01_apache);
+        setContentView(R.layout.f_apache);
         fillInData();
         initComponent();
     }
@@ -78,12 +78,12 @@ public class P01_Apache extends LazyFragment {
 
     private void fillInData() {
         entities = new ArrayList<>();
-        entities.add(new TextCard("GET " + Constants.HOST + " in looper A","Connect to the server with user-defined headers",null));
-        entities.add(new TextCard("POST " + Constants.HOST + " in looper A","Connect to the server with correct account",null));
-        entities.add(new TextCard("POST " + Constants.HOST + " in looper A","Connect to the server with false Authorization",null));
-        entities.add(new TextCard("POST " + Constants.HOST + " in looper B","Connect to the server with false account",null));
-        entities.add(new TextCard("GET http://dictionary.cambridge.org/ in looper C","Connect to Cambridge dictionary server",null));
-        entities.add(new TextCard("GET " + Constants.GITHUB_API_DOMAIN + " in looper C","Connect to GitHub api with gzip encoding",null));
+        entities.add(new TextCard("GET " + Constants.HOST + " in looper A", "Connect to the server with user-defined headers", null));
+        entities.add(new TextCard("POST " + Constants.HOST + " in looper A", "Connect to the server with correct account", null));
+        entities.add(new TextCard("POST " + Constants.HOST + " in looper A", "Connect to the server with false Authorization", null));
+        entities.add(new TextCard("POST " + Constants.HOST + " in looper B", "Connect to the server with false account", null));
+        entities.add(new TextCard("GET http://dictionary.cambridge.org/ in looper C", "Connect to Cambridge dictionary server", null));
+        entities.add(new TextCard("GET " + Constants.GITHUB_API_DOMAIN + " in looper C", "Connect to GitHub api with gzip encoding", null));
     }
 
     private void initComponent() {
@@ -327,7 +327,7 @@ public class P01_Apache extends LazyFragment {
     @Override
     public void onDestroy() {
         if (helper != null)
-        helper.stopListeningToNetworkState();
+            helper.stopListeningToNetworkState();
         super.onDestroy();
     }
 }

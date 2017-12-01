@@ -43,18 +43,18 @@ import java.util.Map;
  * catherine919@soft-world.com.tw
  */
 
-public class P06_Upload extends LazyFragment {
-    public final static String TAG = "P06_Upload";
+public class UploadFragment extends LazyFragment {
+    public final static String TAG = UploadFragment.class.getSimpleName();
     private List<TextCard> entities;
     private MainInterface mainInterface;
     private SwipeRefreshLayout srl_container;
     private TextCardRVAdapter adapter;
     private ADID_AsyncTask adid_asyncTask;
 
-    public static P06_Upload newInstance(boolean isLazyLoad) {
+    public static UploadFragment newInstance(boolean isLazyLoad) {
         Bundle args = new Bundle();
         args.putBoolean(LazyFragment.INTENT_BOOLEAN_LAZYLOAD, isLazyLoad);
-        P06_Upload fragment = new P06_Upload();
+        UploadFragment fragment = new UploadFragment();
         fragment.setArguments(args);
         return fragment;
     }
@@ -62,7 +62,7 @@ public class P06_Upload extends LazyFragment {
     @Override
     public void onCreateViewLazy(Bundle savedInstanceState) {
         super.onCreateViewLazy(savedInstanceState);
-        setContentView(R.layout.f_06_upload);
+        setContentView(R.layout.f_upload);
         mainInterface = (MainInterface) getActivity();
         init();
     }

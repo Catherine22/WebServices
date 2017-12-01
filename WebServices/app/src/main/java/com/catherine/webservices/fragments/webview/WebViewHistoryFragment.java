@@ -42,15 +42,15 @@ import java.util.Map;
  * catherine919@soft-world.com.tw
  */
 
-public class P16_WebView_History extends LazyFragment {
-    public final static String TAG = "P16_WebView_History";
+public class WebViewHistoryFragment extends LazyFragment {
+    public final static String TAG = WebViewHistoryFragment.class.getSimpleName();
     private SwipeRefreshLayout srl_container;
     private MainInterface mainInterface;
 
-    public static P16_WebView_History newInstance(boolean isLazyLoad) {
+    public static WebViewHistoryFragment newInstance(boolean isLazyLoad) {
         Bundle args = new Bundle();
         args.putBoolean(LazyFragment.INTENT_BOOLEAN_LAZYLOAD, isLazyLoad);
-        P16_WebView_History fragment = new P16_WebView_History();
+        WebViewHistoryFragment fragment = new WebViewHistoryFragment();
         fragment.setArguments(args);
         return fragment;
     }
@@ -58,7 +58,7 @@ public class P16_WebView_History extends LazyFragment {
     @Override
     public void onCreateViewLazy(Bundle savedInstanceState) {
         super.onCreateViewLazy(savedInstanceState);
-        setContentView(R.layout.f_16_wv_history);
+        setContentView(R.layout.f_wv_history);
         mainInterface = (MainInterface) getActivity();
         init();
     }

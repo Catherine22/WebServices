@@ -63,11 +63,15 @@ public class TextCardRVAdapter extends RecyclerView.Adapter<TextCardRVAdapter.Ma
         if (tc.title != null) {
             mainRvHolder.tv_title.setVisibility(View.VISIBLE);
             mainRvHolder.tv_title.setText(tc.title);
-        }
+        } else
+            mainRvHolder.tv_title.setVisibility(View.GONE);
+
         if (tc.subtitle != null) {
             mainRvHolder.tv_subtitle.setVisibility(View.VISIBLE);
             mainRvHolder.tv_subtitle.setText(tc.subtitle);
-        }
+        } else
+            mainRvHolder.tv_subtitle.setVisibility(View.GONE);
+
         if (tc.contents != null) {
             mainRvHolder.tv_main.setVisibility(View.VISIBLE);
             //Enable TextView open url links

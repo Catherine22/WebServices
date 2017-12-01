@@ -72,30 +72,85 @@ public class Constants {
     protected final static String CACHE_PATH = ROOT_PATH + "cache/";
     protected final static String LOG_PATH = ROOT_PATH + "log/";
 
-    //Fragments - sort by ViewPager
-    public final static int P01_APACHE = 0;
-    public final static int P02_HTTP_URL_CONNECTION = 1;
-    public final static int P03_DOWNLOADER = 2;
-    public final static int P04_CACHE = 3;
-    public final static int P06_UPLOAD = 4;
-    public final static int P07_SOCKET = 5;
-    public final static int P12_WEBVIEW = 6;
+    public static class Fragments {
+        //Fragments - sort by ViewPager
+        public final static int F_APACHE = 0;
+        public final static int F_HTTP_URL_CONNECTION = 1;
+        public final static int F_DOWNLOADER = 2;
+        public final static int F_CACHE = 3;
+        public final static int F_UPLOAD = 4;
+        public final static int F_SOCKET = 5;
+        public final static int F_WEBVIEW = 6;
 
-    //Other fragments
-    public final static int P05_Gallery = 7;
-    public final static int P08_BLOCKING_SOCKET = 8;
-    public final static int P09_NIO_SOCKET = 9;
-    public final static int P10_UDP_SOCKET = 10;
-    public final static int P11_FRESCO = 11;
-    public final static int P13_NESTED_WEBVIEW = 13;
-    public final static int P14_FULL_WEBVIEW = 14;
-    public final static int P15_WEBVIEW_SETTINGS = 15;
-    public final static int P16_WEBVIEW_HISTORY = 16;
-    public final static int P17_WEBVIEW_TEST_LIST = 17;
-    public final static int P18_NETWORK_ANALYTICS = 18;
-    public final static int P19_NETWORK_INFO_ANALYTICS = 19;
-    public final static int P20_WIFI_CONFIGURATION_ANALYTICS = 20;
-    public final static int P21_D_SCAN_RESULT = 21;
-    public final static int P22_D_WIFI_CONFIGURATIONS = 22;
+        //Other fragments
+        public final static int F_Gallery = 7;
+        public final static int F_BLOCKING_SOCKET = 8;
+        public final static int F_NIO_SOCKET = 9;
+        public final static int F_UDP_SOCKET = 10;
+        public final static int F_FRESCO = 11;
+        public final static int F_NESTED_WEBVIEW = 13;
+        public final static int F_FULL_WEBVIEW = 14;
+        public final static int F_WEBVIEW_SETTINGS = 15;
+        public final static int F_WEBVIEW_HISTORY = 16;
+        public final static int F_WEBVIEW_TEST_LIST = 17;
+        public final static int F_NETWORK_ANALYTICS = 18;
+        public final static int F_NETWORK_INFO_ANALYTICS = 19;
+        public final static int F_WIFI_CONFIGURATION_ANALYTICS = 20;
+        public final static int F_D_SCAN_RESULT = 21;
+        public final static int F_D_WIFI_CONFIGURATIONS = 22;
 
+        public static String TAG(int f) {
+            switch (f) {
+                case F_APACHE:
+                    return "F_APACHE";
+                case F_HTTP_URL_CONNECTION:
+                    return "F_HTTP_URL_CONNECTION";
+                case F_DOWNLOADER:
+                    return "F_DOWNLOADER";
+                case F_CACHE:
+                    return "F_CACHE";
+                case F_UPLOAD:
+                    return "F_UPLOAD";
+                case F_SOCKET:
+                    return "F_SOCKET";
+                case F_WEBVIEW:
+                    return "F_WEBVIEW";
+
+
+                case F_Gallery:
+                    return "F_Gallery";
+                case F_BLOCKING_SOCKET:
+                    return "F_BLOCKING_SOCKET";
+                case F_NIO_SOCKET:
+                    return "F_NIO_SOCKET";
+                case F_UDP_SOCKET:
+                    return "F_UDP_SOCKET";
+                case F_FRESCO:
+                    return "F_FRESCO";
+                case F_NESTED_WEBVIEW:
+                    return "F_NESTED_WEBVIEW";
+                case F_FULL_WEBVIEW:
+                    return "F_FULL_WEBVIEW";
+                case F_WEBVIEW_SETTINGS:
+                    return "F_WEBVIEW_SETTINGS";
+                case F_WEBVIEW_HISTORY:
+                    return "F_WEBVIEW_HISTORY";
+                case F_WEBVIEW_TEST_LIST:
+                    return "F_WEBVIEW_TEST_LIST";
+                case F_NETWORK_ANALYTICS:
+                    return "F_NETWORK_ANALYTICS";
+                case F_NETWORK_INFO_ANALYTICS:
+                    return "F_NETWORK_INFO_ANALYTICS";
+                case F_WIFI_CONFIGURATION_ANALYTICS:
+                    return "F_WIFI_CONFIGURATION_ANALYTICS";
+                case F_D_SCAN_RESULT:
+                    return "F_D_SCAN_RESULT";
+                case F_D_WIFI_CONFIGURATIONS:
+                    return "F_D_WIFI_CONFIGURATIONS";
+
+                default:
+                    return "UNKNOWN";
+            }
+        }
+    }
 }

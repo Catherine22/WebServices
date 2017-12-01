@@ -30,8 +30,8 @@ import java.util.List;
  * catherine919@soft-world.com.tw
  */
 
-public class P10_UDP_Socket extends LazyFragment {
-    public final static String TAG = "P10_UDP_Socket";
+public class UDP_SocketFragment extends LazyFragment {
+    public final static String TAG = UDP_SocketFragment.class.getSimpleName();
     private MainInterface mainInterface;
     private TextView tv_history, tv_state;
     private EditText et_input;
@@ -41,10 +41,10 @@ public class P10_UDP_Socket extends LazyFragment {
     private NetworkHelper helper;
     private MyUDPSocket myUDPSocket;
 
-    public static P10_UDP_Socket newInstance(boolean isLazyLoad) {
+    public static UDP_SocketFragment newInstance(boolean isLazyLoad) {
         Bundle args = new Bundle();
         args.putBoolean(LazyFragment.INTENT_BOOLEAN_LAZYLOAD, isLazyLoad);
-        P10_UDP_Socket fragment = new P10_UDP_Socket();
+        UDP_SocketFragment fragment = new UDP_SocketFragment();
         fragment.setArguments(args);
         return fragment;
     }
@@ -52,7 +52,7 @@ public class P10_UDP_Socket extends LazyFragment {
     @Override
     public void onCreateViewLazy(Bundle savedInstanceState) {
         super.onCreateViewLazy(savedInstanceState);
-        setContentView(R.layout.f_socket);
+        setContentView(R.layout.f_common_socket);
         helper = new NetworkHelper();
         mainInterface = (MainInterface) getActivity();
         init();

@@ -51,7 +51,7 @@ public class DeviceInfoActivity extends BaseFragmentActivity {
     @Override
     @SuppressLint("MissingSuperCall")
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState, R.layout.f_00_device_info, new String[]{Manifest.permission.READ_PHONE_STATE, Manifest.permission.BLUETOOTH});
+        super.onCreate(savedInstanceState, R.layout.activity_device_info, new String[]{Manifest.permission.READ_PHONE_STATE, Manifest.permission.BLUETOOTH});
     }
 
     @Override

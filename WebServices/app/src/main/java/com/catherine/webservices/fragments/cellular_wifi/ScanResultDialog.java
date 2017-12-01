@@ -1,4 +1,4 @@
-package com.catherine.webservices.fragments;
+package com.catherine.webservices.fragments.cellular_wifi;
 
 import android.net.wifi.ScanResult;
 import android.os.Bundle;
@@ -30,7 +30,7 @@ import java.util.List;
  * catherine919@soft-world.com.tw
  */
 
-public class P21_D_ScanResult extends MyDialogFragment {
+public class ScanResultDialog extends MyDialogFragment {
     private TextView tv_error;
     private NetworkHelper helper;
     private List<TextCard> entities;
@@ -40,7 +40,7 @@ public class P21_D_ScanResult extends MyDialogFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.f_21_d_scan_result, container, false);
+        View view = inflater.inflate(R.layout.f_d_scan_result, container, false);
         mainInterface = (MainInterface) getActivity();
         tv_error = view.findViewById(R.id.tv_error);
         ImageButton xButton = view.findViewById(R.id.xButton);
@@ -60,7 +60,7 @@ public class P21_D_ScanResult extends MyDialogFragment {
                 dismiss();
                 Bundle b = new Bundle();
                 b.putParcelable("ScanResult", results.get(position));
-                mainInterface.callFragment(Constants.P20_WIFI_CONFIGURATION_ANALYTICS, b);
+                mainInterface.callFragment(Constants.Fragments.F_WIFI_CONFIGURATION_ANALYTICS, b);
             }
 
             @Override
