@@ -1,6 +1,7 @@
 package com.catherine.webservices.toolkits;
 
 import android.annotation.SuppressLint;
+import android.content.ClipData;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.res.AssetManager;
@@ -10,26 +11,21 @@ import android.os.Build;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
+import android.text.ClipboardManager;
 
 import com.catherine.webservices.MyApplication;
+import com.catherine.webservices.entities.TextCard;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
-import java.util.Set;
-import java.util.StringTokenizer;
 
 /**
  * Created by Catherine on 2017/9/20.
@@ -51,7 +47,7 @@ public class FileUtils {
         try {
             files = assetManager.list("");
         } catch (IOException e) {
-            CLog.Companion.e(TAG, e.getMessage() + "\nFailed to get asset file list.");
+            CLog.e(TAG, e.getMessage() + "\nFailed to get asset file list.");
         }
         if (files != null) {
             for (String filename : files) {
@@ -64,7 +60,7 @@ public class FileUtils {
                         out = new FileOutputStream(outFile);
                         copyFile(in, out);
                     } catch (IOException e) {
-                        CLog.Companion.e(TAG, e.getMessage() + "\nFailed to copy asset file: " + filename);
+                        CLog.e(TAG, e.getMessage() + "\nFailed to copy asset file: " + filename);
                     } finally {
                         if (in != null) {
                             try {
@@ -331,6 +327,25 @@ public class FileUtils {
             return uri.getPath();
         }
         return null;
+    }
+
+    public static void copyToClipboard(String title, String content) {
+        try {
+            int sdk = Build.VERSION.SDK_INT;
+            if (sdk < Build.VERSION_CODES.HONEYCOMB) {
+                ClipboardManager clipboard = (ClipboardManager)
+                        MyApplication.INSTANCE.getSystemService(Context.CLIPBOARD_SERVICE);
+                clipboard.setText(content);
+            } else {
+                android.content.ClipboardManager clipboard = (android.content.ClipboardManager)
+                        MyApplication.INSTANCE.getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clip = ClipData
+                        .newPlainText(title, content);
+                clipboard.setPrimaryClip(clip);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 

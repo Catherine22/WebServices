@@ -7,24 +7,17 @@ import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Switch;
 import android.widget.TextView;
 
 import com.catherine.webservices.MyApplication;
 import com.catherine.webservices.R;
 import com.catherine.webservices.entities.ImageCardEx;
-import com.catherine.webservices.entities.MultiStyleItem;
 import com.catherine.webservices.interfaces.OnMultiItemClickListener;
-import com.catherine.webservices.interfaces.OnMultiItemSelectListener;
 import com.catherine.webservices.toolkits.CLog;
 
 import java.io.File;
@@ -90,7 +83,7 @@ public class SimpleStyleRVAdapter extends RecyclerView.Adapter<SimpleStyleRVAdap
         String subtitle = items.get(position).getSubtitle();
         final String icon = items.get(position).getImage();
         int style = items.get(position).getStyle();
-        CLog.Companion.i(TAG, position + ":" + items.toString());
+        CLog.i(TAG, position + ":" + items.toString());
 
         //This is a title not an item
         if ((style & PLAIN_TEXT) == PLAIN_TEXT) {
@@ -223,9 +216,9 @@ public class SimpleStyleRVAdapter extends RecyclerView.Adapter<SimpleStyleRVAdap
     }
 
     public void mergeList(String title, List<ImageCardEx> list) {
-//        CLog.Companion.w(TAG, "TOP:" + TOP);
-//        CLog.Companion.w(TAG, "BOTTOM:" + BOTTOM);
-//        CLog.Companion.w(TAG, "PLAIN_TEXT:" + PLAIN_TEXT);
+//        CLog.w(TAG, "TOP:" + TOP);
+//        CLog.w(TAG, "BOTTOM:" + BOTTOM);
+//        CLog.w(TAG, "PLAIN_TEXT:" + PLAIN_TEXT);
         if (list != null && list.size() > 0) {
             if (!TextUtils.isEmpty(title)) {
                 titles++;
@@ -288,7 +281,7 @@ public class SimpleStyleRVAdapter extends RecyclerView.Adapter<SimpleStyleRVAdap
         //Debug
         for (int i = 0; i < items.size(); i++) {
             ImageCardEx item = items.get(i);
-            CLog.Companion.i(TAG, item.getTitle() + ":" + item.getStyle());
+            CLog.i(TAG, item.getTitle() + ":" + item.getStyle());
         }
 
     }

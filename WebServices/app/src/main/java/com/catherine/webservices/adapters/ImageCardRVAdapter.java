@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.catherine.webservices.MyApplication;
@@ -22,6 +23,7 @@ import com.catherine.webservices.network.MyHttpURLConnection;
 import com.catherine.webservices.network.NetworkHelper;
 import com.catherine.webservices.security.Encryption;
 import com.catherine.webservices.toolkits.CLog;
+import com.catherine.webservices.toolkits.MyDisplay;
 import com.jakewharton.disklrucache.DiskLruCache;
 
 import java.io.BufferedInputStream;
@@ -61,7 +63,7 @@ public class ImageCardRVAdapter extends RecyclerView.Adapter<ImageCardRVAdapter.
         this.offlineMode = offlineMode;
         this.listener = listener;
         openDiskLruCache();
-        helper = new NetworkHelper(ctx);
+        helper = new NetworkHelper();
     }
 
     @Override
@@ -124,7 +126,7 @@ public class ImageCardRVAdapter extends RecyclerView.Adapter<ImageCardRVAdapter.
                                 ((Activity) ctx).runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
-                                        CLog.Companion.d(TAG, "show cache " + position);
+                                        CLog.d(TAG, "show cache " + position);
                                         entities.get(position).subtitle = "cache";
                                         mainRvHolder.tv_subtitle.setText(entities.get(position).subtitle);
                                         mainRvHolder.iv_main.setScaleType(ImageView.ScaleType.CENTER_CROP);
@@ -139,7 +141,7 @@ public class ImageCardRVAdapter extends RecyclerView.Adapter<ImageCardRVAdapter.
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
-                            CLog.Companion.e(TAG, "DiskLruCache error");
+                            CLog.e(TAG, "DiskLruCache error");
                         }
 
                         //2. You will go on once there're no caches or caught exceptions.
@@ -159,7 +161,7 @@ public class ImageCardRVAdapter extends RecyclerView.Adapter<ImageCardRVAdapter.
                                 ((Activity) ctx).runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
-                                        CLog.Companion.d(TAG, "fresh");
+                                        CLog.d(TAG, "fresh");
                                         entities.get(position).subtitle = "fresh";
                                         mainRvHolder.tv_subtitle.setText(entities.get(position).subtitle);
                                         mainRvHolder.iv_main.setScaleType(ImageView.ScaleType.CENTER_CROP);
@@ -188,21 +190,21 @@ public class ImageCardRVAdapter extends RecyclerView.Adapter<ImageCardRVAdapter.
                                         bos.flush();
                                         bos.close();
                                         editor.commit();
-                                        CLog.Companion.d(TAG, "Cached the image successfully.");
+                                        CLog.d(TAG, "Cached the image successfully.");
                                     } else {
                                         editor.abort();
                                     }
                                     diskLruCache.flush();
                                 } catch (final Exception e) {
                                     e.printStackTrace();
-                                    CLog.Companion.e(TAG, "Failed to cache the image");
+                                    CLog.e(TAG, "Failed to cache the image");
                                 }
                             } else {
                                 handleErrorPics(position, mainRvHolder);
                             }
                         } catch (final Exception e) {
                             e.printStackTrace();
-                            CLog.Companion.e(TAG, "HttpURLConnection error");
+                            CLog.e(TAG, "HttpURLConnection error");
                             handleErrorPics(position, mainRvHolder);
                         }
                     }
@@ -260,7 +262,7 @@ public class ImageCardRVAdapter extends RecyclerView.Adapter<ImageCardRVAdapter.
      * @param shrinkList Remove data which hasn't been cached.
      */
     public void setImageCards(List<ImageCard> entities, boolean shrinkList) {
-        CLog.Companion.d(TAG, "total:" + entities.size());
+        CLog.d(TAG, "total:" + entities.size());
         int count = 0;
         if (shrinkList) {
             if (diskLruCache.isClosed())
@@ -280,12 +282,12 @@ public class ImageCardRVAdapter extends RecyclerView.Adapter<ImageCardRVAdapter.
             }
         }
         this.entities = entities;
-        CLog.Companion.d(TAG, "removed:" + count);
-        CLog.Companion.d(TAG, "entities size:" + this.entities.size() + " " + shrinkList);
+        CLog.d(TAG, "removed:" + count);
+        CLog.d(TAG, "entities size:" + this.entities.size() + " " + shrinkList);
     }
 
     private void openDiskLruCache() {
-        CLog.Companion.i(TAG, "open DiskLruCache");
+        CLog.i(TAG, "open DiskLruCache");
         try {
             int version = ctx.getPackageManager().getPackageInfo(ctx.getPackageName(), 0).versionCode;
             diskLruCache = DiskLruCache.open(MyApplication.INSTANCE.getDiskCacheDir("image"), version, 1, (long) MyHttpURLConnection.MAX_CACHE_SIZE);
@@ -329,6 +331,10 @@ public class ImageCardRVAdapter extends RecyclerView.Adapter<ImageCardRVAdapter.
             tv_title = itemView.findViewById(R.id.tv_title);
             tv_subtitle = itemView.findViewById(R.id.tv_subtitle);
             iv_main = itemView.findViewById(R.id.iv_main);
+            //aspect ratio = 2.5
+            float w = (MyDisplay.getScreenSize().x * 1.0f) / 2.5f;
+            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) w);
+            iv_main.setLayoutParams(params);
             cv = itemView.findViewById(R.id.cv);
         }
     }

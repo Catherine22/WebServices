@@ -76,7 +76,6 @@ android {
 
 
 ## Cache
-
 >Under normal usage, the starting point for any developer should be to add as an aggressive caching strategy to the files in the application that will not change. 		
 >Normally this will include static files that are served by the application such as **images**, **CSS file** and **Javascript files**. 		
 >As these files are typically re-requested on each page, a large performance improvement can be had with little effort.		
@@ -203,7 +202,6 @@ Cache-Control:no-cache, no-store
 - WebView cache
 
 ## HTTPS
-
 [![HTTPS workflos](https://raw.githubusercontent.com/Catherine22/WebServices/master/https_workflow.png)](http://limboy.me/tech/2011/02/19/https-workflow.html)
 
  1. Client requests a https url
@@ -221,7 +219,6 @@ Cache-Control:no-cache, no-store
 > There are hundreds of CAs in the world. Which CA you can trust depends on a CAs list in client. (Normally, your mobile phone had been saved a list of trusted CAs before you bought it.)
 
 ### Android HTTPS
-
 ***DO NOT IMPLEMENT "X509TrustManager" TO SKIP VALIDATION***        
 That means man-in-the-middle attacks are allowed.
 
@@ -260,7 +257,6 @@ Another example - request to [github APIs]
 Check SSL certificates here : [https://www.ssllabs.com/ssltest/][2]
 
 ## Download and cache images
-
 **ImageView + DiskLruCache**
 1. Download a url list.		
 2. Check internal or external storage of the device. If the images have had been cached, skip step 3 and show them.
@@ -279,7 +275,6 @@ Three ways to deal with images:
 Here is the example: [P11_Fresco], [FrescoRVAdapter]
 
 ## TCP Sockets
-
 **Blocking socket**
 - Server : Run [MySocket] with eclipse
 ```java
@@ -303,17 +298,15 @@ udpSocket();
 - Client : Run WebServices and open [P10_UDP_Socket] fragment on Android devices.
 
 ## WebView
-
 **[MyWebView]**, [P14_Full_WebView] and [P13_Nested_WebView] supports the functions of...
 
 1. Going back to previous pages.
 2. Showing a ProgressBar while WebView is loading resources.
 3. Launching other apps installed in your device by url scheme.
-
-4. Handling JavaScript alert(), confirm() and prompt() and display the message with a used-defined dialog.
+4. Handling JavaScript alert(), confirm() and prompt() and displaying the message with a used-defined dialog.
 >Before using JavaScript, you should have WebView enable JavaScript. Go to [P15_WebView_Settings] to set.		
 
-5. Calling Java function from JavaScript
+5. Calling Java functions from JavaScript
 > Two tips:
 >  1. Don't forget to ignore your JavaScriptInterface with Android proguard
 >  2. Add @JavascriptInterface Annotation and you can go to [MyJavaScriptInterface] to see more
@@ -327,8 +320,7 @@ In proguard-rules.pro
     <methods>;
 }
 ```
-
-6. Calling JavaScript function from Java.
+6. Calling JavaScript functions from Java.
 7. Saving photos to your device from the Internet.
 > Save the image after long-clicking it.
 
@@ -337,7 +329,7 @@ In proguard-rules.pro
 > Override ```onReceivedSslError()``` and pop up a dialog to let users decide to continue (it would be unsafe maybe) or stop visiting the website.		
 
 9. Switching desktop style or mobile style websites by user-agent
-10. Get media and location permission
+10. Getting media and location permission
 >You need to add following permission in your AndroidManifest.xml
 >And override ```onGeolocationPermissionsShowPrompt()``` and ```onPermissionRequest()``` in WebChromeClient.
 
@@ -353,17 +345,18 @@ In proguard-rules.pro
 11. HTML5
 >Go to [http://html5test.com/][6] to see the browser compatibility.
 
-12. Enabled Dom storage
-13. Web SQL database and IndexedDB
+12. Supporting Dom storage
+13. Supporting Web SQL database and IndexedDB
 >Web SQL has been deprecated by W3C
 >IndexedDB is available on Android 4.4+
 
-14. Launch FileChooser
-
+14. Launching FileChooser
 You could also go to **[P17_WebView_Test_List]** to test all the websites I listed.
 
 **[P15_WebView_Settings]**
 Set attributes of WebView that includes WebViewClient and WebSettings (setAllowFileAccess(), setJavaScriptEnabled(), setSupportZoom() and so forth.)
+
+## OAuth 2.0
 
 
 ## References
@@ -377,43 +370,49 @@ Set attributes of WebView that includes WebViewClient and WebSettings (setAllowF
 - [Android HTTPS]
 - [WebView tutorial 1]
 - [WebView tutorial 2]
+- [OAuth 2.0 doc]
+- [OAuth 2.0 cn]
 
 
 [MainActivity]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/MainActivity.kt>
 [MyApplication]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/MyApplication.java>
 [MyApache]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/network/MyApache.java>
 [MyHttpURLConnection]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/network/MyHttpURLConnection.java>
+[HttpAsyncTask]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/network/HttpAsyncTask.java>
+[DownloaderAsyncTask]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/network/DownloaderAsyncTask.java>
+[ImageCardRVAdapter]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/adapters/ImageCardRVAdapter.java>
+[FrescoRVAdapter]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/adapters/FrescoRVAdapter.java>
+[Socket tutorial]:<http://blog.csdn.net/coder_pig/article/details/48519629>
+[MyWebView]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/components/MyWebView.java>
+[MySocket]:<https://github.com/Catherine22/WebServices/blob/master/JavaSocketServer/MySocket/src/Main.java>
+[MyJavaScriptInterface]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/network/MyJavaScriptInterface.java>
 [P01_Apache]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/P01_Apache.java>
 [P02_HttpURLConnection]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/P02_HttpURLConnection.java>
 [P03_Downloader]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/P03_Downloader.java>
-[P05_Gallery]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/P05_Gallery.java>
+[P05_Gallery]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/cache/P05_Gallery.java>
 [P06_Upload]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/P06_Upload.java>
-[P11_Fresco]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/P11_Fresco.java>
-[HttpAsyncTask]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/network/HttpAsyncTask.java>
-[DownloaderAsyncTask]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/network/DownloaderAsyncTask.java>
+[P08_Blocking_Socket]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/socket/P08_Blocking_Socket.java>
+[P09_NIO_Socket]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/socket/P09_NIO_Socket.java>
+[P10_UDP_Socket]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/socket/P10_UDP_Socket.java>
+[P11_Fresco]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/cache/P11_Fresco.java>
+[P13_Nested_WebView]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/webview/P13_Nested_WebView.java>
+[P14_Full_WebView]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/webview/P14_Full_WebView.java>
+[P15_WebView_Settings]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/webview/P15_WebView_Settings.java>
+[P17_WebView_Test_List]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/webview/P17_WebView_Test_List.java>
+
+
 [Tencent bugly]:<https://mp.weixin.qq.com/s/qOMO0LIdA47j3RjhbCWUEQ>
 [HTTP 1.1 doc]:<https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html>
 [Google Web Fundamentals]:<https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/http-caching>
 [increasing-application-performance-with-http-cache-headers]:<https://devcenter.heroku.com/articles/increasing-application-performance-with-http-cache-headers>
-[ImageCardRVAdapter]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/adapters/ImageCardRVAdapter.java>
-[FrescoRVAdapter]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/adapters/FrescoRVAdapter.java>
-[Socket tutorial]:<http://blog.csdn.net/coder_pig/article/details/48519629>
-[P08_Blocking_Socket]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/P08_Blocking_Socket.java>
-[P09_NIO_Socket]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/P09_NIO_Socket.java>
-[P10_UDP_Socket]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/P10_UDP_Socket.java>
-[P13_Nested_WebView]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/P13_Nested_WebView.java>
-[P14_Full_WebView]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/P14_Full_WebView.java>
-[P15_WebView_Settings]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/P15_WebView_Settings.java>
-[P17_WebView_Test_List]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/P17_WebView_Test_List.java>
-[MyWebView]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/components/MyWebView.java>
-[MySocket]:<https://github.com/Catherine22/WebServices/blob/master/JavaSocketServer/MySocket/src/Main.java>
-[MyJavaScriptInterface]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/network/MyJavaScriptInterface.java>
 [What are examples of TCP and UDP in real life scenario ?]:<https://learningnetwork.cisco.com/thread/87103>
 [Android HTTPS]:<http://blog.csdn.net/iispring/article/details/51615631>
 [github APIs]:<https://api.github.com/>
 [HTTP cache cn]:<https://segmentfault.com/a/1190000004132566#articleHeader3>
 [WebView tutorial 1]:<http://www.jianshu.com/p/3fcf8ba18d7f>
 [WebView tutorial 2]:<http://blog.csdn.net/huaxun66/article/details/73179187>
+[OAuth 2.0 doc]:<https://tools.ietf.org/html/draft-ietf-oauth-v2-23>
+[OAuth 2.0 cn]:<http://www.ruanyifeng.com/blog/2014/05/oauth_2_0.html>
 
   [1]: https://kyfw.12306.cn/otn/regist/init
   [2]: https://www.ssllabs.com/ssltest/

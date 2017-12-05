@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#FF5722</color>
-    <color name="colorPrimaryDark">#E64A19</color>
-    <color name="colorAccent">#40C4FF</color>
-    <color name="colorAccentDark">#2ba1d6</color>
+    <color name="colorPrimary">#164800</color>
+    <color name="colorPrimaryDark">#091e00</color>
+    <color name="colorAccent">#970000</color>
+    <color name="colorAccentDark">#680000</color>
+    <color name="yellow">#b6b000</color>
+    <color name="blue">#f6000941</color>
 
 
     <color name="grey300">#E0E0E0</color>
@@ -11,16 +13,13 @@
     <color name="grey900">#212121</color>
 
     <color name="checker_board_light">@color/grey300</color>
-    <color name="checker_board_dark">#9E9E9E</color>
+    <color name="checker_board_dark">@color/grey700</color>
 
     <color name="progress_bar_color">@color/colorAccent</color>
     <color name="progress_bar_background">@color/grey300</color>
 
-    <color name="image_detail_help_background">#66000000</color>
-    <color name="transparent">#00000000</color>
-
     <!--viewpager-->
-    <color name="background_tab_pressed">#6633B5E5</color>
+    <color name="background_tab_pressed">@android:color/black</color>
 
 
 </resources>

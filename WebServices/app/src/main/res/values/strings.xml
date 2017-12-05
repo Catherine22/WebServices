@@ -3,6 +3,9 @@
     <string name="offline">offline</string>
     <string name="no_cache">No cache</string>
     <string name="no_history">No history</string>
+    <string name="no_hotspot">No hotspot</string>
+    <string name="no_networks">No networks</string>
+    <string name="error">error</string>
     <string name="drawer_open">Where to?</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
@@ -46,7 +49,7 @@
 
     <string-array name="drawer_array">
         <item>Author</item>
-        <item>Settings</item>
+        <item>Network state</item>
         <item>WebView settings</item>
         <item>WebView history</item>
         <item>Logcat</item>

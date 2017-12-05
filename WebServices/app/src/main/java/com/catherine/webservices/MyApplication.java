@@ -71,26 +71,26 @@ public class MyApplication extends Application {
         long extSdCardSize = 0;
         if (sdCard != null) {
             sdCardSize = sdCard.getFreeSpace();
-            CLog.Companion.i(TAG, "free storage: (sd card) " + sdCard.getAbsolutePath());
-            CLog.Companion.i(TAG, "free storage: (sd card) " + sdCard.getFreeSpace() / ByteConstants.MB + " MB");
+            CLog.i(TAG, "free storage: (sd card) " + sdCard.getAbsolutePath());
+            CLog.i(TAG, "free storage: (sd card) " + sdCard.getFreeSpace() / ByteConstants.MB + " MB");
         }
         if (externalSdCard != null) {
             extSdCardSize = externalSdCard.getFreeSpace();
-            CLog.Companion.i(TAG, "free storage: (external sd card) " + externalSdCard.getAbsolutePath());
-            CLog.Companion.i(TAG, "free storage: (external sd card) " + externalSdCard.getFreeSpace() / ByteConstants.MB + " MB");
+            CLog.i(TAG, "free storage: (external sd card) " + externalSdCard.getAbsolutePath());
+            CLog.i(TAG, "free storage: (external sd card) " + externalSdCard.getFreeSpace() / ByteConstants.MB + " MB");
         }
 
         try {
             if (sdCardSize > extSdCardSize) {
                 Constants.ROOT_PATH = sdCard.getAbsolutePath() + "/WebServices/";
-                CLog.Companion.i(TAG, "Your data will save in " + Constants.ROOT_PATH);
+                CLog.i(TAG, "Your data will save in " + Constants.ROOT_PATH);
             } else {
                 Constants.ROOT_PATH = externalSdCard.getAbsolutePath() + "/WebServices/";
-                CLog.Companion.i(TAG, "Your data will save in " + Constants.ROOT_PATH);
+                CLog.i(TAG, "Your data will save in " + Constants.ROOT_PATH);
             }
         } catch (NullPointerException e) {
             Constants.ROOT_PATH = Environment.getExternalStorageDirectory().getAbsolutePath() + "/WebServices/";
-            CLog.Companion.i(TAG, "Your data will save in " + Constants.ROOT_PATH);
+            CLog.i(TAG, "Your data will save in " + Constants.ROOT_PATH);
         }
 
         registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
@@ -180,12 +180,12 @@ public class MyApplication extends Application {
                 File externalStorageDir = Environment.getExternalStorageDirectory();
                 long temp = externalStorageDir.getFreeSpace();
                 long free = (temp > 10 * ByteConstants.MB) ? 20 * ByteConstants.MB : temp;
-                CLog.Companion.i(TAG, "free memory = " + temp / ByteConstants.MB + " MB, use " + free / (2 * ByteConstants.MB) + " MB to cache images.");
+                CLog.i(TAG, "free memory = " + temp / ByteConstants.MB + " MB, use " + free / (2 * ByteConstants.MB) + " MB to cache images.");
                 DiskCacheConfig diskCacheConfig = DiskCacheConfig.newBuilder(MyApplication.this)
                         .setCacheErrorLogger(new CacheErrorLogger() {
                             @Override
                             public void logError(CacheErrorCategory category, Class<?> clazz, String message, Throwable throwable) {
-                                CLog.Companion.e("Fresco CacheError", category + ":" + message);
+                                CLog.e("Fresco CacheError", category + ":" + message);
                             }
                         })
                         .setVersion(1)

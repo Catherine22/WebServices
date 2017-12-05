@@ -2,25 +2,14 @@ package com.catherine.webservices
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.annotation.TargetApi
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
-import android.os.StrictMode
 import android.support.design.widget.TabLayout
-import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentActivity
 import android.support.v4.view.GravityCompat
-import android.support.v7.app.AlertDialog
 import android.view.KeyEvent
-import android.view.Menu
-import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
@@ -28,8 +17,13 @@ import android.widget.ArrayAdapter
 import catherine.messagecenter.AsyncResponse
 import catherine.messagecenter.Server
 import com.catherine.webservices.adapters.MainViewPagerAdapter
-import com.catherine.webservices.components.DialogManager
-import com.catherine.webservices.fragments.*
+import com.catherine.webservices.components.MyDialogFragment
+import com.catherine.webservices.fragments.cache.GalleryFragment
+import com.catherine.webservices.fragments.cellular_wifi.*
+import com.catherine.webservices.fragments.webview.FullWebViewFragment
+import com.catherine.webservices.fragments.webview.WebViewSettingsFragment
+import com.catherine.webservices.fragments.webview.WebViewHistoryFragment
+import com.catherine.webservices.fragments.webview.WebViewTestListFragment
 import com.catherine.webservices.interfaces.*
 import com.catherine.webservices.kotlin_sample.KotlinTemplate
 import com.catherine.webservices.kotlin_sample.player.Player
@@ -75,9 +69,9 @@ class MainActivity : BaseFragmentActivity(), MainInterface {
 
         val checkStateWork = Handler(MyApplication.INSTANCE.calHandlerThread.looper)
         checkStateWork.post {
-            val networkHelper = NetworkHelper(this@MainActivity)
-            CLog.d(TAG, "isNetworkHealthy:${networkHelper.isNetworkHealthy()}")
-            CLog.d(TAG, "isWifi:${networkHelper.isWifi()}")
+            val networkHelper = NetworkHelper()
+            CLog.d(TAG, "isNetworkHealthy:${networkHelper.isNetworkHealthy}")
+            CLog.d(TAG, "isWifi:${networkHelper.isWifi}")
             networkHelper.listenToNetworkState(object : NetworkHealthListener {
                 override fun networkConnected(type: String) {
                     CLog.i(TAG, "network connected, type:$type")
@@ -122,42 +116,50 @@ class MainActivity : BaseFragmentActivity(), MainInterface {
     override fun callFragment(id: Int, bundle: Bundle?) {
         fl_main_container.visibility = View.VISIBLE
         var fragment: Fragment? = null
-        var tag: String? = null
-        var title = ""
+        val tag = Constants.Fragments.TAG(id)
+        val title = Constants.Fragments.TITLE(id)
         when (id) {
 
         //null bundle
-            Constants.P05_Gallery -> {
-                title = "P05_Gallery"
-                fragment = P05_Gallery.newInstance(true)
-                tag = "P05"
+            Constants.Fragments.F_Gallery -> {
+                fragment = GalleryFragment.newInstance(true)
             }
 
 
-            Constants.P15_WEBVIEW_SETTINGS -> {
-                title = "P15_WebView_Settings"
-                fragment = P15_WebView_Settings.newInstance(true)
-                tag = "P15"
+            Constants.Fragments.F_WEBVIEW_SETTINGS -> {
+                fragment = WebViewSettingsFragment.newInstance(true)
             }
 
-            Constants.P16_WEBVIEW_HISTORY -> {
-                title = "P16_WebView_History"
-                fragment = P16_WebView_History.newInstance(true)
-                tag = "P16"
+            Constants.Fragments.F_WEBVIEW_HISTORY -> {
+                fragment = WebViewHistoryFragment.newInstance(true)
             }
 
-            Constants.P17_WEBVIEW_TEST_LIST -> {
-                title = "P17_WebView_Test_List"
-                fragment = P17_WebView_Test_List.newInstance(true)
-                tag = "P17"
+            Constants.Fragments.F_WEBVIEW_TEST_LIST -> {
+                fragment = WebViewTestListFragment.newInstance(true)
+            }
+
+            Constants.Fragments.F_NETWORK_ANALYTICS -> {
+                fragment = NetworkAnalyticsFragment.newInstance(true)
             }
 
 
         //has bundle
-            Constants.P14_FULL_WEBVIEW -> {
-                title = "P14_Full_WebView"
-                fragment = P14_Full_WebView.newInstance(true)
-                tag = "P14"
+            Constants.Fragments.F_FULL_WEBVIEW -> {
+                fragment = FullWebViewFragment.newInstance(true)
+            }
+
+            Constants.Fragments.F_NETWORK_INFO_ANALYTICS -> {
+                fragment = NetworkInfoAnalyticsFragment.newInstance(true)
+            }
+
+            Constants.Fragments.F_WIFI_CONFIGURATION_ANALYTICS -> {
+                fragment = WifiConfigurationAnalyticsFragment.newInstance(true)
+            }
+            Constants.Fragments.F_WIFI_INFO -> {
+                fragment = WifiInfoFragment()
+            }
+            Constants.Fragments.F_SCAN_RESULT_INFO -> {
+                fragment = ScanResultInfoFragment()
             }
         }
 
@@ -174,6 +176,44 @@ class MainActivity : BaseFragmentActivity(), MainInterface {
         transaction.add(R.id.fl_main_container, fragment, tag)
         transaction.addToBackStack(title)
         transaction.commitAllowingStateLoss()
+    }
+
+    /**
+     * 开启fragment dialog
+     *
+     * @param id Tag of the Fragment Dialog
+     */
+    override fun callFragmentDialog(id: Int) {
+        callFragmentDialog(id, null)
+    }
+
+    /**
+     * 开启fragment dialog
+     *
+     * @param id Tag of the Fragment Dialog
+     * @param bundle argument of the Fragment Dialog
+     */
+    override fun callFragmentDialog(id: Int, bundle: Bundle?) {
+        CLog.d(TAG, "call " + id + " with bundle? " + (bundle != null))
+        var fragment: MyDialogFragment? = null
+        val tag = Constants.Fragments.TAG(id)
+        when (id) {
+            Constants.Fragments.F_D_SCAN_RESULT -> {
+                fragment = ScanResultDialog()
+            }
+            Constants.Fragments.F_D_WIFI_CONFIGURATIONS -> {
+                fragment = WifiConfigurationsDialog()
+            }
+        }
+
+        if (bundle != null)
+            fragment?.arguments = bundle
+
+        if (fragment != null) {
+            val trans = supportFragmentManager.beginTransaction()
+            trans.addToBackStack(null)
+            fragment.show(trans, tag)
+        }
     }
 
 
@@ -257,13 +297,16 @@ class MainActivity : BaseFragmentActivity(), MainInterface {
         left_drawer.onItemClickListener = AdapterView.OnItemClickListener { _, _, pos, _ ->
             when (pos) {
                 0 -> {
-                    callFragment(Constants.P14_FULL_WEBVIEW)
+                    callFragment(Constants.Fragments.F_FULL_WEBVIEW)
+                }
+                1 -> {
+                    callFragment(Constants.Fragments.F_NETWORK_ANALYTICS)
                 }
                 2 -> {
-                    callFragment(Constants.P15_WEBVIEW_SETTINGS)
+                    callFragment(Constants.Fragments.F_WEBVIEW_SETTINGS)
                 }
                 3 -> {
-                    callFragment(Constants.P16_WEBVIEW_HISTORY)
+                    callFragment(Constants.Fragments.F_WEBVIEW_HISTORY)
                 }
             }
             //            left_drawer.setItemChecked(pos, true)
@@ -276,18 +319,18 @@ class MainActivity : BaseFragmentActivity(), MainInterface {
             override fun onTabSelected(tab: TabLayout.Tab) {
                 restoreBottomLayout()
                 when (tab) {
-                    tabLayout.getTabAt(Constants.P01_APACHE) -> vp_content.currentItem = Constants.P01_APACHE
-                    tabLayout.getTabAt(Constants.P02_HTTP_URL_CONNECTION) -> vp_content.currentItem = Constants.P02_HTTP_URL_CONNECTION
-                    tabLayout.getTabAt(Constants.P03_DOWNLOADER) -> vp_content.currentItem = Constants.P03_DOWNLOADER
-                    tabLayout.getTabAt(Constants.P04_CACHE) -> {
+                    tabLayout.getTabAt(Constants.Fragments.F_APACHE) -> vp_content.currentItem = Constants.Fragments.F_APACHE
+                    tabLayout.getTabAt(Constants.Fragments.F_HTTP_URL_CONNECTION) -> vp_content.currentItem = Constants.Fragments.F_HTTP_URL_CONNECTION
+                    tabLayout.getTabAt(Constants.Fragments.F_DOWNLOADER) -> vp_content.currentItem = Constants.Fragments.F_DOWNLOADER
+                    tabLayout.getTabAt(Constants.Fragments.F_CACHE) -> {
                         //Push broadcast before initialize so the broadcast won't be captured at first time.
                         //So I update view twice - first one would be done while initializing, another would be done after catch broadcast.
                         sv?.pushBoolean(Commands.UPDATE_P04, true)
-                        vp_content.currentItem = Constants.P04_CACHE
+                        vp_content.currentItem = Constants.Fragments.F_CACHE
                     }
-                    tabLayout.getTabAt(Constants.P06_UPLOAD) -> vp_content.currentItem = Constants.P06_UPLOAD
-                    tabLayout.getTabAt(Constants.P07_SOCKET) -> vp_content.currentItem = Constants.P07_SOCKET
-                    tabLayout.getTabAt(Constants.P12_WEBVIEW) -> vp_content.currentItem = Constants.P12_WEBVIEW
+                    tabLayout.getTabAt(Constants.Fragments.F_UPLOAD) -> vp_content.currentItem = Constants.Fragments.F_UPLOAD
+                    tabLayout.getTabAt(Constants.Fragments.F_SOCKET) -> vp_content.currentItem = Constants.Fragments.F_SOCKET
+                    tabLayout.getTabAt(Constants.Fragments.F_WEBVIEW) -> vp_content.currentItem = Constants.Fragments.F_WEBVIEW
                 }
             }
 
@@ -318,10 +361,10 @@ class MainActivity : BaseFragmentActivity(), MainInterface {
         }
 
         iv_github.setOnClickListener {
-            callFragment(Constants.P14_FULL_WEBVIEW)
+            callFragment(Constants.Fragments.F_FULL_WEBVIEW)
         }
         tv_github.setOnClickListener {
-            callFragment(Constants.P14_FULL_WEBVIEW)
+            callFragment(Constants.Fragments.F_FULL_WEBVIEW)
         }
         iv_menu.setOnClickListener {
             openSlideMenu()

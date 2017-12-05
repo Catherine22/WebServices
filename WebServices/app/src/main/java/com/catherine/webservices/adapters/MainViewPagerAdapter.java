@@ -7,14 +7,13 @@ import android.support.v4.app.FragmentPagerAdapter;
 
 import com.catherine.webservices.Constants;
 import com.catherine.webservices.R;
-import com.catherine.webservices.fragments.P01_Apache;
-import com.catherine.webservices.fragments.P02_HttpURLConnection;
-import com.catherine.webservices.fragments.P03_Downloader;
-import com.catherine.webservices.fragments.P04_Cache;
-import com.catherine.webservices.fragments.P06_Upload;
-import com.catherine.webservices.fragments.P07_Socket;
-import com.catherine.webservices.fragments.P12_WebView;
-import com.catherine.webservices.toolkits.CLog;
+import com.catherine.webservices.fragments.ApacheFragment;
+import com.catherine.webservices.fragments.HttpURLConnectionFragment;
+import com.catherine.webservices.fragments.DownloaderFragment;
+import com.catherine.webservices.fragments.cache.CacheFragment;
+import com.catherine.webservices.fragments.UploadFragment;
+import com.catherine.webservices.fragments.socket.SocketFragment;
+import com.catherine.webservices.fragments.webview.WebViewFragment;
 
 /**
  * Created by Catherine on 2017/8/25.
@@ -32,22 +31,22 @@ public class MainViewPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        if (position == Constants.P01_APACHE) {
-            return P01_Apache.newInstance(true);
-        } else if (position == Constants.P02_HTTP_URL_CONNECTION) {
-            return P02_HttpURLConnection.newInstance(true);
-        } else if (position == Constants.P03_DOWNLOADER) {
-            return P03_Downloader.newInstance(true);
-        } else if (position == Constants.P04_CACHE) {
-            return P04_Cache.newInstance(true);
-        } else if (position == Constants.P06_UPLOAD) {
-            return P06_Upload.newInstance(true);
-        } else if (position == Constants.P07_SOCKET) {
-            return P07_Socket.newInstance(true);
-        } else if (position == Constants.P12_WEBVIEW) {
-            return P12_WebView.newInstance(true);
+        if (position == Constants.Fragments.F_APACHE) {
+            return ApacheFragment.newInstance(true);
+        } else if (position == Constants.Fragments.F_HTTP_URL_CONNECTION) {
+            return HttpURLConnectionFragment.newInstance(true);
+        } else if (position == Constants.Fragments.F_DOWNLOADER) {
+            return DownloaderFragment.newInstance(true);
+        } else if (position == Constants.Fragments.F_CACHE) {
+            return CacheFragment.newInstance(true);
+        } else if (position == Constants.Fragments.F_UPLOAD) {
+            return UploadFragment.newInstance(true);
+        } else if (position == Constants.Fragments.F_SOCKET) {
+            return SocketFragment.newInstance(true);
+        } else if (position == Constants.Fragments.F_WEBVIEW) {
+            return WebViewFragment.newInstance(true);
         }
-        return P01_Apache.newInstance(true);
+        return ApacheFragment.newInstance(true);
     }
 
     @Override

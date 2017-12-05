@@ -107,7 +107,7 @@ public class MyWebView extends WebView {
     public void initSettings(Context context, boolean safer, boolean enableCache) {
         ctx = context;
         config = new ApplicationConfig();
-        NetworkHelper networkHelper = new NetworkHelper(ctx);
+        NetworkHelper networkHelper = new NetworkHelper();
         activityResultListener = (ActivityResultListener) ctx;
         WebSettings settings = getSettings();
         settings.setUseWideViewPort(true);
@@ -122,7 +122,7 @@ public class MyWebView extends WebView {
             settings.setUserAgentString(System.getProperty("http.agent"));
         }
         String ua = settings.getUserAgentString();
-        CLog.Companion.i(TAG, "my user agent:" + ua);
+        CLog.i(TAG, "my user agent:" + ua);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             settings.setAllowUniversalAccessFromFileURLs(true);
         }
@@ -186,49 +186,49 @@ public class MyWebView extends WebView {
 
             @Override
             public void onReceivedIcon(WebView view, Bitmap icon) {
-                CLog.Companion.i(TAG, "onReceivedIcon");
+                CLog.i(TAG, "onReceivedIcon");
                 super.onReceivedIcon(view, icon);
             }
 
             @Override
             public void onReceivedTouchIconUrl(WebView view, String url, boolean precomposed) {
-                CLog.Companion.i(TAG, "onReceivedTouchIconUrl:" + url);
+                CLog.i(TAG, "onReceivedTouchIconUrl:" + url);
                 super.onReceivedTouchIconUrl(view, url, precomposed);
             }
 
             @Override
             public void onShowCustomView(View view, CustomViewCallback callback) {
-                CLog.Companion.i(TAG, "onShowCustomView1");
+                CLog.i(TAG, "onShowCustomView1");
                 super.onShowCustomView(view, callback);
             }
 
             @Override
             public void onShowCustomView(View view, int requestedOrientation, CustomViewCallback callback) {
-                CLog.Companion.i(TAG, "onShowCustomView2");
+                CLog.i(TAG, "onShowCustomView2");
                 super.onShowCustomView(view, requestedOrientation, callback);
             }
 
             @Override
             public void onHideCustomView() {
-                CLog.Companion.i(TAG, "onHideCustomView");
+                CLog.i(TAG, "onHideCustomView");
                 super.onHideCustomView();
             }
 
             @Override
             public boolean onCreateWindow(WebView view, boolean isDialog, boolean isUserGesture, Message resultMsg) {
-                CLog.Companion.i(TAG, "onCreateWindow");
+                CLog.i(TAG, "onCreateWindow");
                 return super.onCreateWindow(view, isDialog, isUserGesture, resultMsg);
             }
 
             @Override
             public void onRequestFocus(WebView view) {
-                CLog.Companion.i(TAG, "onRequestFocus");
+                CLog.i(TAG, "onRequestFocus");
                 super.onRequestFocus(view);
             }
 
             @Override
             public void onCloseWindow(WebView window) {
-                CLog.Companion.i(TAG, "onCloseWindow");
+                CLog.i(TAG, "onCloseWindow");
                 super.onCloseWindow(window);
             }
 
@@ -242,7 +242,7 @@ public class MyWebView extends WebView {
 
             @Override
             public boolean onJsAlert(WebView view, final String url, final String message, final JsResult result) {
-                CLog.Companion.i(TAG, "onJsAlert:" + message);
+                CLog.i(TAG, "onJsAlert:" + message);
                 DialogManager.showAlertDialog(ctx, message, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -256,7 +256,7 @@ public class MyWebView extends WebView {
 
             @Override
             public boolean onJsConfirm(WebView view, final String url, final String message, final JsResult result) {
-                CLog.Companion.i(TAG, "onJsConfirm:" + message);
+                CLog.i(TAG, "onJsConfirm:" + message);
                 DialogManager.showAlertDialog(ctx, message, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -274,20 +274,20 @@ public class MyWebView extends WebView {
 
             @Override
             public boolean onJsBeforeUnload(WebView view, String url, String message, JsResult result) {
-                CLog.Companion.i(TAG, "onJsBeforeUnload:" + message);
+                CLog.i(TAG, "onJsBeforeUnload:" + message);
                 return super.onJsBeforeUnload(view, url, message, result);
             }
 
             @Override
             public void onExceededDatabaseQuota(String url, String databaseIdentifier, long quota, long estimatedDatabaseSize, long totalQuota, WebStorage.QuotaUpdater quotaUpdater) {
-                CLog.Companion.i(TAG, "onExceededDatabaseQuota:" + databaseIdentifier);
+                CLog.i(TAG, "onExceededDatabaseQuota:" + databaseIdentifier);
                 super.onExceededDatabaseQuota(url, databaseIdentifier, quota, estimatedDatabaseSize, totalQuota, quotaUpdater);
             }
 
             //扩充缓存的容量
             @Override
             public void onReachedMaxAppCacheSize(long requiredStorage, long quota, WebStorage.QuotaUpdater quotaUpdater) {
-                CLog.Companion.i(TAG, "onReachedMaxAppCacheSize:" + requiredStorage);
+                CLog.i(TAG, "onReachedMaxAppCacheSize:" + requiredStorage);
                 super.onReachedMaxAppCacheSize(requiredStorage, quota, quotaUpdater);
             }
 
@@ -300,7 +300,7 @@ public class MyWebView extends WebView {
              */
             @Override
             public void onGeolocationPermissionsShowPrompt(final String origin, final GeolocationPermissions.Callback callback) {
-                CLog.Companion.i(TAG, "onGeolocationPermissionsShowPrompt:" + origin);
+                CLog.i(TAG, "onGeolocationPermissionsShowPrompt:" + origin);
                 //User have to grant ACCESS_FINE_LOCATION permission first.
                 final Dialog myDialog = new Dialog(ctx);
                 myDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -338,13 +338,13 @@ public class MyWebView extends WebView {
              */
             @Override
             public void onGeolocationPermissionsHidePrompt() {
-                CLog.Companion.i(TAG, "onGeolocationPermissionsHidePrompt");
+                CLog.i(TAG, "onGeolocationPermissionsHidePrompt");
                 super.onGeolocationPermissionsHidePrompt();
             }
 
             @Override
             public void onPermissionRequest(final PermissionRequest request) {
-                CLog.Companion.i(TAG, "onPermissionRequest");
+                CLog.i(TAG, "onPermissionRequest");
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
                     final String[] res = request.getResources();
                     StringBuilder context = new StringBuilder();
@@ -377,7 +377,7 @@ public class MyWebView extends WebView {
              */
             @Override
             public void onPermissionRequestCanceled(PermissionRequest request) {
-                CLog.Companion.i(TAG, "onPermissionRequestCanceled");
+                CLog.i(TAG, "onPermissionRequestCanceled");
                 super.onPermissionRequestCanceled(request);
             }
 
@@ -386,7 +386,7 @@ public class MyWebView extends WebView {
              */
             @Override
             public boolean onJsTimeout() {
-                CLog.Companion.i(TAG, "onJsTimeout");
+                CLog.i(TAG, "onJsTimeout");
                 DialogManager.showErrorDialog(ctx, "JavaScript timeout. Do you want to retry?", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -404,7 +404,7 @@ public class MyWebView extends WebView {
 
             @Override
             public void onConsoleMessage(String message, int lineNumber, String sourceID) {
-                CLog.Companion.i(TAG, "onConsoleMessage:" + message);
+                CLog.i(TAG, "onConsoleMessage:" + message);
                 if (keepLog) {
                     config.writeWebViewLog(String.format(Locale.ENGLISH, "lineNumber(%d), sourceID(%s), message:%s", lineNumber, sourceID, message));
                 }
@@ -413,7 +413,7 @@ public class MyWebView extends WebView {
 
             @Override
             public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
-                CLog.Companion.i(TAG, "onConsoleMessage");
+                CLog.i(TAG, "onConsoleMessage");
                 if (keepLog) {
                     config.writeWebViewLog(String.format(Locale.ENGLISH, "lineNumber(%d), sourceID(%s), message:%s", consoleMessage.lineNumber(), consoleMessage.sourceId(), consoleMessage.message()));
                 }
@@ -422,25 +422,25 @@ public class MyWebView extends WebView {
 
             @Override
             public Bitmap getDefaultVideoPoster() {
-                CLog.Companion.i(TAG, "getDefaultVideoPoster");
+                CLog.i(TAG, "getDefaultVideoPoster");
                 return super.getDefaultVideoPoster();
             }
 
             @Override
             public View getVideoLoadingProgressView() {
-                CLog.Companion.i(TAG, "getVideoLoadingProgressView");
+                CLog.i(TAG, "getVideoLoadingProgressView");
                 return super.getVideoLoadingProgressView();
             }
 
             @Override
             public void getVisitedHistory(ValueCallback<String[]> callback) {
-                CLog.Companion.i(TAG, "getVisitedHistory");
+                CLog.i(TAG, "getVisitedHistory");
                 super.getVisitedHistory(callback);
             }
 
             //Android 4.1+
             public void openFileChooser(ValueCallback<Uri> uploadMsg, String acceptType, String capture) {
-                CLog.Companion.i(TAG, "onShowFileChooser：" + acceptType + ", capture:" + capture);
+                CLog.i(TAG, "onShowFileChooser：" + acceptType + ", capture:" + capture);
                 activityResultListener.addValueCallback(uploadMsg);
                 Intent i;
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
@@ -457,7 +457,7 @@ public class MyWebView extends WebView {
             @Override
             @TargetApi(Build.VERSION_CODES.LOLLIPOP)
             public boolean onShowFileChooser(WebView webView, ValueCallback<Uri[]> filePathCallback, FileChooserParams fileChooserParams) {
-                CLog.Companion.i(TAG, "onShowFileChooser：" + fileChooserParams.getAcceptTypes()[0] + ", capture:" + fileChooserParams.isCaptureEnabled());
+                CLog.i(TAG, "onShowFileChooser：" + fileChooserParams.getAcceptTypes()[0] + ", capture:" + fileChooserParams.isCaptureEnabled());
                 activityResultListener.addValueCallbackL(filePathCallback);
                 Intent i = new Intent(Intent.ACTION_OPEN_DOCUMENT);
                 i.addCategory(Intent.CATEGORY_OPENABLE);
@@ -477,7 +477,7 @@ public class MyWebView extends WebView {
         setWebViewClient(new WebViewClient() {
             @Override
             public void onReceivedSslError(WebView view, final SslErrorHandler handler, SslError error) {
-                CLog.Companion.e(TAG, "onReceivedSslError");
+                CLog.e(TAG, "onReceivedSslError");
                 String message = "SSL Certificate error.";
                 switch (error.getPrimaryError()) {
                     case SslError.SSL_UNTRUSTED:
@@ -513,26 +513,26 @@ public class MyWebView extends WebView {
 
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                CLog.Companion.i(TAG, "shouldOverrideUrlLoading:" + url);
+                CLog.i(TAG, "shouldOverrideUrlLoading:" + url);
                 loadUrl(url);
                 return true;
             }
 
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-                CLog.Companion.i(TAG, "shouldOverrideUrlLoading2");
+                CLog.i(TAG, "shouldOverrideUrlLoading2");
                 return super.shouldOverrideUrlLoading(view, request);
             }
 
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
-//                CLog.Companion.i(TAG, "onPageStarted:" + url);
+//                CLog.i(TAG, "onPageStarted:" + url);
                 super.onPageStarted(view, url, favicon);
             }
 
             @Override
             public void onPageFinished(WebView view, String url) {
-//              CLog.Companion.i(TAG, "onPageFinished:" + url);
+//              CLog.i(TAG, "onPageFinished:" + url);
                 super.onPageFinished(view, url);
             }
 
@@ -540,39 +540,39 @@ public class MyWebView extends WebView {
             //在加载页面资源时会调用，每一个资源（比如图片）的加载都会调用一次。
             @Override
             public void onLoadResource(WebView view, String url) {
-                CLog.Companion.i(TAG, "onLoadResource:" + url);
+                CLog.i(TAG, "onLoadResource:" + url);
                 super.onLoadResource(view, url);
             }
 
             @Override
             public void onPageCommitVisible(WebView view, String url) {
-                CLog.Companion.i(TAG, "onPageCommitVisible:" + url);
+                CLog.i(TAG, "onPageCommitVisible:" + url);
                 super.onPageCommitVisible(view, url);
             }
 
             //拦截替换网络请求数据,  API 11开始引入，API 21弃用
             @Override
             public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
-                CLog.Companion.i(TAG, "shouldInterceptRequest:" + url);
+                CLog.i(TAG, "shouldInterceptRequest:" + url);
                 return super.shouldInterceptRequest(view, url);
             }
 
             //拦截替换网络请求数据,  从API 21开始引入
             @Override
             public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
-                CLog.Companion.i(TAG, "shouldInterceptRequest2");
+                CLog.i(TAG, "shouldInterceptRequest2");
                 return super.shouldInterceptRequest(view, request);
             }
 
             @Override
             public void onTooManyRedirects(WebView view, Message cancelMsg, Message continueMsg) {
-                CLog.Companion.w(TAG, "onTooManyRedirects:" + continueMsg);
+                CLog.w(TAG, "onTooManyRedirects:" + continueMsg);
                 super.onTooManyRedirects(view, cancelMsg, continueMsg);
             }
 
             @Override
             public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
-                CLog.Companion.e(TAG, "onReceivedError:" + description);
+                CLog.e(TAG, "onReceivedError:" + description);
                 String message = String.format(Locale.ENGLISH, "%s\nError code:%d\n%s", failingUrl, errorCode, description);
                 DialogManager.showErrorDialog(ctx, message, new DialogInterface.OnClickListener() {
                     @Override
@@ -587,7 +587,7 @@ public class MyWebView extends WebView {
             @Override
             @TargetApi(Build.VERSION_CODES.M)
             public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
-                CLog.Companion.e(TAG, "onReceivedError2");
+                CLog.e(TAG, "onReceivedError2");
                 String message = String.format(Locale.ENGLISH, "%s\nError code:%d\n%s", request.getUrl(), error.getErrorCode(), error.getDescription());
                 DialogManager.showErrorDialog(ctx, message, new DialogInterface.OnClickListener() {
                     @Override
@@ -601,7 +601,7 @@ public class MyWebView extends WebView {
 
             @Override
             public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
-                CLog.Companion.e(TAG, "onReceivedHttpError");
+                CLog.e(TAG, "onReceivedHttpError");
                 super.onReceivedHttpError(view, request, errorResponse);
             }
 
@@ -610,19 +610,19 @@ public class MyWebView extends WebView {
              */
             @Override
             public void onFormResubmission(WebView view, Message dontResend, Message resend) {
-                CLog.Companion.i(TAG, "onFormResubmission:" + dontResend);
+                CLog.i(TAG, "onFormResubmission:" + dontResend);
                 super.onFormResubmission(view, dontResend, resend);
             }
 
             @Override
             public void doUpdateVisitedHistory(WebView view, String url, boolean isReload) {
-                CLog.Companion.i(TAG, "doUpdateVisitedHistory:" + url);
+                CLog.i(TAG, "doUpdateVisitedHistory:" + url);
                 super.doUpdateVisitedHistory(view, url, isReload);
             }
 
             @Override
             public void onReceivedClientCertRequest(WebView view, ClientCertRequest request) {
-                CLog.Companion.w(TAG, "onReceivedClientCertRequest");
+                CLog.w(TAG, "onReceivedClientCertRequest");
                 super.onReceivedClientCertRequest(view, request);
             }
 
@@ -631,25 +631,25 @@ public class MyWebView extends WebView {
              */
             @Override
             public void onReceivedHttpAuthRequest(WebView view, HttpAuthHandler handler, String host, String realm) {
-                CLog.Companion.w(TAG, "onReceivedHttpAuthRequest");
+                CLog.w(TAG, "onReceivedHttpAuthRequest");
                 super.onReceivedHttpAuthRequest(view, handler, host, realm);
             }
 
             @Override
             public boolean shouldOverrideKeyEvent(WebView view, KeyEvent event) {
-                CLog.Companion.i(TAG, "shouldOverrideKeyEvent");
+                CLog.i(TAG, "shouldOverrideKeyEvent");
                 return super.shouldOverrideKeyEvent(view, event);
             }
 
             @Override
             public void onUnhandledKeyEvent(WebView view, KeyEvent event) {
-                CLog.Companion.w(TAG, "onUnhandledKeyEvent");
+                CLog.w(TAG, "onUnhandledKeyEvent");
                 super.onUnhandledKeyEvent(view, event);
             }
 
 //                    @Override
 //                    public void onScaleChanged(WebView view, float oldScale, float newScale) {
-//                        CLog.Companion.i(TAG, "onScaleChanged");
+//                        CLog.i(TAG, "onScaleChanged");
 //                        super.onScaleChanged(view, oldScale, newScale);
 //                    }
 
@@ -658,13 +658,13 @@ public class MyWebView extends WebView {
              */
             @Override
             public void onReceivedLoginRequest(WebView view, String realm, String account, String args) {
-                CLog.Companion.w(TAG, "onReceivedLoginRequest");
+                CLog.w(TAG, "onReceivedLoginRequest");
                 super.onReceivedLoginRequest(view, realm, account, args);
             }
 
             @Override
             public boolean onRenderProcessGone(WebView view, RenderProcessGoneDetail detail) {
-                CLog.Companion.i(TAG, "onRenderProcessGone");
+                CLog.i(TAG, "onRenderProcessGone");
                 return super.onRenderProcessGone(view, detail);
             }
 
@@ -735,8 +735,8 @@ public class MyWebView extends WebView {
 
     @Override
     public void loadUrl(String urlString) {
-        String url = NetworkHelper.Companion.formattedUrl(urlString);
-        CLog.Companion.i(TAG, "Load " + url);
+        String url = NetworkHelper.formattedUrl(urlString);
+        CLog.i(TAG, "Load " + url);
         if (url.startsWith("http://") || url.startsWith("https://") || url.startsWith("file:///") || url.startsWith("content://") || url.startsWith("javascript:")) {
             super.loadUrl(url);
         } else if (url.startsWith("intent://")) {

@@ -122,7 +122,7 @@ public class DownloaderAsyncTask extends AsyncTask<String, Void, Void> {
             // 1.在本地创建一个文件 文件大小要跟服务器文件的大小一致
             file.setLength(LENGTH);
             file.close();
-            CLog.Companion.i(TAG, "LENGTH:" + LENGTH);
+            CLog.i(TAG, "LENGTH:" + LENGTH);
 
                 /*
                  * 2. 多线程下载，分配每个线程下载如下
@@ -160,7 +160,7 @@ public class DownloaderAsyncTask extends AsyncTask<String, Void, Void> {
     }
 
     public void stop() {
-        CLog.Companion.i(TAG, "stop");
+        CLog.i(TAG, "stop");
         stop = true;
     }
 
@@ -232,7 +232,7 @@ public class DownloaderAsyncTask extends AsyncTask<String, Void, Void> {
                         }
                     }
                 }
-                CLog.Companion.v(TAG, String.format(Locale.ENGLISH, "线程%d正在下载，开始位置%d～结束位置%d", threadId, startPos, endPos));
+                CLog.v(TAG, String.format(Locale.ENGLISH, "线程%d正在下载，开始位置%d～结束位置%d", threadId, startPos, endPos));
 
                 //设置请求内容字节范围
                 conn.setRequestProperty("Range", String.format(Locale.ENGLISH, "bytes=%d-%d", startPos, endPos));
@@ -272,7 +272,7 @@ public class DownloaderAsyncTask extends AsyncTask<String, Void, Void> {
                     } else
                         break;
                 }
-                CLog.Companion.w(TAG, "currentPos:" + currentPos);
+                CLog.w(TAG, "currentPos:" + currentPos);
 
                 // 需要把currentPosition信息持久化到存储设备
                 String position = currentPos + "";
@@ -283,7 +283,7 @@ public class DownloaderAsyncTask extends AsyncTask<String, Void, Void> {
                 fos.close();
 
                 if (currentPos == LENGTH || currentPos == endPos + 1) {
-                    CLog.Companion.d(TAG, "threadId_" + threadId + " finished");
+                    CLog.d(TAG, "threadId_" + threadId + " finished");
 //                    downloadCompleted[threadId] = true;
                     positionFile.delete();
                     file.close();

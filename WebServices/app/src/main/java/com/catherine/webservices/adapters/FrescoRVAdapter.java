@@ -13,7 +13,6 @@ import android.widget.TextView;
 import com.catherine.webservices.R;
 import com.catherine.webservices.entities.ImageCard;
 import com.catherine.webservices.interfaces.OnItemClickListener;
-import com.catherine.webservices.toolkits.CLog;
 import com.facebook.binaryresource.BinaryResource;
 import com.facebook.binaryresource.FileBinaryResource;
 import com.facebook.cache.common.CacheKey;
@@ -145,6 +144,7 @@ public class FrescoRVAdapter extends RecyclerView.Adapter<FrescoRVAdapter.MainRv
             tv_title = itemView.findViewById(R.id.tv_title);
             tv_subtitle = itemView.findViewById(R.id.tv_subtitle);
             sdv_main = itemView.findViewById(R.id.sdv_main);
+            sdv_main.setAspectRatio(2.5f);
             cv = itemView.findViewById(R.id.cv);
         }
     }

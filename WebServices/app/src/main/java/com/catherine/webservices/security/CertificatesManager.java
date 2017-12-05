@@ -43,10 +43,10 @@ public class CertificatesManager {
     public static void printCertificatesInfo(X509Certificate cf)
             throws CertificateException, IOException {
 
-        CLog.Companion.d(TAG, "证书序列号:" + cf.getSerialNumber());
-        CLog.Companion.d(TAG, "版本:" + cf.getVersion());
-        CLog.Companion.d(TAG, "证书类型:" + cf.getType());
-        CLog.Companion.d(TAG, String.format("有效期限:%s 到 %s", cf.getNotBefore(), cf.getNotAfter()));
+        CLog.d(TAG, "证书序列号:" + cf.getSerialNumber());
+        CLog.d(TAG, "版本:" + cf.getVersion());
+        CLog.d(TAG, "证书类型:" + cf.getType());
+        CLog.d(TAG, String.format("有效期限:%s 到 %s", cf.getNotBefore(), cf.getNotAfter()));
 
         Map<String, String> subjectDN = refactorDN(cf.getSubjectDN().getName());
 
@@ -59,8 +59,8 @@ public class CertificatesManager {
             }
         } else
             su.append("null");
-        CLog.Companion.d(TAG, "主体" + subjectDN);
-        CLog.Companion.d(TAG, String.format("主体:[唯一标识符:%s, 通用名称:%s, 机构单元名称:%s, 机构名:%s, 地理位置:%s, 州/省名:%s, 国名:%s]", su,
+        CLog.d(TAG, "主体" + subjectDN);
+        CLog.d(TAG, String.format("主体:[唯一标识符:%s, 通用名称:%s, 机构单元名称:%s, 机构名:%s, 地理位置:%s, 州/省名:%s, 国名:%s]", su,
                 subjectDN.get("CN"), subjectDN.get("OU"), subjectDN.get("O"),
                 subjectDN.get("L"), subjectDN.get("ST"), subjectDN.get("C")));
 
@@ -75,36 +75,36 @@ public class CertificatesManager {
             }
         } else
             i.append("null");
-        CLog.Companion.d(TAG, "签发者" + issuerDN);
-        CLog.Companion.d(TAG, String.format("签发者:[唯一标识符:%s, 通用名称:%s, 机构单元名称:%s, 机构名:%s, 地理位置:%s, 州/省名:%s, 国名:%s]", i,
+        CLog.d(TAG, "签发者" + issuerDN);
+        CLog.d(TAG, String.format("签发者:[唯一标识符:%s, 通用名称:%s, 机构单元名称:%s, 机构名:%s, 地理位置:%s, 州/省名:%s, 国名:%s]", i,
                 issuerDN.get("CN"), issuerDN.get("OU"), issuerDN.get("O"),
                 issuerDN.get("L"), issuerDN.get("ST"), issuerDN.get("C")));
 
-        CLog.Companion.d(TAG, "签名算法:" + cf.getSigAlgName());
-        CLog.Companion.d(TAG, String.format("签名算法OID:%s (%s)", cf.getSigAlgOID(), OIDMap.getName(cf.getSigAlgOID())));
+        CLog.d(TAG, "签名算法:" + cf.getSigAlgName());
+        CLog.d(TAG, String.format("签名算法OID:%s (%s)", cf.getSigAlgOID(), OIDMap.getName(cf.getSigAlgOID())));
         String sigAlgParams = (cf.getSigAlgParams() == null) ? "null"
                 : Base64.encodeToString(cf.getSigAlgParams(), Base64.DEFAULT);
-        CLog.Companion.d(TAG, "签名参数:" + sigAlgParams);
-        CLog.Companion.d(TAG, "签名:" + Base64.encodeToString(cf.getSignature(), Base64.DEFAULT));
+        CLog.d(TAG, "签名参数:" + sigAlgParams);
+        CLog.d(TAG, "签名:" + Base64.encodeToString(cf.getSignature(), Base64.DEFAULT));
 
-        CLog.Companion.d(TAG, "证书的限制路径长度:" + cf.getBasicConstraints());
+        CLog.d(TAG, "证书的限制路径长度:" + cf.getBasicConstraints());
 
         Key publicKey = cf.getPublicKey();
-        CLog.Companion.d(TAG, "公鑰算法:" + publicKey.getAlgorithm());
-        CLog.Companion.d(TAG, "公鑰格式:" + publicKey.getFormat());
+        CLog.d(TAG, "公鑰算法:" + publicKey.getAlgorithm());
+        CLog.d(TAG, "公鑰格式:" + publicKey.getFormat());
         if (publicKey.getAlgorithm().equalsIgnoreCase("RSA")) {
             RSAPublicKey rsaPublicKey = (RSAPublicKey) publicKey;
-            CLog.Companion.d(TAG, "Modulus:" + rsaPublicKey.getModulus());
-            CLog.Companion.d(TAG, "Exponent:" + rsaPublicKey.getPublicExponent());
+            CLog.d(TAG, "Modulus:" + rsaPublicKey.getModulus());
+            CLog.d(TAG, "Exponent:" + rsaPublicKey.getPublicExponent());
 
         }
-        CLog.Companion.d(TAG, "公鑰:" + Base64.encodeToString(publicKey.getEncoded(), Base64.DEFAULT));
+        CLog.d(TAG, "公鑰:" + Base64.encodeToString(publicKey.getEncoded(), Base64.DEFAULT));
 
-        CLog.Companion.d(TAG, "扩展(Certificate Extensions):[");
+        CLog.d(TAG, "扩展(Certificate Extensions):[");
         CertificateExtensionsHelper coarseGrainedExtensions = new CertificateExtensionsHelper(cf);
-        CLog.Companion.d(TAG, coarseGrainedExtensions.toString());
-        CLog.Companion.d(TAG, "]");
-        // CLog.Companion.d(TAG,"==>X509Certificate: " + cf.toString());
+        CLog.d(TAG, coarseGrainedExtensions.toString());
+        CLog.d(TAG, "]");
+        // CLog.d(TAG,"==>X509Certificate: " + cf.toString());
     }
 
     /**
