@@ -10,6 +10,7 @@ import com.catherine.webservices.R;
 import com.catherine.webservices.fragments.ApacheFragment;
 import com.catherine.webservices.fragments.HttpURLConnectionFragment;
 import com.catherine.webservices.fragments.DownloaderFragment;
+import com.catherine.webservices.fragments.OkHttp3Fragment;
 import com.catherine.webservices.fragments.cache.CacheFragment;
 import com.catherine.webservices.fragments.UploadFragment;
 import com.catherine.webservices.fragments.socket.SocketFragment;
@@ -35,6 +36,8 @@ public class MainViewPagerAdapter extends FragmentPagerAdapter {
             return ApacheFragment.newInstance(true);
         } else if (position == Constants.Fragments.F_HTTP_URL_CONNECTION) {
             return HttpURLConnectionFragment.newInstance(true);
+        } else if (position == Constants.Fragments.F_OKHTTP) {
+            return OkHttp3Fragment.newInstance(true);
         } else if (position == Constants.Fragments.F_DOWNLOADER) {
             return DownloaderFragment.newInstance(true);
         } else if (position == Constants.Fragments.F_CACHE) {
