@@ -43,7 +43,7 @@ import java.util.UUID;
  */
 
 public class DeviceInfoActivity extends BaseFragmentActivity {
-    public final static String TAG = "P00_DeviceInfo";
+    public final static String TAG = DeviceInfoActivity.class.getSimpleName();
     private List<TextCard> entities;
     private TextCardRVAdapter adapter;
     private SwipeRefreshLayout srl_container;
