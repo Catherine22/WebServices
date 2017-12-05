@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.net.ConnectivityManager;
+import android.net.DhcpInfo;
 import android.net.NetworkInfo;
 import android.net.ProxyInfo;
 import android.net.wifi.WifiConfiguration;
@@ -30,6 +31,7 @@ import com.catherine.webservices.interfaces.OnItemClickListener;
 import com.catherine.webservices.interfaces.OnRequestPermissionsListener;
 import com.catherine.webservices.network.NetworkHelper;
 import com.catherine.webservices.toolkits.CLog;
+import com.catherine.webservices.toolkits.FileUtils;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -171,6 +173,33 @@ public class NetworkAnalyticsFragment extends LazyFragment {
                 entities.add(new TextCard("查看连接的Wi-Fi信息", "WifiInfo", null));
             }
 
+            DhcpInfo dhcpInfo = wm.getDhcpInfo();
+            if (dhcpInfo == null) {
+                errorSb.append("WifiManager.getDhcpInfo is null!\n");
+            } else {
+                entities.add(new TextCard("dns1", "DhcpInfo.dns1", dhcpInfo.dns1 + ""));
+                entities.add(new TextCard("dns2", "DhcpInfo.dns2", dhcpInfo.dns2 + ""));
+                entities.add(new TextCard("gateway", "DhcpInfo.gateway", dhcpInfo.gateway + ""));
+                entities.add(new TextCard("netmask", "DhcpInfo.netmask", dhcpInfo.netmask + ""));
+                entities.add(new TextCard("ipAddress", "DhcpInfo.ipAddress", dhcpInfo.ipAddress + ""));
+                entities.add(new TextCard("serverAddress", "DhcpInfo.serverAddress", dhcpInfo.serverAddress + ""));
+                entities.add(new TextCard("leaseDuration", "DhcpInfo.leaseDuration", dhcpInfo.leaseDuration + ""));
+            }
+
+            entities.add(new TextCard("Wi-Fi状态", "WifiState", getState(wm.getWifiState())));
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+                entities.add(new TextCard("isScanAlwaysAvailable", "isScanAlwaysAvailable", wm.isScanAlwaysAvailable() + ""));
+            }
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                entities.add(new TextCard("isTdlsSupported", "isTdlsSupported", wm.isTdlsSupported() + ""));
+                entities.add(new TextCard("isP2pSupported", "isP2pSupported", wm.isP2pSupported() + ""));
+                entities.add(new TextCard("是否支持5Ghz", "is5GHzBandSupported", wm.is5GHzBandSupported() + ""));
+                entities.add(new TextCard("isDeviceToApRttSupported", "isDeviceToApRttSupported", wm.isDeviceToApRttSupported() + ""));
+                entities.add(new TextCard("isEnhancedPowerReportingSupported", "isEnhancedPowerReportingSupported", wm.isEnhancedPowerReportingSupported() + ""));
+                entities.add(new TextCard("isPreferredNetworkOffloadSupported", "isPreferredNetworkOffloadSupported", wm.isPreferredNetworkOffloadSupported() + ""));
+            }
 
         }
 
@@ -233,10 +262,8 @@ public class NetworkAnalyticsFragment extends LazyFragment {
                 } else if ("查看连接的Wi-Fi信息".equals(tc.title)) {
                     Bundle b = new Bundle();
                     b.putParcelable("WifiInfo", wifiInfo);
-                    mainInterface.callFragmentDialog(Constants.Fragments.F_D_WIFI_INFO, b);
+                    mainInterface.callFragment(Constants.Fragments.F_WIFI_INFO, b);
                 } else {
-
-                    TextCard tc = entities.get(position);
                     FileUtils.copyToClipboard(tc.title, tc.contents);
                 }
             }
@@ -247,6 +274,23 @@ public class NetworkAnalyticsFragment extends LazyFragment {
             }
         });
         rv_main_list.setAdapter(adapter);
+    }
+
+    private String getState(int state) {
+        switch (state) {
+            case WifiManager.WIFI_STATE_DISABLED:
+                return "WIFI_STATE_DISABLED";
+            case WifiManager.WIFI_STATE_DISABLING:
+                return "WIFI_STATE_DISABLING";
+            case WifiManager.WIFI_STATE_ENABLED:
+                return "WIFI_STATE_ENABLED";
+            case WifiManager.WIFI_STATE_ENABLING:
+                return "WIFI_STATE_ENABLING";
+            case WifiManager.WIFI_STATE_UNKNOWN:
+                return "WIFI_STATE_UNKNOWN";
+            default:
+                return "UNKNOWN";
+        }
     }
 
     @Override

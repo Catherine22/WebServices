@@ -60,7 +60,7 @@ public class ScanResultDialog extends MyDialogFragment {
                 dismiss();
                 Bundle b = new Bundle();
                 b.putParcelable("ScanResult", results.get(position));
-                mainInterface.callFragment(Constants.Fragments.F_D_SCAN_RESULT_INFO, b);
+                mainInterface.callFragment(Constants.Fragments.F_SCAN_RESULT_INFO, b);
             }
 
             @Override

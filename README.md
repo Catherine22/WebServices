@@ -358,8 +358,6 @@ Set attributes of WebView that includes WebViewClient and WebSettings (setAllowF
 
 ## OAuth 2.0
 
-## Wi-Fi
-
 
 ## References
 - [Tencent bugly]

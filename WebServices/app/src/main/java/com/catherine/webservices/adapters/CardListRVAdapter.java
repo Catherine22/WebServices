@@ -59,6 +59,7 @@ public class CardListRVAdapter extends RecyclerView.Adapter<CardListRVAdapter.Ma
         if (entities == null || entities.size() == 0)
             return;
 
+        boolean hideLine = false;
         TextCard tc = entities.get(position);
         if (tc.title != null) {
             mainRvHolder.tv_title.setVisibility(View.VISIBLE);
@@ -69,8 +70,10 @@ public class CardListRVAdapter extends RecyclerView.Adapter<CardListRVAdapter.Ma
         if (tc.subtitle != null) {
             mainRvHolder.tv_subtitle.setVisibility(View.VISIBLE);
             mainRvHolder.tv_subtitle.setText(tc.subtitle);
-        } else
+        } else {
+            hideLine = true;
             mainRvHolder.tv_subtitle.setVisibility(View.GONE);
+        }
 
         if (tc.contents != null) {
             mainRvHolder.tv_main.setVisibility(View.VISIBLE);
@@ -87,6 +90,8 @@ public class CardListRVAdapter extends RecyclerView.Adapter<CardListRVAdapter.Ma
             mainRvHolder.tv_main.setText(tc.contents);
         } else {
             mainRvHolder.tv_main.setVisibility(View.GONE);
+            if (hideLine)
+                mainRvHolder.v_line.setVisibility(View.GONE);
         }
     }
 
@@ -108,12 +113,14 @@ public class CardListRVAdapter extends RecyclerView.Adapter<CardListRVAdapter.Ma
         TextView tv_title;
         TextView tv_subtitle;
         TextView tv_main;
+        View v_line;
 
         MainRvHolder(View itemView) {
             super(itemView);
             tv_title = itemView.findViewById(R.id.tv_title);
             tv_subtitle = itemView.findViewById(R.id.tv_subtitle);
             tv_main = itemView.findViewById(R.id.tv_main);
+            v_line = itemView.findViewById(R.id.v_line);
         }
     }
 }

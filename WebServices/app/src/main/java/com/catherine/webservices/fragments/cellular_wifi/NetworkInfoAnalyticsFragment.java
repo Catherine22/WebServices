@@ -19,6 +19,7 @@ import com.catherine.webservices.fragments.LazyFragment;
 import com.catherine.webservices.interfaces.MainInterface;
 import com.catherine.webservices.interfaces.OnItemClickListener;
 import com.catherine.webservices.interfaces.OnRequestPermissionsListener;
+import com.catherine.webservices.toolkits.FileUtils;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -130,7 +131,6 @@ public class NetworkInfoAnalyticsFragment extends LazyFragment {
         TextCardRVAdapter adapter = new TextCardRVAdapter(getActivity(), entities, new OnItemClickListener() {
             @Override
             public void onItemClick(@NotNull View view, int position) {
-
                 TextCard tc = entities.get(position);
                 FileUtils.copyToClipboard(tc.title, tc.contents);
             }

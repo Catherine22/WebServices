@@ -98,8 +98,8 @@ public class Constants {
         public final static int F_WIFI_CONFIGURATION_ANALYTICS = 20;
         public final static int F_D_SCAN_RESULT = 21;
         public final static int F_D_WIFI_CONFIGURATIONS = 22;
-        public final static int F_D_WIFI_INFO = 23;
-        public final static int F_D_SCAN_RESULT_INFO = 24;
+        public final static int F_WIFI_INFO = 23;
+        public final static int F_SCAN_RESULT_INFO = 24;
 
         public static String TAG(int f) {
             switch (f) {
@@ -149,10 +149,10 @@ public class Constants {
                     return "F_D_SCAN_RESULT";
                 case F_D_WIFI_CONFIGURATIONS:
                     return "F_D_WIFI_CONFIGURATIONS";
-                case F_D_WIFI_INFO:
-                    return "F_D_WIFI_INFO";
-                case F_D_SCAN_RESULT_INFO:
-                    return "F_D_SCAN_RESULT_INFO";
+                case F_WIFI_INFO:
+                    return "F_WIFI_INFO";
+                case F_SCAN_RESULT_INFO:
+                    return "F_SCAN_RESULT_INFO";
 
                 default:
                     return "UNKNOWN";
@@ -207,10 +207,10 @@ public class Constants {
                     return "F_D_SCAN_RESULT";
                 case F_D_WIFI_CONFIGURATIONS:
                     return "F_D_WIFI_CONFIGURATIONS";
-                case F_D_WIFI_INFO:
-                    return "F_D_WIFI_INFO";
-                case F_D_SCAN_RESULT_INFO:
-                    return "F_D_SCAN_RESULT_INFO";
+                case F_WIFI_INFO:
+                    return "F_WIFI_INFO";
+                case F_SCAN_RESULT_INFO:
+                    return "F_SCAN_RESULT_INFO";
 
                 default:
                     return "";

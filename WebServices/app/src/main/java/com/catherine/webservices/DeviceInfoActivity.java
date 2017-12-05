@@ -26,6 +26,7 @@ import com.catherine.webservices.interfaces.ADID_Callback;
 import com.catherine.webservices.interfaces.OnItemClickListener;
 import com.catherine.webservices.network.NetworkHelper;
 import com.catherine.webservices.security.ADID_AsyncTask;
+import com.catherine.webservices.toolkits.FileUtils;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -249,7 +250,6 @@ public class DeviceInfoActivity extends BaseFragmentActivity {
         adapter = new TextCardRVAdapter(this, entities, new OnItemClickListener() {
             @Override
             public void onItemClick(View view, final int position) {
-
                 TextCard tc = entities.get(position);
                 FileUtils.copyToClipboard(tc.title, tc.contents);
             }

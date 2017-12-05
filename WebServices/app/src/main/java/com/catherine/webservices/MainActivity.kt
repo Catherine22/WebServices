@@ -155,6 +155,12 @@ class MainActivity : BaseFragmentActivity(), MainInterface {
             Constants.Fragments.F_WIFI_CONFIGURATION_ANALYTICS -> {
                 fragment = WifiConfigurationAnalyticsFragment.newInstance(true)
             }
+            Constants.Fragments.F_WIFI_INFO -> {
+                fragment = WifiInfoFragment()
+            }
+            Constants.Fragments.F_SCAN_RESULT_INFO -> {
+                fragment = ScanResultInfoFragment()
+            }
         }
 
         //Avoid to launch duplicated fragments
@@ -197,12 +203,6 @@ class MainActivity : BaseFragmentActivity(), MainInterface {
             }
             Constants.Fragments.F_D_WIFI_CONFIGURATIONS -> {
                 fragment = WifiConfigurationsDialog()
-            }
-            Constants.Fragments.F_D_WIFI_INFO -> {
-                fragment = WifiInfoDialog()
-            }
-            Constants.Fragments.F_D_SCAN_RESULT_INFO -> {
-                fragment = ScanResultInfoDialog()
             }
         }
 

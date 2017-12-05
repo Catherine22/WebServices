@@ -7,15 +7,12 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageButton;
 
 import com.catherine.webservices.R;
 import com.catherine.webservices.adapters.TextCardRVAdapter;
-import com.catherine.webservices.components.MyDialogFragment;
 import com.catherine.webservices.entities.TextCard;
+import com.catherine.webservices.fragments.LazyFragment;
 import com.catherine.webservices.interfaces.OnItemClickListener;
 import com.catherine.webservices.toolkits.FileUtils;
 
@@ -28,24 +25,26 @@ import java.util.List;
  * catherine919@soft-world.com.tw
  */
 
-public class WifiInfoDialog extends MyDialogFragment {
+public class WifiInfoFragment extends LazyFragment {
     private List<TextCard> entities;
 
+    public static WifiInfoFragment newInstance(boolean isLazyLoad) {
+        Bundle args = new Bundle();
+        args.putBoolean(LazyFragment.INTENT_BOOLEAN_LAZYLOAD, isLazyLoad);
+        WifiInfoFragment fragment = new WifiInfoFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.f_d_wifi_info, container, false);
+    public void onCreateViewLazy(Bundle savedInstanceState) {
+        super.onCreateViewLazy(savedInstanceState);
+        setContentView(R.layout.f_wifi_info);
         Bundle b = getArguments();
         WifiInfo wifiInfo = b.getParcelable("WifiInfo");
 
-        ImageButton xButton = view.findViewById(R.id.xButton);
-        RecyclerView rv_news = view.findViewById(R.id.rv_news);
+        RecyclerView rv_news = (RecyclerView) findViewById(R.id.rv_news);
         rv_news.setLayoutManager(new LinearLayoutManager(getActivity()));
-        xButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dismiss();
-            }
-        });
         entities = new ArrayList<>();
 
         entities.add(new TextCard("网络的名字，唯一区别WIFI网络的名字", "SSID", (TextUtils.isEmpty(wifiInfo.getSSID()) ? "" : wifiInfo.getSSID())));
@@ -78,6 +77,6 @@ public class WifiInfoDialog extends MyDialogFragment {
             }
         });
         rv_news.setAdapter(adapter);
-        return view;
     }
+
 }

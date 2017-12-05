@@ -3,13 +3,13 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/round_bg"
+    android:background="@android:color/white"
     android:clickable="true"
     android:focusable="true"
     android:scrollbars="none">
 
     <FrameLayout
-        android:layout_width="350dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <android.support.v7.widget.RecyclerView
@@ -23,18 +23,15 @@
 
         <TextView
             android:id="@+id/tv_error"
-            android:textColor="@android:color/holo_red_dark"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:gravity="center"
             android:layout_marginBottom="10dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="25dp"
             android:layout_marginTop="10dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:gravity="center"
+            android:textColor="@android:color/holo_red_dark"/>
 
-        <ImageButton
-            android:id="@+id/xButton"
-            style="@style/close_button_in_frame_layout"/>
     </FrameLayout>
 </ScrollView>
