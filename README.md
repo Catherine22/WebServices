@@ -384,7 +384,6 @@ Set attributes of WebView that includes WebViewClient and WebSettings (setAllowF
 [MyApache]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/network/MyApache.java>
 [MyHttpURLConnection]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/network/MyHttpURLConnection.java>
 [HttpAsyncTask]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/network/HttpAsyncTask.java>
-[OkHttp3Fragment]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/network/OkHttp3Fragment.java>
 [DownloaderAsyncTask]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/network/DownloaderAsyncTask.java>
 [ImageCardRVAdapter]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/adapters/ImageCardRVAdapter.java>
 [FrescoRVAdapter]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/adapters/FrescoRVAdapter.java>
@@ -394,6 +393,7 @@ Set attributes of WebView that includes WebViewClient and WebSettings (setAllowF
 [MyJavaScriptInterface]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/network/MyJavaScriptInterface.java>
 [ApacheFragment]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/ApacheFragment.java>
 [HttpURLConnectionFragment]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/HttpURLConnectionFragment.java>
+[OkHttp3Fragment]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/OkHttp3Fragment.java>
 [DownloaderFragment]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/DownloaderFragment.java>
 [GalleryFragment]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/cache/GalleryFragment.java>
 [UploadFragment]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/UploadFragment.java>
