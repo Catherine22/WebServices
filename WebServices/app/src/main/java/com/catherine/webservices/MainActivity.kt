@@ -18,6 +18,7 @@ import catherine.messagecenter.AsyncResponse
 import catherine.messagecenter.Server
 import com.catherine.webservices.adapters.MainViewPagerAdapter
 import com.catherine.webservices.components.MyDialogFragment
+import com.catherine.webservices.fragments.OkHttp3Fragment
 import com.catherine.webservices.fragments.cache.GalleryFragment
 import com.catherine.webservices.fragments.cellular_wifi.*
 import com.catherine.webservices.fragments.webview.FullWebViewFragment
@@ -140,6 +141,10 @@ class MainActivity : BaseFragmentActivity(), MainInterface {
 
             Constants.Fragments.F_NETWORK_ANALYTICS -> {
                 fragment = NetworkAnalyticsFragment.newInstance(true)
+            }
+
+            Constants.Fragments.F_OKHTTP -> {
+                fragment = OkHttp3Fragment.newInstance(true)
             }
 
 
@@ -321,6 +326,7 @@ class MainActivity : BaseFragmentActivity(), MainInterface {
                 when (tab) {
                     tabLayout.getTabAt(Constants.Fragments.F_APACHE) -> vp_content.currentItem = Constants.Fragments.F_APACHE
                     tabLayout.getTabAt(Constants.Fragments.F_HTTP_URL_CONNECTION) -> vp_content.currentItem = Constants.Fragments.F_HTTP_URL_CONNECTION
+                    tabLayout.getTabAt(Constants.Fragments.F_OKHTTP) -> vp_content.currentItem = Constants.Fragments.F_OKHTTP
                     tabLayout.getTabAt(Constants.Fragments.F_DOWNLOADER) -> vp_content.currentItem = Constants.Fragments.F_DOWNLOADER
                     tabLayout.getTabAt(Constants.Fragments.F_CACHE) -> {
                         //Push broadcast before initialize so the broadcast won't be captured at first time.

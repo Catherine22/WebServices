@@ -40,6 +40,7 @@
     <string-array name="tab_array">
         <item>HttpClient</item>
         <item>HttpURLConnection</item>
+        <item>OkHttp3</item>
         <item>Downloader</item>
         <item>Cache</item>
         <item>Upload</item>

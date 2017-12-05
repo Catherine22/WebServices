@@ -76,14 +76,14 @@ public class Constants {
         //Fragments - sort by ViewPager
         public final static int F_APACHE = 0;
         public final static int F_HTTP_URL_CONNECTION = 1;
-        public final static int F_DOWNLOADER = 2;
-        public final static int F_CACHE = 3;
-        public final static int F_UPLOAD = 4;
-        public final static int F_SOCKET = 5;
-        public final static int F_WEBVIEW = 6;
+        public final static int F_OKHTTP = 2;
+        public final static int F_DOWNLOADER = 3;
+        public final static int F_CACHE = 4;
+        public final static int F_UPLOAD = 5;
+        public final static int F_SOCKET = 6;
+        public final static int F_WEBVIEW = 7;
 
         //Other fragments
-        public final static int F_Gallery = 7;
         public final static int F_BLOCKING_SOCKET = 8;
         public final static int F_NIO_SOCKET = 9;
         public final static int F_UDP_SOCKET = 10;
@@ -100,6 +100,7 @@ public class Constants {
         public final static int F_D_WIFI_CONFIGURATIONS = 22;
         public final static int F_WIFI_INFO = 23;
         public final static int F_SCAN_RESULT_INFO = 24;
+        public final static int F_Gallery = 25;
 
         public static String TAG(int f) {
             switch (f) {
@@ -107,6 +108,8 @@ public class Constants {
                     return "F_APACHE";
                 case F_HTTP_URL_CONNECTION:
                     return "F_HTTP_URL_CONNECTION";
+                case F_OKHTTP:
+                    return "F_OKHTTP";
                 case F_DOWNLOADER:
                     return "F_DOWNLOADER";
                 case F_CACHE:
@@ -165,6 +168,8 @@ public class Constants {
                     return "F_APACHE";
                 case F_HTTP_URL_CONNECTION:
                     return "F_HTTP_URL_CONNECTION";
+                case F_OKHTTP:
+                    return "F_OKHTTP";
                 case F_DOWNLOADER:
                     return "F_DOWNLOADER";
                 case F_CACHE:
