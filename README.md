@@ -55,11 +55,11 @@ android {
 ```
 
 - Create an HttpClient for the whole project, and make ThreadSafeClientConnManager to manager the thread. Initialize HttpClient in [MyApplication] and use [MyApache] which has been packaged doGet() and doPost.
-- [P01_Apache]
+- [ApacheFragment]
 - HttpClient settings:[MyApplication], [MyApache]
 
 ## HttpURLConnection (java.net.HttpURLConnection)
-- [P02_HttpURLConnection]
+- [HttpURLConnectionFragment]
 - HttpURLConnection settings:[MyHttpURLConnection]
 
 
@@ -68,11 +68,11 @@ android {
 ## Multiple-threading download
 - Download a single file with multiple threads
 - Show the progressbar
-- [P03_Downloader]
+- [DownloaderFragment]
 - [DownloaderAsyncTask]
 
 ## Upload files to the server
-- [P06_Upload]
+- [UploadFragment]
 
 
 ## Cache
@@ -246,13 +246,13 @@ Take kyfw.12306.cn for example.
 1. Download the certificate of kyfw.12306.cn and add to assets file.
 2. Add this certificate to trustManager[]
 3. Let "HttpsURLConnection" trust this certificate
-4. Go to [P02_HttpURLConnection] to see more.
+4. Go to [HttpURLConnectionFragment] to see more.
 
 Another example - request to [github APIs]
 1. Add the PEM formatted String of the certificate.
 2. Add this certificate to trustManager[]
 3. Let "HttpsURLConnection" trust this certificate
-4. Go to [P02_HttpURLConnection] to see more.
+4. Go to [HttpURLConnectionFragment] to see more.
 
 Check SSL certificates here : [https://www.ssllabs.com/ssltest/][2]
 
@@ -263,7 +263,7 @@ Check SSL certificates here : [https://www.ssllabs.com/ssltest/][2]
 3. Download each image from the list and try to cache them.		
 4. Show images whatever they have been cached.		
 
-Here is the example: [P05_Gallery], [ImageCardRVAdapter]
+Here is the example: [GalleryFragment], [ImageCardRVAdapter]
 
 **Fresco - SimpleDraweeView**
 
@@ -272,7 +272,7 @@ Three ways to deal with images:
 - Prefetch images and show them at the same time. That means there're at least two threads -  the one downloads the images and another displays the images.      
 - As the app launches, prefetch images and save them to your cache folder even though the fragment or activity which displays the images hasn't opened yet.
 
-Here is the example: [P11_Fresco], [FrescoRVAdapter]
+Here is the example: [FrescoFragment], [FrescoRVAdapter]
 
 ## TCP Sockets
 **Blocking socket**
@@ -280,7 +280,7 @@ Here is the example: [P11_Fresco], [FrescoRVAdapter]
 ```java
 tcpSocketReceiver();
 ```
-- Client : Run WebServices and open [P08_Blocking_Socket] fragment on Android devices.
+- Client : Run WebServices and open [BlockingSocketFragment] fragment on Android devices.
 
 
 **Non-blocking socket (NIO Socket)**
@@ -288,23 +288,23 @@ tcpSocketReceiver();
 ```java
 startNIOSocket();
 ```
-- Client : Run WebServices and open [P09_NIO_Socket] fragment on Android devices.
+- Client : Run WebServices and open [NIO_SocketFragment] fragment on Android devices.
 
 ## UDP Sockets
 - Server : Run [MySocket] with eclipse
 ```java
 udpSocket();
 ```
-- Client : Run WebServices and open [P10_UDP_Socket] fragment on Android devices.
+- Client : Run WebServices and open [UDP_SocketFragment] fragment on Android devices.
 
 ## WebView
-**[MyWebView]**, [P14_Full_WebView] and [P13_Nested_WebView] supports the functions of...
+**[MyWebView]**, [FullWebViewFragment] and [NestedWebViewFragment] supports the functions of...
 
 1. Going back to previous pages.
 2. Showing a ProgressBar while WebView is loading resources.
 3. Launching other apps installed in your device by url scheme.
 4. Handling JavaScript alert(), confirm() and prompt() and displaying the message with a used-defined dialog.
->Before using JavaScript, you should have WebView enable JavaScript. Go to [P15_WebView_Settings] to set.		
+>Before using JavaScript, you should have WebView enable JavaScript. Go to [WebViewSettingsFragment] to set.		
 
 5. Calling Java functions from JavaScript
 > Two tips:
@@ -351,13 +351,17 @@ In proguard-rules.pro
 >IndexedDB is available on Android 4.4+
 
 14. Launching FileChooser
-You could also go to **[P17_WebView_Test_List]** to test all the websites I listed.
+You could also go to **[WebViewTestListFragment]** to test all the websites I listed.
 
-**[P15_WebView_Settings]**
+**[WebViewSettingsFragment]**
 Set attributes of WebView that includes WebViewClient and WebSettings (setAllowFileAccess(), setJavaScriptEnabled(), setSupportZoom() and so forth.)
 
 ## OAuth 2.0
 
+## other
+1. Network info: [NetworkAnalyticsFragment]
+2. Device info: [DeviceInfoActivity]
+3. 
 
 ## References
 - [Tencent bugly]
@@ -375,6 +379,7 @@ Set attributes of WebView that includes WebViewClient and WebSettings (setAllowF
 
 
 [MainActivity]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/MainActivity.kt>
+[DeviceInfoActivity]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/DeviceInfoActivity.java>
 [MyApplication]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/MyApplication.java>
 [MyApache]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/network/MyApache.java>
 [MyHttpURLConnection]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/network/MyHttpURLConnection.java>
@@ -386,19 +391,20 @@ Set attributes of WebView that includes WebViewClient and WebSettings (setAllowF
 [MyWebView]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/components/MyWebView.java>
 [MySocket]:<https://github.com/Catherine22/WebServices/blob/master/JavaSocketServer/MySocket/src/Main.java>
 [MyJavaScriptInterface]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/network/MyJavaScriptInterface.java>
-[P01_Apache]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/P01_Apache.java>
-[P02_HttpURLConnection]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/P02_HttpURLConnection.java>
-[P03_Downloader]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/P03_Downloader.java>
-[P05_Gallery]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/cache/P05_Gallery.java>
-[P06_Upload]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/P06_Upload.java>
-[P08_Blocking_Socket]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/socket/P08_Blocking_Socket.java>
-[P09_NIO_Socket]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/socket/P09_NIO_Socket.java>
-[P10_UDP_Socket]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/socket/P10_UDP_Socket.java>
-[P11_Fresco]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/cache/P11_Fresco.java>
-[P13_Nested_WebView]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/webview/P13_Nested_WebView.java>
-[P14_Full_WebView]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/webview/P14_Full_WebView.java>
-[P15_WebView_Settings]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/webview/P15_WebView_Settings.java>
-[P17_WebView_Test_List]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/webview/P17_WebView_Test_List.java>
+[ApacheFragment]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/ApacheFragment.java>
+[HttpURLConnectionFragment]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/HttpURLConnectionFragment.java>
+[DownloaderFragment]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/DownloaderFragment.java>
+[GalleryFragment]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/cache/GalleryFragment.java>
+[UploadFragment]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/UploadFragment.java>
+[BlockingSocketFragment]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/socket/BlockingSocketFragment.java>
+[NIO_SocketFragment]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/socket/NIO_SocketFragment.java>
+[UDP_SocketFragment]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/socket/UDP_SocketFragment.java>
+[FrescoFragment]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/cache/FrescoFragment.java>
+[NestedWebViewFragment]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/webview/NestedWebViewFragment.java>
+[FullWebViewFragment]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/webview/FullWebViewFragment.java>
+[WebViewSettingsFragment]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/webview/WebViewSettingsFragment.java>
+[WebViewTestListFragment]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/webview/WebViewTestListFragment.java>
+[NetworkAnalyticsFragment]:<https://github.com/Catherine22/WebServices/blob/master/WebServices/app/src/main/java/com/catherine/webservices/fragments/cellular_wifi/NetworkAnalyticsFragment.java>
 
 
 [Tencent bugly]:<https://mp.weixin.qq.com/s/qOMO0LIdA47j3RjhbCWUEQ>
