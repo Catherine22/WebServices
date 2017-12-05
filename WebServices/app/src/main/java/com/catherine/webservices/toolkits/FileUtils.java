@@ -1,6 +1,7 @@
 package com.catherine.webservices.toolkits;
 
 import android.annotation.SuppressLint;
+import android.content.ClipData;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.res.AssetManager;
@@ -10,8 +11,10 @@ import android.os.Build;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
+import android.text.ClipboardManager;
 
 import com.catherine.webservices.MyApplication;
+import com.catherine.webservices.entities.TextCard;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -324,6 +327,25 @@ public class FileUtils {
             return uri.getPath();
         }
         return null;
+    }
+
+    public static void copyToClipboard(String title, String content) {
+        try {
+            int sdk = Build.VERSION.SDK_INT;
+            if (sdk < Build.VERSION_CODES.HONEYCOMB) {
+                ClipboardManager clipboard = (ClipboardManager)
+                        MyApplication.INSTANCE.getSystemService(Context.CLIPBOARD_SERVICE);
+                clipboard.setText(content);
+            } else {
+                android.content.ClipboardManager clipboard = (android.content.ClipboardManager)
+                        MyApplication.INSTANCE.getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clip = ClipData
+                        .newPlainText(title, content);
+                clipboard.setPrimaryClip(clip);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 

@@ -52,7 +52,7 @@ public class SocketFragment extends LazyFragment {
     @Override
     public void onCreateViewLazy(Bundle savedInstanceState) {
         super.onCreateViewLazy(savedInstanceState);
-        setContentView(R.layout.f_common_socket);
+        setContentView(R.layout.f_socket);
         mainInterface = (MainInterface) getActivity();
         init();
     }
@@ -156,23 +156,17 @@ public class SocketFragment extends LazyFragment {
     private void callFragment(int id) {
         CLog.d(TAG, "call " + id);
         Fragment fragment = null;
-        String tag = "";
-        String title = "";
+        String tag = Constants.Fragments.TAG(id);
+        String title = Constants.Fragments.TITLE(id);
         switch (id) {
             case Constants.Fragments.F_BLOCKING_SOCKET:
-                title = "F_BLOCKING_SOCKET";
                 fragment = BlockingSocketFragment.newInstance(true);
-                tag = "P08";
                 break;
             case Constants.Fragments.F_NIO_SOCKET:
-                title = "F_NIO_SOCKET";
                 fragment = NIO_SocketFragment.newInstance(true);
-                tag = "P09";
                 break;
             case Constants.Fragments.F_UDP_SOCKET:
-                title = "F_UDP_SOCKET";
                 fragment = UDP_SocketFragment.newInstance(true);
-                tag = "P10";
                 break;
         }
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();

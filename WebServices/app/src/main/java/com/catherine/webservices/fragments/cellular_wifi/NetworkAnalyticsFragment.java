@@ -7,6 +7,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.ProxyInfo;
 import android.net.wifi.WifiConfiguration;
+import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -51,6 +52,7 @@ public class NetworkAnalyticsFragment extends LazyFragment {
     private NetworkInfo networkInfo;
     private WifiManager wm;
     private WifiManager.WifiLock wl;
+    private WifiInfo wifiInfo;
     private NetworkHelper helper;
 
     public static NetworkAnalyticsFragment newInstance(boolean isLazyLoad) {
@@ -71,7 +73,7 @@ public class NetworkAnalyticsFragment extends LazyFragment {
     }
 
     private void init() {
-        mainInterface.getPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.WAKE_LOCK}, new OnRequestPermissionsListener() {
+        mainInterface.getPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.WAKE_LOCK}, new OnRequestPermissionsListener() {
             @Override
             public void onGranted() {
                 fillInData();
@@ -159,8 +161,17 @@ public class NetworkAnalyticsFragment extends LazyFragment {
             if (wifiConfigurations == null) {
                 errorSb.append("WifiManager.wifiConfigurations is null!\n");
             } else {
-                entities.add(new TextCard("查看网络配置", "wifiConfigurations", null));
+                entities.add(new TextCard("查看网络配置", "WifiConfiguration", null));
             }
+
+            wifiInfo = wm.getConnectionInfo();
+            if (wifiInfo == null) {
+                errorSb.append("WifiManager.getConnectionInfo is null!\n");
+            } else {
+                entities.add(new TextCard("查看连接的Wi-Fi信息", "WifiInfo", null));
+            }
+
+
         }
 
 
@@ -219,23 +230,14 @@ public class NetworkAnalyticsFragment extends LazyFragment {
                     mainInterface.callFragmentDialog(Constants.Fragments.F_D_SCAN_RESULT);
                 } else if ("查看网络配置".equals(tc.title)) {
                     mainInterface.callFragmentDialog(Constants.Fragments.F_D_WIFI_CONFIGURATIONS);
+                } else if ("查看连接的Wi-Fi信息".equals(tc.title)) {
+                    Bundle b = new Bundle();
+                    b.putParcelable("WifiInfo", wifiInfo);
+                    mainInterface.callFragmentDialog(Constants.Fragments.F_D_WIFI_INFO, b);
                 } else {
-                    try {
-                        int sdk = android.os.Build.VERSION.SDK_INT;
-                        if (sdk < android.os.Build.VERSION_CODES.HONEYCOMB) {
-                            android.text.ClipboardManager clipboard = (android.text.ClipboardManager)
-                                    getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
-                            clipboard.setText(tc.contents);
-                        } else {
-                            android.content.ClipboardManager clipboard = (android.content.ClipboardManager)
-                                    getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
-                            android.content.ClipData clip = android.content.ClipData
-                                    .newPlainText(tc.title, tc.contents);
-                            clipboard.setPrimaryClip(clip);
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+
+                    TextCard tc = entities.get(position);
+                    FileUtils.copyToClipboard(tc.title, tc.contents);
                 }
             }
 

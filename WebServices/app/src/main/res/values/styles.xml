@@ -39,8 +39,8 @@
     </style>
 
     <style name="close_button_in_frame_layout" parent="AppTheme">
-        <item name="android:layout_width">30dp</item>
-        <item name="android:layout_height">30dp</item>
+        <item name="android:layout_width">20dp</item>
+        <item name="android:layout_height">20dp</item>
         <item name="android:background">@android:color/transparent</item>
         <item name="android:layout_margin">10dp</item>
         <item name="android:adjustViewBounds">true</item>

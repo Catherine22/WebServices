@@ -1,7 +1,6 @@
 package com.catherine.webservices.fragments.cellular_wifi;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.net.ProxyInfo;
 import android.net.wifi.WifiConfiguration;
@@ -102,8 +101,8 @@ public class WifiConfigurationAnalyticsFragment extends LazyFragment {
         Bundle b = getArguments();
         StringBuilder errorSb = new StringBuilder();
         WifiConfiguration wifiConfiguration = b.getParcelable("WifiConfiguration");
-        entities.add(new TextCard("热点名称", "SSID", (TextUtils.isEmpty(wifiConfiguration.SSID) ? "" : wifiConfiguration.SSID)));
-        entities.add(new TextCard("BSSID", "BSSID", (TextUtils.isEmpty(wifiConfiguration.BSSID) ? "" : wifiConfiguration.BSSID)));
+        entities.add(new TextCard("网络的名字，唯一区别WIFI网络的名字", "SSID", (TextUtils.isEmpty(wifiConfiguration.SSID) ? "" : wifiConfiguration.SSID)));
+        entities.add(new TextCard("接入点的地址", "BSSID", (TextUtils.isEmpty(wifiConfiguration.BSSID) ? "" : wifiConfiguration.BSSID)));
         entities.add(new TextCard("WPA-PSK使用的预共享密钥", "preSharedKey", (TextUtils.isEmpty(wifiConfiguration.preSharedKey) ? "" : wifiConfiguration.preSharedKey)));
         entities.add(new TextCard("网络配置的ID", "networkId", wifiConfiguration.networkId + ""));
         entities.add(new TextCard("访问的优先级", "priority", wifiConfiguration.priority + ""));
@@ -161,23 +160,9 @@ public class WifiConfigurationAnalyticsFragment extends LazyFragment {
         TextCardRVAdapter adapter = new TextCardRVAdapter(getActivity(), entities, new OnItemClickListener() {
             @Override
             public void onItemClick(@NotNull View view, int position) {
-                try {
-                    TextCard tc = entities.get(position);
-                    int sdk = Build.VERSION.SDK_INT;
-                    if (sdk < Build.VERSION_CODES.HONEYCOMB) {
-                        android.text.ClipboardManager clipboard = (android.text.ClipboardManager)
-                                getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
-                        clipboard.setText(tc.contents);
-                    } else {
-                        android.content.ClipboardManager clipboard = (android.content.ClipboardManager)
-                                getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
-                        android.content.ClipData clip = android.content.ClipData
-                                .newPlainText(tc.title, tc.contents);
-                        clipboard.setPrimaryClip(clip);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+
+                TextCard tc = entities.get(position);
+                FileUtils.copyToClipboard(tc.title, tc.contents);
             }
 
             @Override

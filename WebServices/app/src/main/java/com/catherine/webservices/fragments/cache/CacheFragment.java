@@ -243,20 +243,16 @@ public class CacheFragment extends LazyFragment {
     private void callFragment(int id, Bundle bundle) {
         CLog.d(TAG, "call " + id);
         Fragment fragment = null;
-        String tag = "";
-        String title = "";
+        String tag = Constants.Fragments.TAG(id);
+        String title = Constants.Fragments.TITLE(id);
         switch (id) {
             case Constants.Fragments.F_Gallery:
-                title = "F_Gallery";
                 fragment = GalleryFragment.newInstance(true);
                 fragment.setArguments(bundle);
-                tag = "P05";
                 break;
             case Constants.Fragments.F_FRESCO:
-                title = "P11_Fresco";
                 fragment = FrescoFragment.newInstance(true);
                 fragment.setArguments(bundle);
-                tag = "P11";
                 break;
 
         }

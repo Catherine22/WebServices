@@ -15,7 +15,7 @@ import android.widget.TextView;
 import com.catherine.webservices.Constants;
 import com.catherine.webservices.MyApplication;
 import com.catherine.webservices.R;
-import com.catherine.webservices.adapters.TextCardRVAdapter;
+import com.catherine.webservices.adapters.CardListRVAdapter;
 import com.catherine.webservices.components.MyDialogFragment;
 import com.catherine.webservices.entities.TextCard;
 import com.catherine.webservices.interfaces.MainInterface;
@@ -32,14 +32,13 @@ import java.util.List;
 
 public class WifiConfigurationsDialog extends MyDialogFragment {
     private MainInterface mainInterface;
-    private  List<TextCard> entities;
-    private TextView tv_error;
+    private List<TextCard> entities;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.f_d_wifi_configurations, container, false);
         mainInterface = (MainInterface) getActivity();
-        tv_error = view.findViewById(R.id.tv_error);
+        TextView tv_error = view.findViewById(R.id.tv_error);
         ImageButton xButton = view.findViewById(R.id.xButton);
         RecyclerView rv_news = view.findViewById(R.id.rv_news);
         rv_news.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -59,17 +58,22 @@ public class WifiConfigurationsDialog extends MyDialogFragment {
             tv_error.setText("");
             entities = new ArrayList<>();
             for (WifiConfiguration wc : wifiConfigurations) {
-                entities.add(new TextCard(wc.SSID, null, null));
+                if (wc == null)
+                    entities.add(new TextCard(wc.SSID, null, "null"));
+                else
+                    entities.add(new TextCard(wc.SSID, null, null));
             }
         }
 
-        rv_news.setAdapter(new TextCardRVAdapter(getActivity(), entities, new OnItemClickListener() {
+        rv_news.setAdapter(new CardListRVAdapter(getActivity(), entities, new OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                dismiss();
-                Bundle b = new Bundle();
-                b.putParcelable("WifiConfiguration", wifiConfigurations.get(position));
-                mainInterface.callFragment(Constants.Fragments.F_WIFI_CONFIGURATION_ANALYTICS, b);
+                if (wifiConfigurations.get(position) != null) {
+                    dismiss();
+                    Bundle b = new Bundle();
+                    b.putParcelable("WifiConfiguration", wifiConfigurations.get(position));
+                    mainInterface.callFragment(Constants.Fragments.F_WIFI_CONFIGURATION_ANALYTICS, b);
+                }
             }
 
             @Override

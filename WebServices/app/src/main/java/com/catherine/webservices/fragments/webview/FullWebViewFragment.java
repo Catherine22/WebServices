@@ -3,8 +3,6 @@ package com.catherine.webservices.fragments.webview;
 import android.Manifest;
 import android.app.Dialog;
 import android.app.DownloadManager;
-import android.content.ClipData;
-import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
@@ -34,7 +32,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.catherine.webservices.Commands;
 import com.catherine.webservices.Constants;
@@ -51,6 +48,7 @@ import com.catherine.webservices.interfaces.WebViewProgressListener;
 import com.catherine.webservices.network.MyJavaScriptInterface;
 import com.catherine.webservices.network.NetworkHelper;
 import com.catherine.webservices.toolkits.CLog;
+import com.catherine.webservices.toolkits.FileUtils;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -64,7 +62,6 @@ import catherine.messagecenter.Client;
 import catherine.messagecenter.CustomReceiver;
 import catherine.messagecenter.Result;
 
-import static android.content.Context.CLIPBOARD_SERVICE;
 import static android.content.Context.DOWNLOAD_SERVICE;
 
 /**
@@ -323,13 +320,7 @@ public class FullWebViewFragment extends LazyFragment {
                     bt_copy.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(CLIPBOARD_SERVICE);
-                            ClipData clip = ClipData.newPlainText(url, message);
-                            if (clipboard != null) {
-                                clipboard.setPrimaryClip(clip);
-                            } else {
-                                Toast.makeText(getActivity(), "Clipboard not works", Toast.LENGTH_SHORT).show();
-                            }
+                            FileUtils.copyToClipboard(url, message);
                         }
                     });
                 }
@@ -380,13 +371,7 @@ public class FullWebViewFragment extends LazyFragment {
                     bt_copy.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(CLIPBOARD_SERVICE);
-                            ClipData clip = ClipData.newPlainText(url, message);
-                            if (clipboard != null) {
-                                clipboard.setPrimaryClip(clip);
-                            } else {
-                                Toast.makeText(getActivity(), "Clipboard not works", Toast.LENGTH_SHORT).show();
-                            }
+                            FileUtils.copyToClipboard(url, message);
                         }
                     });
                 }
@@ -442,13 +427,7 @@ public class FullWebViewFragment extends LazyFragment {
                     bt_copy.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(CLIPBOARD_SERVICE);
-                            ClipData clip = ClipData.newPlainText(url, message);
-                            if (clipboard != null) {
-                                clipboard.setPrimaryClip(clip);
-                            } else {
-                                Toast.makeText(getActivity(), "Clipboard not works", Toast.LENGTH_SHORT).show();
-                            }
+                            FileUtils.copyToClipboard(url, message);
                         }
                     });
                 }

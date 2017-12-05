@@ -249,23 +249,9 @@ public class DeviceInfoActivity extends BaseFragmentActivity {
         adapter = new TextCardRVAdapter(this, entities, new OnItemClickListener() {
             @Override
             public void onItemClick(View view, final int position) {
+
                 TextCard tc = entities.get(position);
-                try {
-                    int sdk = android.os.Build.VERSION.SDK_INT;
-                    if (sdk < android.os.Build.VERSION_CODES.HONEYCOMB) {
-                        android.text.ClipboardManager clipboard = (android.text.ClipboardManager)
-                                getSystemService(CLIPBOARD_SERVICE);
-                        clipboard.setText(tc.subtitle);
-                    } else {
-                        android.content.ClipboardManager clipboard = (android.content.ClipboardManager)
-                                getSystemService(CLIPBOARD_SERVICE);
-                        android.content.ClipData clip = android.content.ClipData
-                                .newPlainText(tc.title, tc.subtitle);
-                        clipboard.setPrimaryClip(clip);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                FileUtils.copyToClipboard(tc.title, tc.contents);
             }
 
             @Override

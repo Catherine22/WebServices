@@ -116,60 +116,44 @@ class MainActivity : BaseFragmentActivity(), MainInterface {
     override fun callFragment(id: Int, bundle: Bundle?) {
         fl_main_container.visibility = View.VISIBLE
         var fragment: Fragment? = null
-        var tag: String? = null
-        var title = ""
+        val tag = Constants.Fragments.TAG(id)
+        val title = Constants.Fragments.TITLE(id)
         when (id) {
 
         //null bundle
             Constants.Fragments.F_Gallery -> {
-                title = "F_Gallery"
                 fragment = GalleryFragment.newInstance(true)
-                tag = "P05"
             }
 
 
             Constants.Fragments.F_WEBVIEW_SETTINGS -> {
-                title = "P15_WebView_Settings"
                 fragment = WebViewSettingsFragment.newInstance(true)
-                tag = "P15"
             }
 
             Constants.Fragments.F_WEBVIEW_HISTORY -> {
-                title = "P16_WebView_History"
                 fragment = WebViewHistoryFragment.newInstance(true)
-                tag = "P16"
             }
 
             Constants.Fragments.F_WEBVIEW_TEST_LIST -> {
-                title = "P17_WebView_Test_List"
                 fragment = WebViewTestListFragment.newInstance(true)
-                tag = "P17"
             }
 
             Constants.Fragments.F_NETWORK_ANALYTICS -> {
-                title = "P18_NetworkAnalytics"
                 fragment = NetworkAnalyticsFragment.newInstance(true)
-                tag = "P18"
             }
 
 
         //has bundle
             Constants.Fragments.F_FULL_WEBVIEW -> {
-                title = "P14_Full_WebView"
                 fragment = FullWebViewFragment.newInstance(true)
-                tag = "P14"
             }
 
             Constants.Fragments.F_NETWORK_INFO_ANALYTICS -> {
-                title = "P19_NetworkInfoAnalytics"
                 fragment = NetworkInfoAnalyticsFragment.newInstance(true)
-                tag = "P19"
             }
 
             Constants.Fragments.F_WIFI_CONFIGURATION_ANALYTICS -> {
-                title = "P20_WifiConfigurationAnalytics"
                 fragment = WifiConfigurationAnalyticsFragment.newInstance(true)
-                tag = "P20"
             }
         }
 
@@ -206,13 +190,19 @@ class MainActivity : BaseFragmentActivity(), MainInterface {
     override fun callFragmentDialog(id: Int, bundle: Bundle?) {
         CLog.d(TAG, "call " + id + " with bundle? " + (bundle != null))
         var fragment: MyDialogFragment? = null
-        val tag = id.toString() + ""
+        val tag = Constants.Fragments.TAG(id)
         when (id) {
-            Constants.Fragments.F_D_SCAN_RESULT->{
+            Constants.Fragments.F_D_SCAN_RESULT -> {
                 fragment = ScanResultDialog()
             }
-            Constants.Fragments.F_D_WIFI_CONFIGURATIONS->{
+            Constants.Fragments.F_D_WIFI_CONFIGURATIONS -> {
                 fragment = WifiConfigurationsDialog()
+            }
+            Constants.Fragments.F_D_WIFI_INFO -> {
+                fragment = WifiInfoDialog()
+            }
+            Constants.Fragments.F_D_SCAN_RESULT_INFO -> {
+                fragment = ScanResultInfoDialog()
             }
         }
 

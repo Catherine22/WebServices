@@ -195,18 +195,14 @@ public class WebViewFragment extends LazyFragment {
     private void callFragment(int id) {
         CLog.d(TAG, "call " + id);
         Fragment fragment = null;
-        String tag = "";
-        String title = "";
+        String tag = Constants.Fragments.TAG(id);
+        String title = Constants.Fragments.TITLE(id);
         switch (id) {
             case Constants.Fragments.F_NESTED_WEBVIEW:
-                title = "P13_Nested_WebView";
                 fragment = NestedWebViewFragment.newInstance(true);
-                tag = "P13";
                 break;
             case Constants.Fragments.F_WEBVIEW_TEST_LIST:
-                title = "P17_WebView_Test_List";
                 fragment = WebViewTestListFragment.newInstance(true);
-                tag = "P17";
                 break;
         }
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();

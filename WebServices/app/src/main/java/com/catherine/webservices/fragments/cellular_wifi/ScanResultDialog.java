@@ -14,7 +14,7 @@ import android.widget.TextView;
 import com.catherine.webservices.Constants;
 import com.catherine.webservices.MyApplication;
 import com.catherine.webservices.R;
-import com.catherine.webservices.adapters.TextCardRVAdapter;
+import com.catherine.webservices.adapters.CardListRVAdapter;
 import com.catherine.webservices.components.MyDialogFragment;
 import com.catherine.webservices.entities.TextCard;
 import com.catherine.webservices.interfaces.MainInterface;
@@ -35,7 +35,7 @@ public class ScanResultDialog extends MyDialogFragment {
     private NetworkHelper helper;
     private List<TextCard> entities;
     private List<ScanResult> results;
-    private TextCardRVAdapter adapter;
+    private CardListRVAdapter adapter;
     private MainInterface mainInterface;
 
     @Override
@@ -54,13 +54,13 @@ public class ScanResultDialog extends MyDialogFragment {
         });
         helper = new NetworkHelper();
         entities = new ArrayList<>();
-        adapter = new TextCardRVAdapter(getActivity(), entities, new OnItemClickListener() {
+        adapter = new CardListRVAdapter(getActivity(), entities, new OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
                 dismiss();
                 Bundle b = new Bundle();
                 b.putParcelable("ScanResult", results.get(position));
-                mainInterface.callFragment(Constants.Fragments.F_WIFI_CONFIGURATION_ANALYTICS, b);
+                mainInterface.callFragment(Constants.Fragments.F_D_SCAN_RESULT_INFO, b);
             }
 
             @Override

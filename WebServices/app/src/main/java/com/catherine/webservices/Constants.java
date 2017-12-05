@@ -98,6 +98,8 @@ public class Constants {
         public final static int F_WIFI_CONFIGURATION_ANALYTICS = 20;
         public final static int F_D_SCAN_RESULT = 21;
         public final static int F_D_WIFI_CONFIGURATIONS = 22;
+        public final static int F_D_WIFI_INFO = 23;
+        public final static int F_D_SCAN_RESULT_INFO = 24;
 
         public static String TAG(int f) {
             switch (f) {
@@ -147,9 +149,71 @@ public class Constants {
                     return "F_D_SCAN_RESULT";
                 case F_D_WIFI_CONFIGURATIONS:
                     return "F_D_WIFI_CONFIGURATIONS";
+                case F_D_WIFI_INFO:
+                    return "F_D_WIFI_INFO";
+                case F_D_SCAN_RESULT_INFO:
+                    return "F_D_SCAN_RESULT_INFO";
 
                 default:
                     return "UNKNOWN";
+            }
+        }
+
+        public static String TITLE(int f) {
+            switch (f) {
+                case F_APACHE:
+                    return "F_APACHE";
+                case F_HTTP_URL_CONNECTION:
+                    return "F_HTTP_URL_CONNECTION";
+                case F_DOWNLOADER:
+                    return "F_DOWNLOADER";
+                case F_CACHE:
+                    return "F_CACHE";
+                case F_UPLOAD:
+                    return "F_UPLOAD";
+                case F_SOCKET:
+                    return "F_SOCKET";
+                case F_WEBVIEW:
+                    return "F_WEBVIEW";
+
+
+                case F_Gallery:
+                    return "F_Gallery";
+                case F_BLOCKING_SOCKET:
+                    return "F_BLOCKING_SOCKET";
+                case F_NIO_SOCKET:
+                    return "F_NIO_SOCKET";
+                case F_UDP_SOCKET:
+                    return "F_UDP_SOCKET";
+                case F_FRESCO:
+                    return "F_FRESCO";
+                case F_NESTED_WEBVIEW:
+                    return "F_NESTED_WEBVIEW";
+                case F_FULL_WEBVIEW:
+                    return "F_FULL_WEBVIEW";
+                case F_WEBVIEW_SETTINGS:
+                    return "F_WEBVIEW_SETTINGS";
+                case F_WEBVIEW_HISTORY:
+                    return "F_WEBVIEW_HISTORY";
+                case F_WEBVIEW_TEST_LIST:
+                    return "F_WEBVIEW_TEST_LIST";
+                case F_NETWORK_ANALYTICS:
+                    return "F_NETWORK_ANALYTICS";
+                case F_NETWORK_INFO_ANALYTICS:
+                    return "F_NETWORK_INFO_ANALYTICS";
+                case F_WIFI_CONFIGURATION_ANALYTICS:
+                    return "F_WIFI_CONFIGURATION_ANALYTICS";
+                case F_D_SCAN_RESULT:
+                    return "F_D_SCAN_RESULT";
+                case F_D_WIFI_CONFIGURATIONS:
+                    return "F_D_WIFI_CONFIGURATIONS";
+                case F_D_WIFI_INFO:
+                    return "F_D_WIFI_INFO";
+                case F_D_SCAN_RESULT_INFO:
+                    return "F_D_SCAN_RESULT_INFO";
+
+                default:
+                    return "";
             }
         }
     }

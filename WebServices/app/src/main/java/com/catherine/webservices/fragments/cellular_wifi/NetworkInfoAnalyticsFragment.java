@@ -1,7 +1,6 @@
 package com.catherine.webservices.fragments.cellular_wifi;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.net.NetworkInfo;
 import android.os.Build;
@@ -131,23 +130,9 @@ public class NetworkInfoAnalyticsFragment extends LazyFragment {
         TextCardRVAdapter adapter = new TextCardRVAdapter(getActivity(), entities, new OnItemClickListener() {
             @Override
             public void onItemClick(@NotNull View view, int position) {
-                try {
-                    TextCard tc = entities.get(position);
-                    int sdk = android.os.Build.VERSION.SDK_INT;
-                    if (sdk < android.os.Build.VERSION_CODES.HONEYCOMB) {
-                        android.text.ClipboardManager clipboard = (android.text.ClipboardManager)
-                                getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
-                        clipboard.setText(tc.contents);
-                    } else {
-                        android.content.ClipboardManager clipboard = (android.content.ClipboardManager)
-                                getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
-                        android.content.ClipData clip = android.content.ClipData
-                                .newPlainText(tc.title, tc.contents);
-                        clipboard.setPrimaryClip(clip);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+
+                TextCard tc = entities.get(position);
+                FileUtils.copyToClipboard(tc.title, tc.contents);
             }
 
             @Override
