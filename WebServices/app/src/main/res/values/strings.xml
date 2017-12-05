@@ -52,8 +52,6 @@
         <item>Network state</item>
         <item>WebView settings</item>
         <item>WebView history</item>
-        <item>Logcat</item>
-        <item>Theme</item>
     </string-array>
 
     <string-array name="wv_attr_array">

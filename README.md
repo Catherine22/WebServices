@@ -361,7 +361,6 @@ Set attributes of WebView that includes WebViewClient and WebSettings (setAllowF
 ## other
 1. Network info: [NetworkAnalyticsFragment]
 2. Device info: [DeviceInfoActivity]
-3. 
 
 ## References
 - [Tencent bugly]
