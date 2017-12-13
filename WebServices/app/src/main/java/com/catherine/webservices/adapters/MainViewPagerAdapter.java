@@ -1,12 +1,15 @@
 package com.catherine.webservices.adapters;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.os.Build;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import com.catherine.webservices.Constants;
 import com.catherine.webservices.R;
+import com.catherine.webservices.components.DialogManager;
 import com.catherine.webservices.fragments.ApacheFragment;
 import com.catherine.webservices.fragments.HttpURLConnectionFragment;
 import com.catherine.webservices.fragments.DownloaderFragment;
@@ -16,6 +19,8 @@ import com.catherine.webservices.fragments.UploadFragment;
 import com.catherine.webservices.fragments.socket.SocketFragment;
 import com.catherine.webservices.fragments.webview.WebViewFragment;
 
+import java.util.Locale;
+
 /**
  * Created by Catherine on 2017/8/25.
  * Soft-World Inc.
@@ -24,9 +29,11 @@ import com.catherine.webservices.fragments.webview.WebViewFragment;
 
 public class MainViewPagerAdapter extends FragmentPagerAdapter {
     private String[] tabs;
+    private Context ctx;
 
     public MainViewPagerAdapter(Context ctx, FragmentManager fm) {
         super(fm);
+        this.ctx = ctx;
         tabs = ctx.getResources().getStringArray(R.array.tab_array);
     }
 
@@ -37,7 +44,16 @@ public class MainViewPagerAdapter extends FragmentPagerAdapter {
         } else if (position == Constants.Fragments.F_HTTP_URL_CONNECTION) {
             return HttpURLConnectionFragment.newInstance(true);
         } else if (position == Constants.Fragments.F_OKHTTP) {
-            return OkHttp3Fragment.newInstance(true);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                return OkHttp3Fragment.newInstance(true);
+            } else {
+                DialogManager.showErrorDialog(ctx, String.format(Locale.ENGLISH, "Sorry. Only SDK version more than %d are available.", Build.VERSION_CODES.KITKAT), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+            }
         } else if (position == Constants.Fragments.F_DOWNLOADER) {
             return DownloaderFragment.newInstance(true);
         } else if (position == Constants.Fragments.F_CACHE) {

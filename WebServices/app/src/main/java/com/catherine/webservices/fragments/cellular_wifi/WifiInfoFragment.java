@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.text.format.Formatter;
 import android.view.View;
 
 import com.catherine.webservices.R;
@@ -51,7 +52,7 @@ public class WifiInfoFragment extends LazyFragment {
         entities.add(new TextCard("接入点的地址", "BSSID", (TextUtils.isEmpty(wifiInfo.getBSSID()) ? "" : wifiInfo.getBSSID())));
         entities.add(new TextCard("Mac Address", "MacAddress", (TextUtils.isEmpty(wifiInfo.getMacAddress()) ? "" : wifiInfo.getMacAddress())));
         entities.add(new TextCard("是否隱藏SSID", "hiddenSSID", wifiInfo.getHiddenSSID() + ""));
-        entities.add(new TextCard("IP地址", "IpAddress", wifiInfo.getIpAddress() + ""));
+        entities.add(new TextCard("Ipv4地址", "IpAddress", Formatter.formatIpAddress(wifiInfo.getIpAddress()) + ""));
         entities.add(new TextCard("连接的速度", "LinkSpeed", wifiInfo.getLinkSpeed() + ""));
         entities.add(new TextCard("NetworkId", "NetworkId", wifiInfo.getNetworkId() + ""));
         entities.add(new TextCard("获取802.11n网络的信号", "Rssi", wifiInfo.getRssi() + ""));

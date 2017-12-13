@@ -14,6 +14,7 @@ import com.catherine.webservices.R;
 import com.catherine.webservices.entities.TextCard;
 import com.catherine.webservices.interfaces.OnItemClickListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,8 +31,11 @@ public class TextCardRVAdapter extends RecyclerView.Adapter<TextCardRVAdapter.Ma
 
     public TextCardRVAdapter(Context ctx, List<TextCard> entities, OnItemClickListener listener) {
         this.ctx = ctx;
-        this.entities = entities;
         this.listener = listener;
+        if (entities == null)
+            this.entities = new ArrayList<>();
+        else
+            this.entities = entities;
     }
 
     @Override

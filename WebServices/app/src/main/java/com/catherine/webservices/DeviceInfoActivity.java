@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiInfo;
@@ -18,22 +19,41 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
+import android.text.format.Formatter;
 import android.view.View;
 
 import com.catherine.webservices.adapters.TextCardRVAdapter;
+import com.catherine.webservices.components.DialogManager;
+import com.catherine.webservices.entities.Geolocation;
 import com.catherine.webservices.entities.TextCard;
 import com.catherine.webservices.interfaces.ADID_Callback;
 import com.catherine.webservices.interfaces.OnItemClickListener;
+import com.catherine.webservices.network.HttpAsyncTask;
+import com.catherine.webservices.network.HttpRequest;
+import com.catherine.webservices.network.HttpResponse;
+import com.catherine.webservices.network.HttpResponseListener;
+import com.catherine.webservices.network.NetworkHealthListener;
 import com.catherine.webservices.network.NetworkHelper;
 import com.catherine.webservices.security.ADID_AsyncTask;
+import com.catherine.webservices.toolkits.CLog;
 import com.catherine.webservices.toolkits.FileUtils;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.net.Inet4Address;
+import java.net.Inet6Address;
 import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
+import java.nio.ByteOrder;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 /**
@@ -48,6 +68,8 @@ public class DeviceInfoActivity extends BaseFragmentActivity {
     private TextCardRVAdapter adapter;
     private SwipeRefreshLayout srl_container;
     private Handler handler;
+    private boolean retry;
+    private NetworkHelper helper;
 
     @Override
     @SuppressLint("MissingSuperCall")
@@ -58,14 +80,29 @@ public class DeviceInfoActivity extends BaseFragmentActivity {
     @Override
     protected void onPermissionGranted() {
         handler = new Handler(MyApplication.INSTANCE.calHandlerThread.getLooper());
-        fillInData();
+        helper = new NetworkHelper();
+        helper.listenToNetworkState(new NetworkHealthListener() {
+            @Override
+            public void networkConnected(@NotNull String type) {
+                CLog.i(TAG, "network connected:" + type);
+                if (retry) {
+                    retry = false;
+                    getIPGeolocation();
+                }
+            }
+
+            @Override
+            public void networkDisable() {
+                CLog.e(TAG, "network disable");
+            }
+        });
         initComponent();
+        fillInData();
     }
 
     @SuppressLint("HardwareIds")
     private void fillInData() {
         entities = new ArrayList<>();
-
         entities.add(new TextCard("ADID", "", null));
         ADID_AsyncTask adid_asyncTask = new ADID_AsyncTask(new ADID_Callback() {
             @Override
@@ -84,6 +121,19 @@ public class DeviceInfoActivity extends BaseFragmentActivity {
         });
         adid_asyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
+        entities.add(new TextCard("ip", "", null));
+        entities.add(new TextCard("国家代码", "", null));
+        entities.add(new TextCard("国家", "", null));
+        entities.add(new TextCard("行政区代码", "", null));
+        entities.add(new TextCard("行政区", "", null));
+        entities.add(new TextCard("城市", "", null));
+        entities.add(new TextCard("邮编", "", null));
+        entities.add(new TextCard("时区", "", null));
+        entities.add(new TextCard("纬度", "", null));
+        entities.add(new TextCard("经度", "", null));
+        entities.add(new TextCard("地铁代码", "", null));
+        getIPGeolocation();
+
         //Host Name
         entities.add(new TextCard("Host Name", "", null));
 
@@ -95,37 +145,42 @@ public class DeviceInfoActivity extends BaseFragmentActivity {
                 String hostName, ip;
                 try {
                     InetAddress address = InetAddress.getLocalHost();
-                    hostName = address.getHostName();
-                } catch (UnknownHostException e) {
-                    e.printStackTrace();
-                    hostName = "Error: " + e.getMessage();
-                }
-                if (TextUtils.isEmpty(hostName))
-                    hostName = "N/A";
-
-                try {
-                    InetAddress address = InetAddress.getLocalHost();
                     ip = address.getHostAddress();
-                } catch (UnknownHostException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                     ip = "Error: " + e.getMessage();
                 }
                 if (TextUtils.isEmpty(ip))
                     ip = "N/A";
 
-                entities.set(1, new TextCard("Host Name", hostName, null));
-                entities.set(2, new TextCard("IP Address", ip, null));
+                try {
+                    InetAddress address = InetAddress.getLocalHost();
+                    hostName = address.getHostName();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    hostName = "Error: " + e.getMessage();
+                }
+                if (TextUtils.isEmpty(hostName))
+                    hostName = "N/A";
+
+                entities.set(12, new TextCard("Host Name", hostName, null));
+                entities.set(13, new TextCard("IP Address", ip, null));
+                adapter.setEntities(entities);
+                adapter.notifyDataSetChanged();
             }
         });
 
 
         WifiManager wm = (WifiManager) MyApplication.INSTANCE.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         WifiInfo wifi = wm.getConnectionInfo();
-        String macAddress = wifi.getMacAddress();
-        if (TextUtils.isEmpty(macAddress))
-            macAddress = "N/A";
-        entities.add(new TextCard("MAC Address", macAddress, null));
-
+        if (wifi == null)
+            entities.add(new TextCard("MAC Address", "N/A", null));
+        else {
+            String macAddress = wifi.getMacAddress();
+            if (TextUtils.isEmpty(macAddress))
+                macAddress = "N/A";
+            entities.add(new TextCard("MAC Address", macAddress, null));
+        }
 
         String androidId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
         if (TextUtils.isEmpty(androidId))
@@ -232,6 +287,107 @@ public class DeviceInfoActivity extends BaseFragmentActivity {
         entities.add(new TextCard("Build.TIME, 时间？", (TextUtils.isEmpty(Build.TIME + "") ? "N/A" : Build.TIME + ""), null));
         entities.add(new TextCard("Build.TYPE, 类型", (TextUtils.isEmpty(Build.TYPE) ? "N/A" : Build.TYPE), null));
         entities.add(new TextCard("Build.USER, 用户", (TextUtils.isEmpty(Build.USER) ? "N/A" : Build.USER), null));
+        adapter.setEntities(entities);
+        adapter.notifyDataSetChanged();
+    }
+
+    private void getIPGeolocation() {
+        HttpRequest r = new HttpRequest.Builder()
+                .url("http://freegeoip.net/json/")
+                .listener(new HttpResponseListener() {
+                    @Override
+                    public void connectSuccess(HttpResponse response) {
+                        srl_container.setRefreshing(false);
+                        String body = response.getBody();
+                        CLog.i(TAG, String.format(Locale.ENGLISH, "connectSuccess code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), body));
+
+                        Gson gson = new GsonBuilder().serializeNulls().create();
+                        Geolocation geolocation = gson.fromJson(body, Geolocation.class);
+
+                        entities.set(1, new TextCard("ip", geolocation.getIp(), null));
+                        entities.set(2, new TextCard("国家代码", geolocation.getCountry_code(), null));
+                        entities.set(3, new TextCard("国家", geolocation.getCountry_name(), null));
+                        entities.set(4, new TextCard("行政区代码", geolocation.getRegion_code(), null));
+                        entities.set(5, new TextCard("行政区", geolocation.getRegion_name(), null));
+                        entities.set(6, new TextCard("城市", geolocation.getCity(), null));
+                        entities.set(7, new TextCard("邮编", geolocation.getZip_code(), null));
+                        entities.set(8, new TextCard("时区", geolocation.getTime_zone(), null));
+                        entities.set(9, new TextCard("纬度", geolocation.getLatitude(), null));
+                        entities.set(10, new TextCard("经度", geolocation.getLongitude(), null));
+                        entities.set(11, new TextCard("地铁代码", geolocation.getMetro_code(), null));
+                        adapter.setEntities(entities);
+                        adapter.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void connectFailure(HttpResponse response, Exception e) {
+                        srl_container.setRefreshing(false);
+                        StringBuilder sb = new StringBuilder();
+                        if (!helper.isNetworkHealthy()) {
+                            DialogManager.showAlertDialog(DeviceInfoActivity.this, "Please turn on Wi-Fi or cellular.", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                }
+                            });
+                            sb.append("retry...");
+                            retry = true;
+                        } else {
+                            sb.append(String.format(Locale.ENGLISH, "connectFailure code:%s, message:%s, body:%s", response.getCode(), response.getCodeString(), response.getErrorMessage()));
+                            String errorString = sb.toString();
+                            CLog.e(TAG, errorString);
+                            if (e != null) {
+                                sb.append("\n");
+                                sb.append(e.getMessage());
+                                CLog.e(TAG, e.getMessage());
+
+                                if (e instanceof SocketTimeoutException) {
+                                    DialogManager.showAlertDialog(DeviceInfoActivity.this, "Connection timeout. Please check your server.", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+
+                                        }
+                                    });
+                                }
+                            }
+
+                            entities.set(1, new TextCard("ip", errorString, null));
+                            entities.set(2, new TextCard("国家代码", errorString, null));
+                            entities.set(3, new TextCard("国家", errorString, null));
+                            entities.set(4, new TextCard("行政区代码", errorString, null));
+                            entities.set(5, new TextCard("行政区", errorString, null));
+                            entities.set(6, new TextCard("城市", errorString, null));
+                            entities.set(7, new TextCard("邮编", errorString, null));
+                            entities.set(8, new TextCard("时区", errorString, null));
+                            entities.set(9, new TextCard("纬度", errorString, null));
+                            entities.set(10, new TextCard("经度", errorString, null));
+                            entities.set(11, new TextCard("地铁代码", errorString, null));
+                            adapter.setEntities(entities);
+                            adapter.notifyDataSetChanged();
+                        }
+                    }
+                })
+                .build();
+        new HttpAsyncTask(r).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    }
+
+    /**
+     * Convert raw IP address to string.
+     *
+     * @param rawBytes raw IP address.
+     * @return a string representation of the raw ip address.
+     */
+    private static String rawToString(byte[] rawBytes) {
+        int i = 4;
+        String s = "";
+        for (byte raw : rawBytes) {
+            s += (raw & 0xFF);
+            if (--i > 0) {
+                s += ".";
+            }
+        }
+
+        return s;
     }
 
     private void initComponent() {
@@ -241,7 +397,6 @@ public class DeviceInfoActivity extends BaseFragmentActivity {
             @Override
             public void onRefresh() {
                 fillInData();
-                initComponent();
                 srl_container.setRefreshing(false);
             }
         });

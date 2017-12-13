@@ -17,6 +17,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.text.format.Formatter;
 import android.view.View;
 
 import com.catherine.webservices.Constants;
@@ -166,6 +167,7 @@ public class NetworkAnalyticsFragment extends LazyFragment {
                 entities.add(new TextCard("查看网络配置", "WifiConfiguration", null));
             }
 
+
             wifiInfo = wm.getConnectionInfo();
             if (wifiInfo == null) {
                 errorSb.append("WifiManager.getConnectionInfo is null!\n");
@@ -177,12 +179,12 @@ public class NetworkAnalyticsFragment extends LazyFragment {
             if (dhcpInfo == null) {
                 errorSb.append("WifiManager.getDhcpInfo is null!\n");
             } else {
-                entities.add(new TextCard("dns1", "DhcpInfo.dns1", dhcpInfo.dns1 + ""));
-                entities.add(new TextCard("dns2", "DhcpInfo.dns2", dhcpInfo.dns2 + ""));
-                entities.add(new TextCard("gateway", "DhcpInfo.gateway", dhcpInfo.gateway + ""));
-                entities.add(new TextCard("netmask", "DhcpInfo.netmask", dhcpInfo.netmask + ""));
-                entities.add(new TextCard("ipAddress", "DhcpInfo.ipAddress", dhcpInfo.ipAddress + ""));
-                entities.add(new TextCard("serverAddress", "DhcpInfo.serverAddress", dhcpInfo.serverAddress + ""));
+                entities.add(new TextCard("dns1", "DhcpInfo.dns1", Formatter.formatIpAddress(dhcpInfo.dns1) + ""));
+                entities.add(new TextCard("dns2", "DhcpInfo.dns2", Formatter.formatIpAddress(dhcpInfo.dns2) + ""));
+                entities.add(new TextCard("gateway", "DhcpInfo.gateway", Formatter.formatIpAddress(dhcpInfo.gateway) + ""));
+                entities.add(new TextCard("netmask", "DhcpInfo.netmask", Formatter.formatIpAddress(dhcpInfo.netmask) + ""));
+                entities.add(new TextCard("ipAddress", "DhcpInfo.ipAddress", Formatter.formatIpAddress(dhcpInfo.ipAddress) + ""));
+                entities.add(new TextCard("serverAddress", "DhcpInfo.serverAddress", Formatter.formatIpAddress(dhcpInfo.serverAddress) + ""));
                 entities.add(new TextCard("leaseDuration", "DhcpInfo.leaseDuration", dhcpInfo.leaseDuration + ""));
             }
 
