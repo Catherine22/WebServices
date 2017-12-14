@@ -1,6 +1,7 @@
 package com.catherine.webservices.network;
 
 import android.os.AsyncTask;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.text.TextUtils;
@@ -117,7 +118,7 @@ public class DownloaderAsyncTask extends AsyncTask<String, Void, Void> {
                  * "rws"  打开以便读取和写入。相对于 "rw"，"rws" 还要求对“文件的内容”或“meta-data”的每个更新都同步写入到基础存储设备。
                  * "rwd"  打开以便读取和写入，相对于 "rw"，"rwd" 还要求对“文件的内容”的每个更新都同步写入到基础存储设备。
                  */
-            RandomAccessFile file = new RandomAccessFile(MyApplication.INSTANCE.getDiskCacheDir() + "/" + fileName, "rwd");
+            RandomAccessFile file = new RandomAccessFile(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/" + fileName, "rwd");
 
             // 1.在本地创建一个文件 文件大小要跟服务器文件的大小一致
             file.setLength(LENGTH);
@@ -256,7 +257,7 @@ public class DownloaderAsyncTask extends AsyncTask<String, Void, Void> {
                 }
 
                 //设置数据从那个位置开始写
-                RandomAccessFile file = new RandomAccessFile(MyApplication.INSTANCE.getDiskCacheDir() + "/" + fileName, "rwd");
+                RandomAccessFile file = new RandomAccessFile(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/" + fileName, "rwd");
                 file.seek(startPos);
                 byte[] buffer = new byte[1024];
                 // 文件长度，当length = -1代表文件读完了
