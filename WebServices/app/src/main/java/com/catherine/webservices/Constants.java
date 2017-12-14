@@ -14,6 +14,7 @@ public class Constants {
     public final static int OPEN_SETTINGS = 3;
     public final static int ACCESS_PERMISSION = 4;
     public final static int FILECHOOSER_RESULTCODE = 5;
+    public final static int NOTIFICATION_CALLBACK = 6;
 
     public final static int THREAD_POOL_TIMEOUT = 2000;
     public final static int TIMEOUT = 10000;

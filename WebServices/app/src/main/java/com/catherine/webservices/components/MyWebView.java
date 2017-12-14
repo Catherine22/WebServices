@@ -23,6 +23,7 @@ import android.view.View;
 import android.view.Window;
 import android.webkit.ClientCertRequest;
 import android.webkit.ConsoleMessage;
+import android.webkit.DownloadListener;
 import android.webkit.GeolocationPermissions;
 import android.webkit.HttpAuthHandler;
 import android.webkit.JsResult;
@@ -42,10 +43,12 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
+import com.catherine.webservices.Constants;
 import com.catherine.webservices.MyApplication;
 import com.catherine.webservices.R;
 import com.catherine.webservices.interfaces.ActivityResultListener;
 import com.catherine.webservices.interfaces.WebViewProgressListener;
+import com.catherine.webservices.network.DownloadManager;
 import com.catherine.webservices.network.NetworkHelper;
 import com.catherine.webservices.toolkits.ApplicationConfig;
 import com.catherine.webservices.toolkits.CLog;
@@ -68,7 +71,7 @@ import static com.catherine.webservices.Constants.FILECHOOSER_RESULTCODE;
  */
 
 public class MyWebView extends WebView {
-    private final static String TAG = "MyWebView";
+    private final static String TAG = MyWebView.class.getSimpleName();
     private WebViewProgressListener progressListener;
     private ActivityResultListener activityResultListener;
     //save console logs in disk
@@ -76,6 +79,8 @@ public class MyWebView extends WebView {
     private boolean jsTimeout;
     private ApplicationConfig config;
     private Context ctx;
+    private NetworkHelper networkHelper;
+    private DownloadManager downloadManager;
 
     public MyWebView(Context context) {
         super(context);
@@ -98,17 +103,15 @@ public class MyWebView extends WebView {
         initSettings(context);
     }
 
-    @SuppressLint("SetJavaScriptEnabled")
-    public void initSettings(Context context) {
-        initSettings(context, false, true);
-    }
 
     @SuppressLint("SetJavaScriptEnabled")
-    public void initSettings(Context context, boolean safer, boolean enableCache) {
+    public void initSettings(Context context) {
         ctx = context;
         config = new ApplicationConfig();
-        NetworkHelper networkHelper = new NetworkHelper();
+        networkHelper = new NetworkHelper();
         activityResultListener = (ActivityResultListener) ctx;
+        downloadManager = new DownloadManager();
+
         WebSettings settings = getSettings();
         settings.setUseWideViewPort(true);
         settings.setLoadWithOverviewMode(true);
@@ -129,59 +132,13 @@ public class MyWebView extends WebView {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             settings.setMediaPlaybackRequiresUserGesture(true);
         }
-
-        if (safer) {
-            settings.setJavaScriptEnabled(true);
-            settings.setJavaScriptCanOpenWindowsAutomatically(true);
-            settings.setAllowContentAccess(true);
-            settings.setAllowFileAccess(true);
-            settings.setGeolocationEnabled(true);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                settings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
-            }
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                settings.setSafeBrowsingEnabled(true);
-            }
-        } else {
-            settings.setJavaScriptEnabled(false);
-            settings.setJavaScriptCanOpenWindowsAutomatically(false);
-            settings.setAllowContentAccess(false);
-            settings.setAllowFileAccess(false);
-            settings.setGeolocationEnabled(false);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                settings.setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);
-            }
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                settings.setSafeBrowsingEnabled(false);
-            }
-        }
-
-        //cache
-        if (enableCache) {
-            settings.setSaveFormData(true);
-            settings.setDomStorageEnabled(true);
-            settings.setDatabaseEnabled(true);
-            settings.setAppCacheEnabled(true);
-            settings.setDatabasePath(MyApplication.INSTANCE.getDiskCacheDir("webview").getAbsolutePath());
-            settings.setGeolocationDatabasePath(MyApplication.INSTANCE.getDiskCacheDir("webview").getAbsolutePath());
-            settings.setAppCachePath(MyApplication.INSTANCE.getDiskCacheDir("webview").getAbsolutePath());
-            if (networkHelper.isNetworkHealthy()) {
-                settings.setCacheMode(WebSettings.LOAD_DEFAULT);
-            } else {
-                settings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
-            }
-            settings.setAppCacheMaxSize(5 * 1024 * 1024);//5M
-        } else {
-            settings.setCacheMode(WebSettings.LOAD_NO_CACHE);
-        }
-
-        settings.setDefaultTextEncodingName("utf-8");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             // In this mode, the WebView will allow a secure origin to load content from any other origin, even if that origin is insecure.
             settings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
         }
 
-
+        safeBrowsing(false);
+        enableCache(false);
         setWebChromeClient(new WebChromeClient() {
 
             @Override
@@ -295,7 +252,8 @@ public class MyWebView extends WebView {
              * Note that for applications targeting Android N and later SDKs (API level > M)
              * this method is only called for requests originating from secure origins such as https.
              * On non-secure origins geolocation requests are automatically denied.
-             * @param origin The origin of the web content attempting to use the Geolocation API.
+             *
+             * @param origin   The origin of the web content attempting to use the Geolocation API.
              * @param callback The callback to use to set the permission state for the origin.
              */
             @Override
@@ -450,7 +408,7 @@ public class MyWebView extends WebView {
                 i.addCategory(Intent.CATEGORY_OPENABLE);
                 String type = TextUtils.isEmpty(acceptType) ? "*/*" : acceptType;
                 i.setType(type);
-                ((Activity) ctx).startActivityForResult(Intent.createChooser(i, "File Chooser"), FILECHOOSER_RESULTCODE);
+                ((Activity) ctx).startActivityForResult(Intent.createChooser(i, "File Chooser"), Constants.FILECHOOSER_RESULTCODE);
             }
 
             //Android 5.0+
@@ -468,12 +426,11 @@ public class MyWebView extends WebView {
                     type = fileChooserParams.getAcceptTypes()[0];
                 }
                 i.setType(type);
-                ((Activity) ctx).startActivityForResult(Intent.createChooser(i, "File Chooser"), FILECHOOSER_RESULTCODE);
+                ((Activity) ctx).startActivityForResult(Intent.createChooser(i, "File Chooser"), Constants.FILECHOOSER_RESULTCODE);
                 return true;
 //                return super.onShowFileChooser(webView, filePathCallback, fileChooserParams);
             }
         });
-
         setWebViewClient(new WebViewClient() {
             @Override
             public void onReceivedSslError(WebView view, final SslErrorHandler handler, SslError error) {
@@ -669,12 +626,83 @@ public class MyWebView extends WebView {
             }
 
         });
+        //Download resources from websites
+        setDownloadListener(new DownloadListener() {
+            @Override
+            public void onDownloadStart(String url, String userAgent, String contentDisposition, String mimetype, long contentLength) {
+                CLog.d(TAG, "Start to download:" + url);
+                CLog.d(TAG, String.format(Locale.ENGLISH, "userAgent:%s, contentDisposition:%s, mimetype:%s, length:%d%n", userAgent, contentDisposition, mimetype, contentLength));
+                downloadManager.download(url);
+            }
+        });
+    }
+
+    /**
+     * Allow JavaScript, access files, contents, location and so forth.
+     *
+     * @param safeBrowsing boolean
+     */
+    @SuppressLint("SetJavaScriptEnabled")
+    private void safeBrowsing(boolean safeBrowsing) {
+        WebSettings settings = getSettings();
+        if (safeBrowsing) {
+            settings.setJavaScriptEnabled(false);
+            settings.setJavaScriptCanOpenWindowsAutomatically(false);
+            settings.setAllowContentAccess(false);
+            settings.setAllowFileAccess(false);
+            settings.setGeolocationEnabled(false);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                settings.setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);
+            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                settings.setSafeBrowsingEnabled(false);
+            }
+        } else {
+            settings.setJavaScriptEnabled(true);
+            settings.setJavaScriptCanOpenWindowsAutomatically(true);
+            settings.setAllowContentAccess(true);
+            settings.setAllowFileAccess(true);
+            settings.setGeolocationEnabled(true);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                settings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
+            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                settings.setSafeBrowsingEnabled(true);
+            }
+        }
+    }
+
+    /**
+     * Include DomStorage, DB, AppCache
+     *
+     * @param enableCache boolean
+     */
+
+    public void enableCache(boolean enableCache) {
+        WebSettings settings = getSettings();
+        if (enableCache) {
+            settings.setSaveFormData(true);
+            settings.setDomStorageEnabled(true);
+            settings.setDatabaseEnabled(true);
+            settings.setAppCacheEnabled(true);
+            settings.setDatabasePath(MyApplication.INSTANCE.getDiskCacheDir("webview").getAbsolutePath());
+            settings.setGeolocationDatabasePath(MyApplication.INSTANCE.getDiskCacheDir("webview").getAbsolutePath());
+            settings.setAppCachePath(MyApplication.INSTANCE.getDiskCacheDir("webview").getAbsolutePath());
+            if (networkHelper.isNetworkHealthy()) {
+                settings.setCacheMode(WebSettings.LOAD_DEFAULT);
+            } else {
+                settings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
+            }
+            settings.setAppCacheMaxSize(5 * 1024 * 1024);//5M
+        } else {
+            settings.setCacheMode(WebSettings.LOAD_NO_CACHE);
+        }
     }
 
     /**
      * Loading progress from 0 to 100
      *
-     * @param progressListener
+     * @param progressListener it'll call back while updating the progress
      */
     public void addWebViewProgressListener(WebViewProgressListener progressListener) {
         this.progressListener = progressListener;
@@ -785,4 +813,5 @@ public class MyWebView extends WebView {
             }
         }
     }
+
 }
