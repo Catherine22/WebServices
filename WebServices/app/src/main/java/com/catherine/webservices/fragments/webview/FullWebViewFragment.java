@@ -197,6 +197,7 @@ public class FullWebViewFragment extends LazyFragment {
                 }
             }
         });
+        wv = (MyWebView) findViewById(R.id.wv);
         iv_menu = (ImageView) findViewById(R.id.iv_menu);
         iv_menu.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -256,7 +257,6 @@ public class FullWebViewFragment extends LazyFragment {
 
         pb = (ProgressBar) findViewById(R.id.pb);
         pb.setMax(100);
-        wv = (MyWebView) findViewById(R.id.wv);
         refresh();
     }
 
@@ -685,6 +685,7 @@ public class FullWebViewFragment extends LazyFragment {
          * LOAD_CACHE_ONLY 只使用缓存
          */
         settings.setCacheMode(WebSettings.LOAD_DEFAULT);
+        wv.loadUrl(currentUrl);
     }
 
     @Override
