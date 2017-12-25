@@ -112,11 +112,10 @@ public class ImageCardRVAdapter extends RecyclerView.Adapter<ImageCardRVAdapter.
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        //Stop the process when showed the image and tried to cache it.
-
+                        //Stop the process when the image has been loaded but hasn't been cached.
                         final String key = Encryption.doMd5Safely(new ByteArrayInputStream(entities.get(position).image.getBytes()));
                         try {
-                            //1. Show caches when there're caches in the storage.
+                            //1. Show the cached image if it exists.
                             if (diskLruCache.isClosed())
                                 openDiskLruCache();
 
@@ -144,7 +143,7 @@ public class ImageCardRVAdapter extends RecyclerView.Adapter<ImageCardRVAdapter.
                             CLog.e(TAG, "DiskLruCache error");
                         }
 
-                        //2. You will go on once there're no caches or caught exceptions.
+                        //2. No caches or there's an exception. So we have to download the image.
                         try {
                             URL url = new URL(entities.get(position).image);
                             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -153,7 +152,7 @@ public class ImageCardRVAdapter extends RecyclerView.Adapter<ImageCardRVAdapter.
                             conn.setUseCaches(false);
                             conn.setConnectTimeout(MyHttpURLConnection.CONNECT_TIMEOUT);
 
-                            //Show images at first in case the external/internal storage not works.
+                            //Show the image directly in case that the external or internal storage doesn't work.
                             final Bitmap bitmap = BitmapFactory.decodeStream(conn.getInputStream());
                             conn.disconnect();
 
@@ -170,7 +169,8 @@ public class ImageCardRVAdapter extends RecyclerView.Adapter<ImageCardRVAdapter.
 
                                     }
                                 });
-                                //3. Cache the bitmap
+                                
+                                //3. Cache that bitmap
                                 try {
                                     ByteArrayOutputStream stream = new ByteArrayOutputStream();
                                     bitmap.compress(getCompressFormat(entities.get(position).image), 100, stream);
