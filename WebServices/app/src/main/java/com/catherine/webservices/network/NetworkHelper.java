@@ -200,6 +200,7 @@ public class NetworkHelper {
 
     /**
      * Run on another thread
+     *
      * @return List<ScanResults>
      */
     public List<ScanResult> scanWifi() {
@@ -217,9 +218,9 @@ public class NetworkHelper {
         return results;
     }
 
-    public boolean isNetworkHealthy() {
+    public static boolean isNetworkHealthy() {
         try {
-            ConnectivityManager cm = (ConnectivityManager) ctx.getSystemService(Context.CONNECTIVITY_SERVICE);
+            ConnectivityManager cm = (ConnectivityManager) MyApplication.INSTANCE.getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo ni = cm.getActiveNetworkInfo();
             if (ni == null)
                 return false;

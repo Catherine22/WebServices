@@ -17,6 +17,7 @@ import com.catherine.webservices.R;
 import com.catherine.webservices.adapters.TextCardRVAdapter;
 import com.catherine.webservices.components.DialogManager;
 import com.catherine.webservices.entities.TextCard;
+import com.catherine.webservices.interfaces.MainInterface;
 import com.catherine.webservices.interfaces.OnItemClickListener;
 import com.catherine.webservices.network.HttpAsyncTask;
 import com.catherine.webservices.network.HttpRequest;
@@ -74,9 +75,10 @@ public class OkHttp3Fragment extends LazyFragment {
     private List<TextCard> entities;
     private SwipeRefreshLayout srl_container;
     private TextCardRVAdapter adapter;
-    private NetworkHelper helper;
+    private MainInterface mainInterface;
     private boolean retry;
     private int step;
+    private NetworkHealthListener networkHealthListener;
     private OkHttpClient client, githubClient, kyfwClient;
 
     public static OkHttp3Fragment newInstance(boolean isLazyLoad) {
@@ -93,6 +95,7 @@ public class OkHttp3Fragment extends LazyFragment {
         super.onCreateViewLazy(savedInstanceState);
         setContentView(R.layout.f_okhttp_3);
         client = new OkHttpClient();
+        mainInterface = (MainInterface) getActivity();
 
         try {
             X509Certificate cert = CertificatesManager.pemToX509Certificate(Constants.GITHUB_CERT);
@@ -178,8 +181,7 @@ public class OkHttp3Fragment extends LazyFragment {
     }
 
     private void initComponent() {
-        helper = new NetworkHelper();
-        helper.listenToNetworkState(new NetworkHealthListener() {
+        networkHealthListener = new NetworkHealthListener() {
             @Override
             public void networkConnected(@NotNull String type) {
                 CLog.i(TAG, "network connected:" + type);
@@ -193,7 +195,8 @@ public class OkHttp3Fragment extends LazyFragment {
             public void networkDisable() {
                 CLog.e(TAG, "network disable");
             }
-        });
+        };
+        mainInterface.listenToNetworkState(networkHealthListener);
         srl_container = (SwipeRefreshLayout) findViewById(R.id.srl_container);
         srl_container.setColorSchemeResources(R.color.colorPrimary, R.color.colorAccent, R.color.colorPrimaryDark, R.color.colorAccentDark);
         srl_container.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -306,7 +309,7 @@ public class OkHttp3Fragment extends LazyFragment {
             @Override
             public void onFailure(Call call, IOException e) {
                 StringBuilder sb = new StringBuilder();
-                if (!helper.isNetworkHealthy()) {
+                if (!NetworkHelper.isNetworkHealthy()) {
                     DialogManager.showAlertDialog(getActivity(), "Please turn on Wi-Fi or cellular.", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -360,8 +363,7 @@ public class OkHttp3Fragment extends LazyFragment {
 
     @Override
     public void onDestroy() {
-        if (helper != null)
-            helper.stopListeningToNetworkState();
+        mainInterface.stopListeningToNetworkState(networkHealthListener);
         super.onDestroy();
     }
 }

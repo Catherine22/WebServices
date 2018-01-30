@@ -16,6 +16,7 @@ import com.catherine.webservices.R;
 import com.catherine.webservices.adapters.TextCardRVAdapter;
 import com.catherine.webservices.components.DialogManager;
 import com.catherine.webservices.entities.TextCard;
+import com.catherine.webservices.interfaces.MainInterface;
 import com.catherine.webservices.interfaces.OnItemClickListener;
 import com.catherine.webservices.network.HttpRequest;
 import com.catherine.webservices.network.HttpResponse;
@@ -50,7 +51,8 @@ public class ApacheFragment extends LazyFragment {
     private Callback callback;
     private TextCardRVAdapter adapter;
     private HandlerThread handlerThreadB, handlerThreadC;
-    private NetworkHelper helper;
+    private MainInterface mainInterface;
+    private NetworkHealthListener networkHealthListener;
     private boolean retry;
     private int step;
 
@@ -87,8 +89,8 @@ public class ApacheFragment extends LazyFragment {
     }
 
     private void initComponent() {
-        helper = new NetworkHelper();
-        helper.listenToNetworkState(new NetworkHealthListener() {
+        mainInterface = (MainInterface) getActivity();
+        networkHealthListener = new NetworkHealthListener() {
             @Override
             public void networkConnected(@NotNull String type) {
                 CLog.i(TAG, "network connected:" + type);
@@ -102,7 +104,8 @@ public class ApacheFragment extends LazyFragment {
             public void networkDisable() {
                 CLog.e(TAG, "network disable");
             }
-        });
+        };
+        mainInterface.listenToNetworkState(networkHealthListener);
         myApache = new MyApache();
         callback = new Callback();
         handlerThreadB = new HandlerThread("Looper B");
@@ -282,7 +285,7 @@ public class ApacheFragment extends LazyFragment {
         public void connectFailure(HttpResponse response, Exception e) {
             //Running in a non-UI thread right now.
             StringBuilder sb = new StringBuilder();
-            if (!helper.isNetworkHealthy()) {
+            if (!NetworkHelper.isNetworkHealthy()) {
                 DialogManager.showAlertDialog(getActivity(), "Please turn on Wi-Fi or cellular.", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -324,10 +327,10 @@ public class ApacheFragment extends LazyFragment {
         }
     }
 
+
     @Override
     public void onDestroy() {
-        if (helper != null)
-            helper.stopListeningToNetworkState();
+        mainInterface.stopListeningToNetworkState(networkHealthListener);
         super.onDestroy();
     }
 }

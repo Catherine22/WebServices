@@ -4,6 +4,7 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.support.design.widget.TabLayout
@@ -17,6 +18,7 @@ import android.widget.ArrayAdapter
 import catherine.messagecenter.AsyncResponse
 import catherine.messagecenter.Server
 import com.catherine.webservices.adapters.MainViewPagerAdapter
+import com.catherine.webservices.components.DialogManager
 import com.catherine.webservices.components.MyDialogFragment
 import com.catherine.webservices.fragments.OkHttp3Fragment
 import com.catherine.webservices.fragments.cache.GalleryFragment
@@ -53,6 +55,7 @@ class MainActivity : BaseFragmentActivity(), MainInterface {
     }
 
     private var sv: Server? = null
+    private var networkHealthListeners: MutableList<NetworkHealthListener?>? = null
 
     @SuppressLint("MissingSuperCall")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -71,7 +74,7 @@ class MainActivity : BaseFragmentActivity(), MainInterface {
         val checkStateWork = Handler(MyApplication.INSTANCE.calHandlerThread.looper)
         checkStateWork.post {
             val networkHelper = NetworkHelper()
-            CLog.d(TAG, "isNetworkHealthy:${networkHelper.isNetworkHealthy}")
+            CLog.d(TAG, "isNetworkHealthy:${NetworkHelper.isNetworkHealthy()}")
             CLog.d(TAG, "isWifi:${networkHelper.isWifi}")
             networkHelper.listenToNetworkState(object : NetworkHealthListener {
                 override fun networkConnected(type: String) {
@@ -144,7 +147,11 @@ class MainActivity : BaseFragmentActivity(), MainInterface {
             }
 
             Constants.Fragments.F_OKHTTP -> {
-                fragment = OkHttp3Fragment.newInstance(true)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                    fragment = OkHttp3Fragment.newInstance(true)
+                } else {
+                    DialogManager.showAlertDialog(MainActivity@ this, "Can not run okHttp3 due to low API level.\n The min API level must be 19 (KITKAT).") { _, _ -> }
+                }
             }
 
 
@@ -353,7 +360,7 @@ class MainActivity : BaseFragmentActivity(), MainInterface {
 //        tabLayout.setScrollPosition(vp_content.adapter.count, 0f, true)
 //        vp_content.currentItem = vp_content.adapter.count
 
-
+        networkHealthListeners = ArrayList()
         backKeyEventListener = ArrayList()
         for (i in 0 until vp_content.adapter.count) {
             backKeyEventListener?.add(null)
@@ -375,6 +382,15 @@ class MainActivity : BaseFragmentActivity(), MainInterface {
         iv_menu.setOnClickListener {
             openSlideMenu()
         }
+    }
+
+    override fun listenToNetworkState(listener: NetworkHealthListener) {
+        networkHealthListeners?.add(listener)
+    }
+
+
+    override fun stopListeningToNetworkState(listener: NetworkHealthListener) {
+        networkHealthListeners?.remove(listener)
     }
 
     fun testKotlin() {
