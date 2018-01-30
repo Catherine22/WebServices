@@ -363,7 +363,8 @@ public class OkHttp3Fragment extends LazyFragment {
 
     @Override
     public void onDestroy() {
-        mainInterface.stopListeningToNetworkState(networkHealthListener);
+        if (mainInterface != null)
+            mainInterface.stopListeningToNetworkState(networkHealthListener);
         super.onDestroy();
     }
 }

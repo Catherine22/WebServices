@@ -316,7 +316,8 @@ public class HttpURLConnectionFragment extends LazyFragment {
 
     @Override
     public void onDestroy() {
-        mainInterface.stopListeningToNetworkState(networkHealthListener);
+        if (mainInterface != null)
+            mainInterface.stopListeningToNetworkState(networkHealthListener);
         super.onDestroy();
     }
 }
