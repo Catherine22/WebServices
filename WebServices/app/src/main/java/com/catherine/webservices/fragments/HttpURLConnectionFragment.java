@@ -14,6 +14,7 @@ import com.catherine.webservices.R;
 import com.catherine.webservices.adapters.TextCardRVAdapter;
 import com.catherine.webservices.components.DialogManager;
 import com.catherine.webservices.entities.TextCard;
+import com.catherine.webservices.interfaces.MainInterface;
 import com.catherine.webservices.interfaces.OnItemClickListener;
 import com.catherine.webservices.network.HttpAsyncTask;
 import com.catherine.webservices.network.HttpRequest;
@@ -49,7 +50,8 @@ public class HttpURLConnectionFragment extends LazyFragment {
     private List<TextCard> entities;
     private SwipeRefreshLayout srl_container;
     private TextCardRVAdapter adapter;
-    private NetworkHelper helper;
+    private MainInterface mainInterface;
+    private NetworkHealthListener networkHealthListener;
     private boolean retry;
     private int step;
 
@@ -88,8 +90,8 @@ public class HttpURLConnectionFragment extends LazyFragment {
     }
 
     private void initComponent() {
-        helper = new NetworkHelper();
-        helper.listenToNetworkState(new NetworkHealthListener() {
+        mainInterface = (MainInterface) getActivity();
+        networkHealthListener = new NetworkHealthListener() {
             @Override
             public void networkConnected(@NotNull String type) {
                 CLog.i(TAG, "network connected:" + type);
@@ -103,7 +105,8 @@ public class HttpURLConnectionFragment extends LazyFragment {
             public void networkDisable() {
                 CLog.e(TAG, "network disable");
             }
-        });
+        };
+        mainInterface.listenToNetworkState(networkHealthListener);
         srl_container = (SwipeRefreshLayout) findViewById(R.id.srl_container);
         srl_container.setColorSchemeResources(R.color.colorPrimary, R.color.colorAccent, R.color.colorPrimaryDark, R.color.colorAccentDark);
         srl_container.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -114,7 +117,6 @@ public class HttpURLConnectionFragment extends LazyFragment {
                 srl_container.setRefreshing(false);
             }
         });
-
         RecyclerView rv_main_list = (RecyclerView) findViewById(R.id.rv_main_list);
         rv_main_list.setLayoutManager(new LinearLayoutManager(getActivity()));
         adapter = new TextCardRVAdapter(getActivity(), entities, new OnItemClickListener() {
@@ -275,7 +277,7 @@ public class HttpURLConnectionFragment extends LazyFragment {
             public void connectFailure(HttpResponse response, Exception e) {
                 srl_container.setRefreshing(false);
                 StringBuilder sb = new StringBuilder();
-                if (!helper.isNetworkHealthy()) {
+                if (!NetworkHelper.isNetworkHealthy()) {
                     DialogManager.showAlertDialog(getActivity(), "Please turn on Wi-Fi or cellular.", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -314,8 +316,7 @@ public class HttpURLConnectionFragment extends LazyFragment {
 
     @Override
     public void onDestroy() {
-        if (helper != null)
-            helper.stopListeningToNetworkState();
+        mainInterface.stopListeningToNetworkState(networkHealthListener);
         super.onDestroy();
     }
 }

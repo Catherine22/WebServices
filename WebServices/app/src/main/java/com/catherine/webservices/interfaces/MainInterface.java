@@ -3,6 +3,8 @@ package com.catherine.webservices.interfaces;
 import android.os.Bundle;
 import android.view.View;
 
+import com.catherine.webservices.network.NetworkHealthListener;
+
 /**
  * Created by Catherine on 2017/11/29.
  * Soft-World Inc.
@@ -39,4 +41,8 @@ public interface MainInterface {
     View getBottomLayout();
 
     void restoreBottomLayout();
+
+    void listenToNetworkState(NetworkHealthListener listener);
+
+    void stopListeningToNetworkState(NetworkHealthListener listener);
 }
