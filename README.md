@@ -116,10 +116,8 @@ The ```Cache-Control``` header is the most important header to set as it effecti
 | --- | --- |
 | no-store | No cache |
 | no-cache | It's no need to cache the HTTP response you got, but still allowing caching |
-| public | 1. It can be cached, even if it has HTTP authentication associated with it.		
- 2. Public resources can be cached not only by the end-user’s browser but also by any intermediate proxies that may be serving many other users as well.|
-| private | 1. Only control where the response may be cached, and cannot ensure the privacy of the message content.		
- 2. Private resources are bypassed by intermediate proxies and can only be cached by the end-client.|
+| public | 1. It can be cached, even if it has HTTP authentication associated with it.      2. Public resources can be cached not only by the end-user’s browser but also by any intermediate proxies that may be serving many other users as well.|
+| private | 1. Only control where the response may be cached, and cannot ensure the privacy of the message content.     2. Private resources are bypassed by intermediate proxies and can only be cached by the end-client.|
 | max-age=300 | Response can be cached for up to 5 minutes. And where it is cached refer to 'private' or 'public'|
 
 
